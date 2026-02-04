@@ -8,6 +8,7 @@ Use **Guide C** (Attach to Stuck Process) to get a backtrace from the stuck proc
 
 **Main Thread**
 Stuck in the event loop waiting (`uv_run` / `kevent` / `epoll_wait`), usually with no active JavaScript or Rust tasks.
+
 ```
 frame #0: kevent (libsystem_kernel.dylib)
 frame #1: uv__io_poll (node)
@@ -17,6 +18,7 @@ frame #3: node::SpinEventLoopInternal (node)
 
 **Tokio Worker Threads**
 All in an idle waiting state (`Condvar::wait`).
+
 ```
 frame #0: __psynch_cvwait
 frame #1: _pthread_cond_wait

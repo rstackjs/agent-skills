@@ -21,12 +21,13 @@ done
 ```
 
 **Instructions**:
+
 1.  Run the script in your terminal.
 2.  Watch the output.
 3.  When the build **hangs** (stops outputting and doesn't finish for a long time):
-    *   Look at the last printed `>> Process PID: <NUMBER>`.
-    *   **Do not kill the process**.
-    *   Copy that PID.
+    - Look at the last printed `>> Process PID: <NUMBER>`.
+    - **Do not kill the process**.
+    - Copy that PID.
 
 ## 2. Agent Action: Attach and debug
 

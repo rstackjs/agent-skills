@@ -1,0 +1,8 @@
+# Ignore artifacts:
+dist
+doc_build
+pnpm-lock.yaml
+
+skills/**/*.js
+skills/**/*.cjs
+skills/**/*.mjs

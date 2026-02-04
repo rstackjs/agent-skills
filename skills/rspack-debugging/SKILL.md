@@ -14,17 +14,19 @@ This Skill guides you on how to capture the underlying crash state of Rspack (wh
 Before starting, please ensure your environment meets the requirements.
 
 1.  **Install LLDB**: You must install the LLDB debugger.
-    *   macOS: Run `xcode-select --install`
-    *   Linux: Install the `lldb` package (e.g., `apt-get install lldb`)
-    *   Detailed guide: [references/lldb.md](references/lldb.md)
+    - macOS: Run `xcode-select --install`
+    - Linux: Install the `lldb` package (e.g., `apt-get install lldb`)
+    - Detailed guide: [references/lldb.md](references/lldb.md)
 
 2.  **Replace Debug Packages**:
     Production packages like `@rspack/core` have debug symbols stripped. They must be replaced with the `@rspack-debug/*` series packages to see useful stack information.
 
     **Automatic Replacement Script**:
+
     ```bash
     node ${CLAUDE_PLUGIN_ROOT}/skills/debugging/scripts/setup_debug_deps.cjs
     ```
+
     Running the above script will automatically add `pnpm.overrides` configuration to `package.json`, pointing Rspack packages to their corresponding Debug versions. Afterwards, please be sure to run `pnpm install` to update dependencies.
 
 ## Debugging Workflows
@@ -36,26 +38,32 @@ Identify your specific scenario and follow the corresponding linked guide.
 ## Detailed Guides
 
 ### Guide A: Crash during HMR
+
 **Scenario**: Stable Crash/Deadlock during DevServer HMR.
 [Read Guide: references/guide_a_hmr_crash.md](references/guide_a_hmr_crash.md)
 
 ### Guide B: Crash during Build
+
 **Scenario**: Stable Crash/Deadlock during Build (or Unstable Build Crash that is frequent enough).
 [Read Guide: references/guide_b_build_crash.md](references/guide_b_build_crash.md)
 
 ### Guide C: Attach to Stuck Process
+
 **Scenario**: Unstable Deadlock during Build (happens randomly).
 [Read Guide: references/guide_c_attach_to_stuck_process.md](references/guide_c_attach_to_stuck_process.md)
 
 ### Guide D: Coredump Analysis (Dev)
+
 **Scenario**: Unstable Crash during DevServer HMR (hard to catch interactively).
 [Read Guide: references/guide_d_coredump_analysis_dev.md](references/guide_d_coredump_analysis_dev.md)
 
 ### Guide E: Coredump Analysis (Build)
+
 **Scenario**: Unstable Crash during Build.
 [Read Guide: references/guide_e_coredump_analysis_build.md](references/guide_e_coredump_analysis_build.md)
 
 ### Guide F: Async Deadlock Identification
+
 **Scenario**: Unstable Async Deadlock. Main thread stuck in `uv_run`.
 [Read Guide: references/guide_f_async_deadlock.md](references/guide_f_async_deadlock.md)
 

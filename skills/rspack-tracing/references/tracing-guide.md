@@ -7,6 +7,7 @@ Tracing allows you to visualize exactly what Rspack is doing during a build.
 Rspack uses several environment variables to control tracing.
 
 **Command:**
+
 ```bash
 RSPACK_PROFILE=TRACE RSPACK_TRACE_LAYER=logger RSPACK_TRACE_OUTPUT=./trace.json rspack build
 ```
@@ -14,12 +15,14 @@ RSPACK_PROFILE=TRACE RSPACK_TRACE_LAYER=logger RSPACK_TRACE_OUTPUT=./trace.json 
 ### Variables
 
 **`RSPACK_PROFILE`**: Controls the granularity of the trace.
--   `TRACE`: Captures all spans. (Recommended for deep analysis)
--   `DEBUG`, `INFO`, `WARN`, `ERROR`, `CRITICAL`
--   `OFF`: Disables tracing.
+
+- `TRACE`: Captures all spans. (Recommended for deep analysis)
+- `DEBUG`, `INFO`, `WARN`, `ERROR`, `CRITICAL`
+- `OFF`: Disables tracing.
 
 **`RSPACK_TRACE_LAYER`**: Controls the output format.
--   `logger`: Outputs standard JSON logging (required for the analysis script).
+
+- `logger`: Outputs standard JSON logging (required for the analysis script).
 
 ## Output
 

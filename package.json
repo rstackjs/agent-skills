@@ -2,10 +2,12 @@
   "name": "@rstackjs/agent-skills",
   "private": true,
   "scripts": {
-    "build": "pnpm --parallel --filter ./packages/** build",
+    "build": "pnpm --filter ./packages/** build",
     "format": "prettier --write .",
     "lint": "biome check",
-    "prepare": "simple-git-hooks && pnpm build"
+    "prepare": "simple-git-hooks && pnpm build",
+    "test": "pnpm --filter @agent-skills/e2e test",
+    "typecheck": "pnpm --filter ./packages/** typecheck"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec nano-staged"

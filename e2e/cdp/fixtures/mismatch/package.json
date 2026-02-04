@@ -1,0 +1,9 @@
+{
+  "name": "@agent-skills/cdp-fixture-mismatch",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@rstest/core": "^0.8.2"
+  }
+}

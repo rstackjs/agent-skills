@@ -21,26 +21,24 @@ program
   .showSuggestionAfterError();
 
 export const execute = async (handler: () => Promise<unknown>): Promise<void> => {
+  // Parse compact option once at the beginning
+  const opts = program.opts<{ compact?: boolean | string }>();
+  const compact = opts.compact === true || opts.compact === 'true';
+  const spacing = compact ? 0 : 2;
+
   try {
     const result = await handler();
     // Format result similar to old format
     if (result && typeof result === 'object' && 'ok' in result) {
-      const opts = program.opts<{ compact?: boolean | string }>();
-      const compact = opts.compact === true || opts.compact === 'true';
-      const spacing = compact ? 0 : 2;
       console.log(JSON.stringify(result, null, spacing));
       if (!(result as { ok: boolean }).ok) {
         process.exit(1);
       }
     } else {
-      const opts = program.opts<{ compact?: boolean | string }>();
-      printResult(result, opts.compact === true || opts.compact === 'true');
+      printResult(result, compact);
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    const opts = program.opts<{ compact?: boolean | string }>();
-    const compact = opts.compact === true || opts.compact === 'true';
-    const spacing = compact ? 0 : 2;
     console.log(
       JSON.stringify(
         {

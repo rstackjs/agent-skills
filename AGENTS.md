@@ -1,13 +1,10 @@
----
-name: project-overview
-description: Introduces the agent-skills project structure, directory explanations, and how to create new Skills and write scripts. Use when users ask about project structure, how to create a new Skill, or how to write Skill scripts.
----
+# AGENTS.md
 
-# Agent Skills Project Overview
+This file provides guidance to AI coding agents working with code in this repository.
 
-## Introduction
+## Repository Overview
 
-agent-skills is a collection of Agent Skills for the Rstack ecosystem. Using Vercel's skills toolkit, AI Agents can gain specialized capabilities in specific domains.
+A collection of Agent Skills for the Rspack ecosystem (Rspack, Rsbuild, Rslib, Rstest, Rsdoctor). Skills are packaged instructions and scripts that extend agent capabilities for debugging, profiling, and development workflows.
 
 ## Project Structure
 
@@ -46,11 +43,11 @@ cd skills
 npx skills init my-skill
 ```
 
-This will generate a `SKILL.md` file with YAML frontmatter and Markdown content.
+This will generate a `SKILL.md` file with YAML front-matter and Markdown content.
 
-### 2. Configure Frontmatter
+### 2. Configure Front-matter
 
-Configure in the YAML frontmatter at the top of the `SKILL.md` file:
+Configure in the YAML front-matter at the top of the `SKILL.md` file:
 
 ```yaml
 ---
@@ -125,7 +122,7 @@ packages/my-skill/
 ```json
 {
   "name": "@rstackjs/my-skill",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "build": "rslib build",

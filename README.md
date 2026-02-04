@@ -2,7 +2,7 @@
 
 A collection of Agent Skills for [Rstack](https://rspack.rs/guide/start/ecosystem#rstack).
 
-## Available Skills
+## Rspack Skills
 
 ### rspack-debugging
 
@@ -23,3 +23,13 @@ npx skills add rstackjs/agent-skills --skill rspack-tracing
 Comprehensive guide and toolkit for diagnosing Rspack build issues. Quickly identify where crashes/errors occur, or perform detailed performance profiling to resolve bottlenecks.
 
 Use when the user encounters build failures, slow builds, or wants to optimize Rspack performance.
+
+## Rsbuild Skills
+
+### rsbuild-v2-upgrade
+
+```bash
+npx skills add rstackjs/agent-skills --skill rsbuild-v2-upgrade
+```
+
+Migrate Rsbuild projects from v1 to v2. Use when a user asks to upgrade Rsbuild, follow the v1-to-v2 guide, update configs/plugins, or validate the upgrade.

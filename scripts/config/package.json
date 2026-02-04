@@ -1,0 +1,11 @@
+{
+  "name": "@rstackjs/config",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@rslib/core": "^0.19.4",
+    "@types/node": "^24.10.9",
+    "typescript": "^5.9.3"
+  }
+}

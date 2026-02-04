@@ -1,6 +1,6 @@
 # LLDB References
 
-# Install 
+# Install
 
 LLDB is the debugger for the LLVM project. Since Rspack is written in Rust, LLDB can be used for debugging.
 
@@ -45,15 +45,17 @@ For automation and non-interactive debugging, we use LLDB in batch mode:
 lldb --batch -o "run" -k "thread backtrace all" -k "quit" -- node script.js
 ```
 
-*   `--batch`: Run in batch mode.
-*   `-o`: Execute command after loading.
-*   `-k`: Execute command upon crash (if the process crashes).
-*   `--`: Separate LLDB arguments from the target program arguments.
+- `--batch`: Run in batch mode.
+- `-o`: Execute command after loading.
+- `-k`: Execute command upon crash (if the process crashes).
+- `--`: Separate LLDB arguments from the target program arguments.
 
 ## Common Checks
 
 ### `thread backtrace all` (or `bt all`)
+
 This is the most critical command. It prints the stack traces of **all** threads.
 
 ### `frame variable` (or `fr v`)
+
 Prints variables in the current stack frame. Can be used with `-o` to inspect specific states if needed.

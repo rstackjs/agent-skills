@@ -7,7 +7,7 @@
     ```bash
     ulimit -c unlimited
     ```
-    *Note: On macOS, core dumps might be written to `/cores/`. On Linux, usually current dir or `/var/lib/systemd/coredump`.*
+    _Note: On macOS, core dumps might be written to `/cores/`. On Linux, usually current dir or `/var/lib/systemd/coredump`._
 2.  **Start Dev Server**:
     ```bash
     pnpm dev

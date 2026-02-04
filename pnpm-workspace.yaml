@@ -1,0 +1,9 @@
+packages:
+  - packages/**
+  - scripts/**
+  - '!**/dist/**'
+  - '!**/dist-*/**'
+
+engineStrict: true
+hoistPattern: []
+strictPeerDependencies: false

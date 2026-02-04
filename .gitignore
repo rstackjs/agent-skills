@@ -1,0 +1,17 @@
+.DS_Store
+*.log*
+*.cpuprofile
+node_modules/
+
+dist/
+dist-*
+compiled/
+coverage/
+tsconfig.tsbuildinfo
+
+# Test temp files
+test-temp-*
+
+.vscode/**/*
+!.vscode/settings.json
+!.vscode/extensions.json

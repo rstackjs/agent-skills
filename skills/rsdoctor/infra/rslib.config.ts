@@ -5,7 +5,7 @@ import path from 'node:path';
 const BUNDLE_FOLDER = {
   'rsdoctor': {
     src: './rsdoctor',
-    scripts: '../skills/rsdoctor/scripts',
+    scripts: '../skills/rsdoctor-analysis/scripts',
   },
 };
 

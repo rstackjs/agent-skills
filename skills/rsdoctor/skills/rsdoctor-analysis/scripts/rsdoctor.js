@@ -2639,158 +2639,11 @@ async function getConfig() {
         description: 'Get build configuration (rspack/webpack config).'
     };
 }
-async function optimizeBundle(stepInput, sideEffectsPageNumberInput, sideEffectsPageSizeInput) {
-    const step = stepInput ? parsePositiveInt(stepInput, 'step', {
-        min: 1,
-        max: 2
-    }) : void 0;
-    if (1 === step) {
-        const [rules, packages, chunksResult] = await Promise.all([
-            getRuleInfo(),
-            getPackageInfo(),
-            getAllChunks(1, Number.MAX_SAFE_INTEGER)
-        ]);
-        const chunksResultTyped = chunksResult;
-        const chunks = Array.isArray(chunksResultTyped) ? chunksResultTyped : chunksResultTyped.items || [];
-        const rulesArray = rules;
-        const duplicateRule = rulesArray?.find((rule)=>rule.description?.includes('E1001'));
-        const packagesArray = packages;
-        const similarRules = [
-            [
-                'lodash',
-                'lodash-es',
-                'string_decode'
-            ],
-            [
-                'dayjs',
-                'moment',
-                'date-fns',
-                'js-joda'
-            ],
-            [
-                'antd',
-                'material-ui',
-                'semantic-ui-react',
-                'arco-design'
-            ],
-            [
-                'axios',
-                'node-fetch'
-            ],
-            [
-                'redux',
-                'mobx',
-                'zustand',
-                'recoil',
-                'jotai'
-            ],
-            [
-                'chalk',
-                'colors',
-                'picocolors',
-                'kleur'
-            ],
-            [
-                'fs-extra',
-                'graceful-fs'
-            ]
-        ];
-        const similarMatches = similarRules.map((group)=>{
-            const found = group.filter((pkg)=>packagesArray.some((p)=>p.name.toLowerCase() === pkg.toLowerCase()));
-            return found.length > 1 ? found : null;
-        }).filter((match)=>null !== match);
-        const mediaAssets = {
-            guidance: 'Media asset optimization guidance.',
-            chunks
-        };
-        const chunksArray = chunks;
-        const median = chunksArray.length ? getMedianChunkSize(chunksArray) : 0;
-        const operator = 1.3;
-        const minSizeMB = 1;
-        const minSizeBytes = 1024 * minSizeMB * 1024;
-        const oversized = chunksArray.filter((chunk)=>chunk.size > median * operator && chunk.size >= minSizeBytes);
-        return {
-            ok: true,
-            data: {
-                step: 1,
-                duplicatePackages: {
-                    ok: true,
-                    data: {
-                        rule: duplicateRule ?? null,
-                        totalRules: rulesArray?.length ?? 0,
-                        note: duplicateRule ? void 0 : 'No E1001 duplicate package rule found in current analysis.'
-                    }
-                },
-                similarPackages: {
-                    ok: true,
-                    data: {
-                        similarPackages: similarMatches,
-                        totalPackages: packagesArray.length,
-                        note: similarMatches.length ? void 0 : 'No similar package groups detected in current analysis.'
-                    }
-                },
-                mediaAssets: {
-                    ok: true,
-                    data: mediaAssets
-                },
-                largeChunks: {
-                    ok: true,
-                    data: {
-                        median,
-                        operator,
-                        minSizeMB,
-                        oversized
-                    }
-                },
-                note: 'Step 1 completed. Use --step 2 to get side effects modules.'
-            },
-            description: 'Step 1: Basic bundle optimization analysis (duplicate packages, similar packages, media assets, large chunks).'
-        };
-    }
-    if (2 === step) {
-        const pageNumber = parsePositiveInt(sideEffectsPageNumberInput, 'sideEffectsPageNumber', {
-            min: 1
-        }) ?? 1;
-        const pageSize = parsePositiveInt(sideEffectsPageSizeInput, 'sideEffectsPageSize', {
-            min: 1,
-            max: 1000
-        }) ?? 100;
-        const sideEffectsData = await socket_sendRequest(constants_API.GetSideEffects, {
-            pageNumber,
-            pageSize
-        });
-        return {
-            ok: true,
-            data: {
-                step: 2,
-                sideEffectsModules: {
-                    ok: true,
-                    data: sideEffectsData
-                },
-                pagination: {
-                    pageNumber,
-                    pageSize
-                },
-                note: 'Step 2 completed. Side effects modules analysis with pagination.'
-            },
-            description: 'Step 2: Side effects modules analysis (categorized by node_modules and user code, with package statistics).'
-        };
-    }
-    const defaultPageNumber = parsePositiveInt(sideEffectsPageNumberInput, 'sideEffectsPageNumber', {
-        min: 1
-    }) ?? 1;
-    const defaultPageSize = parsePositiveInt(sideEffectsPageSizeInput, 'sideEffectsPageSize', {
-        min: 1,
-        max: 1000
-    }) ?? 100;
-    const [rules, packages, chunksResult, sideEffectsData] = await Promise.all([
+async function executeStep1() {
+    const [rules, packages, chunksResult] = await Promise.all([
         getRuleInfo(),
         getPackageInfo(),
-        getAllChunks(1, Number.MAX_SAFE_INTEGER),
-        socket_sendRequest(constants_API.GetSideEffects, {
-            pageNumber: defaultPageNumber,
-            pageSize: defaultPageSize
-        })
+        getAllChunks(1, Number.MAX_SAFE_INTEGER)
     ]);
     const chunksResultTyped = chunksResult;
     const chunks = Array.isArray(chunksResultTyped) ? chunksResultTyped : chunksResultTyped.items || [];
@@ -2852,37 +2705,101 @@ async function optimizeBundle(stepInput, sideEffectsPageNumberInput, sideEffects
     const minSizeBytes = 1024 * minSizeMB * 1024;
     const oversized = chunksArray.filter((chunk)=>chunk.size > median * operator && chunk.size >= minSizeBytes);
     return {
+        duplicatePackages: {
+            ok: true,
+            data: {
+                rule: duplicateRule ?? null,
+                totalRules: rulesArray?.length ?? 0,
+                note: duplicateRule ? void 0 : 'No E1001 duplicate package rule found in current analysis.'
+            }
+        },
+        similarPackages: {
+            ok: true,
+            data: {
+                similarPackages: similarMatches,
+                totalPackages: packagesArray.length,
+                note: similarMatches.length ? void 0 : 'No similar package groups detected in current analysis.'
+            }
+        },
+        mediaAssets: {
+            ok: true,
+            data: mediaAssets
+        },
+        largeChunks: {
+            ok: true,
+            data: {
+                median,
+                operator,
+                minSizeMB,
+                oversized
+            }
+        }
+    };
+}
+async function optimizeBundle(stepInput, sideEffectsPageNumberInput, sideEffectsPageSizeInput) {
+    const step = stepInput ? parsePositiveInt(stepInput, 'step', {
+        min: 1,
+        max: 2
+    }) : void 0;
+    if (1 === step) {
+        const step1Data = await executeStep1();
+        return {
+            ok: true,
+            data: {
+                step: 1,
+                ...step1Data,
+                note: 'Step 1 completed. Use --step 2 to get side effects modules.'
+            },
+            description: 'Step 1: Basic bundle optimization analysis (duplicate packages, similar packages, media assets, large chunks).'
+        };
+    }
+    if (2 === step) {
+        const pageNumber = parsePositiveInt(sideEffectsPageNumberInput, 'sideEffectsPageNumber', {
+            min: 1
+        }) ?? 1;
+        const pageSize = parsePositiveInt(sideEffectsPageSizeInput, 'sideEffectsPageSize', {
+            min: 1,
+            max: 1000
+        }) ?? 100;
+        const sideEffectsData = await socket_sendRequest(constants_API.GetSideEffects, {
+            pageNumber,
+            pageSize
+        });
+        return {
+            ok: true,
+            data: {
+                step: 2,
+                sideEffectsModules: {
+                    ok: true,
+                    data: sideEffectsData
+                },
+                pagination: {
+                    pageNumber,
+                    pageSize
+                },
+                note: 'Step 2 completed. Side effects modules analysis with pagination.'
+            },
+            description: 'Step 2: Side effects modules analysis (categorized by node_modules and user code, with package statistics).'
+        };
+    }
+    const defaultPageNumber = parsePositiveInt(sideEffectsPageNumberInput, 'sideEffectsPageNumber', {
+        min: 1
+    }) ?? 1;
+    const defaultPageSize = parsePositiveInt(sideEffectsPageSizeInput, 'sideEffectsPageSize', {
+        min: 1,
+        max: 1000
+    }) ?? 100;
+    const [step1Data, sideEffectsData] = await Promise.all([
+        executeStep1(),
+        socket_sendRequest(constants_API.GetSideEffects, {
+            pageNumber: defaultPageNumber,
+            pageSize: defaultPageSize
+        })
+    ]);
+    return {
         ok: true,
         data: {
-            duplicatePackages: {
-                ok: true,
-                data: {
-                    rule: duplicateRule ?? null,
-                    totalRules: rulesArray?.length ?? 0,
-                    note: duplicateRule ? void 0 : 'No E1001 duplicate package rule found in current analysis.'
-                }
-            },
-            similarPackages: {
-                ok: true,
-                data: {
-                    similarPackages: similarMatches,
-                    totalPackages: packagesArray.length,
-                    note: similarMatches.length ? void 0 : 'No similar package groups detected in current analysis.'
-                }
-            },
-            mediaAssets: {
-                ok: true,
-                data: mediaAssets
-            },
-            largeChunks: {
-                ok: true,
-                data: {
-                    median,
-                    operator,
-                    minSizeMB,
-                    oversized
-                }
-            },
+            ...step1Data,
             sideEffectsModules: {
                 ok: true,
                 data: sideEffectsData
@@ -2970,23 +2887,17 @@ function registerServerCommands(program, execute) {
 const command_program = new Command();
 command_program.name('rsdoctor-skill').description('Rsdoctor skill CLI').option('--data-file <path>', 'Path to rsdoctor-data.json file (required)').option('--compact', 'Compact JSON output').showHelpAfterError().showSuggestionAfterError();
 const command_execute = async (handler)=>{
+    const opts = command_program.opts();
+    const compact = true === opts.compact || 'true' === opts.compact;
+    const spacing = compact ? 0 : 2;
     try {
         const result = await handler();
         if (result && 'object' == typeof result && 'ok' in result) {
-            const opts = command_program.opts();
-            const compact = true === opts.compact || 'true' === opts.compact;
-            const spacing = compact ? 0 : 2;
             console.log(JSON.stringify(result, null, spacing));
             if (!result.ok) process.exit(1);
-        } else {
-            const opts = command_program.opts();
-            printResult(result, true === opts.compact || 'true' === opts.compact);
-        }
+        } else printResult(result, compact);
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        const opts = command_program.opts();
-        const compact = true === opts.compact || 'true' === opts.compact;
-        const spacing = compact ? 0 : 2;
         console.log(JSON.stringify({
             ok: false,
             error: message

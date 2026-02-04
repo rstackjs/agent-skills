@@ -33,3 +33,7 @@ npx skills add rstackjs/agent-skills --skill rsbuild-v2-upgrade
 ```
 
 Migrate Rsbuild projects from v1 to v2. Use when a user asks to upgrade Rsbuild, follow the v1-to-v2 guide, update configs/plugins, or validate the upgrade.
+
+## License
+
+MIT licensed.

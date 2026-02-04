@@ -3,6 +3,6 @@ dist
 doc_build
 pnpm-lock.yaml
 
-skills/**/*.js
-skills/**/*.cjs
-skills/**/*.mjs
+skills/**/scripts/*.js
+skills/**/scripts/*.cjs
+skills/**/scripts/*.mjs

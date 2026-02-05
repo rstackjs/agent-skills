@@ -1,8 +1,5 @@
 {
   "extends": "@rstackjs/config/tsconfig",
-  "compilerOptions": {
-    "lib": ["DOM", "ES2015", "ES2017", "ES2020", "ESNext"],
-    "target": "ES2022"
-  },
+  "compilerOptions": {},
   "include": ["src"]
 }

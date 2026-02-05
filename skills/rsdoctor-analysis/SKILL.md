@@ -1,9 +1,9 @@
 ---
-name: rsdoctor-analytics
+name: rsdoctor-analysis
 description: Analyze Rspack/Webpack bundles from local Rsdoctor build data without MCP. Zero-dependency JS CLI for chunk/module/package/loader insights.
 ---
 
-# Rsdoctor Analytics Assistant Skill
+# Rsdoctor Analysis Assistant Skill
 
 You are an AI assistant for Rsdoctor. Through the rsdoctor-skill JS CLI, read the `rsdoctor-data.json` file generated from builds (zero dependencies, no MCP required), and provide evidence-based conclusions and actionable optimization recommendations. Response order: Conclusion → Metrics → Actions → Sources → Gaps.
 

@@ -21,12 +21,12 @@ __webpack_require__.add({
     "node:process" (module) {
         module.exports = __rspack_external_node_process_786449bf;
     },
-    "./node_modules/.pnpm/commander@12.1.0/node_modules/commander/index.js" (__unused_rspack_module, exports, __webpack_require__) {
-        const { Argument } = __webpack_require__("./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/argument.js");
-        const { Command } = __webpack_require__("./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/command.js");
-        const { CommanderError, InvalidArgumentError } = __webpack_require__("./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/error.js");
-        const { Help } = __webpack_require__("./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/help.js");
-        const { Option } = __webpack_require__("./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/option.js");
+    "../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/index.js" (__unused_rspack_module, exports, __webpack_require__) {
+        const { Argument } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/argument.js");
+        const { Command } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/command.js");
+        const { CommanderError, InvalidArgumentError } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/error.js");
+        const { Help } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/help.js");
+        const { Option } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/option.js");
         exports.program = new Command();
         exports.createCommand = (name)=>new Command(name);
         exports.createOption = (flags, description)=>new Option(flags, description);
@@ -39,8 +39,8 @@ __webpack_require__.add({
         exports.InvalidArgumentError = InvalidArgumentError;
         exports.InvalidOptionArgumentError = InvalidArgumentError;
     },
-    "./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/argument.js" (__unused_rspack_module, exports, __webpack_require__) {
-        const { InvalidArgumentError } = __webpack_require__("./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/error.js");
+    "../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/argument.js" (__unused_rspack_module, exports, __webpack_require__) {
+        const { InvalidArgumentError } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/error.js");
         class Argument {
             constructor(name, description){
                 this.description = description || '';
@@ -111,17 +111,17 @@ __webpack_require__.add({
         exports.Argument = Argument;
         exports.humanReadableArgName = humanReadableArgName;
     },
-    "./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/command.js" (__unused_rspack_module, exports, __webpack_require__) {
+    "../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/command.js" (__unused_rspack_module, exports, __webpack_require__) {
         const EventEmitter = __webpack_require__("node:events").EventEmitter;
         const childProcess = __webpack_require__("node:child_process");
         const path = __webpack_require__("node:path");
         const fs = __webpack_require__("node:fs");
         const process1 = __webpack_require__("node:process");
-        const { Argument, humanReadableArgName } = __webpack_require__("./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/argument.js");
-        const { CommanderError } = __webpack_require__("./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/error.js");
-        const { Help } = __webpack_require__("./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/help.js");
-        const { Option, DualOptions } = __webpack_require__("./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/option.js");
-        const { suggestSimilar } = __webpack_require__("./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/suggestSimilar.js");
+        const { Argument, humanReadableArgName } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/argument.js");
+        const { CommanderError } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/error.js");
+        const { Help } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/help.js");
+        const { Option, DualOptions } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/option.js");
+        const { suggestSimilar } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/suggestSimilar.js");
         class Command extends EventEmitter {
             constructor(name){
                 super();
@@ -1192,7 +1192,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         }
         exports.Command = Command;
     },
-    "./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/error.js" (__unused_rspack_module, exports) {
+    "../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/error.js" (__unused_rspack_module, exports) {
         class CommanderError extends Error {
             constructor(exitCode, code, message){
                 super(message);
@@ -1213,8 +1213,8 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports.CommanderError = CommanderError;
         exports.InvalidArgumentError = InvalidArgumentError;
     },
-    "./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/help.js" (__unused_rspack_module, exports, __webpack_require__) {
-        const { humanReadableArgName } = __webpack_require__("./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/argument.js");
+    "../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/help.js" (__unused_rspack_module, exports, __webpack_require__) {
+        const { humanReadableArgName } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/argument.js");
         class Help {
             constructor(){
                 this.helpWidth = void 0;
@@ -1398,8 +1398,8 @@ Expecting one of '${allowedValues.join("', '")}'`);
         }
         exports.Help = Help;
     },
-    "./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/option.js" (__unused_rspack_module, exports, __webpack_require__) {
-        const { InvalidArgumentError } = __webpack_require__("./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/error.js");
+    "../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/option.js" (__unused_rspack_module, exports, __webpack_require__) {
+        const { InvalidArgumentError } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/error.js");
         class Option {
             constructor(flags, description){
                 this.flags = flags;
@@ -1531,7 +1531,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports.Option = Option;
         exports.DualOptions = DualOptions;
     },
-    "./node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/suggestSimilar.js" (__unused_rspack_module, exports) {
+    "../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/suggestSimilar.js" (__unused_rspack_module, exports) {
         const maxDistance = 3;
         function editDistance(a, b) {
             if (Math.abs(a.length - b.length) > maxDistance) return Math.max(a.length, b.length);
@@ -1582,31 +1582,8 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports.suggestSimilar = suggestSimilar;
     }
 });
-const commander = __webpack_require__("./node_modules/.pnpm/commander@12.1.0/node_modules/commander/index.js");
+const commander = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/index.js");
 const { program: esm_program, createCommand: createCommand, createArgument: createArgument, createOption: createOption, CommanderError: CommanderError, InvalidArgumentError: InvalidArgumentError, InvalidOptionArgumentError: InvalidOptionArgumentError, Command: Command, Argument: Argument, Option: Option, Help: Help } = commander;
-function requireArg(value, name) {
-    if (!value) throw new Error(`Missing ${name}.`);
-    return value;
-}
-function parseNumber(value, name) {
-    if (void 0 === value) return;
-    const parsed = Number(value);
-    if (!Number.isFinite(parsed)) throw new Error(`Invalid ${name}: ${value}`);
-    return parsed;
-}
-function parsePositiveInt(value, name, range = {}) {
-    if (void 0 === value) return;
-    const parsed = Number(value);
-    if (!Number.isFinite(parsed) || !Number.isInteger(parsed)) throw new Error(`Invalid ${name}: ${value}`);
-    if (void 0 !== range.min && parsed < range.min) throw new Error(`${name} must be >= ${range.min}.`);
-    if (void 0 !== range.max && parsed > range.max) throw new Error(`${name} must be <= ${range.max}.`);
-    return parsed;
-}
-function printResult(result, compact = false) {
-    if (void 0 === result) return;
-    const spacing = compact ? 0 : 2;
-    console.log(JSON.stringify(result, null, spacing));
-}
 const constants_API = {
     GetChunkGraphAI: '/api/graph/chunks/graph/ai',
     GetChunkByIdAI: '/api/graph/chunk/id/ai',
@@ -1895,7 +1872,7 @@ function getSideEffectsFromJson(data, pageNumber = 1, pageSize = 100) {
         const isNodeModule = modulePath.includes('node_modules');
         if (isNodeModule) {
             nodeModules.push(module);
-            const match = modulePath.match(/node_modules[\/\\](?:\.pnpm[\/\\][^\/\\]+[\/\\]node_modules[\/\\])?([^\/\\]+)/);
+            const match = modulePath.match(/node_modules[/\\](?:\.pnpm[/\\][^/\\]+[/\\]node_modules[/\\])?([^/\\]+)/);
             if (match) {
                 const pkgName = match[1];
                 const stats = packageStats.get(pkgName) || {
@@ -2051,6 +2028,435 @@ const getAssets = async ()=>socket_sendRequest(constants_API.GetAssets, {});
 const getEntrypoints = async ()=>socket_sendRequest(constants_API.GetEntrypoints, {});
 const getBuildConfig = async ()=>socket_sendRequest(constants_API.GetBuildConfig, {});
 const getErrors = async ()=>socket_sendRequest(constants_API.GetErrors, {});
+function requireArg(value, name) {
+    if (!value) throw new Error(`Missing ${name}.`);
+    return value;
+}
+function parseNumber(value, name) {
+    if (void 0 === value) return;
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed)) throw new Error(`Invalid ${name}: ${value}`);
+    return parsed;
+}
+function parsePositiveInt(value, name, range = {}) {
+    if (void 0 === value) return;
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed) || !Number.isInteger(parsed)) throw new Error(`Invalid ${name}: ${value}`);
+    if (void 0 !== range.min && parsed < range.min) throw new Error(`${name} must be >= ${range.min}.`);
+    if (void 0 !== range.max && parsed > range.max) throw new Error(`${name} must be <= ${range.max}.`);
+    return parsed;
+}
+function printResult(result, compact = false) {
+    if (void 0 === result) return;
+    const spacing = compact ? 0 : 2;
+    console.log(JSON.stringify(result, null, spacing));
+}
+const Constants = {
+    JSExtension: '.js',
+    CSSExtension: '.css',
+    HtmlExtension: '.html',
+    ImgExtensions: [
+        '.png',
+        '.jpg',
+        '.jpeg',
+        '.gif',
+        '.svg',
+        '.webp',
+        '.avif'
+    ],
+    MediaExtensions: [
+        '.mp4',
+        '.webm',
+        '.ogg',
+        '.mp3',
+        '.wav',
+        '.flac',
+        '.aac'
+    ],
+    FontExtensions: [
+        '.woff',
+        '.woff2',
+        '.ttf',
+        '.otf',
+        '.eot'
+    ],
+    MapExtensions: [
+        '.js.map',
+        '.css.map'
+    ]
+};
+const extname = (filename)=>{
+    const baseName = filename.split('?')[0];
+    const matches = baseName.match(/\.([0-9a-z]+)(?:[?#]|$)/i);
+    return matches ? `.${matches[1]}` : '';
+};
+const isAssetMatchExtension = (asset, ext)=>asset.path.slice(-ext.length) === ext || extname(asset.path) === ext;
+const isAssetMatchExtensions = (asset, exts)=>Array.isArray(exts) && exts.some((ext)=>isAssetMatchExtension(asset, ext));
+const filterAssetsByExtensions = (assets, exts)=>{
+    if ('string' == typeof exts) return assets.filter((e)=>isAssetMatchExtension(e, exts));
+    if (Array.isArray(exts)) return assets.filter((e)=>isAssetMatchExtensions(e, exts));
+    return assets;
+};
+const filterAssets = (assets, filterOrExtensions)=>{
+    if (!filterOrExtensions) return assets;
+    if ('function' == typeof filterOrExtensions) return assets.filter(filterOrExtensions);
+    return filterAssetsByExtensions(assets, filterOrExtensions);
+};
+const isInitialAsset = (asset, chunks)=>{
+    const assetChunkIds = asset.chunks || [];
+    if (!assetChunkIds.length) return false;
+    const initialSet = new Set((chunks || []).filter((c)=>c.initial).map((c)=>c.id));
+    return assetChunkIds.some((id)=>initialSet.has(Number(id)));
+};
+const getAssetsSizeInfo = (assets, chunks, { withFileContent = false, filterOrExtensions } = {})=>{
+    let filtered = assets.filter((e)=>!isAssetMatchExtensions(e, Constants.MapExtensions));
+    filtered = filterAssets(filtered, filterOrExtensions);
+    return {
+        count: filtered.length,
+        size: filtered.reduce((t, c)=>t + (c.size || 0), 0),
+        files: filtered.map((e)=>({
+                path: e.path,
+                size: e.size || 0,
+                gzipSize: e.gzipSize,
+                initial: isInitialAsset(e, chunks),
+                content: withFileContent ? e.content : void 0
+            }))
+    };
+};
+const getInitialAssetsSizeInfo = (assets, chunks, options = {})=>getAssetsSizeInfo(assets, chunks, {
+        ...options,
+        filterOrExtensions: (asset)=>isInitialAsset(asset, chunks)
+    });
+const diffSize = (bSize, cSize)=>{
+    const isEqual = bSize === cSize;
+    const percent = isEqual ? 0 : 0 === bSize ? 100 : Math.abs(cSize - bSize) / bSize * 100;
+    const state = isEqual ? 'Equal' : bSize > cSize ? 'Down' : 'Up';
+    return {
+        percent,
+        state
+    };
+};
+const diffAssetsByExtensions = (baseline, current, filterOrExtensions, isInitial = false)=>{
+    const { size: bSize, count: bCount } = isInitial ? getInitialAssetsSizeInfo(baseline.assets, baseline.chunks, {
+        filterOrExtensions
+    }) : getAssetsSizeInfo(baseline.assets, baseline.chunks, {
+        filterOrExtensions
+    });
+    const { size: cSize, count: cCount } = isInitial ? getInitialAssetsSizeInfo(current.assets, current.chunks, {
+        filterOrExtensions
+    }) : getAssetsSizeInfo(current.assets, current.chunks, {
+        filterOrExtensions
+    });
+    const { percent, state } = diffSize(bSize, cSize);
+    return {
+        size: {
+            baseline: bSize,
+            current: cSize
+        },
+        count: {
+            baseline: bCount,
+            current: cCount
+        },
+        percent,
+        state
+    };
+};
+const getAssetsDiffResult = (baseline, current)=>({
+        all: {
+            total: diffAssetsByExtensions(baseline, current)
+        },
+        js: {
+            total: diffAssetsByExtensions(baseline, current, Constants.JSExtension),
+            initial: diffAssetsByExtensions(baseline, current, Constants.JSExtension, true)
+        },
+        css: {
+            total: diffAssetsByExtensions(baseline, current, Constants.CSSExtension),
+            initial: diffAssetsByExtensions(baseline, current, Constants.CSSExtension, true)
+        },
+        imgs: {
+            total: diffAssetsByExtensions(baseline, current, Constants.ImgExtensions)
+        },
+        html: {
+            total: diffAssetsByExtensions(baseline, current, Constants.HtmlExtension)
+        },
+        media: {
+            total: diffAssetsByExtensions(baseline, current, Constants.MediaExtensions)
+        },
+        fonts: {
+            total: diffAssetsByExtensions(baseline, current, Constants.FontExtensions)
+        },
+        others: {
+            total: diffAssetsByExtensions(baseline, current, (asset)=>!isAssetMatchExtensions(asset, [
+                    Constants.JSExtension,
+                    Constants.CSSExtension,
+                    Constants.HtmlExtension
+                ].concat(Constants.ImgExtensions, Constants.MediaExtensions, Constants.FontExtensions, Constants.MapExtensions)))
+        }
+    });
+async function listAssets() {
+    const assets = await getAssets();
+    return {
+        ok: true,
+        data: assets,
+        description: 'List all assets with size information.'
+    };
+}
+async function diffAssets(baselineInput, currentInput) {
+    const baselinePath = external_node_path_["default"].resolve(requireArg(baselineInput, 'baseline'));
+    const currentPath = external_node_path_["default"].resolve(requireArg(currentInput, 'current'));
+    const baselineData = loadJsonData(baselinePath);
+    const currentData = loadJsonData(currentPath);
+    const baselineGraph = baselineData?.data?.chunkGraph;
+    const currentGraph = currentData?.data?.chunkGraph;
+    if (!baselineGraph) throw new Error(`Invalid baseline file: ${baselinePath}`);
+    if (!currentGraph) throw new Error(`Invalid current file: ${currentPath}`);
+    const diff = getAssetsDiffResult(baselineGraph, currentGraph);
+    return {
+        ok: true,
+        data: {
+            note: 'Diff compares asset count and size across extensions; initial = entry-loaded assets only.',
+            baseline: baselinePath,
+            current: currentPath,
+            diff
+        },
+        description: 'Diff asset counts and sizes between two rsdoctor-data.json files (baseline vs current).'
+    };
+}
+async function getMediaAssets() {
+    const chunksResult = await getAllChunks(1, Number.MAX_SAFE_INTEGER);
+    const chunksResultTyped = chunksResult;
+    const chunks = Array.isArray(chunksResultTyped) ? chunksResultTyped : chunksResultTyped.items || chunksResult;
+    return {
+        ok: true,
+        data: {
+            guidance: 'Media asset optimization guidance.',
+            chunks
+        },
+        description: 'Media asset optimization guidance.'
+    };
+}
+function registerAssetCommands(program, execute) {
+    const assetProgram = program.command('assets').description('Asset operations');
+    assetProgram.command('list').description('List all assets with size information.').action(function() {
+        return execute(()=>listAssets());
+    });
+    assetProgram.command('diff').description('Diff asset counts and sizes between two rsdoctor-data.json files (baseline vs current).').requiredOption('--baseline <path>', 'Path to baseline rsdoctor-data.json').requiredOption('--current <path>', 'Path to current rsdoctor-data.json').action(function() {
+        const options = this.opts();
+        return execute(()=>diffAssets(options.baseline, options.current));
+    });
+    assetProgram.command('media').description('Media asset optimization guidance.').action(function() {
+        return execute(()=>getMediaAssets());
+    });
+}
+async function getSummary() {
+    const summary = await getBuildSummary();
+    return {
+        ok: true,
+        data: summary,
+        description: 'Get build summary with costs (build time analysis).'
+    };
+}
+async function listEntrypoints() {
+    const entrypoints = await getEntrypoints();
+    return {
+        ok: true,
+        data: entrypoints,
+        description: 'List all entrypoints in the bundle.'
+    };
+}
+async function getConfig() {
+    const config = await getBuildConfig();
+    return {
+        ok: true,
+        data: config,
+        description: 'Get build configuration (rspack/webpack config).'
+    };
+}
+async function executeStep1() {
+    const [rules, packages, chunksResult] = await Promise.all([
+        getRuleInfo(),
+        getPackageInfo(),
+        getAllChunks(1, Number.MAX_SAFE_INTEGER)
+    ]);
+    const chunksResultTyped = chunksResult;
+    const chunks = Array.isArray(chunksResultTyped) ? chunksResultTyped : chunksResultTyped.items || [];
+    const rulesArray = rules;
+    const duplicateRule = rulesArray?.find((rule)=>rule.description?.includes('E1001'));
+    const packagesArray = packages;
+    const similarRules = [
+        [
+            'lodash',
+            'lodash-es',
+            'string_decode'
+        ],
+        [
+            'dayjs',
+            'moment',
+            'date-fns',
+            'js-joda'
+        ],
+        [
+            'antd',
+            'material-ui',
+            'semantic-ui-react',
+            'arco-design'
+        ],
+        [
+            'axios',
+            'node-fetch'
+        ],
+        [
+            'redux',
+            'mobx',
+            'zustand',
+            'recoil',
+            'jotai'
+        ],
+        [
+            'chalk',
+            'colors',
+            'picocolors',
+            'kleur'
+        ],
+        [
+            'fs-extra',
+            'graceful-fs'
+        ]
+    ];
+    const similarMatches = similarRules.map((group)=>{
+        const found = group.filter((pkg)=>packagesArray.some((p)=>p.name.toLowerCase() === pkg.toLowerCase()));
+        return found.length > 1 ? found : null;
+    }).filter((match)=>null !== match);
+    const mediaAssets = {
+        guidance: 'Media asset optimization guidance.',
+        chunks
+    };
+    const chunksArray = chunks;
+    const median = chunksArray.length ? getMedianChunkSize(chunksArray) : 0;
+    const operator = 1.3;
+    const minSizeMB = 1;
+    const minSizeBytes = 1024 * minSizeMB * 1024;
+    const oversized = chunksArray.filter((chunk)=>chunk.size > median * operator && chunk.size >= minSizeBytes);
+    return {
+        duplicatePackages: {
+            ok: true,
+            data: {
+                rule: duplicateRule ?? null,
+                totalRules: rulesArray?.length ?? 0,
+                note: duplicateRule ? void 0 : 'No E1001 duplicate package rule found in current analysis.'
+            }
+        },
+        similarPackages: {
+            ok: true,
+            data: {
+                similarPackages: similarMatches,
+                totalPackages: packagesArray.length,
+                note: similarMatches.length ? void 0 : 'No similar package groups detected in current analysis.'
+            }
+        },
+        mediaAssets: {
+            ok: true,
+            data: mediaAssets
+        },
+        largeChunks: {
+            ok: true,
+            data: {
+                median,
+                operator,
+                minSizeMB,
+                oversized
+            }
+        }
+    };
+}
+async function optimizeBundle(stepInput, sideEffectsPageNumberInput, sideEffectsPageSizeInput) {
+    const step = stepInput ? parsePositiveInt(stepInput, 'step', {
+        min: 1,
+        max: 2
+    }) : void 0;
+    if (1 === step) {
+        const step1Data = await executeStep1();
+        return {
+            ok: true,
+            data: {
+                step: 1,
+                ...step1Data,
+                note: 'Step 1 completed. Use --step 2 to get side effects modules.'
+            },
+            description: 'Step 1: Basic bundle optimization analysis (duplicate packages, similar packages, media assets, large chunks).'
+        };
+    }
+    if (2 === step) {
+        const pageNumber = parsePositiveInt(sideEffectsPageNumberInput, 'sideEffectsPageNumber', {
+            min: 1
+        }) ?? 1;
+        const pageSize = parsePositiveInt(sideEffectsPageSizeInput, 'sideEffectsPageSize', {
+            min: 1,
+            max: 1000
+        }) ?? 100;
+        const sideEffectsData = await socket_sendRequest(constants_API.GetSideEffects, {
+            pageNumber,
+            pageSize
+        });
+        return {
+            ok: true,
+            data: {
+                step: 2,
+                sideEffectsModules: {
+                    ok: true,
+                    data: sideEffectsData
+                },
+                pagination: {
+                    pageNumber,
+                    pageSize
+                },
+                note: 'Step 2 completed. Side effects modules analysis with pagination.'
+            },
+            description: 'Step 2: Side effects modules analysis (categorized by node_modules and user code, with package statistics).'
+        };
+    }
+    const defaultPageNumber = parsePositiveInt(sideEffectsPageNumberInput, 'sideEffectsPageNumber', {
+        min: 1
+    }) ?? 1;
+    const defaultPageSize = parsePositiveInt(sideEffectsPageSizeInput, 'sideEffectsPageSize', {
+        min: 1,
+        max: 1000
+    }) ?? 100;
+    const [step1Data, sideEffectsData] = await Promise.all([
+        executeStep1(),
+        socket_sendRequest(constants_API.GetSideEffects, {
+            pageNumber: defaultPageNumber,
+            pageSize: defaultPageSize
+        })
+    ]);
+    return {
+        ok: true,
+        data: {
+            ...step1Data,
+            sideEffectsModules: {
+                ok: true,
+                data: sideEffectsData
+            }
+        },
+        description: 'Combined bundle optimization inputs: duplicate packages, similar packages, media assets, large chunks, and side effects modules, add give the advice to optimize the bundle.'
+    };
+}
+function registerBuildCommands(program, execute) {
+    const buildProgram = program.command('build').description('Build operations');
+    buildProgram.command('summary').description('Get build summary with costs (build time analysis).').action(function() {
+        return execute(()=>getSummary());
+    });
+    buildProgram.command('entrypoints').description('List all entrypoints in the bundle.').action(function() {
+        return execute(()=>listEntrypoints());
+    });
+    buildProgram.command('config').description('Get build configuration (rspack/webpack config).').action(function() {
+        return execute(()=>getConfig());
+    });
+    buildProgram.command('optimize').description('Combined bundle optimization inputs: duplicate packages, similar packages, media assets, large chunks, and side effects modules. Supports step-by-step execution for better performance.').option('--step <step>', 'Execution step: 1 (basic analysis) or 2 (side effects). If not specified, executes both steps.').option('--side-effects-page-number <pageNumber>', 'Page number for side effects (default: 1, only used in step 2)').option('--side-effects-page-size <pageSize>', 'Page size for side effects (default: 100, max: 1000, only used in step 2)').action(function() {
+        const options = this.opts();
+        return execute(()=>optimizeBundle(options.step, options.sideEffectsPageNumber, options.sideEffectsPageSize));
+    });
+}
 async function listChunks(pageNumberInput, pageSizeInput) {
     const pageNumber = parsePositiveInt(pageNumberInput, 'pageNumber', {
         min: 1
@@ -2110,6 +2516,119 @@ function registerChunkCommands(program, execute) {
     });
     chunkProgram.command('large').description('Find oversized chunks (>30% over median size and >= 1MB) to prioritize splitChunks suggestions.').action(function() {
         return execute(()=>findLargeChunks());
+    });
+}
+async function listErrors() {
+    const errors = await getErrors();
+    return {
+        ok: true,
+        data: errors,
+        description: 'Get all errors and warnings from the build.'
+    };
+}
+async function getErrorsByCode(codeInput) {
+    const errorCode = requireArg(codeInput, 'code');
+    const errors = await getErrors();
+    const filtered = errors.filter((error)=>error.code === errorCode);
+    return {
+        ok: true,
+        data: filtered,
+        description: 'Get errors filtered by error code (e.g., E1001, E1004).'
+    };
+}
+async function getErrorsByLevel(levelInput) {
+    const errorLevel = requireArg(levelInput, 'level');
+    const errors = await getErrors();
+    const filtered = errors.filter((error)=>error.level === errorLevel);
+    return {
+        ok: true,
+        data: filtered,
+        description: 'Get errors filtered by level (error, warn, info).'
+    };
+}
+function registerErrorCommands(program, execute) {
+    const errorProgram = program.command('errors').description('Error operations');
+    errorProgram.command('list').description('Get all errors and warnings from the build.').action(function() {
+        return execute(()=>listErrors());
+    });
+    errorProgram.command('by-code').description('Get errors filtered by error code (e.g., E1001, E1004).').requiredOption('--code <code>', 'Error code').action(function() {
+        const options = this.opts();
+        return execute(()=>getErrorsByCode(options.code));
+    });
+    errorProgram.command('by-level').description('Get errors filtered by level (error, warn, info).').requiredOption('--level <level>', 'Error level (error/warn/info)').action(function() {
+        const options = this.opts();
+        return execute(()=>getErrorsByLevel(options.level));
+    });
+}
+async function getHotFiles(pageNumberInput, pageSizeInput, minCostsInput) {
+    const pageNumber = parsePositiveInt(pageNumberInput, 'pageNumber', {
+        min: 1
+    }) ?? 1;
+    const pageSize = parsePositiveInt(pageSizeInput, 'pageSize', {
+        min: 1,
+        max: 1000
+    }) ?? 100;
+    const minCosts = parseNumber(minCostsInput, 'minCosts');
+    const hotFiles = await getLongLoadersByCosts();
+    let filtered = hotFiles;
+    if (void 0 !== minCosts) filtered = hotFiles.filter((item)=>(item.costs ?? 0) >= minCosts);
+    const total = filtered.length;
+    const totalPages = Math.ceil(total / pageSize);
+    const startIndex = (pageNumber - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginated = filtered.slice(startIndex, endIndex);
+    return {
+        ok: true,
+        data: {
+            total,
+            pageNumber,
+            pageSize,
+            totalPages,
+            minCosts: minCosts ?? null,
+            items: paginated
+        },
+        description: 'Top third slowest loader/file pairs to surface expensive transforms.'
+    };
+}
+async function getDirectories(pageNumberInput, pageSizeInput, minTotalCostsInput) {
+    const pageNumber = parsePositiveInt(pageNumberInput, 'pageNumber', {
+        min: 1
+    }) ?? 1;
+    const pageSize = parsePositiveInt(pageSizeInput, 'pageSize', {
+        min: 1,
+        max: 1000
+    }) ?? 100;
+    const minTotalCosts = parseNumber(minTotalCostsInput, 'minTotalCosts');
+    const directories = await getLoaderTimes();
+    let filtered = directories;
+    if (void 0 !== minTotalCosts) filtered = directories.filter((item)=>(item.totalCosts ?? 0) >= minTotalCosts);
+    const total = filtered.length;
+    const totalPages = Math.ceil(total / pageSize);
+    const startIndex = (pageNumber - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginated = filtered.slice(startIndex, endIndex);
+    return {
+        ok: true,
+        data: {
+            total,
+            pageNumber,
+            pageSize,
+            totalPages,
+            minTotalCosts: minTotalCosts ?? null,
+            items: paginated
+        },
+        description: 'Loader times grouped by directory.'
+    };
+}
+function registerLoaderCommands(program, execute) {
+    const loaderProgram = program.command('loaders').description('Loader operations');
+    loaderProgram.command('hot-files').description('Top third slowest loader/file pairs to surface expensive transforms.').option('--page-number <pageNumber>', 'Page number (default: 1)').option('--page-size <pageSize>', 'Page size (default: 100, max: 1000)').option('--min-costs <minCosts>', 'Minimum costs threshold (filter by minimum costs)').action(function() {
+        const options = this.opts();
+        return execute(()=>getHotFiles(options.pageNumber, options.pageSize, options.minCosts));
+    });
+    loaderProgram.command('directories').description('Loader times grouped by directory.').option('--page-number <pageNumber>', 'Page number (default: 1)').option('--page-size <pageSize>', 'Page size (default: 100, max: 1000)').option('--min-total-costs <minTotalCosts>', 'Minimum total costs threshold (filter by minimum total costs)').action(function() {
+        const options = this.opts();
+        return execute(()=>getDirectories(options.pageNumber, options.pageSize, options.minTotalCosts));
     });
 }
 async function getModuleById(moduleIdInput) {
@@ -2345,525 +2864,6 @@ function registerRuleCommands(program, execute) {
     const ruleProgram = program.command('rules').description('Rule operations');
     ruleProgram.command('list').description('Get rule scan results (overlay alerts).').action(function() {
         return execute(()=>listRules());
-    });
-}
-const Constants = {
-    JSExtension: '.js',
-    CSSExtension: '.css',
-    HtmlExtension: '.html',
-    ImgExtensions: [
-        '.png',
-        '.jpg',
-        '.jpeg',
-        '.gif',
-        '.svg',
-        '.webp',
-        '.avif'
-    ],
-    MediaExtensions: [
-        '.mp4',
-        '.webm',
-        '.ogg',
-        '.mp3',
-        '.wav',
-        '.flac',
-        '.aac'
-    ],
-    FontExtensions: [
-        '.woff',
-        '.woff2',
-        '.ttf',
-        '.otf',
-        '.eot'
-    ],
-    MapExtensions: [
-        '.js.map',
-        '.css.map'
-    ]
-};
-const extname = (filename)=>{
-    const baseName = filename.split('?')[0];
-    const matches = baseName.match(/\.([0-9a-z]+)(?:[\?#]|$)/i);
-    return matches ? `.${matches[1]}` : '';
-};
-const isAssetMatchExtension = (asset, ext)=>asset.path.slice(-ext.length) === ext || extname(asset.path) === ext;
-const isAssetMatchExtensions = (asset, exts)=>Array.isArray(exts) && exts.some((ext)=>isAssetMatchExtension(asset, ext));
-const filterAssetsByExtensions = (assets, exts)=>{
-    if ('string' == typeof exts) return assets.filter((e)=>isAssetMatchExtension(e, exts));
-    if (Array.isArray(exts)) return assets.filter((e)=>isAssetMatchExtensions(e, exts));
-    return assets;
-};
-const filterAssets = (assets, filterOrExtensions)=>{
-    if (!filterOrExtensions) return assets;
-    if ('function' == typeof filterOrExtensions) return assets.filter(filterOrExtensions);
-    return filterAssetsByExtensions(assets, filterOrExtensions);
-};
-const isInitialAsset = (asset, chunks)=>{
-    const assetChunkIds = asset.chunks || [];
-    if (!assetChunkIds.length) return false;
-    const initialSet = new Set((chunks || []).filter((c)=>c.initial).map((c)=>c.id));
-    return assetChunkIds.some((id)=>initialSet.has(Number(id)));
-};
-const getAssetsSizeInfo = (assets, chunks, { withFileContent = false, filterOrExtensions } = {})=>{
-    let filtered = assets.filter((e)=>!isAssetMatchExtensions(e, Constants.MapExtensions));
-    filtered = filterAssets(filtered, filterOrExtensions);
-    return {
-        count: filtered.length,
-        size: filtered.reduce((t, c)=>t + (c.size || 0), 0),
-        files: filtered.map((e)=>({
-                path: e.path,
-                size: e.size || 0,
-                gzipSize: e.gzipSize,
-                initial: isInitialAsset(e, chunks),
-                content: withFileContent ? e.content : void 0
-            }))
-    };
-};
-const getInitialAssetsSizeInfo = (assets, chunks, options = {})=>getAssetsSizeInfo(assets, chunks, {
-        ...options,
-        filterOrExtensions: (asset)=>isInitialAsset(asset, chunks)
-    });
-const diffSize = (bSize, cSize)=>{
-    const isEqual = bSize === cSize;
-    const percent = isEqual ? 0 : 0 === bSize ? 100 : Math.abs(cSize - bSize) / bSize * 100;
-    const state = isEqual ? 'Equal' : bSize > cSize ? 'Down' : 'Up';
-    return {
-        percent,
-        state
-    };
-};
-const diffAssetsByExtensions = (baseline, current, filterOrExtensions, isInitial = false)=>{
-    const { size: bSize, count: bCount } = isInitial ? getInitialAssetsSizeInfo(baseline.assets, baseline.chunks, {
-        filterOrExtensions
-    }) : getAssetsSizeInfo(baseline.assets, baseline.chunks, {
-        filterOrExtensions
-    });
-    const { size: cSize, count: cCount } = isInitial ? getInitialAssetsSizeInfo(current.assets, current.chunks, {
-        filterOrExtensions
-    }) : getAssetsSizeInfo(current.assets, current.chunks, {
-        filterOrExtensions
-    });
-    const { percent, state } = diffSize(bSize, cSize);
-    return {
-        size: {
-            baseline: bSize,
-            current: cSize
-        },
-        count: {
-            baseline: bCount,
-            current: cCount
-        },
-        percent,
-        state
-    };
-};
-const getAssetsDiffResult = (baseline, current)=>({
-        all: {
-            total: diffAssetsByExtensions(baseline, current)
-        },
-        js: {
-            total: diffAssetsByExtensions(baseline, current, Constants.JSExtension),
-            initial: diffAssetsByExtensions(baseline, current, Constants.JSExtension, true)
-        },
-        css: {
-            total: diffAssetsByExtensions(baseline, current, Constants.CSSExtension),
-            initial: diffAssetsByExtensions(baseline, current, Constants.CSSExtension, true)
-        },
-        imgs: {
-            total: diffAssetsByExtensions(baseline, current, Constants.ImgExtensions)
-        },
-        html: {
-            total: diffAssetsByExtensions(baseline, current, Constants.HtmlExtension)
-        },
-        media: {
-            total: diffAssetsByExtensions(baseline, current, Constants.MediaExtensions)
-        },
-        fonts: {
-            total: diffAssetsByExtensions(baseline, current, Constants.FontExtensions)
-        },
-        others: {
-            total: diffAssetsByExtensions(baseline, current, (asset)=>!isAssetMatchExtensions(asset, [
-                    Constants.JSExtension,
-                    Constants.CSSExtension,
-                    Constants.HtmlExtension
-                ].concat(Constants.ImgExtensions, Constants.MediaExtensions, Constants.FontExtensions, Constants.MapExtensions)))
-        }
-    });
-async function listAssets() {
-    const assets = await getAssets();
-    return {
-        ok: true,
-        data: assets,
-        description: 'List all assets with size information.'
-    };
-}
-async function diffAssets(baselineInput, currentInput) {
-    const baselinePath = external_node_path_["default"].resolve(requireArg(baselineInput, 'baseline'));
-    const currentPath = external_node_path_["default"].resolve(requireArg(currentInput, 'current'));
-    const baselineData = loadJsonData(baselinePath);
-    const currentData = loadJsonData(currentPath);
-    const baselineGraph = baselineData?.data?.chunkGraph;
-    const currentGraph = currentData?.data?.chunkGraph;
-    if (!baselineGraph) throw new Error(`Invalid baseline file: ${baselinePath}`);
-    if (!currentGraph) throw new Error(`Invalid current file: ${currentPath}`);
-    const diff = getAssetsDiffResult(baselineGraph, currentGraph);
-    return {
-        ok: true,
-        data: {
-            note: 'Diff compares asset count and size across extensions; initial = entry-loaded assets only.',
-            baseline: baselinePath,
-            current: currentPath,
-            diff
-        },
-        description: 'Diff asset counts and sizes between two rsdoctor-data.json files (baseline vs current).'
-    };
-}
-async function getMediaAssets() {
-    const chunksResult = await getAllChunks(1, Number.MAX_SAFE_INTEGER);
-    const chunksResultTyped = chunksResult;
-    const chunks = Array.isArray(chunksResultTyped) ? chunksResultTyped : chunksResultTyped.items || chunksResult;
-    return {
-        ok: true,
-        data: {
-            guidance: 'Media asset optimization guidance.',
-            chunks
-        },
-        description: 'Media asset optimization guidance.'
-    };
-}
-function registerAssetCommands(program, execute) {
-    const assetProgram = program.command('assets').description('Asset operations');
-    assetProgram.command('list').description('List all assets with size information.').action(function() {
-        return execute(()=>listAssets());
-    });
-    assetProgram.command('diff').description('Diff asset counts and sizes between two rsdoctor-data.json files (baseline vs current).').requiredOption('--baseline <path>', 'Path to baseline rsdoctor-data.json').requiredOption('--current <path>', 'Path to current rsdoctor-data.json').action(function() {
-        const options = this.opts();
-        return execute(()=>diffAssets(options.baseline, options.current));
-    });
-    assetProgram.command('media').description('Media asset optimization guidance.').action(function() {
-        return execute(()=>getMediaAssets());
-    });
-}
-async function getHotFiles(pageNumberInput, pageSizeInput, minCostsInput) {
-    const pageNumber = parsePositiveInt(pageNumberInput, 'pageNumber', {
-        min: 1
-    }) ?? 1;
-    const pageSize = parsePositiveInt(pageSizeInput, 'pageSize', {
-        min: 1,
-        max: 1000
-    }) ?? 100;
-    const minCosts = parseNumber(minCostsInput, 'minCosts');
-    const hotFiles = await getLongLoadersByCosts();
-    let filtered = hotFiles;
-    if (void 0 !== minCosts) filtered = hotFiles.filter((item)=>(item.costs ?? 0) >= minCosts);
-    const total = filtered.length;
-    const totalPages = Math.ceil(total / pageSize);
-    const startIndex = (pageNumber - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    const paginated = filtered.slice(startIndex, endIndex);
-    return {
-        ok: true,
-        data: {
-            total,
-            pageNumber,
-            pageSize,
-            totalPages,
-            minCosts: minCosts ?? null,
-            items: paginated
-        },
-        description: 'Top third slowest loader/file pairs to surface expensive transforms.'
-    };
-}
-async function getDirectories(pageNumberInput, pageSizeInput, minTotalCostsInput) {
-    const pageNumber = parsePositiveInt(pageNumberInput, 'pageNumber', {
-        min: 1
-    }) ?? 1;
-    const pageSize = parsePositiveInt(pageSizeInput, 'pageSize', {
-        min: 1,
-        max: 1000
-    }) ?? 100;
-    const minTotalCosts = parseNumber(minTotalCostsInput, 'minTotalCosts');
-    const directories = await getLoaderTimes();
-    let filtered = directories;
-    if (void 0 !== minTotalCosts) filtered = directories.filter((item)=>(item.totalCosts ?? 0) >= minTotalCosts);
-    const total = filtered.length;
-    const totalPages = Math.ceil(total / pageSize);
-    const startIndex = (pageNumber - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    const paginated = filtered.slice(startIndex, endIndex);
-    return {
-        ok: true,
-        data: {
-            total,
-            pageNumber,
-            pageSize,
-            totalPages,
-            minTotalCosts: minTotalCosts ?? null,
-            items: paginated
-        },
-        description: 'Loader times grouped by directory.'
-    };
-}
-function registerLoaderCommands(program, execute) {
-    const loaderProgram = program.command('loaders').description('Loader operations');
-    loaderProgram.command('hot-files').description('Top third slowest loader/file pairs to surface expensive transforms.').option('--page-number <pageNumber>', 'Page number (default: 1)').option('--page-size <pageSize>', 'Page size (default: 100, max: 1000)').option('--min-costs <minCosts>', 'Minimum costs threshold (filter by minimum costs)').action(function() {
-        const options = this.opts();
-        return execute(()=>getHotFiles(options.pageNumber, options.pageSize, options.minCosts));
-    });
-    loaderProgram.command('directories').description('Loader times grouped by directory.').option('--page-number <pageNumber>', 'Page number (default: 1)').option('--page-size <pageSize>', 'Page size (default: 100, max: 1000)').option('--min-total-costs <minTotalCosts>', 'Minimum total costs threshold (filter by minimum total costs)').action(function() {
-        const options = this.opts();
-        return execute(()=>getDirectories(options.pageNumber, options.pageSize, options.minTotalCosts));
-    });
-}
-async function getSummary() {
-    const summary = await getBuildSummary();
-    return {
-        ok: true,
-        data: summary,
-        description: 'Get build summary with costs (build time analysis).'
-    };
-}
-async function listEntrypoints() {
-    const entrypoints = await getEntrypoints();
-    return {
-        ok: true,
-        data: entrypoints,
-        description: 'List all entrypoints in the bundle.'
-    };
-}
-async function getConfig() {
-    const config = await getBuildConfig();
-    return {
-        ok: true,
-        data: config,
-        description: 'Get build configuration (rspack/webpack config).'
-    };
-}
-async function executeStep1() {
-    const [rules, packages, chunksResult] = await Promise.all([
-        getRuleInfo(),
-        getPackageInfo(),
-        getAllChunks(1, Number.MAX_SAFE_INTEGER)
-    ]);
-    const chunksResultTyped = chunksResult;
-    const chunks = Array.isArray(chunksResultTyped) ? chunksResultTyped : chunksResultTyped.items || [];
-    const rulesArray = rules;
-    const duplicateRule = rulesArray?.find((rule)=>rule.description?.includes('E1001'));
-    const packagesArray = packages;
-    const similarRules = [
-        [
-            'lodash',
-            'lodash-es',
-            'string_decode'
-        ],
-        [
-            'dayjs',
-            'moment',
-            'date-fns',
-            'js-joda'
-        ],
-        [
-            'antd',
-            'material-ui',
-            'semantic-ui-react',
-            'arco-design'
-        ],
-        [
-            'axios',
-            'node-fetch'
-        ],
-        [
-            'redux',
-            'mobx',
-            'zustand',
-            'recoil',
-            'jotai'
-        ],
-        [
-            'chalk',
-            'colors',
-            'picocolors',
-            'kleur'
-        ],
-        [
-            'fs-extra',
-            'graceful-fs'
-        ]
-    ];
-    const similarMatches = similarRules.map((group)=>{
-        const found = group.filter((pkg)=>packagesArray.some((p)=>p.name.toLowerCase() === pkg.toLowerCase()));
-        return found.length > 1 ? found : null;
-    }).filter((match)=>null !== match);
-    const mediaAssets = {
-        guidance: 'Media asset optimization guidance.',
-        chunks
-    };
-    const chunksArray = chunks;
-    const median = chunksArray.length ? getMedianChunkSize(chunksArray) : 0;
-    const operator = 1.3;
-    const minSizeMB = 1;
-    const minSizeBytes = 1024 * minSizeMB * 1024;
-    const oversized = chunksArray.filter((chunk)=>chunk.size > median * operator && chunk.size >= minSizeBytes);
-    return {
-        duplicatePackages: {
-            ok: true,
-            data: {
-                rule: duplicateRule ?? null,
-                totalRules: rulesArray?.length ?? 0,
-                note: duplicateRule ? void 0 : 'No E1001 duplicate package rule found in current analysis.'
-            }
-        },
-        similarPackages: {
-            ok: true,
-            data: {
-                similarPackages: similarMatches,
-                totalPackages: packagesArray.length,
-                note: similarMatches.length ? void 0 : 'No similar package groups detected in current analysis.'
-            }
-        },
-        mediaAssets: {
-            ok: true,
-            data: mediaAssets
-        },
-        largeChunks: {
-            ok: true,
-            data: {
-                median,
-                operator,
-                minSizeMB,
-                oversized
-            }
-        }
-    };
-}
-async function optimizeBundle(stepInput, sideEffectsPageNumberInput, sideEffectsPageSizeInput) {
-    const step = stepInput ? parsePositiveInt(stepInput, 'step', {
-        min: 1,
-        max: 2
-    }) : void 0;
-    if (1 === step) {
-        const step1Data = await executeStep1();
-        return {
-            ok: true,
-            data: {
-                step: 1,
-                ...step1Data,
-                note: 'Step 1 completed. Use --step 2 to get side effects modules.'
-            },
-            description: 'Step 1: Basic bundle optimization analysis (duplicate packages, similar packages, media assets, large chunks).'
-        };
-    }
-    if (2 === step) {
-        const pageNumber = parsePositiveInt(sideEffectsPageNumberInput, 'sideEffectsPageNumber', {
-            min: 1
-        }) ?? 1;
-        const pageSize = parsePositiveInt(sideEffectsPageSizeInput, 'sideEffectsPageSize', {
-            min: 1,
-            max: 1000
-        }) ?? 100;
-        const sideEffectsData = await socket_sendRequest(constants_API.GetSideEffects, {
-            pageNumber,
-            pageSize
-        });
-        return {
-            ok: true,
-            data: {
-                step: 2,
-                sideEffectsModules: {
-                    ok: true,
-                    data: sideEffectsData
-                },
-                pagination: {
-                    pageNumber,
-                    pageSize
-                },
-                note: 'Step 2 completed. Side effects modules analysis with pagination.'
-            },
-            description: 'Step 2: Side effects modules analysis (categorized by node_modules and user code, with package statistics).'
-        };
-    }
-    const defaultPageNumber = parsePositiveInt(sideEffectsPageNumberInput, 'sideEffectsPageNumber', {
-        min: 1
-    }) ?? 1;
-    const defaultPageSize = parsePositiveInt(sideEffectsPageSizeInput, 'sideEffectsPageSize', {
-        min: 1,
-        max: 1000
-    }) ?? 100;
-    const [step1Data, sideEffectsData] = await Promise.all([
-        executeStep1(),
-        socket_sendRequest(constants_API.GetSideEffects, {
-            pageNumber: defaultPageNumber,
-            pageSize: defaultPageSize
-        })
-    ]);
-    return {
-        ok: true,
-        data: {
-            ...step1Data,
-            sideEffectsModules: {
-                ok: true,
-                data: sideEffectsData
-            }
-        },
-        description: 'Combined bundle optimization inputs: duplicate packages, similar packages, media assets, large chunks, and side effects modules, add give the advice to optimize the bundle.'
-    };
-}
-function registerBuildCommands(program, execute) {
-    const buildProgram = program.command('build').description('Build operations');
-    buildProgram.command('summary').description('Get build summary with costs (build time analysis).').action(function() {
-        return execute(()=>getSummary());
-    });
-    buildProgram.command('entrypoints').description('List all entrypoints in the bundle.').action(function() {
-        return execute(()=>listEntrypoints());
-    });
-    buildProgram.command('config').description('Get build configuration (rspack/webpack config).').action(function() {
-        return execute(()=>getConfig());
-    });
-    buildProgram.command('optimize').description('Combined bundle optimization inputs: duplicate packages, similar packages, media assets, large chunks, and side effects modules. Supports step-by-step execution for better performance.').option('--step <step>', 'Execution step: 1 (basic analysis) or 2 (side effects). If not specified, executes both steps.').option('--side-effects-page-number <pageNumber>', 'Page number for side effects (default: 1, only used in step 2)').option('--side-effects-page-size <pageSize>', 'Page size for side effects (default: 100, max: 1000, only used in step 2)').action(function() {
-        const options = this.opts();
-        return execute(()=>optimizeBundle(options.step, options.sideEffectsPageNumber, options.sideEffectsPageSize));
-    });
-}
-async function listErrors() {
-    const errors = await getErrors();
-    return {
-        ok: true,
-        data: errors,
-        description: 'Get all errors and warnings from the build.'
-    };
-}
-async function getErrorsByCode(codeInput) {
-    const errorCode = requireArg(codeInput, 'code');
-    const errors = await getErrors();
-    const filtered = errors.filter((error)=>error.code === errorCode);
-    return {
-        ok: true,
-        data: filtered,
-        description: 'Get errors filtered by error code (e.g., E1001, E1004).'
-    };
-}
-async function getErrorsByLevel(levelInput) {
-    const errorLevel = requireArg(levelInput, 'level');
-    const errors = await getErrors();
-    const filtered = errors.filter((error)=>error.level === errorLevel);
-    return {
-        ok: true,
-        data: filtered,
-        description: 'Get errors filtered by level (error, warn, info).'
-    };
-}
-function registerErrorCommands(program, execute) {
-    const errorProgram = program.command('errors').description('Error operations');
-    errorProgram.command('list').description('Get all errors and warnings from the build.').action(function() {
-        return execute(()=>listErrors());
-    });
-    errorProgram.command('by-code').description('Get errors filtered by error code (e.g., E1001, E1004).').requiredOption('--code <code>', 'Error code').action(function() {
-        const options = this.opts();
-        return execute(()=>getErrorsByCode(options.code));
-    });
-    errorProgram.command('by-level').description('Get errors filtered by level (error, warn, info).').requiredOption('--level <level>', 'Error level (error/warn/info)').action(function() {
-        const options = this.opts();
-        return execute(()=>getErrorsByLevel(options.level));
     });
 }
 async function server_getPort() {

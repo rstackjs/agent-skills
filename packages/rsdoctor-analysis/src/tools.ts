@@ -1,11 +1,11 @@
 import { API } from './constants';
+import { getDataFileFromArgs } from './datasource';
 import { sendRequest } from './socket';
 import { getTopThirdLoadersByCosts } from './utils';
-import { getDataFileFromArgs } from './datasource';
 
 export const getAllChunks = async (
   pageNumber?: number,
-  pageSize?: number
+  pageSize?: number,
 ): Promise<unknown> => {
   const params: Record<string, unknown> = {};
   if (pageNumber !== undefined) {
@@ -22,7 +22,13 @@ export const getPackageInfo = async (): Promise<unknown> => {
 };
 
 export const getPackageInfoFiltered = async (): Promise<unknown> => {
-  const info = (await getPackageInfo()) as Array<{ id: number; name: string; version: string; size: unknown; duplicates: unknown }>;
+  const info = (await getPackageInfo()) as Array<{
+    id: number;
+    name: string;
+    version: string;
+    size: unknown;
+    duplicates: unknown;
+  }>;
   return info.map((pkg) => ({
     id: pkg.id,
     name: pkg.name,
@@ -32,14 +38,16 @@ export const getPackageInfoFiltered = async (): Promise<unknown> => {
   }));
 };
 
-export const getPackageInfoByPackageName = async (packageName: string): Promise<unknown> => {
+export const getPackageInfoByPackageName = async (
+  packageName: string,
+): Promise<unknown> => {
   const info = (await getPackageInfo()) as Array<{ name: string }>;
   return info.filter((pkg) => pkg.name === packageName);
 };
 
 export const getPackageDependency = async (
   pageNumber?: number,
-  pageSize?: number
+  pageSize?: number,
 ): Promise<unknown> => {
   const params: Record<string, unknown> = {};
   if (pageNumber !== undefined) {
@@ -60,7 +68,9 @@ export const getLoaderTimeForAllFiles = async (): Promise<unknown> => {
 };
 
 export const getLongLoadersByCosts = async (): Promise<unknown> => {
-  return getTopThirdLoadersByCosts((await getLoaderTimeForAllFiles()) as Array<{ costs: number }>);
+  return getTopThirdLoadersByCosts(
+    (await getLoaderTimeForAllFiles()) as Array<{ costs: number }>,
+  );
 };
 
 export const getLoaderTimes = async (): Promise<unknown> => {
@@ -101,7 +111,7 @@ export const getModuleExports = async (): Promise<unknown> => {
 
 export const getSideEffects = async (
   pageNumber?: number,
-  pageSize?: number
+  pageSize?: number,
 ): Promise<unknown> => {
   const params: Record<string, unknown> = {};
   if (pageNumber !== undefined) {

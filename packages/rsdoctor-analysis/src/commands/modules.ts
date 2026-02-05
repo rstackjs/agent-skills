@@ -1,17 +1,17 @@
 import type { Command } from 'commander';
-import { requireArg, parsePositiveInt } from '../utils/cli-utils';
-import { sendRequest } from '../socket';
 import { API } from '../constants';
+import { sendRequest } from '../socket';
+import { parsePositiveInt, requireArg } from '../utils/cli-utils';
 
-interface CommandExecutor {
-  (handler: () => Promise<unknown>): Promise<void>;
-}
+type CommandExecutor = (handler: () => Promise<unknown>) => Promise<void>;
 
 interface ModuleMatch {
   id: number;
 }
 
-export async function getModuleById(moduleIdInput: string | undefined): Promise<{ ok: boolean; data: unknown; description: string }> {
+export async function getModuleById(
+  moduleIdInput: string | undefined,
+): Promise<{ ok: boolean; data: unknown; description: string }> {
   const moduleId = requireArg(moduleIdInput, 'id');
   const module = await sendRequest(API.GetModuleDetails, { moduleId });
   return {
@@ -21,9 +21,13 @@ export async function getModuleById(moduleIdInput: string | undefined): Promise<
   };
 }
 
-export async function getModuleByPath(modulePathInput: string | undefined): Promise<{ ok: boolean; data: unknown; description: string }> {
+export async function getModuleByPath(
+  modulePathInput: string | undefined,
+): Promise<{ ok: boolean; data: unknown; description: string }> {
   const modulePath = requireArg(modulePathInput, 'path');
-  const matches = ((await sendRequest(API.GetModuleByName, { moduleName: modulePath })) || []) as ModuleMatch[];
+  const matches = ((await sendRequest(API.GetModuleByName, {
+    moduleName: modulePath,
+  })) || []) as ModuleMatch[];
 
   if (!matches.length) {
     throw new Error(`No module found for "${modulePath}"`);
@@ -36,19 +40,29 @@ export async function getModuleByPath(modulePathInput: string | undefined): Prom
         options: matches,
         note: 'Multiple modules matched. Re-run with modules:by-id using the chosen id.',
       },
-      description: 'Get module detail by name or path; if multiple match, list them.',
+      description:
+        'Get module detail by name or path; if multiple match, list them.',
     };
   }
 
-  const moduleInfo = await sendRequest(API.GetModuleDetails, { moduleId: matches[0].id });
+  const moduleInfo = await sendRequest(API.GetModuleDetails, {
+    moduleId: matches[0].id,
+  });
   return {
     ok: true,
     data: { match: 'single', module: moduleInfo },
-    description: 'Get module detail by name or path; if multiple match, list them.',
+    description:
+      'Get module detail by name or path; if multiple match, list them.',
   };
 }
 
-export async function getModuleIssuerPath(moduleIdInput: string | undefined): Promise<{ ok: boolean; data: { moduleId: string; issuerPath: unknown }; description: string }> {
+export async function getModuleIssuerPath(
+  moduleIdInput: string | undefined,
+): Promise<{
+  ok: boolean;
+  data: { moduleId: string; issuerPath: unknown };
+  description: string;
+}> {
   const moduleId = requireArg(moduleIdInput, 'id');
   const issuerPath = await sendRequest(API.GetModuleIssuerPath, { moduleId });
   return {
@@ -58,7 +72,11 @@ export async function getModuleIssuerPath(moduleIdInput: string | undefined): Pr
   };
 }
 
-export async function getModuleExports(): Promise<{ ok: boolean; data: unknown; description: string }> {
+export async function getModuleExports(): Promise<{
+  ok: boolean;
+  data: unknown;
+  description: string;
+}> {
   const exports = await sendRequest(API.GetModuleExports, {});
   return {
     ok: true,
@@ -69,21 +87,32 @@ export async function getModuleExports(): Promise<{ ok: boolean; data: unknown; 
 
 export async function getSideEffects(
   pageNumberInput?: string,
-  pageSizeInput?: string
+  pageSizeInput?: string,
 ): Promise<{ ok: boolean; data: unknown; description: string }> {
-  const pageNumber = parsePositiveInt(pageNumberInput, 'pageNumber', { min: 1 }) ?? 1;
-  const pageSize = parsePositiveInt(pageSizeInput, 'pageSize', { min: 1, max: 1000 }) ?? 100;
-  
-  const sideEffects = await sendRequest(API.GetSideEffects, { pageNumber, pageSize });
+  const pageNumber =
+    parsePositiveInt(pageNumberInput, 'pageNumber', { min: 1 }) ?? 1;
+  const pageSize =
+    parsePositiveInt(pageSizeInput, 'pageSize', { min: 1, max: 1000 }) ?? 100;
+
+  const sideEffects = await sendRequest(API.GetSideEffects, {
+    pageNumber,
+    pageSize,
+  });
   return {
     ok: true,
     data: sideEffects,
-    description: 'Get modules with side effects based on bailoutReason from rsdoctor-data.json. bailoutReason indicates why modules cannot be tree-shaken (e.g., "side effects", "dynamic import", "unknown exports"). Results are categorized by node_modules and user code, with package statistics.',
+    description:
+      'Get modules with side effects based on bailoutReason from rsdoctor-data.json. bailoutReason indicates why modules cannot be tree-shaken (e.g., "side effects", "dynamic import", "unknown exports"). Results are categorized by node_modules and user code, with package statistics.',
   };
 }
 
-export function registerModuleCommands(program: Command, execute: CommandExecutor): void {
-  const moduleProgram = program.command('modules').description('Module operations');
+export function registerModuleCommands(
+  program: Command,
+  execute: CommandExecutor,
+): void {
+  const moduleProgram = program
+    .command('modules')
+    .description('Module operations');
 
   moduleProgram
     .command('by-id')
@@ -96,7 +125,9 @@ export function registerModuleCommands(program: Command, execute: CommandExecuto
 
   moduleProgram
     .command('by-path')
-    .description('Get module detail by name or path; if multiple match, list them.')
+    .description(
+      'Get module detail by name or path; if multiple match, list them.',
+    )
     .requiredOption('--path <path>', 'Module name or path')
     .action(function (this: Command) {
       const options = this.opts<{ path: string }>();
@@ -121,11 +152,15 @@ export function registerModuleCommands(program: Command, execute: CommandExecuto
 
   moduleProgram
     .command('side-effects')
-    .description('Get modules with side effects based on bailoutReason from rsdoctor-data.json, categorized by node_modules and user code, with package statistics. bailoutReason indicates why modules cannot be tree-shaken (e.g., "side effects", "dynamic import", "unknown exports").')
+    .description(
+      'Get modules with side effects based on bailoutReason from rsdoctor-data.json, categorized by node_modules and user code, with package statistics. bailoutReason indicates why modules cannot be tree-shaken (e.g., "side effects", "dynamic import", "unknown exports").',
+    )
     .option('--page-number <pageNumber>', 'Page number (default: 1)')
     .option('--page-size <pageSize>', 'Page size (default: 100, max: 1000)')
     .action(function (this: Command) {
       const options = this.opts<{ pageNumber?: string; pageSize?: string }>();
-      return execute(() => getSideEffects(options.pageNumber, options.pageSize));
+      return execute(() =>
+        getSideEffects(options.pageNumber, options.pageSize),
+      );
     });
 }

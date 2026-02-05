@@ -1,15 +1,15 @@
 import { Command } from 'commander';
-import { printResult } from './utils/cli-utils';
+import { registerAssetCommands } from './commands/assets';
+import { registerBuildCommands } from './commands/build';
 import { registerChunkCommands } from './commands/chunks';
+import { registerErrorCommands } from './commands/errors';
+import { registerLoaderCommands } from './commands/loaders';
 import { registerModuleCommands } from './commands/modules';
 import { registerPackageCommands } from './commands/packages';
 import { registerRuleCommands } from './commands/rules';
-import { registerAssetCommands } from './commands/assets';
-import { registerLoaderCommands } from './commands/loaders';
-import { registerBuildCommands } from './commands/build';
-import { registerErrorCommands } from './commands/errors';
 import { registerServerCommands } from './commands/server';
 import { closeAllSockets } from './socket';
+import { printResult } from './utils/cli-utils';
 
 export const program = new Command();
 program
@@ -20,7 +20,9 @@ program
   .showHelpAfterError()
   .showSuggestionAfterError();
 
-export const execute = async (handler: () => Promise<unknown>): Promise<void> => {
+export const execute = async (
+  handler: () => Promise<unknown>,
+): Promise<void> => {
   // Parse compact option once at the beginning
   const opts = program.opts<{ compact?: boolean | string }>();
   const compact = opts.compact === true || opts.compact === 'true';
@@ -69,7 +71,7 @@ export async function run(): Promise<void> {
     program.help({ error: true });
   }
   await program.parseAsync(process.argv);
-  
+
   // Cleanup
   closeAllSockets();
 }

@@ -7,22 +7,35 @@ export function requireArg(value: string | undefined, name: string): string {
 
 export function parseBoolean(
   value: string | undefined,
-  fallback?: boolean
+  fallback?: boolean,
 ): boolean | undefined {
   if (value === undefined) {
     return fallback;
   }
   const normalized = String(value).trim().toLowerCase();
-  if (normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'y') {
+  if (
+    normalized === 'true' ||
+    normalized === '1' ||
+    normalized === 'yes' ||
+    normalized === 'y'
+  ) {
     return true;
   }
-  if (normalized === 'false' || normalized === '0' || normalized === 'no' || normalized === 'n') {
+  if (
+    normalized === 'false' ||
+    normalized === '0' ||
+    normalized === 'no' ||
+    normalized === 'n'
+  ) {
     return false;
   }
   throw new Error(`Invalid boolean value: ${value}`);
 }
 
-export function parseNumber(value: string | undefined, name: string): number | undefined {
+export function parseNumber(
+  value: string | undefined,
+  name: string,
+): number | undefined {
   if (value === undefined) {
     return undefined;
   }
@@ -36,7 +49,7 @@ export function parseNumber(value: string | undefined, name: string): number | u
 export function parsePositiveInt(
   value: string | undefined,
   name: string,
-  range: { min?: number; max?: number } = {}
+  range: { min?: number; max?: number } = {},
 ): number | undefined {
   if (value === undefined) {
     return undefined;

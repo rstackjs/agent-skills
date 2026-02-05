@@ -1,11 +1,13 @@
 import type { Command } from 'commander';
 import { getDataFileFromArgs } from '../datasource';
 
-interface CommandExecutor {
-  (handler: () => Promise<unknown>): Promise<void>;
-}
+type CommandExecutor = (handler: () => Promise<unknown>) => Promise<void>;
 
-export async function getPort(): Promise<{ ok: boolean; data: { mode: string; dataFile: string | null; note: string }; description: string }> {
+export async function getPort(): Promise<{
+  ok: boolean;
+  data: { mode: string; dataFile: string | null; note: string };
+  description: string;
+}> {
   const filePath = getDataFileFromArgs();
   return {
     ok: true,
@@ -18,8 +20,13 @@ export async function getPort(): Promise<{ ok: boolean; data: { mode: string; da
   };
 }
 
-export function registerServerCommands(program: Command, execute: CommandExecutor): void {
-  const serverProgram = program.command('server').description('Server operations');
+export function registerServerCommands(
+  program: Command,
+  execute: CommandExecutor,
+): void {
+  const serverProgram = program
+    .command('server')
+    .description('Server operations');
 
   serverProgram
     .command('port')

@@ -60,8 +60,18 @@ interface SideEffectModule {
 interface RsdoctorData {
   data?: {
     chunkGraph?: {
-      chunks?: Array<{ id: number | string; name?: string; size?: number; modules?: unknown[] }>;
-      assets?: Array<{ path?: string; name?: string; size?: number; chunks?: unknown[] }>;
+      chunks?: Array<{
+        id: number | string;
+        name?: string;
+        size?: number;
+        modules?: unknown[];
+      }>;
+      assets?: Array<{
+        path?: string;
+        name?: string;
+        size?: number;
+        chunks?: unknown[];
+      }>;
       entrypoints?: unknown[];
     };
     moduleGraph?: {
@@ -74,7 +84,14 @@ interface RsdoctorData {
       dependencies?: unknown[];
     };
     errors?: Error[];
-    loader?: unknown[] | { chartData?: unknown[]; data?: unknown[]; directories?: unknown[]; directoriesData?: unknown[] };
+    loader?:
+      | unknown[]
+      | {
+          chartData?: unknown[];
+          data?: unknown[];
+          directories?: unknown[];
+          directoriesData?: unknown[];
+        };
     summary?: {
       costs?: Array<{ costs?: number }>;
     };
@@ -134,7 +151,7 @@ export function isJsonMode(): boolean {
 function getChunksFromJson(
   data: RsdoctorData,
   pageNumber: number = 1,
-  pageSize: number = 100
+  pageSize: number = 100,
 ): {
   total: number;
   pageNumber: number;
@@ -201,12 +218,18 @@ function getChunksFromJson(
 /**
  * Get specific chunk from JSON data by id
  */
-function getChunkByIdFromJson(data: RsdoctorData, chunkId: string | number): Chunk | undefined {
+function getChunkByIdFromJson(
+  data: RsdoctorData,
+  chunkId: string | number,
+): Chunk | undefined {
   const chunksResult = getChunksFromJson(data, 1, Number.MAX_SAFE_INTEGER);
   const chunks = chunksResult.items;
   // chunkId may be string or number, need to handle both
   const targetId = typeof chunkId === 'string' ? Number(chunkId) : chunkId;
-  return chunks.find((chunk: Chunk) => chunk.id === targetId || String(chunk.id) === String(chunkId));
+  return chunks.find(
+    (chunk: Chunk) =>
+      chunk.id === targetId || String(chunk.id) === String(chunkId),
+  );
 }
 
 /**
@@ -237,7 +260,10 @@ function getModulesFromJson(data: RsdoctorData): Module[] {
 /**
  * Find modules by path from JSON data
  */
-function getModulesByPathFromJson(data: RsdoctorData, modulePath: string): Array<{ id: number; path: string; name: string; webpackId?: string }> {
+function getModulesByPathFromJson(
+  data: RsdoctorData,
+  modulePath: string,
+): Array<{ id: number; path: string; name: string; webpackId?: string }> {
   const modules = getModulesFromJson(data);
   const lowerPath = modulePath.toLowerCase();
   return modules
@@ -258,7 +284,10 @@ function getModulesByPathFromJson(data: RsdoctorData, modulePath: string): Array
 /**
  * Get module by id from JSON data
  */
-function getModuleByIdFromJson(data: RsdoctorData, moduleId: string): Module | undefined {
+function getModuleByIdFromJson(
+  data: RsdoctorData,
+  moduleId: string,
+): Module | undefined {
   const modules = getModulesFromJson(data);
   return modules.find((module) => module.id === Number(moduleId));
 }
@@ -266,7 +295,10 @@ function getModuleByIdFromJson(data: RsdoctorData, moduleId: string): Module | u
 /**
  * Get module issuer path from JSON data
  */
-function getModuleIssuerPathFromJson(data: RsdoctorData, moduleId: string): Array<{ id: number; path: string; name: string }> {
+function getModuleIssuerPathFromJson(
+  data: RsdoctorData,
+  moduleId: string,
+): Array<{ id: number; path: string; name: string }> {
   const moduleGraph = data?.data?.moduleGraph;
   if (!moduleGraph) return [];
 
@@ -330,7 +362,7 @@ function getPackagesFromJson(data: RsdoctorData): Package[] {
 function getPackageDependenciesFromJson(
   data: RsdoctorData,
   pageNumber: number = 1,
-  pageSize: number = 100
+  pageSize: number = 100,
 ): {
   total: number;
   pageNumber: number;
@@ -368,7 +400,15 @@ function getPackageDependenciesFromJson(
 /**
  * Get overlay alerts (rules) from JSON data
  */
-function getOverlayAlertsFromJson(data: RsdoctorData): Array<{ id: string; code: string; title: string; description: string; level: string; category: string; type: string }> {
+function getOverlayAlertsFromJson(data: RsdoctorData): Array<{
+  id: string;
+  code: string;
+  title: string;
+  description: string;
+  level: string;
+  category: string;
+  type: string;
+}> {
   const errors = data?.data?.errors || [];
   return errors.map((error) => ({
     id: error.id,
@@ -393,7 +433,11 @@ function getLoaderChartDataFromJson(data: RsdoctorData): unknown[] {
     return loader;
   }
 
-  return (loader as { chartData?: unknown[]; data?: unknown[] }).chartData || (loader as { chartData?: unknown[]; data?: unknown[] }).data || [];
+  return (
+    (loader as { chartData?: unknown[]; data?: unknown[] }).chartData ||
+    (loader as { chartData?: unknown[]; data?: unknown[] }).data ||
+    []
+  );
 }
 
 /**
@@ -410,19 +454,28 @@ function getDirectoriesLoadersFromJson(data: RsdoctorData): unknown[] {
     return loader;
   }
 
-  return (loader as { directories?: unknown[]; directoriesData?: unknown[] }).directories || (loader as { directories?: unknown[]; directoriesData?: unknown[] }).directoriesData || [];
+  return (
+    (loader as { directories?: unknown[]; directoriesData?: unknown[] })
+      .directories ||
+    (loader as { directories?: unknown[]; directoriesData?: unknown[] })
+      .directoriesData ||
+    []
+  );
 }
 
 /**
  * Get build summary (costs) from JSON data
  */
-function getBuildSummaryFromJson(data: RsdoctorData): { costs: Array<{ costs?: number }>; totalCost: number } | null {
+function getBuildSummaryFromJson(
+  data: RsdoctorData,
+): { costs: Array<{ costs?: number }>; totalCost: number } | null {
   const summary = data?.data?.summary;
   if (!summary) return null;
 
   return {
     costs: summary.costs || [],
-    totalCost: summary.costs?.reduce((sum, cost) => sum + (cost.costs || 0), 0) || 0,
+    totalCost:
+      summary.costs?.reduce((sum, cost) => sum + (cost.costs || 0), 0) || 0,
   };
 }
 
@@ -492,13 +545,21 @@ function getModuleExportsFromJson(data: RsdoctorData): unknown[] {
 function getSideEffectsFromJson(
   data: RsdoctorData,
   pageNumber: number = 1,
-  pageSize: number = 100
+  pageSize: number = 100,
 ): {
   total: number;
   pageNumber: number;
   pageSize: number;
   totalPages: number;
-  nodeModules: { count: number; topPackages: Array<{ name: string; count: number; totalSize: number; modules: SideEffectModule[] }> };
+  nodeModules: {
+    count: number;
+    topPackages: Array<{
+      name: string;
+      count: number;
+      totalSize: number;
+      modules: SideEffectModule[];
+    }>;
+  };
   userCode: { count: number; totalPages: number; modules: SideEffectModule[] };
   all: SideEffectModule[];
 } {
@@ -531,22 +592,32 @@ function getSideEffectsFromJson(
   // Categorize modules into node_modules and user code
   const nodeModules: SideEffectModule[] = [];
   const userCode: SideEffectModule[] = [];
-  const packageStats = new Map<string, { count: number; totalSize: number; modules: SideEffectModule[] }>();
+  const packageStats = new Map<
+    string,
+    { count: number; totalSize: number; modules: SideEffectModule[] }
+  >();
 
   for (const module of sideEffectModules) {
     const modulePath = module.path || '';
     const isNodeModule = modulePath.includes('node_modules');
-    
+
     if (isNodeModule) {
       nodeModules.push(module);
       // Extract package name from path
       // e.g., /path/to/node_modules/.pnpm/react@18.3.1/node_modules/react/index.js -> react
-      const match = modulePath.match(/node_modules[\/\\](?:\.pnpm[\/\\][^\/\\]+[\/\\]node_modules[\/\\])?([^\/\\]+)/);
+      const match = modulePath.match(
+        /node_modules[/\\](?:\.pnpm[/\\][^/\\]+[/\\]node_modules[/\\])?([^/\\]+)/,
+      );
       if (match) {
         const pkgName = match[1];
-        const stats = packageStats.get(pkgName) || { count: 0, totalSize: 0, modules: [] };
+        const stats = packageStats.get(pkgName) || {
+          count: 0,
+          totalSize: 0,
+          modules: [],
+        };
         stats.count += 1;
-        stats.totalSize += module.size?.parsedSize || module.size?.sourceSize || 0;
+        stats.totalSize +=
+          module.size?.parsedSize || module.size?.sourceSize || 0;
         stats.modules.push(module);
         packageStats.set(pkgName, stats);
       }
@@ -577,7 +648,10 @@ function getSideEffectsFromJson(
   const userCodeTotalPages = Math.ceil(userCodeTotal / pageSize);
   const userCodeStartIndex = (pageNumber - 1) * pageSize;
   const userCodeEndIndex = userCodeStartIndex + pageSize;
-  const paginatedUserCode = userCode.slice(userCodeStartIndex, userCodeEndIndex);
+  const paginatedUserCode = userCode.slice(
+    userCodeStartIndex,
+    userCodeEndIndex,
+  );
 
   return {
     total,
@@ -600,7 +674,10 @@ function getSideEffectsFromJson(
 /**
  * Send request from JSON data source
  */
-export async function sendRequestFromJson(api: string, params: Record<string, unknown> = {}): Promise<unknown> {
+export async function sendRequestFromJson(
+  api: string,
+  params: Record<string, unknown> = {},
+): Promise<unknown> {
   const filePath = getDataFileFromArgs();
   if (!filePath) {
     throw new Error('No data file specified. Use --data-file <path>');

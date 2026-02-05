@@ -1,17 +1,19 @@
 import type { Command } from 'commander';
-import { requireArg } from '../utils/cli-utils';
 import { getErrors } from '../tools';
+import { requireArg } from '../utils/cli-utils';
 
-interface CommandExecutor {
-  (handler: () => Promise<unknown>): Promise<void>;
-}
+type CommandExecutor = (handler: () => Promise<unknown>) => Promise<void>;
 
 interface Error {
   code: string;
   level: string;
 }
 
-export async function listErrors(): Promise<{ ok: boolean; data: unknown; description: string }> {
+export async function listErrors(): Promise<{
+  ok: boolean;
+  data: unknown;
+  description: string;
+}> {
   const errors = await getErrors();
   return {
     ok: true,
@@ -20,7 +22,9 @@ export async function listErrors(): Promise<{ ok: boolean; data: unknown; descri
   };
 }
 
-export async function getErrorsByCode(codeInput: string | undefined): Promise<{ ok: boolean; data: unknown[]; description: string }> {
+export async function getErrorsByCode(
+  codeInput: string | undefined,
+): Promise<{ ok: boolean; data: unknown[]; description: string }> {
   const errorCode = requireArg(codeInput, 'code');
   const errors = (await getErrors()) as Error[];
   const filtered = errors.filter((error) => error.code === errorCode);
@@ -31,7 +35,9 @@ export async function getErrorsByCode(codeInput: string | undefined): Promise<{ 
   };
 }
 
-export async function getErrorsByLevel(levelInput: string | undefined): Promise<{ ok: boolean; data: unknown[]; description: string }> {
+export async function getErrorsByLevel(
+  levelInput: string | undefined,
+): Promise<{ ok: boolean; data: unknown[]; description: string }> {
   const errorLevel = requireArg(levelInput, 'level');
   const errors = (await getErrors()) as Error[];
   const filtered = errors.filter((error) => error.level === errorLevel);
@@ -42,8 +48,13 @@ export async function getErrorsByLevel(levelInput: string | undefined): Promise<
   };
 }
 
-export function registerErrorCommands(program: Command, execute: CommandExecutor): void {
-  const errorProgram = program.command('errors').description('Error operations');
+export function registerErrorCommands(
+  program: Command,
+  execute: CommandExecutor,
+): void {
+  const errorProgram = program
+    .command('errors')
+    .description('Error operations');
 
   errorProgram
     .command('list')

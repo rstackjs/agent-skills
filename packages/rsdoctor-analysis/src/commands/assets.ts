@@ -1,12 +1,10 @@
-import type { Command } from 'commander';
 import path from 'node:path';
-import { requireArg } from '../utils/cli-utils';
-import { getAssets, getAllChunks } from '../tools';
+import type { Command } from 'commander';
 import { loadJsonData } from '../datasource';
+import { getAllChunks, getAssets } from '../tools';
+import { requireArg } from '../utils/cli-utils';
 
-interface CommandExecutor {
-  (handler: () => Promise<unknown>): Promise<void>;
-}
+type CommandExecutor = (handler: () => Promise<unknown>) => Promise<void>;
 
 interface Asset {
   path: string;
@@ -45,7 +43,7 @@ const Constants = {
 
 const extname = (filename: string): string => {
   const baseName = filename.split('?')[0];
-  const matches = baseName.match(/\.([0-9a-z]+)(?:[\?#]|$)/i);
+  const matches = baseName.match(/\.([0-9a-z]+)(?:[?#]|$)/i);
   return matches ? `.${matches[1]}` : '';
 };
 
@@ -55,31 +53,60 @@ const isAssetMatchExtension = (asset: Asset, ext: string): boolean =>
 const isAssetMatchExtensions = (asset: Asset, exts: string[]): boolean =>
   Array.isArray(exts) && exts.some((ext) => isAssetMatchExtension(asset, ext));
 
-const filterAssetsByExtensions = (assets: Asset[], exts: string | string[]): Asset[] => {
-  if (typeof exts === 'string') return assets.filter((e) => isAssetMatchExtension(e, exts));
-  if (Array.isArray(exts)) return assets.filter((e) => isAssetMatchExtensions(e, exts));
+const filterAssetsByExtensions = (
+  assets: Asset[],
+  exts: string | string[],
+): Asset[] => {
+  if (typeof exts === 'string')
+    return assets.filter((e) => isAssetMatchExtension(e, exts));
+  if (Array.isArray(exts))
+    return assets.filter((e) => isAssetMatchExtensions(e, exts));
   return assets;
 };
 
-const filterAssets = (assets: Asset[], filterOrExtensions?: string | string[] | ((asset: Asset) => boolean)): Asset[] => {
+const filterAssets = (
+  assets: Asset[],
+  filterOrExtensions?: string | string[] | ((asset: Asset) => boolean),
+): Asset[] => {
   if (!filterOrExtensions) return assets;
-  if (typeof filterOrExtensions === 'function') return assets.filter(filterOrExtensions);
+  if (typeof filterOrExtensions === 'function')
+    return assets.filter(filterOrExtensions);
   return filterAssetsByExtensions(assets, filterOrExtensions);
 };
 
 const isInitialAsset = (asset: Asset, chunks: Chunk[]): boolean => {
   const assetChunkIds = (asset.chunks || []) as Array<number | string>;
   if (!assetChunkIds.length) return false;
-  const initialSet = new Set<number>((chunks || []).filter((c) => c.initial).map((c) => c.id));
+  const initialSet = new Set<number>(
+    (chunks || []).filter((c) => c.initial).map((c) => c.id),
+  );
   return assetChunkIds.some((id) => initialSet.has(Number(id)));
 };
 
 const getAssetsSizeInfo = (
   assets: Asset[],
   chunks: Chunk[],
-  { withFileContent = false, filterOrExtensions }: { withFileContent?: boolean; filterOrExtensions?: string | string[] | ((asset: Asset) => boolean) } = {}
-): { count: number; size: number; files: Array<{ path: string; size: number; gzipSize?: number; initial: boolean; content?: unknown }> } => {
-  let filtered = assets.filter((e) => !isAssetMatchExtensions(e, Constants.MapExtensions));
+  {
+    withFileContent = false,
+    filterOrExtensions,
+  }: {
+    withFileContent?: boolean;
+    filterOrExtensions?: string | string[] | ((asset: Asset) => boolean);
+  } = {},
+): {
+  count: number;
+  size: number;
+  files: Array<{
+    path: string;
+    size: number;
+    gzipSize?: number;
+    initial: boolean;
+    content?: unknown;
+  }>;
+} => {
+  let filtered = assets.filter(
+    (e) => !isAssetMatchExtensions(e, Constants.MapExtensions),
+  );
   filtered = filterAssets(filtered, filterOrExtensions);
   return {
     count: filtered.length,
@@ -94,30 +121,51 @@ const getAssetsSizeInfo = (
   };
 };
 
-const getInitialAssetsSizeInfo = (assets: Asset[], chunks: Chunk[], options: { withFileContent?: boolean; filterOrExtensions?: string | string[] | ((asset: Asset) => boolean) } = {}): ReturnType<typeof getAssetsSizeInfo> =>
+const getInitialAssetsSizeInfo = (
+  assets: Asset[],
+  chunks: Chunk[],
+  options: {
+    withFileContent?: boolean;
+    filterOrExtensions?: string | string[] | ((asset: Asset) => boolean);
+  } = {},
+): ReturnType<typeof getAssetsSizeInfo> =>
   getAssetsSizeInfo(assets, chunks, {
     ...options,
     filterOrExtensions: (asset: Asset) => isInitialAsset(asset, chunks),
   });
 
-const diffSize = (bSize: number, cSize: number): { percent: number; state: 'Equal' | 'Down' | 'Up' } => {
+const diffSize = (
+  bSize: number,
+  cSize: number,
+): { percent: number; state: 'Equal' | 'Down' | 'Up' } => {
   const isEqual = bSize === cSize;
-  const percent = isEqual ? 0 : bSize === 0 ? 100 : (Math.abs(cSize - bSize) / bSize) * 100;
-  const state = isEqual
-    ? 'Equal'
-    : bSize > cSize
-      ? 'Down'
-      : 'Up';
+  const percent = isEqual
+    ? 0
+    : bSize === 0
+      ? 100
+      : (Math.abs(cSize - bSize) / bSize) * 100;
+  const state = isEqual ? 'Equal' : bSize > cSize ? 'Down' : 'Up';
   return { percent, state };
 };
 
-const diffAssetsByExtensions = (baseline: ChunkGraph, current: ChunkGraph, filterOrExtensions?: string | string[] | ((asset: Asset) => boolean), isInitial = false) => {
+const diffAssetsByExtensions = (
+  baseline: ChunkGraph,
+  current: ChunkGraph,
+  filterOrExtensions?: string | string[] | ((asset: Asset) => boolean),
+  isInitial = false,
+) => {
   const { size: bSize, count: bCount } = isInitial
-    ? getInitialAssetsSizeInfo(baseline.assets, baseline.chunks, { filterOrExtensions })
-    : getAssetsSizeInfo(baseline.assets, baseline.chunks, { filterOrExtensions });
+    ? getInitialAssetsSizeInfo(baseline.assets, baseline.chunks, {
+        filterOrExtensions,
+      })
+    : getAssetsSizeInfo(baseline.assets, baseline.chunks, {
+        filterOrExtensions,
+      });
 
   const { size: cSize, count: cCount } = isInitial
-    ? getInitialAssetsSizeInfo(current.assets, current.chunks, { filterOrExtensions })
+    ? getInitialAssetsSizeInfo(current.assets, current.chunks, {
+        filterOrExtensions,
+      })
     : getAssetsSizeInfo(current.assets, current.chunks, { filterOrExtensions });
 
   const { percent, state } = diffSize(bSize, cSize);
@@ -136,11 +184,21 @@ const getAssetsDiffResult = (baseline: ChunkGraph, current: ChunkGraph) => ({
   },
   js: {
     total: diffAssetsByExtensions(baseline, current, Constants.JSExtension),
-    initial: diffAssetsByExtensions(baseline, current, Constants.JSExtension, true),
+    initial: diffAssetsByExtensions(
+      baseline,
+      current,
+      Constants.JSExtension,
+      true,
+    ),
   },
   css: {
     total: diffAssetsByExtensions(baseline, current, Constants.CSSExtension),
-    initial: diffAssetsByExtensions(baseline, current, Constants.CSSExtension, true),
+    initial: diffAssetsByExtensions(
+      baseline,
+      current,
+      Constants.CSSExtension,
+      true,
+    ),
   },
   imgs: {
     total: diffAssetsByExtensions(baseline, current, Constants.ImgExtensions),
@@ -161,7 +219,11 @@ const getAssetsDiffResult = (baseline: ChunkGraph, current: ChunkGraph) => ({
       (asset: Asset) =>
         !isAssetMatchExtensions(
           asset,
-          [Constants.JSExtension, Constants.CSSExtension, Constants.HtmlExtension].concat(
+          [
+            Constants.JSExtension,
+            Constants.CSSExtension,
+            Constants.HtmlExtension,
+          ].concat(
             Constants.ImgExtensions,
             Constants.MediaExtensions,
             Constants.FontExtensions,
@@ -172,7 +234,11 @@ const getAssetsDiffResult = (baseline: ChunkGraph, current: ChunkGraph) => ({
   },
 });
 
-export async function listAssets(): Promise<{ ok: boolean; data: unknown; description: string }> {
+export async function listAssets(): Promise<{
+  ok: boolean;
+  data: unknown;
+  description: string;
+}> {
   const assets = await getAssets();
   return {
     ok: true,
@@ -181,7 +247,14 @@ export async function listAssets(): Promise<{ ok: boolean; data: unknown; descri
   };
 }
 
-export async function diffAssets(baselineInput: string | undefined, currentInput: string | undefined): Promise<{ ok: boolean; data: { note: string; baseline: string; current: string; diff: unknown }; description: string }> {
+export async function diffAssets(
+  baselineInput: string | undefined,
+  currentInput: string | undefined,
+): Promise<{
+  ok: boolean;
+  data: { note: string; baseline: string; current: string; diff: unknown };
+  description: string;
+}> {
   const baselinePath = path.resolve(requireArg(baselineInput, 'baseline'));
   const currentPath = path.resolve(requireArg(currentInput, 'current'));
 
@@ -203,17 +276,22 @@ export async function diffAssets(baselineInput: string | undefined, currentInput
       current: currentPath,
       diff,
     },
-    description: 'Diff asset counts and sizes between two rsdoctor-data.json files (baseline vs current).',
+    description:
+      'Diff asset counts and sizes between two rsdoctor-data.json files (baseline vs current).',
   };
 }
 
-export async function getMediaAssets(): Promise<{ ok: boolean; data: { guidance: string; chunks: unknown }; description: string }> {
+export async function getMediaAssets(): Promise<{
+  ok: boolean;
+  data: { guidance: string; chunks: unknown };
+  description: string;
+}> {
   // Get all chunks by using a very large page size
   const chunksResult = await getAllChunks(1, Number.MAX_SAFE_INTEGER);
   const chunksResultTyped = chunksResult as { items?: unknown } | unknown[];
-  const chunks = Array.isArray(chunksResultTyped) 
-    ? chunksResultTyped 
-    : (chunksResultTyped.items || chunksResult);
+  const chunks = Array.isArray(chunksResultTyped)
+    ? chunksResultTyped
+    : chunksResultTyped.items || chunksResult;
   return {
     ok: true,
     data: {
@@ -224,8 +302,13 @@ export async function getMediaAssets(): Promise<{ ok: boolean; data: { guidance:
   };
 }
 
-export function registerAssetCommands(program: Command, execute: CommandExecutor): void {
-  const assetProgram = program.command('assets').description('Asset operations');
+export function registerAssetCommands(
+  program: Command,
+  execute: CommandExecutor,
+): void {
+  const assetProgram = program
+    .command('assets')
+    .description('Asset operations');
 
   assetProgram
     .command('list')
@@ -236,7 +319,9 @@ export function registerAssetCommands(program: Command, execute: CommandExecutor
 
   assetProgram
     .command('diff')
-    .description('Diff asset counts and sizes between two rsdoctor-data.json files (baseline vs current).')
+    .description(
+      'Diff asset counts and sizes between two rsdoctor-data.json files (baseline vs current).',
+    )
     .requiredOption('--baseline <path>', 'Path to baseline rsdoctor-data.json')
     .requiredOption('--current <path>', 'Path to current rsdoctor-data.json')
     .action(function (this: Command) {

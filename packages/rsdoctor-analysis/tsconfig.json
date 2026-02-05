@@ -1,0 +1,5 @@
+{
+  "extends": "@rstackjs/config/tsconfig",
+  "compilerOptions": {},
+  "include": ["src"]
+}

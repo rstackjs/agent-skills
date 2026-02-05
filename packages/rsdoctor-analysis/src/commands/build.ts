@@ -1,13 +1,18 @@
 import type { Command } from 'commander';
-import { parsePositiveInt } from '../utils/cli-utils';
-import { getBuildSummary, getEntrypoints, getBuildConfig, getAllChunks, getRuleInfo, getPackageInfo } from '../tools';
-import { sendRequest } from '../socket';
 import { API } from '../constants';
+import { sendRequest } from '../socket';
+import {
+  getAllChunks,
+  getBuildConfig,
+  getBuildSummary,
+  getEntrypoints,
+  getPackageInfo,
+  getRuleInfo,
+} from '../tools';
 import { getMedianChunkSize } from '../utils';
+import { parsePositiveInt } from '../utils/cli-utils';
 
-interface CommandExecutor {
-  (handler: () => Promise<unknown>): Promise<void>;
-}
+type CommandExecutor = (handler: () => Promise<unknown>) => Promise<void>;
 
 interface Rule {
   description?: string;
@@ -21,7 +26,11 @@ interface Chunk {
   size: number;
 }
 
-export async function getSummary(): Promise<{ ok: boolean; data: unknown; description: string }> {
+export async function getSummary(): Promise<{
+  ok: boolean;
+  data: unknown;
+  description: string;
+}> {
   const summary = await getBuildSummary();
   return {
     ok: true,
@@ -30,7 +39,11 @@ export async function getSummary(): Promise<{ ok: boolean; data: unknown; descri
   };
 }
 
-export async function listEntrypoints(): Promise<{ ok: boolean; data: unknown; description: string }> {
+export async function listEntrypoints(): Promise<{
+  ok: boolean;
+  data: unknown;
+  description: string;
+}> {
   const entrypoints = await getEntrypoints();
   return {
     ok: true,
@@ -39,7 +52,11 @@ export async function listEntrypoints(): Promise<{ ok: boolean; data: unknown; d
   };
 }
 
-export async function getConfig(): Promise<{ ok: boolean; data: unknown; description: string }> {
+export async function getConfig(): Promise<{
+  ok: boolean;
+  data: unknown;
+  description: string;
+}> {
   const config = await getBuildConfig();
   return {
     ok: true,
@@ -63,16 +80,18 @@ async function executeStep1(): Promise<{
     getPackageInfo(),
     getAllChunks(1, Number.MAX_SAFE_INTEGER),
   ]);
-  
+
   // Extract chunks from paginated result if needed
   const chunksResultTyped = chunksResult as { items?: Chunk[] } | Chunk[];
-  const chunks = Array.isArray(chunksResultTyped) 
-    ? chunksResultTyped 
-    : (chunksResultTyped.items || []);
+  const chunks = Array.isArray(chunksResultTyped)
+    ? chunksResultTyped
+    : chunksResultTyped.items || [];
 
   // Detect duplicates
   const rulesArray = rules as Rule[];
-  const duplicateRule = rulesArray?.find((rule) => rule.description?.includes('E1001'));
+  const duplicateRule = rulesArray?.find((rule) =>
+    rule.description?.includes('E1001'),
+  );
 
   // Detect similar packages
   const packagesArray = packages as Package[];
@@ -96,7 +115,10 @@ async function executeStep1(): Promise<{
     .filter((match): match is string[] => match !== null);
 
   // Get media assets
-  const mediaAssets = { guidance: 'Media asset optimization guidance.', chunks };
+  const mediaAssets = {
+    guidance: 'Media asset optimization guidance.',
+    chunks,
+  };
 
   // Find large chunks (>30% over median size and >= 1MB)
   const chunksArray = chunks as Chunk[];
@@ -104,7 +126,9 @@ async function executeStep1(): Promise<{
   const operator = 1.3;
   const minSizeMB = 1;
   const minSizeBytes = minSizeMB * 1024 * 1024; // 1MB in bytes
-  const oversized = chunksArray.filter((chunk) => chunk.size > median * operator && chunk.size >= minSizeBytes);
+  const oversized = chunksArray.filter(
+    (chunk) => chunk.size > median * operator && chunk.size >= minSizeBytes,
+  );
 
   return {
     duplicatePackages: {
@@ -141,10 +165,12 @@ async function executeStep1(): Promise<{
 export async function optimizeBundle(
   stepInput?: string,
   sideEffectsPageNumberInput?: string,
-  sideEffectsPageSizeInput?: string
+  sideEffectsPageSizeInput?: string,
 ): Promise<{ ok: boolean; data: unknown; description: string }> {
-  const step = stepInput ? parsePositiveInt(stepInput, 'step', { min: 1, max: 2 }) : undefined;
-  
+  const step = stepInput
+    ? parsePositiveInt(stepInput, 'step', { min: 1, max: 2 })
+    : undefined;
+
   // Step 1: Get basic optimization data (rules, packages, chunks)
   if (step === 1) {
     const step1Data = await executeStep1();
@@ -162,10 +188,20 @@ export async function optimizeBundle(
 
   // Step 2: Get side effects modules (with pagination)
   if (step === 2) {
-    const pageNumber = parsePositiveInt(sideEffectsPageNumberInput, 'sideEffectsPageNumber', { min: 1 }) ?? 1;
-    const pageSize = parsePositiveInt(sideEffectsPageSizeInput, 'sideEffectsPageSize', { min: 1, max: 1000 }) ?? 100;
-    
-    const sideEffectsData = await sendRequest(API.GetSideEffects, { pageNumber, pageSize });
+    const pageNumber =
+      parsePositiveInt(sideEffectsPageNumberInput, 'sideEffectsPageNumber', {
+        min: 1,
+      }) ?? 1;
+    const pageSize =
+      parsePositiveInt(sideEffectsPageSizeInput, 'sideEffectsPageSize', {
+        min: 1,
+        max: 1000,
+      }) ?? 100;
+
+    const sideEffectsData = await sendRequest(API.GetSideEffects, {
+      pageNumber,
+      pageSize,
+    });
 
     return {
       ok: true,
@@ -188,12 +224,22 @@ export async function optimizeBundle(
 
   // Default: Execute both steps (backward compatibility)
   // For default behavior, get side effects with default pagination (page 1, size 100)
-  const defaultPageNumber = parsePositiveInt(sideEffectsPageNumberInput, 'sideEffectsPageNumber', { min: 1 }) ?? 1;
-  const defaultPageSize = parsePositiveInt(sideEffectsPageSizeInput, 'sideEffectsPageSize', { min: 1, max: 1000 }) ?? 100;
-  
+  const defaultPageNumber =
+    parsePositiveInt(sideEffectsPageNumberInput, 'sideEffectsPageNumber', {
+      min: 1,
+    }) ?? 1;
+  const defaultPageSize =
+    parsePositiveInt(sideEffectsPageSizeInput, 'sideEffectsPageSize', {
+      min: 1,
+      max: 1000,
+    }) ?? 100;
+
   const [step1Data, sideEffectsData] = await Promise.all([
     executeStep1(),
-    sendRequest(API.GetSideEffects, { pageNumber: defaultPageNumber, pageSize: defaultPageSize }),
+    sendRequest(API.GetSideEffects, {
+      pageNumber: defaultPageNumber,
+      pageSize: defaultPageSize,
+    }),
   ]);
 
   return {
@@ -210,7 +256,10 @@ export async function optimizeBundle(
   };
 }
 
-export function registerBuildCommands(program: Command, execute: CommandExecutor): void {
+export function registerBuildCommands(
+  program: Command,
+  execute: CommandExecutor,
+): void {
   const buildProgram = program.command('build').description('Build operations');
 
   buildProgram
@@ -239,19 +288,30 @@ export function registerBuildCommands(program: Command, execute: CommandExecutor
     .description(
       'Combined bundle optimization inputs: duplicate packages, similar packages, media assets, large chunks, and side effects modules. Supports step-by-step execution for better performance.',
     )
-    .option('--step <step>', 'Execution step: 1 (basic analysis) or 2 (side effects). If not specified, executes both steps.')
-    .option('--side-effects-page-number <pageNumber>', 'Page number for side effects (default: 1, only used in step 2)')
-    .option('--side-effects-page-size <pageSize>', 'Page size for side effects (default: 100, max: 1000, only used in step 2)')
+    .option(
+      '--step <step>',
+      'Execution step: 1 (basic analysis) or 2 (side effects). If not specified, executes both steps.',
+    )
+    .option(
+      '--side-effects-page-number <pageNumber>',
+      'Page number for side effects (default: 1, only used in step 2)',
+    )
+    .option(
+      '--side-effects-page-size <pageSize>',
+      'Page size for side effects (default: 100, max: 1000, only used in step 2)',
+    )
     .action(function (this: Command) {
-      const options = this.opts<{ 
-        step?: string; 
-        sideEffectsPageNumber?: string; 
+      const options = this.opts<{
+        step?: string;
+        sideEffectsPageNumber?: string;
         sideEffectsPageSize?: string;
       }>();
-      return execute(() => optimizeBundle(
-        options.step,
-        options.sideEffectsPageNumber,
-        options.sideEffectsPageSize
-      ));
+      return execute(() =>
+        optimizeBundle(
+          options.step,
+          options.sideEffectsPageNumber,
+          options.sideEffectsPageSize,
+        ),
+      );
     });
 }

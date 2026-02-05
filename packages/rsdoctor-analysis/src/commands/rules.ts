@@ -1,11 +1,13 @@
 import type { Command } from 'commander';
 import { getRuleInfo } from '../tools';
 
-interface CommandExecutor {
-  (handler: () => Promise<unknown>): Promise<void>;
-}
+type CommandExecutor = (handler: () => Promise<unknown>) => Promise<void>;
 
-export async function listRules(): Promise<{ ok: boolean; data: unknown; description: string }> {
+export async function listRules(): Promise<{
+  ok: boolean;
+  data: unknown;
+  description: string;
+}> {
   const rules = await getRuleInfo();
   return {
     ok: true,
@@ -14,7 +16,10 @@ export async function listRules(): Promise<{ ok: boolean; data: unknown; descrip
   };
 }
 
-export function registerRuleCommands(program: Command, execute: CommandExecutor): void {
+export function registerRuleCommands(
+  program: Command,
+  execute: CommandExecutor,
+): void {
   const ruleProgram = program.command('rules').description('Rule operations');
 
   ruleProgram

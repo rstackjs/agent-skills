@@ -1,4 +1,3 @@
-
 # install rsdoctor plugin
 
 ## Step 1: install dependencies
@@ -6,6 +5,7 @@
 Install the appropriate package based on your project type:
 
 ### Rspack projects
+
 For projects based on Rspack, such as Rsbuild or Rslib:
 
 ```bash
@@ -30,6 +30,7 @@ After the dependency installation, you need to integrate the Rsdoctor plugin int
 
 :::important
 **Important:** To generate `rsdoctor-data.json` file that can be analyzed by AI tools, you must configure the plugin with:
+
 - `output.mode: 'brief'`
 - `output.options.type: ['json']`
 
@@ -157,6 +158,7 @@ For projects using Modern.js's webpack mode, please register the plugin through 
 ## Step 3: Locate the rsdoctor-data.json
 
 First, check whether `rsdoctor-data.json` already exists in the build output (artifacts) directory. Common locations include:
+
 - `dist/rsdoctor-data.json` (most common)
 - `output/rsdoctor-data.json`
 - `static/rsdoctor-data.json`
@@ -177,7 +179,7 @@ new RsdoctorRspackPlugin({
     },
     reportDir: './dist', // Custom output directory (defaults to build output directory)
   },
-})
+});
 
 // Webpack project
 new RsdoctorWebpackPlugin({
@@ -189,7 +191,7 @@ new RsdoctorWebpackPlugin({
     },
     reportDir: './dist',
   },
-})
+});
 ```
 
 :::tip
@@ -224,6 +226,7 @@ node scripts/rsdoctor.js bundle optimize --data-file ./dist/rsdoctor-data.json
 ```
 
 **Command format:**
+
 - New format: `<group> <subcommand>` (e.g., `chunks list`, `bundle optimize`)
 - Old format (deprecated): `<group>:<subcommand>` (e.g., `chunks:list`, `bundle:optimize`)
 - Script path: `scripts/rsdoctor.js` (built file)

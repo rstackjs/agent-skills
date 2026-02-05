@@ -1,10 +1,12 @@
-import { sendRequestFromJson } from './datasource';
-import { getDataFileFromArgs } from './datasource';
+import { getDataFileFromArgs, sendRequestFromJson } from './datasource';
 
 /**
  * Send request (only JSON file mode is supported now)
  */
-export const sendRequest = async (api: string, params: Record<string, unknown> = {}): Promise<unknown> => {
+export const sendRequest = async (
+  api: string,
+  params: Record<string, unknown> = {},
+): Promise<unknown> => {
   return sendRequestFromJson(api, params);
 };
 

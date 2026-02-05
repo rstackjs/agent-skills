@@ -1,16 +1,14 @@
 import type { Command } from 'commander';
-import { requireArg, parsePositiveInt } from '../utils/cli-utils';
 import {
+  getPackageDependency,
   getPackageInfo,
   getPackageInfoByPackageName,
   getPackageInfoFiltered,
-  getPackageDependency,
   getRuleInfo,
 } from '../tools';
+import { parsePositiveInt, requireArg } from '../utils/cli-utils';
 
-interface CommandExecutor {
-  (handler: () => Promise<unknown>): Promise<void>;
-}
+type CommandExecutor = (handler: () => Promise<unknown>) => Promise<void>;
 
 interface Rule {
   description?: string;
@@ -20,7 +18,11 @@ interface Package {
   name: string;
 }
 
-export async function listPackages(): Promise<{ ok: boolean; data: unknown; description: string }> {
+export async function listPackages(): Promise<{
+  ok: boolean;
+  data: unknown;
+  description: string;
+}> {
   const packages = await getPackageInfoFiltered();
   return {
     ok: true,
@@ -29,7 +31,9 @@ export async function listPackages(): Promise<{ ok: boolean; data: unknown; desc
   };
 }
 
-export async function getPackageByName(packageNameInput: string | undefined): Promise<{ ok: boolean; data: unknown; description: string }> {
+export async function getPackageByName(
+  packageNameInput: string | undefined,
+): Promise<{ ok: boolean; data: unknown; description: string }> {
   const packageName = requireArg(packageNameInput, 'name');
   const packages = await getPackageInfoByPackageName(packageName);
   return {
@@ -41,13 +45,15 @@ export async function getPackageByName(packageNameInput: string | undefined): Pr
 
 export async function getPackageDependencies(
   pageNumberInput?: string,
-  pageSizeInput?: string
+  pageSizeInput?: string,
 ): Promise<{ ok: boolean; data: unknown; description: string }> {
-  const pageNumber = parsePositiveInt(pageNumberInput, 'pageNumber', { min: 1 }) ?? 1;
-  const pageSize = parsePositiveInt(pageSizeInput, 'pageSize', { min: 1, max: 100 }) ?? 100;
-  
+  const pageNumber =
+    parsePositiveInt(pageNumberInput, 'pageNumber', { min: 1 }) ?? 1;
+  const pageSize =
+    parsePositiveInt(pageSizeInput, 'pageSize', { min: 1, max: 100 }) ?? 100;
+
   const dependencies = await getPackageDependency(pageNumber, pageSize);
-  
+
   return {
     ok: true,
     data: dependencies,
@@ -55,9 +61,15 @@ export async function getPackageDependencies(
   };
 }
 
-export async function detectDuplicatePackages(): Promise<{ ok: boolean; data: { rule: Rule | null; totalRules: number; note?: string }; description: string }> {
+export async function detectDuplicatePackages(): Promise<{
+  ok: boolean;
+  data: { rule: Rule | null; totalRules: number; note?: string };
+  description: string;
+}> {
   const rules = (await getRuleInfo()) as Rule[];
-  const duplicateRule = rules?.find((rule) => rule.description?.includes('E1001'));
+  const duplicateRule = rules?.find((rule) =>
+    rule.description?.includes('E1001'),
+  );
   return {
     ok: true,
     data: {
@@ -67,11 +79,16 @@ export async function detectDuplicatePackages(): Promise<{ ok: boolean; data: { 
         ? undefined
         : 'No E1001 duplicate package rule found in current analysis.',
     },
-    description: 'Detect duplicate packages using E1001 overlay rule if present.',
+    description:
+      'Detect duplicate packages using E1001 overlay rule if present.',
   };
 }
 
-export async function detectSimilarPackages(): Promise<{ ok: boolean; data: { similarPackages: string[][]; totalPackages: number; note?: string }; description: string }> {
+export async function detectSimilarPackages(): Promise<{
+  ok: boolean;
+  data: { similarPackages: string[][]; totalPackages: number; note?: string };
+  description: string;
+}> {
   const packages = (await getPackageInfo()) as Package[];
   const rules = [
     ['lodash', 'lodash-es', 'string_decode'],
@@ -105,8 +122,13 @@ export async function detectSimilarPackages(): Promise<{ ok: boolean; data: { si
   };
 }
 
-export function registerPackageCommands(program: Command, execute: CommandExecutor): void {
-  const packageProgram = program.command('packages').description('Package operations');
+export function registerPackageCommands(
+  program: Command,
+  execute: CommandExecutor,
+): void {
+  const packageProgram = program
+    .command('packages')
+    .description('Package operations');
 
   packageProgram
     .command('list')
@@ -131,12 +153,16 @@ export function registerPackageCommands(program: Command, execute: CommandExecut
     .option('--page-size <pageSize>', 'Page size (default: 100, max: 1000)')
     .action(function (this: Command) {
       const options = this.opts<{ pageNumber?: string; pageSize?: string }>();
-      return execute(() => getPackageDependencies(options.pageNumber, options.pageSize));
+      return execute(() =>
+        getPackageDependencies(options.pageNumber, options.pageSize),
+      );
     });
 
   packageProgram
     .command('duplicates')
-    .description('Detect duplicate packages using E1001 overlay rule if present.')
+    .description(
+      'Detect duplicate packages using E1001 overlay rule if present.',
+    )
     .action(function (this: Command) {
       return execute(() => detectDuplicatePackages());
     });

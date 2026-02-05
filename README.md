@@ -36,7 +36,7 @@ Migrate Rsbuild projects from v1 to v2. Use when a user asks to upgrade Rsbuild,
 
 ## Rsdoctor Skills
 
-### rsdoctor-analytics
+### rsdoctor-analysis
 
 ```bash
 npx skills add rstackjs/agent-skills --skill rsdoctor-analytics
@@ -46,8 +46,6 @@ Analyze Rspack/Webpack bundles from local Rsdoctor build data. Zero-dependency J
 
 Use when you need to analyze bundle composition, identify duplicate packages, detect similar packages, find large chunks, analyze side effects modules, or get comprehensive bundle optimization recommendations.
 
-
 ## License
 
 MIT licensed.
-

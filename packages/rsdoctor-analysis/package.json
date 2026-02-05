@@ -1,0 +1,15 @@
+{
+  "name": "rsdoctor-analysis",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build --watch"
+  },
+  "devDependencies": {
+    "@rslib/core": "^0.19.4",
+    "@types/node": "^24.10.9",
+    "commander": "^12.1.0",
+    "typescript": "^5.9.3"
+  }
+}

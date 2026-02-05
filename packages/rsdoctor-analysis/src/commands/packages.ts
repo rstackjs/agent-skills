@@ -18,15 +18,35 @@ interface Package {
   name: string;
 }
 
-export async function listPackages(): Promise<{
+export async function listPackages(
+  pageNumberInput?: string,
+  pageSizeInput?: string,
+): Promise<{
   ok: boolean;
   data: unknown;
   description: string;
 }> {
-  const packages = await getPackageInfoFiltered();
+  const pageNumber =
+    parsePositiveInt(pageNumberInput, 'pageNumber', { min: 1 }) ?? 1;
+  const pageSize =
+    parsePositiveInt(pageSizeInput, 'pageSize', { min: 1, max: 1000 }) ?? 100;
+
+  const allPackages = (await getPackageInfoFiltered()) as Array<unknown>;
+  const total = allPackages.length;
+  const totalPages = Math.ceil(total / pageSize);
+  const startIndex = (pageNumber - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const items = allPackages.slice(startIndex, endIndex);
+
   return {
     ok: true,
-    data: packages,
+    data: {
+      total,
+      pageNumber,
+      pageSize,
+      totalPages,
+      items,
+    },
     description: 'List packages with size/duplication info.',
   };
 }
@@ -133,8 +153,11 @@ export function registerPackageCommands(
   packageProgram
     .command('list')
     .description('List packages with size/duplication info.')
+    .option('--page-number <pageNumber>', 'Page number (default: 1)')
+    .option('--page-size <pageSize>', 'Page size (default: 100, max: 1000)')
     .action(function (this: Command) {
-      return execute(() => listPackages());
+      const options = this.opts<{ pageNumber?: string; pageSize?: string }>();
+      return execute(() => listPackages(options.pageNumber, options.pageSize));
     });
 
   packageProgram

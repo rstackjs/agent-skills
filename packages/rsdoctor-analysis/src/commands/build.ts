@@ -256,6 +256,46 @@ export async function optimizeBundle(
   };
 }
 
+/**
+ * Helper function to register the optimize command for a command group
+ */
+function registerOptimizeCommand(
+  commandGroup: Command,
+  execute: CommandExecutor,
+): void {
+  commandGroup
+    .command('optimize')
+    .description(
+      'Combined bundle optimization inputs: duplicate packages, similar packages, media assets, large chunks, and side effects modules. Supports step-by-step execution for better performance.',
+    )
+    .option(
+      '--step <step>',
+      'Execution step: 1 (basic analysis) or 2 (side effects). If not specified, executes both steps.',
+    )
+    .option(
+      '--side-effects-page-number <pageNumber>',
+      'Page number for side effects (default: 1, only used in step 2)',
+    )
+    .option(
+      '--side-effects-page-size <pageSize>',
+      'Page size for side effects (default: 100, max: 1000, only used in step 2)',
+    )
+    .action(function (this: Command) {
+      const options = this.opts<{
+        step?: string;
+        sideEffectsPageNumber?: string;
+        sideEffectsPageSize?: string;
+      }>();
+      return execute(() =>
+        optimizeBundle(
+          options.step,
+          options.sideEffectsPageNumber,
+          options.sideEffectsPageSize,
+        ),
+      );
+    });
+}
+
 export function registerBuildCommands(
   program: Command,
   execute: CommandExecutor,
@@ -283,72 +323,12 @@ export function registerBuildCommands(
       return execute(() => getConfig());
     });
 
-  buildProgram
-    .command('optimize')
-    .description(
-      'Combined bundle optimization inputs: duplicate packages, similar packages, media assets, large chunks, and side effects modules. Supports step-by-step execution for better performance.',
-    )
-    .option(
-      '--step <step>',
-      'Execution step: 1 (basic analysis) or 2 (side effects). If not specified, executes both steps.',
-    )
-    .option(
-      '--side-effects-page-number <pageNumber>',
-      'Page number for side effects (default: 1, only used in step 2)',
-    )
-    .option(
-      '--side-effects-page-size <pageSize>',
-      'Page size for side effects (default: 100, max: 1000, only used in step 2)',
-    )
-    .action(function (this: Command) {
-      const options = this.opts<{
-        step?: string;
-        sideEffectsPageNumber?: string;
-        sideEffectsPageSize?: string;
-      }>();
-      return execute(() =>
-        optimizeBundle(
-          options.step,
-          options.sideEffectsPageNumber,
-          options.sideEffectsPageSize,
-        ),
-      );
-    });
+  registerOptimizeCommand(buildProgram, execute);
 
   // Register bundle command group as an alias for bundle optimization
   const bundleProgram = program
     .command('bundle')
     .description('Bundle operations');
 
-  bundleProgram
-    .command('optimize')
-    .description(
-      'Combined bundle optimization inputs: duplicate packages, similar packages, media assets, large chunks, and side effects modules. Supports step-by-step execution for better performance.',
-    )
-    .option(
-      '--step <step>',
-      'Execution step: 1 (basic analysis) or 2 (side effects). If not specified, executes both steps.',
-    )
-    .option(
-      '--side-effects-page-number <pageNumber>',
-      'Page number for side effects (default: 1, only used in step 2)',
-    )
-    .option(
-      '--side-effects-page-size <pageSize>',
-      'Page size for side effects (default: 100, max: 1000, only used in step 2)',
-    )
-    .action(function (this: Command) {
-      const options = this.opts<{
-        step?: string;
-        sideEffectsPageNumber?: string;
-        sideEffectsPageSize?: string;
-      }>();
-      return execute(() =>
-        optimizeBundle(
-          options.step,
-          options.sideEffectsPageNumber,
-          options.sideEffectsPageSize,
-        ),
-      );
-    });
+  registerOptimizeCommand(bundleProgram, execute);
 }

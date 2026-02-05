@@ -256,34 +256,14 @@ export async function optimizeBundle(
   };
 }
 
-export function registerBuildCommands(
-  program: Command,
+/**
+ * Helper function to register the optimize command for a command group
+ */
+function registerOptimizeCommand(
+  commandGroup: Command,
   execute: CommandExecutor,
 ): void {
-  const buildProgram = program.command('build').description('Build operations');
-
-  buildProgram
-    .command('summary')
-    .description('Get build summary with costs (build time analysis).')
-    .action(function (this: Command) {
-      return execute(() => getSummary());
-    });
-
-  buildProgram
-    .command('entrypoints')
-    .description('List all entrypoints in the bundle.')
-    .action(function (this: Command) {
-      return execute(() => listEntrypoints());
-    });
-
-  buildProgram
-    .command('config')
-    .description('Get build configuration (rspack/webpack config).')
-    .action(function (this: Command) {
-      return execute(() => getConfig());
-    });
-
-  buildProgram
+  commandGroup
     .command('optimize')
     .description(
       'Combined bundle optimization inputs: duplicate packages, similar packages, media assets, large chunks, and side effects modules. Supports step-by-step execution for better performance.',
@@ -314,4 +294,41 @@ export function registerBuildCommands(
         ),
       );
     });
+}
+
+export function registerBuildCommands(
+  program: Command,
+  execute: CommandExecutor,
+): void {
+  const buildProgram = program.command('build').description('Build operations');
+
+  buildProgram
+    .command('summary')
+    .description('Get build summary with costs (build time analysis).')
+    .action(function (this: Command) {
+      return execute(() => getSummary());
+    });
+
+  buildProgram
+    .command('entrypoints')
+    .description('List all entrypoints in the bundle.')
+    .action(function (this: Command) {
+      return execute(() => listEntrypoints());
+    });
+
+  buildProgram
+    .command('config')
+    .description('Get build configuration (rspack/webpack config).')
+    .action(function (this: Command) {
+      return execute(() => getConfig());
+    });
+
+  registerOptimizeCommand(buildProgram, execute);
+
+  // Register bundle command group as an alias for bundle optimization
+  const bundleProgram = program
+    .command('bundle')
+    .description('Bundle operations');
+
+  registerOptimizeCommand(bundleProgram, execute);
 }

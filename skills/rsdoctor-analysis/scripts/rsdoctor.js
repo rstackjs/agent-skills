@@ -2441,6 +2441,12 @@ async function optimizeBundle(stepInput, sideEffectsPageNumberInput, sideEffects
         description: 'Combined bundle optimization inputs: duplicate packages, similar packages, media assets, large chunks, and side effects modules, add give the advice to optimize the bundle.'
     };
 }
+function registerOptimizeCommand(commandGroup, execute) {
+    commandGroup.command('optimize').description('Combined bundle optimization inputs: duplicate packages, similar packages, media assets, large chunks, and side effects modules. Supports step-by-step execution for better performance.').option('--step <step>', 'Execution step: 1 (basic analysis) or 2 (side effects). If not specified, executes both steps.').option('--side-effects-page-number <pageNumber>', 'Page number for side effects (default: 1, only used in step 2)').option('--side-effects-page-size <pageSize>', 'Page size for side effects (default: 100, max: 1000, only used in step 2)').action(function() {
+        const options = this.opts();
+        return execute(()=>optimizeBundle(options.step, options.sideEffectsPageNumber, options.sideEffectsPageSize));
+    });
+}
 function registerBuildCommands(program, execute) {
     const buildProgram = program.command('build').description('Build operations');
     buildProgram.command('summary').description('Get build summary with costs (build time analysis).').action(function() {
@@ -2452,10 +2458,9 @@ function registerBuildCommands(program, execute) {
     buildProgram.command('config').description('Get build configuration (rspack/webpack config).').action(function() {
         return execute(()=>getConfig());
     });
-    buildProgram.command('optimize').description('Combined bundle optimization inputs: duplicate packages, similar packages, media assets, large chunks, and side effects modules. Supports step-by-step execution for better performance.').option('--step <step>', 'Execution step: 1 (basic analysis) or 2 (side effects). If not specified, executes both steps.').option('--side-effects-page-number <pageNumber>', 'Page number for side effects (default: 1, only used in step 2)').option('--side-effects-page-size <pageSize>', 'Page size for side effects (default: 100, max: 1000, only used in step 2)').action(function() {
-        const options = this.opts();
-        return execute(()=>optimizeBundle(options.step, options.sideEffectsPageNumber, options.sideEffectsPageSize));
-    });
+    registerOptimizeCommand(buildProgram, execute);
+    const bundleProgram = program.command('bundle').description('Bundle operations');
+    registerOptimizeCommand(bundleProgram, execute);
 }
 async function listChunks(pageNumberInput, pageSizeInput) {
     const pageNumber = parsePositiveInt(pageNumberInput, 'pageNumber', {
@@ -2731,11 +2736,29 @@ function registerModuleCommands(program, execute) {
         return execute(()=>modules_getSideEffects(options.pageNumber, options.pageSize));
     });
 }
-async function listPackages() {
-    const packages = await getPackageInfoFiltered();
+async function listPackages(pageNumberInput, pageSizeInput) {
+    const pageNumber = parsePositiveInt(pageNumberInput, 'pageNumber', {
+        min: 1
+    }) ?? 1;
+    const pageSize = parsePositiveInt(pageSizeInput, 'pageSize', {
+        min: 1,
+        max: 1000
+    }) ?? 100;
+    const allPackages = await getPackageInfoFiltered();
+    const total = allPackages.length;
+    const totalPages = Math.ceil(total / pageSize);
+    const startIndex = (pageNumber - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const items = allPackages.slice(startIndex, endIndex);
     return {
         ok: true,
-        data: packages,
+        data: {
+            total,
+            pageNumber,
+            pageSize,
+            totalPages,
+            items
+        },
         description: 'List packages with size/duplication info.'
     };
 }
@@ -2834,8 +2857,9 @@ async function detectSimilarPackages() {
 }
 function registerPackageCommands(program, execute) {
     const packageProgram = program.command('packages').description('Package operations');
-    packageProgram.command('list').description('List packages with size/duplication info.').action(function() {
-        return execute(()=>listPackages());
+    packageProgram.command('list').description('List packages with size/duplication info.').option('--page-number <pageNumber>', 'Page number (default: 1)').option('--page-size <pageSize>', 'Page size (default: 100, max: 1000)').action(function() {
+        const options = this.opts();
+        return execute(()=>listPackages(options.pageNumber, options.pageSize));
     });
     packageProgram.command('by-name').description('Get package entries by name.').requiredOption('--name <name>', 'Package name').action(function() {
         const options = this.opts();

@@ -34,6 +34,18 @@ npx skills add rstackjs/agent-skills --skill rsbuild-v2-upgrade
 
 Migrate Rsbuild projects from v1 to v2. Use when a user asks to upgrade Rsbuild, follow the v1-to-v2 guide, update configs/plugins, or validate the upgrade.
 
+## Rsdoctor Skills
+
+### rsdoctor-analysis
+
+```bash
+npx skills add rstackjs/agent-skills --skill rsdoctor-analytics
+```
+
+Analyze Rspack/Webpack bundles from local Rsdoctor build data. Zero-dependency JS CLI for chunk/module/package/loader insights. Provides evidence-based conclusions and actionable optimization recommendations.
+
+Use when you need to analyze bundle composition, identify duplicate packages, detect similar packages, find large chunks, analyze side effects modules, or get comprehensive bundle optimization recommendations.
+
 ## License
 
 MIT licensed.

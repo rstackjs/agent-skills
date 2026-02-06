@@ -14,11 +14,11 @@ You are an AI assistant for Rsdoctor. Through the rsdoctor-skill JS CLI, read th
 ### ✅ Operations Allowed to Modify Code (Only the Following Two Cases)
 
 1. **When executing `install` command:**
-   - ✅ Allowed to install dependencies (legacy packages: `@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin`)
+   - ✅ Allowed to install dependencies (packages: `@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin`)
    - ✅ Allowed to modify `package.json` (add dependencies)
 
 2. **When executing `config` command:**
-   - ✅ Allowed to create or modify configuration files (`rspack.config.js`, `webpack.config.js`, `rsbuild.config.ts`, `modern.config.ts`)
+   - ✅ Allowed to create or modify configuration files (`rspack.config.ts`, `webpack.config.js`, `rsbuild.config.ts`, `modern.config.ts`)
    - ✅ Allowed to add Rsdoctor plugin configuration
 
 ### ❌ Operations Prohibited from Modifying Code (All Other Commands)
@@ -42,121 +42,87 @@ You are an AI assistant for Rsdoctor. Through the rsdoctor-skill JS CLI, read th
 
 ## Prerequisites
 
+### Step 1: Environment Requirements
+
+- **Node.js:** Version 18 or higher
+- **Package versions:**
+  - `@rsdoctor/rspack-plugin >= 1.1.2` (for Rspack/Rsbuild/Modern Rspack projects)
+  - `@rsdoctor/webpack-plugin >= 1.1.2` (for Webpack projects)
+
+  **Note:** Prefer using the latest versions of the above dependencies when available.
+
+### Step 2: CLI Script Information
+
 - **Entry script:** `node ${ROOT}/skills/rsdoctor/scripts/rsdoctor.js <group> <subcommand> [options]`
 - **Command format:** `<group> <subcommand> [--option value] [--data-file <path>] [--compact]`
 - **Global options:**
   - `--data-file <path>`: **Required**, specify the path to rsdoctor-data.json file
   - `--compact`: Optional, compact JSON output (no indentation)
+- **Default output:** JSON format
 
-## Prerequisites and Version Requirements
+### Step 3: Dependency Check and Installation
 
-- Node 18+.
-- Minimum versions: `@rsdoctor/rspack-plugin >= 1.1.2`, `@rsdoctor/webpack-plugin >= 1.1.2`.
+**For detailed installation instructions, refer to:** `reference/install-rsdoctor.md`
 
-### Dependency Check and Installation
+**Steps to check and install dependencies:**
 
-Check Rsdoctor dependencies:
-
-1. **Check legacy packages** (if found, no installation needed):
+1. **Check if packages are already installed:**
    - Check if `@rsdoctor/rspack-plugin` exists in `package.json` (in `devDependencies`, applicable to Rspack/Rsbuild/Modern Rspack)
    - Check if `@rsdoctor/webpack-plugin` exists in `package.json` (in `devDependencies`, applicable to Webpack/Modern Webpack)
-   - **If any legacy package exists**: Dependencies are installed, no need to install
+   - **If any package exists**: Dependencies are installed, proceed to Step 4
 
-2. **If none found, show installation commands by project type:**
-   - Rspack/Rsbuild/Modern Rspack projects:
-     ```bash
-     pnpm add @rsdoctor/rspack-plugin -D
-     ```
-   - Webpack/Modern Webpack projects:
-     ```bash
-     pnpm add @rsdoctor/webpack-plugin -D
-     ```
+2. **If no packages found, install dependencies:**
+   - Refer to `reference/install-rsdoctor.md` for installation commands by project type
+   - Follow the installation steps in the reference document based on project type (`projectType: 'rspack'` or `projectType: 'webpack'`)
 
 ## Quick Start (Including Plugin Installation)
 
-### Usage
-
 **Important: Do not execute build commands, only search for existing `rsdoctor-data.json` files for analysis.**
 
-1. **Search for `rsdoctor-data.json` file**
-   - Search for `rsdoctor-data.json` file in the target project's output directory
+### Step 4: Locate rsdoctor-data.json File
+
+1. **Search for existing `rsdoctor-data.json` file:**
+   - Search in the target project's output directory
    - Common paths: `dist/rsdoctor-data.json`, `output/rsdoctor-data.json`, `static/rsdoctor-data.json`, `.rsdoctor/rsdoctor-data.json`
-   - If file is found, use it directly for analysis (skip to step 3)
+   - **If file is found:** Use it directly for analysis (proceed to Step 6)
 
-2. **If file is not found, prompt user to configure according to the examples below and execute build to generate rsdoctor-data.json**
+2. **If file is not found:**
    - Ask user if they know the location of `rsdoctor-data.json` file
-   - If user doesn't know or file truly doesn't exist, prompt user to configure Rsdoctor plugin first and execute build
-   - First check if dependencies are installed (according to dependency check logic above)
-   - If dependencies are not installed, provide installation commands:
-     - Rspack/Rsbuild/Modern Rspack projects: `pnpm add @rsdoctor/rspack-plugin -D`
-     - Webpack/Modern Webpack projects: `pnpm add @rsdoctor/webpack-plugin -D`
-   - Provide the following configuration examples and build commands:
+   - If user doesn't know or file truly doesn't exist, proceed to Step 5
 
-   **Rsdoctor Plugin Configuration Example (Rspack):**
+### Step 5: Configure Plugin and Generate rsdoctor-data.json
 
-   ```js
-   // rspack.config.js
-   const { RsdoctorRspackPlugin } = require('@rsdoctor/rspack-plugin');
+**If `rsdoctor-data.json` file is not found, follow these steps:**
 
-   module.exports = {
-     // ... existing config
-     plugins: [
-       // ... existing plugins
-       // Only register plugin when RSDOCTOR is true, as plugin will increase build time
-       process.env.RSDOCTOR &&
-         new RsdoctorRspackPlugin({
-           disableClientServer: true, // Must be true, otherwise local server will start and block LLM execution
-           output: {
-             mode: 'brief', // Required: Use brief mode
-             options: {
-               type: ['json'], // Must include 'json' to generate rsdoctor-data.json
-             },
-           },
-         }),
-     ].filter(Boolean),
-   };
-   ```
+1. **Verify dependencies are installed** (refer to Step 3 above)
 
-   **Rsdoctor Plugin Configuration Example (Webpack):**
+2. **Configure Rsdoctor plugin:**
+   - Refer to `reference/install-rsdoctor.md` for plugin configuration examples
+   - Determine project framework (`framework: 'rspack'`, `'rsbuild'`, `'webpack'`, or `'modern.js'`)
+   - Follow the configuration steps in the reference document based on framework type
 
-   ```js
-   // webpack.config.js
-   const { RsdoctorWebpackPlugin } = require('@rsdoctor/webpack-plugin');
+   **Critical configuration requirements:**
+   - `disableClientServer: true` - Must be true, otherwise local server will start and block LLM execution
+   - `output.mode: 'brief'` - Required: Use brief mode
+   - `output.options.type: ['json']` - Must include 'json' to generate rsdoctor-data.json
 
-   module.exports = {
-     // ... existing config
-     plugins: [
-       // ... existing plugins
-       // Only register plugin when RSDOCTOR is true, as plugin will increase build time
-       process.env.RSDOCTOR &&
-         new RsdoctorWebpackPlugin({
-           disableClientServer: true, // Must be true, otherwise local server will start and block LLM execution
-           output: {
-             mode: 'brief', // Required: Use brief mode
-             options: {
-               type: ['json'], // Must include 'json' to generate rsdoctor-data.json
-             },
-           },
-         }),
-     ].filter(Boolean),
-   };
-   ```
-
-   **Build commands:**
+3. **Execute build with RSDOCTOR environment variable:**
 
    ```bash
-   # Set RSDOCTOR environment variable and execute build
    RSDOCTOR=true npm run build
-   # Or use pnpm
+   # Or use pnpm/yarn
    RSDOCTOR=true pnpm run build
-   # Or use yarn
-   RSDOCTOR=true yarn build
    ```
 
    After build completes, `rsdoctor-data.json` file will be generated in the output directory (common locations: `dist/rsdoctor-data.json`, `output/rsdoctor-data.json`, `static/rsdoctor-data.json`).
 
-3. **Use found file for analysis**
-   - Use `--data-file <path>` parameter to specify JSON file path and execute analysis commands
+### Step 6: Execute Analysis Commands
+
+**Once `rsdoctor-data.json` file is available:**
+
+1. **Use `--data-file <path>` parameter** to specify JSON file path
+2. **Execute analysis commands** using the CLI script
+3. **Review analysis results** and provide recommendations
 
 **Analysis Examples (assuming `rsdoctor-data.json` file is found):**
 
@@ -226,13 +192,33 @@ node scripts/rsdoctor.js build config --data-file ./dist/rsdoctor-data.json
 
 ## Workflow
 
-1. **Prerequisites check:** Version requirements met, JSON file readable.
-2. **Data retrieval:** Execute corresponding CLI commands (format: `<group> <subcommand> [options]`), commands will automatically call corresponding function methods:
-   - When path is needed, first execute `modules by-path --path "<path>"` (calls `getModuleByPath()`), if multiple matches then execute `modules by-id --id <id>` (calls `getModuleById()`)
-   - Other commands directly execute corresponding `<group> <subcommand>` format
-3. **Output delivery:** Follow response format closely; if data is missing, explain reason and next steps.
+**Execution workflow steps:**
 
-**Important note:** All commands require `--data-file <path>` global parameter to specify JSON file path.
+### Step 1: Prerequisites Check
+
+- Verify version requirements are met (Node 18+, plugin versions >= 1.1.2)
+- Verify `rsdoctor-data.json` file exists and is readable
+- Confirm `--data-file <path>` parameter is provided
+
+### Step 2: Data Retrieval
+
+Execute corresponding CLI commands (format: `<group> <subcommand> [options]`):
+
+- **For path-based queries:**
+  1. First execute `modules by-path --path "<path>"` (calls `getModuleByPath()`)
+  2. If multiple matches found, execute `modules by-id --id <id>` (calls `getModuleById()`) for specific module
+
+- **For other commands:**
+  - Directly execute corresponding `<group> <subcommand>` format
+  - Commands automatically call corresponding function methods
+
+**Important:** All commands require `--data-file <path>` global parameter to specify JSON file path.
+
+### Step 3: Output Delivery
+
+- Follow response format closely (Conclusion → Metrics → Actions → Sources → Gaps)
+- If data is missing, explain reason and next steps
+- Provide actionable recommendations without modifying code
 
 ## Command Mapping (CLI Command → Function Method → Purpose)
 
@@ -244,15 +230,7 @@ node scripts/rsdoctor.js build config --data-file ./dist/rsdoctor-data.json
   - `--page-number <pageNumber>`: Page number (default: 1)
   - `--page-size <pageSize>`: Page size (default: 100, max: 1000)
 
-  Examples:
-
-  ```bash
-  # Default: return page 1, 100 items per page
-  node scripts/rsdoctor.js chunks list --data-file ./dist/rsdoctor-data.json
-
-  # Return page 2, 50 items per page
-  node scripts/rsdoctor.js chunks list --page-number 2 --page-size 50 --data-file ./dist/rsdoctor-data.json
-  ```
+  **Example:** `chunks list --page-number 2 --page-size 50 --data-file ./dist/rsdoctor-data.json`
 
 - `chunks by-id --id <n>` → `getChunkById()` → Get detailed information by chunk id
 - `chunks large` → `findLargeChunks()` → Find oversized chunks (threshold = median \* 1.3 and >= 1MB)
@@ -276,19 +254,7 @@ node scripts/rsdoctor.js build config --data-file ./dist/rsdoctor-data.json
   - Side effect modules in node_modules (statistics by package name, size and count, listing libraries with large side effects like react, lodash-es, etc.)
   - Side effect modules in user code (listing specific module paths, moduleId and **bailoutReason**, for targeted optimization)
 
-  **Pagination parameters:**
-  - `--page-number <pageNumber>`: Page number (default: 1)
-  - `--page-size <pageSize>`: Page size (default: 100, max: 1000)
-
-  Examples:
-
-  ```bash
-  # Default: return page 1, 100 items per page
-  node scripts/rsdoctor.js modules side-effects --data-file ./dist/rsdoctor-data.json
-
-  # Return page 2, 200 items per page
-  node scripts/rsdoctor.js modules side-effects --page-number 2 --page-size 200 --data-file ./dist/rsdoctor-data.json
-  ```
+  **Pagination:** `--page-number <n>` (default: 1), `--page-size <n>` (default: 100, max: 1000)
 
 ### Packages (Dependency Analysis)
 
@@ -296,19 +262,7 @@ node scripts/rsdoctor.js build config --data-file ./dist/rsdoctor-data.json
 - `packages by-name --name <pkg>` → `getPackageByName()` → Find package by package name
 - `packages dependencies` → `getPackageDependencies()` → Get package dependency graph
 
-  **Pagination parameters:**
-  - `--page-number <pageNumber>`: Page number (default: 1)
-  - `--page-size <pageSize>`: Page size (default: 100, max: 1000)
-
-  Examples:
-
-  ```bash
-  # Default: return page 1, 100 items per page
-  node scripts/rsdoctor.js packages dependencies --data-file ./dist/rsdoctor-data.json
-
-  # Return page 2, 200 items per page
-  node scripts/rsdoctor.js packages dependencies --page-number 2 --page-size 200 --data-file ./dist/rsdoctor-data.json
-  ```
+  **Pagination:** `--page-number <n>` (default: 1), `--page-size <n>` (default: 100, max: 1000)
 
 - `packages duplicates` → `detectDuplicatePackages()` → Detect duplicate packages (using E1001 overlay rule)
 - `packages similar` → `detectSimilarPackages()` → Detect similar packages (e.g., lodash/lodash-es)
@@ -323,37 +277,11 @@ node scripts/rsdoctor.js build config --data-file ./dist/rsdoctor-data.json
 
 - `loaders hot-files` → `getHotFiles()` → Get the slowest 1/3 loader/file pairs (sorted by cost)
 
-  **Pagination and filtering parameters:**
-  - `--page-number <pageNumber>`: Page number (default: 1)
-  - `--page-size <pageSize>`: Page size (default: 100, max: 1000)
-  - `--min-costs <minCosts>`: Minimum cost threshold (filter condition)
-
-  Examples:
-
-  ```bash
-  # Default: return page 1, 100 items per page
-  node scripts/rsdoctor.js loaders hot-files --data-file ./dist/rsdoctor-data.json
-
-  # Return page 2, 50 items per page, and only show items with cost >= 100ms
-  node scripts/rsdoctor.js loaders hot-files --page-number 2 --page-size 50 --min-costs 100 --data-file ./dist/rsdoctor-data.json
-  ```
+  **Pagination & filtering:** `--page-number <n>`, `--page-size <n>`, `--min-costs <ms>` (filter threshold)
 
 - `loaders directories` → `getDirectories()` → Loader time grouped by directory
 
-  **Pagination and filtering parameters:**
-  - `--page-number <pageNumber>`: Page number (default: 1)
-  - `--page-size <pageSize>`: Page size (default: 100, max: 1000)
-  - `--min-total-costs <minTotalCosts>`: Minimum total cost threshold (filter condition)
-
-  Examples:
-
-  ```bash
-  # Default: return page 1, 100 items per page
-  node scripts/rsdoctor.js loaders directories --data-file ./dist/rsdoctor-data.json
-
-  # Return page 1, 200 items per page, and only show directories with total cost >= 500ms
-  node scripts/rsdoctor.js loaders directories --page-size 200 --min-total-costs 500 --data-file ./dist/rsdoctor-data.json
-  ```
+  **Pagination & filtering:** `--page-number <n>`, `--page-size <n>`, `--min-total-costs <ms>` (filter threshold)
 
 ### Build (Build Analysis)
 
@@ -464,40 +392,15 @@ When executing these commands, LLM should clearly know which function is being c
 
 - When user says "package", prioritize package dimension; when path is incomplete, use fuzzy search first then use id for precise lookup.
 - **Command execution method:** Use the new command format `<group> <subcommand>` (e.g., `modules side-effects`), not the old format `<group>:<subcommand>` (e.g., `modules:side-effects`).
-- **BailoutReason check for side-effects and tree-shaking:**
-
-  **Important:** The `modules side-effects` command (calls `getSideEffects()` function) **must use `bailoutReason` data from `rsdoctor-data.json`** to analyze which modules cannot be tree-shaken.
-
-  **How it works:**
-  - Reads the `bailoutReason` field of each module from `moduleGraph.modules` in `rsdoctor-data.json`
-  - The `bailoutReason` field identifies why a module cannot be tree-shaken, common values include:
-    - `"side effects"` - Module has side effects, cannot be safely removed
-    - `"dynamic import"` - Dynamic import, cannot be statically analyzed
-    - `"unknown exports"` - Unknown exports, cannot determine usage
-    - `"re-export"` - Re-export, needs to be kept
-    - Other tree-shaking failure reasons
-  - Only returns modules with `bailoutReason` (i.e., modules that cannot be tree-shaken)
-
-  **Return results categorized:**
-  - **Side effect modules in node_modules:** Statistics by package name, listing libraries with large side effects (like react, lodash-es, etc.) and their total size and module count, helping identify which third-party libraries have large side effects
-  - **Side effect modules in user code:** Lists specific module paths, moduleId and **bailoutReason**, for targeted optimization
-
-  **Optimization recommendation examples:**
-  - If `bailoutReason` is `"side effects"`: Check if there are top-level side effects (like initialization/global registration) that can be deferred or executed on demand
-  - If `bailoutReason` is `"dynamic import"`: Consider whether static imports can be used, or use code splitting optimization
-  - If `bailoutReason` is `"unknown exports"`: Check if exports are explicit, consider using named exports instead of default exports
-
-  **Note:** If `rsdoctor-data.json` does not have the `bailoutReason` field, it means tree-shaking analysis was not enabled during build, and you need to ensure the Rsdoctor plugin is correctly configured and rebuild.
+- **Side-effects analysis:** The `modules side-effects` command **must use `bailoutReason` field from `rsdoctor-data.json`** to identify modules that cannot be tree-shaken. Common `bailoutReason` values: `"side effects"`, `"dynamic import"`, `"unknown exports"`, `"re-export"`.
 
 ## Troubleshooting
 
 - **JSON file error:** Check if the file path is correct, if the file exists and is readable, if the file format is valid JSON. Ensure `RSDOCTOR=true` environment variable was used during build.
 - **File not found:** Confirm that build has generated `rsdoctor-data.json` file, usually in the output directory (e.g., `dist/`, `output/`, `static/`). Check if `--data-file` parameter path is correct. Can use `server port` command (calls `getPort()` function) to confirm the currently used file path.
 - **Dependencies not installed:**
-  - Check if legacy packages exist (`@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin`), if they exist then no installation needed
-  - If neither exists, provide installation commands based on project type:
-    - Rspack/Rsbuild/Modern Rspack projects: `pnpm add @rsdoctor/rspack-plugin -D`
-    - Webpack/Modern Webpack projects: `pnpm add @rsdoctor/webpack-plugin -D`
+  - Check if packages exist (`@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin`), if they exist then no installation needed
+  - If neither exists, refer to `reference/install-rsdoctor.md` for installation commands based on project type
 - **Version not met:** Point out packages that need upgrading and target versions, provide overrides/alias suggestions. Minimum version requirements: `@rsdoctor/rspack-plugin >= 1.1.2`, `@rsdoctor/webpack-plugin >= 1.1.2`.
 - **High latency warning:** `assets media` (calls `getMediaAssets()` function), `bundle optimize` (calls `optimizeBundle()` function) will fetch all chunks, can remind users to call step-by-step first or add `--compact`.
 - **Missing parameters:** If `--data-file` parameter is missing, ensure JSON file path is provided when executing commands. All commands require `--data-file <path>` global parameter.

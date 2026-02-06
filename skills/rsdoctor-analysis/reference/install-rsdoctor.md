@@ -1,17 +1,49 @@
 # install rsdoctor plugin
 
+## Scenario Decision Logic
+
+**When helping users install Rsdoctor, first determine their project type:**
+
+1. **Check project type** (`projectType`):
+   - If project uses **Rspack** (including Rsbuild, Rslib, or any Rspack-based project) → Use `projectType: 'rspack'`
+   - If project uses **Webpack** (webpack >= 5) → Use `projectType: 'webpack'`
+
+2. **Check framework** (`framework`):
+   - If using **pure Rspack** → Use `framework: 'rspack'`
+   - If using **Rsbuild** → Use `framework: 'rsbuild'`
+   - If using **pure Webpack** → Use `framework: 'webpack'`
+   - If using **Modern.js** → Use `framework: 'modern.js'`
+
+**Decision flow:**
+
+```
+User's project
+├─ Is it Rspack-based? (Rsbuild, Rslib, etc.)
+│  ├─ Yes → projectType: 'rspack'
+│  │  ├─ Pure Rspack? → framework: 'rspack'
+│  │  ├─ Rsbuild? → framework: 'rsbuild'
+│  │  └─ Modern.js? → framework: 'modern.js'
+│  └─ No → Is it Webpack >= 5?
+│     └─ Yes → projectType: 'webpack', framework: 'webpack'
+```
+
 ## Step 1: install dependencies
 
-Install the appropriate package based on your project type:
+**Conditional logic:** Based on `projectType` variable
+
+**IF** `projectType === 'rspack'`:
 
 ### Rspack projects
 
 For projects based on Rspack, such as Rsbuild or Rslib:
+**Note:** Prefer using the latest versions of the above dependencies when available.
 
 ```bash
 npm add @rsdoctor/rspack-plugin -D
 pnpm add @rsdoctor/rspack-plugin -D
 ```
+
+**ELSE IF** `projectType === 'webpack'`:
 
 ### webpack projects
 
@@ -37,14 +69,18 @@ After the dependency installation, you need to integrate the Rsdoctor plugin int
 This configuration ensures that only JSON data is generated, which is suitable for analysis without starting the Rsdoctor server.
 :::
 
+**Conditional logic:** Based on `framework` variable
+
+**IF** `framework === 'rspack'`:
+
 ### Rspack
 
-Initialize the plugin in the [plugins](https://www.rspack.rs/config/plugins.html#plugins) of `rspack.config.js`:
+Initialize the plugin in the [plugins](https://www.rspack.rs/config/plugins.html#plugins) of `rspack.config.ts`:
 
-```js title="rspack.config.js"
-const { RsdoctorRspackPlugin } = require('@rsdoctor/rspack-plugin');
+```ts title="rspack.config.ts"
+import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
 
-module.exports = {
+export default {
   // ...
   plugins: [
     // Only register the plugin when RSDOCTOR is true, as the plugin will increase the build time.
@@ -65,30 +101,42 @@ module.exports = {
 
 - **Options:** The plugin provides some configurations, please refer to [Options](../../config/options/options).
 
+**ELSE IF** `framework === 'rsbuild'`:
+
 ### Rsbuild
 
 Rsbuild has built-in support for Rsdoctor, so you don't need to manually register plugins. See [Rsbuild - Use Rsdoctor](https://rsbuild.rs/guide/debug/rsdoctor) for more details.
 
-To generate JSON data for AI tools analysis, configure it in `rsbuild.config.ts`:
+To generate JSON data for tmates analysis, configure it in `rsbuild.config.ts`:
 
 ```ts title="rsbuild.config.ts"
+import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
 import { defineConfig } from '@rsbuild/core';
 
 export default defineConfig({
-  // ... other config
+  // ... existing config
   tools: {
-    rsdoctor: {
-      disableClientServer: true,
-      output: {
-        mode: 'brief',
-        options: {
-          type: ['json'],
-        },
-      },
+    rspack(config, { appendPlugins }) {
+      // Only register plugin when RSDOCTOR is true, as plugin will increase build time
+      if (process.env.RSDOCTOR) {
+        appendPlugins(
+          new RsdoctorRspackPlugin({
+            disableClientServer: true, // Required: Prevent starting local server
+            output: {
+              mode: 'brief', // Required: Use brief mode
+              options: {
+                type: ['json'], // Required: Only generate JSON data
+              },
+            },
+          }),
+        );
+      }
     },
   },
 });
 ```
+
+**ELSE IF** `framework === 'webpack'`:
 
 ### Webpack
 
@@ -117,6 +165,8 @@ module.exports = {
 ```
 
 - **Options:** The plugin provides some configurations, please refer to [Options](../../config/options/options).
+
+**ELSE IF** `framework === 'modern.js'`:
 
 ### Modern.js
 
@@ -168,7 +218,10 @@ If you cannot find the file, ask the user to provide the path to `rsdoctor-data.
 
 The file is typically generated in the same directory as your build output (e.g., `dist`, `output`, `static`). You can configure a custom output directory using the `output.reportDir` option:
 
+**Conditional logic:** Based on `projectType` variable
+
 ```js
+// IF projectType === 'rspack'
 // Rspack project
 new RsdoctorRspackPlugin({
   disableClientServer: true,
@@ -181,6 +234,7 @@ new RsdoctorRspackPlugin({
   },
 });
 
+// ELSE IF projectType === 'webpack'
 // Webpack project
 new RsdoctorWebpackPlugin({
   disableClientServer: true,

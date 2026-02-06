@@ -16,6 +16,7 @@ module.exports = {
     'coverage',
     'node_modules',
     'pnpm-lock.yaml',
+    'skills/**/scripts',
   ],
   flagWords: banWords,
   dictionaries: ['dictionary'],

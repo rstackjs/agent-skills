@@ -1332,9 +1332,9 @@ Expecting one of '${allowedValues.join("', '")}'`);
                 if (argument.argChoices) extraInfo.push(`choices: ${argument.argChoices.map((choice)=>JSON.stringify(choice)).join(', ')}`);
                 if (void 0 !== argument.defaultValue) extraInfo.push(`default: ${argument.defaultValueDescription || JSON.stringify(argument.defaultValue)}`);
                 if (extraInfo.length > 0) {
-                    const extraDescripton = `(${extraInfo.join(', ')})`;
-                    if (argument.description) return `${argument.description} ${extraDescripton}`;
-                    return extraDescripton;
+                    const extraDescription = `(${extraInfo.join(', ')})`;
+                    if (argument.description) return `${argument.description} ${extraDescription}`;
+                    return extraDescription;
                 }
                 return argument.description;
             }

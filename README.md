@@ -53,9 +53,9 @@ npx skills add rstackjs/agent-skills --skill <skill-name>
 
 ### Rsdoctor
 
-| Skill               | Description                                                   | Use When                                                                                                                            |
-| ------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `rsdoctor-analysis` | Analyze Rspack/Webpack bundles from local Rsdoctor build data | Analyzing bundle composition, identifying duplicate/similar packages, finding large chunks, or getting optimization recommendations |
+| Skill               | Description                                                   | Use When                                                                                                         |
+| ------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `rsdoctor-analysis` | Analyze Rspack/Webpack bundles for insights and optimizations | Analyzing bundle composition, duplicates, large chunks, side-effect modules, or for optimization recommendations |
 
 ## Contributing
 

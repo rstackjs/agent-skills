@@ -36,10 +36,6 @@ You are an AI assistant for Rsdoctor. Through the rsdoctor-skill JS CLI, read th
 
 **Important:** Even if analysis results suggest users modify code (such as splitting chunks, removing duplicate packages, optimizing loader configuration, etc.), **do not automatically execute these modifications**. Only provide suggestions and guidance, letting users decide whether to modify.
 
-## Trigger Criteria
-
-- **Three usage scenarios:** Create MR, get diff via MR URL, MR checklist + failure log aggregation.
-
 ## Prerequisites
 
 ### Step 1: Environment Requirements
@@ -62,18 +58,19 @@ You are an AI assistant for Rsdoctor. Through the rsdoctor-skill JS CLI, read th
 
 ### Step 3: Dependency Check and Installation
 
-**For detailed installation instructions, refer to:** `reference/install-rsdoctor.md`
+**Check if packages are installed:**
 
-**Steps to check and install dependencies:**
+- `@rsdoctor/rspack-plugin` in `package.json` devDependencies (Rspack/Rsbuild/Modern.js)
+- `@rsdoctor/webpack-plugin` in `package.json` devDependencies (Webpack)
 
-1. **Check if packages are already installed:**
-   - Check if `@rsdoctor/rspack-plugin` exists in `package.json` (in `devDependencies`, applicable to Rspack/Rsbuild/Modern Rspack)
-   - Check if `@rsdoctor/webpack-plugin` exists in `package.json` (in `devDependencies`, applicable to Webpack/Modern Webpack)
-   - **If any package exists**: Dependencies are installed, proceed to Step 4
+**If not installed, refer to:**
 
-2. **If no packages found, install dependencies:**
-   - Refer to `reference/install-rsdoctor.md` for installation commands by project type
-   - Follow the installation steps in the reference document based on project type (`projectType: 'rspack'` or `projectType: 'webpack'`)
+<If condition="projectType === 'rspack'">
+Refer to @skills/rsdoctor-analysis/reference/install-rsdoctor-rspack.md
+</If>
+<Else>
+Refer to @skills/rsdoctor-analysis/reference/install-rsdoctor-webpack.md
+</Else>
 
 ## Quick Start (Including Plugin Installation)
 
@@ -84,37 +81,32 @@ You are an AI assistant for Rsdoctor. Through the rsdoctor-skill JS CLI, read th
 1. **Search for existing `rsdoctor-data.json` file:**
    - Search in the target project's output directory
    - Common paths: `dist/rsdoctor-data.json`, `output/rsdoctor-data.json`, `static/rsdoctor-data.json`, `.rsdoctor/rsdoctor-data.json`
-   - **If file is found:** Use it directly for analysis (proceed to Step 6)
 
-2. **If file is not found:**
-   - Ask user if they know the location of `rsdoctor-data.json` file
-   - If user doesn't know or file truly doesn't exist, proceed to Step 5
+<If condition="fileFound === true">
+Use it directly for analysis (proceed to Step 6)
+</If>
+<Else>
+Ask user if they know the location. If not, proceed to Step 5
+</Else>
 
 ### Step 5: Configure Plugin and Generate rsdoctor-data.json
 
-**If `rsdoctor-data.json` file is not found, follow these steps:**
+**If file not found:**
 
-1. **Verify dependencies are installed** (refer to Step 3 above)
+1. **Verify dependencies** (Step 3)
+2. **Configure plugin:**
 
-2. **Configure Rsdoctor plugin:**
-   - Refer to `reference/install-rsdoctor.md` for plugin configuration examples
-   - Determine project framework (`framework: 'rspack'`, `'rsbuild'`, `'webpack'`, or `'modern.js'`)
-   - Follow the configuration steps in the reference document based on framework type
+<If condition="projectType === 'rspack'">
+Refer to @skills/rsdoctor-analysis/reference/install-rsdoctor-rspack.md for plugin configuration examples
+</If>
+<Else>
+Refer to @skills/rsdoctor-analysis/reference/install-rsdoctor-webpack.md for plugin configuration examples
+</Else>
 
-   **Critical configuration requirements:**
-   - `disableClientServer: true` - Must be true, otherwise local server will start and block LLM execution
-   - `output.mode: 'brief'` - Required: Use brief mode
-   - `output.options.type: ['json']` - Must include 'json' to generate rsdoctor-data.json
+**Required:** `disableClientServer: true`, `output.mode: 'brief'`, `output.options.type: ['json']`
 
-3. **Execute build with RSDOCTOR environment variable:**
-
-   ```bash
-   RSDOCTOR=true npm run build
-   # Or use pnpm/yarn
-   RSDOCTOR=true pnpm run build
-   ```
-
-   After build completes, `rsdoctor-data.json` file will be generated in the output directory (common locations: `dist/rsdoctor-data.json`, `output/rsdoctor-data.json`, `static/rsdoctor-data.json`).
+3. **Build:** `RSDOCTOR=true npm run build` (or pnpm/yarn)
+4. **File location:** `dist/rsdoctor-data.json`, `output/rsdoctor-data.json`, or `static/rsdoctor-data.json`
 
 ### Step 6: Execute Analysis Commands
 
@@ -124,284 +116,124 @@ You are an AI assistant for Rsdoctor. Through the rsdoctor-skill JS CLI, read th
 2. **Execute analysis commands** using the CLI script
 3. **Review analysis results** and provide recommendations
 
-**Analysis Examples (assuming `rsdoctor-data.json` file is found):**
-
-```bash
-# Analyze chunks
-node scripts/rsdoctor.js chunks list --data-file ./dist/rsdoctor-data.json
-
-# Analyze packages
-node scripts/rsdoctor.js packages list --data-file ./dist/rsdoctor-data.json
-
-# Compare asset differences between two rsdoctor data files
-node scripts/rsdoctor.js assets diff --baseline ./dist/rsdoctor-data.json --current ./dist/rsdoctor-data-after.json
-```
-
-## Execution Method
-
 :::tip
 Scripts are in the skill's directory, use absolute paths to execute! Built files are in the `dist/` directory.
 :::
 
-- **Absolute path execution:** `node ${ROOT}/skills/rsdoctor/scripts/rsdoctor.js <group> <subcommand> [options] [--data-file <path>] [--compact]`
-- **Command structure:** `<group> <subcommand> [--option value]`
-- **Global parameters:**
-  - `--data-file <path>`: **Required**, specify the path to rsdoctor-data.json file
-  - `--compact`: Optional, compact JSON output (no indentation)
-- Default output is JSON format
-
 **Common usage examples:**
 
 ```bash
-# View all chunks (calls listChunks() function)
+# Analyze chunks, packages, modules, assets, errors, build info
 node scripts/rsdoctor.js chunks list --data-file ./dist/rsdoctor-data.json
-
-# View specific chunk details (calls getChunkById() function)
-node scripts/rsdoctor.js chunks by-id --id 0 --data-file ./dist/rsdoctor-data.json
-
-# Find module (calls getModuleByPath() function)
-node scripts/rsdoctor.js modules by-path --path "src/index.tsx" --data-file ./dist/rsdoctor-data.json
-
-# Analyze large chunks (calls findLargeChunks() function, finds chunks >30% over median and >= 1MB)
-node scripts/rsdoctor.js chunks large --data-file ./dist/rsdoctor-data.json
-
-# View duplicate packages (calls detectDuplicatePackages() function)
 node scripts/rsdoctor.js packages duplicates --data-file ./dist/rsdoctor-data.json
-
-# Comprehensive optimization recommendations (calls optimizeBundle() function)
-node scripts/rsdoctor.js bundle optimize --data-file ./dist/rsdoctor-data.json
-
-# Get build summary (build time analysis, calls getSummary() function)
-node scripts/rsdoctor.js build summary --data-file ./dist/rsdoctor-data.json
-
-# List all assets (calls listAssets() function)
-node scripts/rsdoctor.js assets list --data-file ./dist/rsdoctor-data.json
-
-# Get all errors and warnings (calls listErrors() function)
-node scripts/rsdoctor.js errors list --data-file ./dist/rsdoctor-data.json
-
-# Filter by error code (e.g., E1001 duplicate package error, calls getErrorsByCode() function)
-node scripts/rsdoctor.js errors by-code --code E1001 --data-file ./dist/rsdoctor-data.json
-
-# Get modules with side effects (cannot be tree-shaken, calls getSideEffects() function)
 node scripts/rsdoctor.js modules side-effects --data-file ./dist/rsdoctor-data.json
-
-# Get build configuration (calls getConfig() function)
-node scripts/rsdoctor.js build config --data-file ./dist/rsdoctor-data.json
+node scripts/rsdoctor.js bundle optimize --data-file ./dist/rsdoctor-data.json
 ```
 
 ## Workflow
 
-**Execution workflow steps:**
+1. **Prerequisites:** Verify Node 18+, plugin versions >= 1.1.2, `rsdoctor-data.json` exists, `--data-file` provided
+2. **Data retrieval:** Execute `<group> <subcommand> [options] --data-file <path>`
 
-### Step 1: Prerequisites Check
+<If condition="queryType === 'path'">
+First execute `modules by-path --path "<path>"`. If multiple matches found, execute `modules by-id --id <id>` for specific module.
+</If>
+<Else>
+Directly execute corresponding `<group> <subcommand>` format
+</Else>
 
-- Verify version requirements are met (Node 18+, plugin versions >= 1.1.2)
-- Verify `rsdoctor-data.json` file exists and is readable
-- Confirm `--data-file <path>` parameter is provided
+3. **Output:** Follow format (Conclusion → Metrics → Actions → Sources → Gaps). Provide recommendations only, no code modifications.
 
-### Step 2: Data Retrieval
+## Command Mapping
 
-Execute corresponding CLI commands (format: `<group> <subcommand> [options]`):
+**Format:** `<group> <subcommand> [options] --data-file <path>`
 
-- **For path-based queries:**
-  1. First execute `modules by-path --path "<path>"` (calls `getModuleByPath()`)
-  2. If multiple matches found, execute `modules by-id --id <id>` (calls `getModuleById()`) for specific module
+### Chunks
 
-- **For other commands:**
-  - Directly execute corresponding `<group> <subcommand>` format
-  - Commands automatically call corresponding function methods
+- `chunks list` → `listChunks()` → All chunks (id, name, size, modules). **Pagination:** `--page-number <n>`, `--page-size <n>` (default: 1, 100; max: 1000)
+- `chunks by-id --id <n>` → `getChunkById()` → Chunk details by id
+- `chunks large` → `findLargeChunks()` → Oversized chunks (median × 1.3 and >= 1MB)
 
-**Important:** All commands require `--data-file <path>` global parameter to specify JSON file path.
+### Modules
 
-### Step 3: Output Delivery
+- `modules by-id --id <id>` → `getModuleById()` → Module details by id
+- `modules by-path --path "<path>"` → `getModuleByPath()` → Find by path (if multiple, use `by-id`)
+- `modules issuer --id <id>` → `getModuleIssuerPath()` → Trace issuer/import chain
+- `modules exports` → `getModuleExports()` → Module export info
+- `modules side-effects` → `getSideEffects()` → Non-tree-shakeable modules (uses `bailoutReason`). **Pagination:** `--page-number <n>`, `--page-size <n>`
 
-- Follow response format closely (Conclusion → Metrics → Actions → Sources → Gaps)
-- If data is missing, explain reason and next steps
-- Provide actionable recommendations without modifying code
+### Packages
 
-## Command Mapping (CLI Command → Function Method → Purpose)
+- `packages list` → `listPackages()` → All packages (size/duplication info)
+- `packages by-name --name <pkg>` → `getPackageByName()` → Find by name
+- `packages dependencies` → `getPackageDependencies()` → Dependency graph. **Pagination:** `--page-number <n>`, `--page-size <n>`
+- `packages duplicates` → `detectDuplicatePackages()` → Duplicate packages (E1001 rule)
+- `packages similar` → `detectSimilarPackages()` → Similar packages (e.g., lodash/lodash-es)
 
-### Chunks (Output/Chunk Analysis)
+### Assets
 
-- `chunks list` → `listChunks()` → Get all chunks (id, name, size, modules)
+- `assets list` → `listAssets()` → All build assets (path, size, gzip)
+- `assets diff --baseline <path> --current <path>` → `diffAssets()` → Compare two builds
+- `assets media` → `getMediaAssets()` → Media optimization recommendations
 
-  **Pagination parameters:**
-  - `--page-number <pageNumber>`: Page number (default: 1)
-  - `--page-size <pageSize>`: Page size (default: 100, max: 1000)
+### Loaders
 
-  **Example:** `chunks list --page-number 2 --page-size 50 --data-file ./dist/rsdoctor-data.json`
+- `loaders hot-files` → `getHotFiles()` → Slowest 1/3 loader/file pairs. **Pagination & filter:** `--page-number <n>`, `--page-size <n>`, `--min-costs <ms>`
+- `loaders directories` → `getDirectories()` → Loader time by directory. **Pagination & filter:** `--page-number <n>`, `--page-size <n>`, `--min-total-costs <ms>`
 
-- `chunks by-id --id <n>` → `getChunkById()` → Get detailed information by chunk id
-- `chunks large` → `findLargeChunks()` → Find oversized chunks (threshold = median \* 1.3 and >= 1MB)
+### Build
 
-### Modules (Module Analysis)
+- `build summary` → `getSummary()` → Build summary (time analysis, stage costs)
+- `build entrypoints` → `listEntrypoints()` → All entrypoints and config
+- `build config` → `getConfig()` → Complete build configuration
+- `bundle optimize` → `optimizeBundle()` → Comprehensive recommendations (duplicates/similar/media/large chunks/side-effects). **Step-by-step:** `--step <1|2>`, `--side-effects-page-number <n>`, `--side-effects-page-size <n>`
 
-- `modules by-id --id <id>` → `getModuleById()` → Get module details by module id
-- `modules by-path --path "<path>"` → `getModuleByPath()` → Find module by path (if multiple matches, returns candidates, then use `modules by-id --id <id>`)
-- `modules issuer --id <id>` → `getModuleIssuerPath()` → Trace module's issuer/import chain
-- `modules exports` → `getModuleExports()` → Get module export information
-- `modules side-effects` → `getSideEffects()` → Get modules that cannot be tree-shaken based on `module.bailoutReason` data from `rsdoctor-data.json`
+### Errors
 
-  **Key:** This command **must use the `bailoutReason` field from `rsdoctor-data.json`** to analyze why tree-shaking failed.
-
-  **bailoutReason field description:**
-  - The `bailoutReason` field identifies why a module cannot be tree-shaken
-  - Common values: `"side effects"` (side effects), `"dynamic import"` (dynamic import), `"unknown exports"` (unknown exports), `"re-export"` (re-export), etc.
-  - Only modules with `bailoutReason` are returned (i.e., modules that cannot be tree-shaken)
-
-  **Return results categorized:**
-  - Side effect modules in node_modules (statistics by package name, size and count, listing libraries with large side effects like react, lodash-es, etc.)
-  - Side effect modules in user code (listing specific module paths, moduleId and **bailoutReason**, for targeted optimization)
-
-  **Pagination:** `--page-number <n>` (default: 1), `--page-size <n>` (default: 100, max: 1000)
-
-### Packages (Dependency Analysis)
-
-- `packages list` → `listPackages()` → List all packages (including size/duplication information)
-- `packages by-name --name <pkg>` → `getPackageByName()` → Find package by package name
-- `packages dependencies` → `getPackageDependencies()` → Get package dependency graph
-
-  **Pagination:** `--page-number <n>` (default: 1), `--page-size <n>` (default: 100, max: 1000)
-
-- `packages duplicates` → `detectDuplicatePackages()` → Detect duplicate packages (using E1001 overlay rule)
-- `packages similar` → `detectSimilarPackages()` → Detect similar packages (e.g., lodash/lodash-es)
-
-### Assets (Asset Analysis)
-
-- `assets list` → `listAssets()` → List all build output assets (including path, size, gzip size, etc.)
-- `assets diff --baseline <path> --current <path>` → `diffAssets()` → Compare asset volume and count changes between two builds
-- `assets media` → `getMediaAssets()` → Media asset optimization recommendations
-
-### Loaders (Compilation Time Analysis)
-
-- `loaders hot-files` → `getHotFiles()` → Get the slowest 1/3 loader/file pairs (sorted by cost)
-
-  **Pagination & filtering:** `--page-number <n>`, `--page-size <n>`, `--min-costs <ms>` (filter threshold)
-
-- `loaders directories` → `getDirectories()` → Loader time grouped by directory
-
-  **Pagination & filtering:** `--page-number <n>`, `--page-size <n>`, `--min-total-costs <ms>` (filter threshold)
-
-### Build (Build Analysis)
-
-- `build summary` → `getSummary()` → Get build summary (build time analysis, including stage costs and total build time)
-- `build entrypoints` → `listEntrypoints()` → List all entrypoints and their configuration
-- `build config` → `getConfig()` → Get complete rspack/webpack build configuration information
-- `bundle optimize` → `optimizeBundle()` → Comprehensive optimization recommendations (aggregates duplicates/similar/media/chunks large/modules side-effects)
-
-  **Step-by-step execution parameters (recommended for large data scenarios):**
-  - `--step <step>`: Execution step (1: basic analysis, 2: side effects modules). If not specified, executes both steps
-  - `--side-effects-page-number <pageNumber>`: Page number for side effects (default: 1, only used in step 2)
-  - `--side-effects-page-size <pageSize>`: Page size for side effects (default: 100, max: 1000, only used in step 2)
-
-  **Usage examples:**
-
-  ```bash
-  # Step 1: Execute basic analysis (duplicates/similar/media/large chunks)
-  node scripts/rsdoctor.js bundle optimize --step 1 --data-file ./dist/rsdoctor-data.json
-
-  # Step 2: Execute side effects modules analysis (paginated)
-  node scripts/rsdoctor.js bundle optimize --step 2 --side-effects-page-number 1 --side-effects-page-size 100 --data-file ./dist/rsdoctor-data.json
-
-  # Default: Execute all steps (backward compatible)
-  node scripts/rsdoctor.js bundle optimize --data-file ./dist/rsdoctor-data.json
-  ```
-
-  **Performance optimization notes:**
-  - Step 1 executes fast basic analysis (rules, packages, chunks)
-  - Step 2 executes side effects modules analysis, supports pagination to avoid performance issues with large data
-  - Step-by-step execution can avoid loading large amounts of data at once, improving response speed
-
-### Errors (Errors and Warnings)
-
-- `errors list` → `listErrors()` → Get all errors and warnings
-- `errors by-code --code <code>` → `getErrorsByCode()` → Filter by error code (e.g., E1001, E1004)
+- `errors list` → `listErrors()` → All errors/warnings
+- `errors by-code --code <code>` → `getErrorsByCode()` → Filter by code (E1001, E1004)
 - `errors by-level --level <level>` → `getErrorsByLevel()` → Filter by level (error/warn/info)
 
-### Rules (Rule Scanning)
+### Rules
 
-- `rules list` → `listRules()` → Get rule scanning results (overlay alerts)
+- `rules list` → `listRules()` → Rule scanning results
 
-### Server (Server Information)
+### Server
 
-- `server port` → `getPort()` → Get the path to the currently used JSON file
-
-### Output Optimization Recommendations (No server startup required, based only on rsdoctor-data.json)
-
-When executing these commands, LLM should clearly know which function is being called:
-
-- **Duplicate packages:** `packages duplicates` → Calls `detectDuplicatePackages()` function (internally calls getRuleInfo/E1001 to identify duplicate packages)
-- **Similar packages:** `packages similar` → Calls `detectSimilarPackages()` function (checks for replaceable packages of the same type)
-- **Media assets:** `assets media` → Calls `getMediaAssets()` function (suggests oversized media assets)
-- **Large files:** `chunks large` → Calls `findLargeChunks()` function (finds oversized chunks based on median × 1.3 and >= 1MB)
-- **Side effect modules:** `modules side-effects` → Calls `getSideEffects()` function
-
-  **Key:** This function **must use `module.bailoutReason` data from `rsdoctor-data.json`** to analyze why tree-shaking failed.
-
-  **How it works:**
-  - Reads the `bailoutReason` field of each module from `moduleGraph.modules` in `rsdoctor-data.json`
-  - Only returns modules with `bailoutReason` (i.e., modules that cannot be tree-shaken)
-  - The `bailoutReason` field contains reasons why the module cannot be optimized, such as:
-    - `"side effects"` - Module has side effects
-    - `"dynamic import"` - Dynamic import
-    - `"unknown exports"` - Unknown exports
-    - `"re-export"` - Re-export
-    - Other tree-shaking failure reasons
-
-  **Return results include:**
-  1. Side effect module statistics in node_modules, listing libraries with large side effects (like react, lodash-es, etc.) by package name, along with their size and module count
-  2. Side effect module list in user code, including specific module paths, moduleId and **bailoutReason**, for targeted optimization
-
-  **Note:** If `rsdoctor-data.json` does not have the `bailoutReason` field, it means tree-shaking analysis was not enabled during build, and you need to ensure the Rsdoctor plugin is correctly configured and rebuild.
-
-  **Pagination parameters:**
-  - `--page-number <pageNumber>`: Page number (default: 1)
-  - `--page-size <pageSize>`: Page size (default: 100, max: 1000)
-
-  Examples:
-
-  ```bash
-  # Default: return page 1, 100 items per page
-  node scripts/rsdoctor.js modules side-effects --data-file ./dist/rsdoctor-data.json
-
-  # Return page 2, 200 items per page
-  node scripts/rsdoctor.js modules side-effects --page-number 2 --page-size 200 --data-file ./dist/rsdoctor-data.json
-  ```
-
-- **Summary view:** `bundle optimize` → Calls `optimizeBundle()` function (aggregates duplicate packages/similar packages/media assets/large chunks/side effect modules, equivalent to calling the above five types of checks sequentially)
+- `server port` → `getPort()` → Current JSON file path
 
 ## Response Format
 
-1. Summary conclusion: One sentence summary.
-2. Key findings: Present quantitative metrics (volume/time/count/path) with bullet points.
-3. Priority action list: High/Med/Low, with specific operations (e.g., merge/split chunks, remove duplicate/similar packages, code splitting, convert images to WebP/AVIF and add width/height, etc.).
-4. Data source description: List action/method and key identifiers (chunkId/moduleId/package name/path).
-5. Data gaps: Explain reason and next steps (rerun build, check JSON file path, upgrade version, etc.).
+1. **Summary:** One sentence conclusion
+2. **Key findings:** Quantitative metrics (volume/time/count/path) with bullet points
+3. **Actions:** High/Med/Low priority with specific operations (merge/split chunks, remove duplicates, code splitting, image optimization, etc.)
+4. **Sources:** Action/method and identifiers (chunkId/moduleId/package name/path)
+5. **Gaps:** Explain reason and next steps (rerun build, check path, upgrade version)
 
-- For Top-N, use table format "Name | Volume/Time | Count | Recommendation"; when output is large, suggest users use `--compact`. Can include one-line English summary for language switching.
+**Formatting:** Top-N use table "Name | Volume/Time | Count | Recommendation". For large output, suggest `--compact`.
 
-**⚠️ Important: Only provide recommendations, do not automatically modify code**
-
-- All optimization recommendations should be presented with wording like "recommend", "consider", "try"
-- **Do not** automatically execute any code modifications (except `install` and `config` commands)
-- **Do not** directly modify user's source code or configuration files (except configuration files allowed by `config` command)
-- Let users decide whether to adopt recommendations and execute modifications
+**⚠️ Important:** Only provide recommendations, use "recommend", "consider", "try". Do not modify code (except `install`/`config` commands).
 
 ## Clarifications and Preferences
 
 - When user says "package", prioritize package dimension; when path is incomplete, use fuzzy search first then use id for precise lookup.
-- **Command execution method:** Use the new command format `<group> <subcommand>` (e.g., `modules side-effects`), not the old format `<group>:<subcommand>` (e.g., `modules:side-effects`).
-- **Side-effects analysis:** The `modules side-effects` command **must use `bailoutReason` field from `rsdoctor-data.json`** to identify modules that cannot be tree-shaken. Common `bailoutReason` values: `"side effects"`, `"dynamic import"`, `"unknown exports"`, `"re-export"`.
+- **Command format:** Use `<group> <subcommand>` (e.g., `modules side-effects`), not `<group>:<subcommand>` (deprecated).
+- **Side-effects:** Uses `bailoutReason` field from `rsdoctor-data.json`. Common values: `"side effects"`, `"dynamic import"`, `"unknown exports"`, `"re-export"`.
 
 ## Troubleshooting
 
-- **JSON file error:** Check if the file path is correct, if the file exists and is readable, if the file format is valid JSON. Ensure `RSDOCTOR=true` environment variable was used during build.
-- **File not found:** Confirm that build has generated `rsdoctor-data.json` file, usually in the output directory (e.g., `dist/`, `output/`, `static/`). Check if `--data-file` parameter path is correct. Can use `server port` command (calls `getPort()` function) to confirm the currently used file path.
-- **Dependencies not installed:**
-  - Check if packages exist (`@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin`), if they exist then no installation needed
-  - If neither exists, refer to `reference/install-rsdoctor.md` for installation commands based on project type
-- **Version not met:** Point out packages that need upgrading and target versions, provide overrides/alias suggestions. Minimum version requirements: `@rsdoctor/rspack-plugin >= 1.1.2`, `@rsdoctor/webpack-plugin >= 1.1.2`.
-- **High latency warning:** `assets media` (calls `getMediaAssets()` function), `bundle optimize` (calls `optimizeBundle()` function) will fetch all chunks, can remind users to call step-by-step first or add `--compact`.
-- **Missing parameters:** If `--data-file` parameter is missing, ensure JSON file path is provided when executing commands. All commands require `--data-file <path>` global parameter.
-- **Command format error:** Ensure correct command format `<group> <subcommand>` (e.g., `chunks list`), not the old format `<group>:<subcommand>` (e.g., `chunks:list`).
+- **JSON file error:** Check file path, existence, readability, valid JSON format. Ensure `RSDOCTOR=true` was used during build.
+- **File not found:** Confirm `rsdoctor-data.json` exists in output directory (`dist/`, `output/`, `static/`). Use `server port` command to confirm path.
+- **Dependencies not installed:** Check `@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin` in `package.json`. If missing:
+
+<If condition="projectType === 'rspack'">
+Refer to @skills/rsdoctor-analysis/reference/install-rsdoctor-rspack.md
+</If>
+<Else>
+Refer to @skills/rsdoctor-analysis/reference/install-rsdoctor-webpack.md
+</Else>
+
+- **Version not met:** Minimum `@rsdoctor/rspack-plugin >= 1.1.2`, `@rsdoctor/webpack-plugin >= 1.1.2`.
+- **High latency:** `assets media` and `bundle optimize` fetch all chunks. Use `--step` for step-by-step execution or `--compact`.
+- **Missing parameters:** All commands require `--data-file <path>`.
+- **Command format:** Use `<group> <subcommand>`, not `<group>:<subcommand>` (deprecated).

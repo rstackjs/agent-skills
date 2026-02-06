@@ -21,6 +21,13 @@ export default defineConfig({
         legalComments: 'none',
         cleanDistPath: true,
       },
+      tools: {
+        rspack: {
+          optimization: {
+            runtimeChunk: false,
+          },
+        },
+      },
     },
   ],
 });

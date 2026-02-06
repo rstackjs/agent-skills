@@ -4,7 +4,23 @@ import * as __rspack_external_node_events_0a6aefe7 from "node:events";
 import * as __rspack_external_node_fs_5ea92f0c from "node:fs";
 import * as __rspack_external_node_path_c5b9b54f from "node:path";
 import * as __rspack_external_node_process_786449bf from "node:process";
-import { __webpack_require__ } from "./rslib-runtime.js";
+var __webpack_modules__ = {};
+var __webpack_module_cache__ = {};
+function __webpack_require__(moduleId) {
+    var cachedModule = __webpack_module_cache__[moduleId];
+    if (void 0 !== cachedModule) return cachedModule.exports;
+    var module = __webpack_module_cache__[moduleId] = {
+        exports: {}
+    };
+    __webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+    return module.exports;
+}
+__webpack_require__.m = __webpack_modules__;
+(()=>{
+    __webpack_require__.add = function(modules) {
+        Object.assign(__webpack_require__.m, modules);
+    };
+})();
 __webpack_require__.add({
     "node:child_process" (module) {
         module.exports = __rspack_external_node_child_process_27f17141;
@@ -2950,3 +2966,4 @@ run().catch((error)=>{
     console.error(message);
     process.exit(1);
 });
+export { __webpack_require__ };

@@ -75,7 +75,7 @@ This configuration ensures that only JSON data is generated, which is suitable f
 
 ### Rspack
 
-Initialize the plugin in the [plugins](https://www.rspack.rs/config/plugins.html#plugins) of `rspack.config.ts`:
+Initialize the plugin in the [plugins](https://www.rspack.rs/config/plugins.html#plugins) of `rspack.config.*`:
 
 ```ts title="rspack.config.ts"
 import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
@@ -107,19 +107,16 @@ export default {
 
 Rsbuild has built-in support for Rsdoctor, so you don't need to manually register plugins. See [Rsbuild - Use Rsdoctor](https://rsbuild.rs/guide/debug/rsdoctor) for more details.
 
-To generate JSON data for tmates analysis, configure it in `rsbuild.config.ts`:
+To generate JSON data for AI tools analysis, configure it in `rsbuild.config.ts`:
 
 ```ts title="rsbuild.config.ts"
 import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
-import { defineConfig } from '@rsbuild/core';
 
-export default defineConfig({
-  // ... existing config
+export default {
   tools: {
-    rspack(config, { appendPlugins }) {
-      // Only register plugin when RSDOCTOR is true, as plugin will increase build time
-      if (process.env.RSDOCTOR) {
-        appendPlugins(
+    rspack: {
+      plugins: [
+        process.env.RSDOCTOR === 'true' &&
           new RsdoctorRspackPlugin({
             disableClientServer: true, // Required: Prevent starting local server
             output: {
@@ -129,11 +126,10 @@ export default defineConfig({
               },
             },
           }),
-        );
-      }
+      ],
     },
   },
-});
+};
 ```
 
 **ELSE IF** `framework === 'webpack'`:

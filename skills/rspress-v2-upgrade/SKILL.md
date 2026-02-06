@@ -34,4 +34,4 @@ description: Migrate Rspress projects from v1 to v2. Use when a user asks to upg
 
 6. **Validate**
    - Run the build and dev server.
-   - Fix any warnings or errors surfaced by the new version. If errors or warnings appear, refer back to the migration guide to identify which migration step was missed or incomplete, then apply the corresponding fix.
+   - Fix any warnings or errors that appear in the new version. If errors or warnings occur, please refer to the [Official Upgrade Guide](https://rspress.rs/guide/migration/rspress-1-x) and first check if it's caused by any omitted or incomplete migration steps.

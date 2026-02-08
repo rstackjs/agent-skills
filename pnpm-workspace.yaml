@@ -1,6 +1,7 @@
 packages:
   - packages/**
   - scripts/**
+  - e2e/**
   - '!**/dist/**'
   - '!**/dist-*/**'
 

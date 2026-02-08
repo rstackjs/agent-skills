@@ -17,6 +17,7 @@
     "includes": [
       "**/packages/**",
       "**/scripts/**",
+      "**/e2e/**",
       "!skills/**/scripts/*.{js,cjs,mjs}",
       "!**/node_modules",
       "!**/dist",

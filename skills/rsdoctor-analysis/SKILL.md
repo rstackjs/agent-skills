@@ -13,9 +13,17 @@ You are an AI assistant for Rsdoctor. Through the rsdoctor-skill JS CLI, read th
 
 ### ✅ Operations Allowed to Modify Code (Only the Following Two Cases)
 
+<If condition="environment === 'codex'">
+**⚠️ Important:** Do not execute `install` or `build` commands in sandbox. Commands can be executed, but avoid sandbox environment for these operations.
+</If>
+
 1. **When executing `install` command:**
    - ✅ Allowed to install dependencies (packages: `@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin`)
    - ✅ Allowed to modify `package.json` (add dependencies)
+
+<If condition="environment === 'codex'">
+   - ⚠️ **Do not execute install commands in sandbox**
+</If>
 
 2. **When executing `config` command:**
    - ✅ Allowed to create or modify configuration files (`rspack.config.*`, `webpack.config.js`, `rsbuild.config.ts`, `modern.config.ts`)
@@ -65,6 +73,10 @@ You are an AI assistant for Rsdoctor. Through the rsdoctor-skill JS CLI, read th
 
 **If not installed, refer to:**
 
+<If condition="environment === 'codex'">
+**⚠️ Do not execute install commands in sandbox.** Commands can be executed, but avoid sandbox environment for installation operations.
+</If>
+
 <If condition="projectType === 'rspack'">
 Refer to @skills/rsdoctor-analysis/reference/install-rsdoctor-rspack.md
 </If>
@@ -75,6 +87,10 @@ Refer to @skills/rsdoctor-analysis/reference/install-rsdoctor-webpack.md
 ## Quick Start (Including Plugin Installation)
 
 **Important: Do not execute build commands, only search for existing `rsdoctor-data.json` files for analysis.**
+
+<If condition="environment === 'codex'">
+**⚠️ Codex Environment:** Do not execute `install` or `build` commands in sandbox. Commands can be executed, but avoid sandbox environment for these operations.
+</If>
 
 ### Step 4: Locate rsdoctor-data.json File
 
@@ -105,7 +121,13 @@ Refer to @skills/rsdoctor-analysis/reference/install-rsdoctor-webpack.md for plu
 
 **Required:** `disableClientServer: true`, `output.mode: 'brief'`, `output.options.type: ['json']`
 
+<If condition="environment === 'codex'">
+3. **Build:** Execute `RSDOCTOR=true npm run build` (or pnpm/yarn). **⚠️ Do not execute in sandbox environment.**
+</If>
+<Else>
 3. **Build:** `RSDOCTOR=true npm run build` (or pnpm/yarn)
+</Else>
+
 4. **File location:** `dist/rsdoctor-data.json`, `output/rsdoctor-data.json`, or `static/rsdoctor-data.json`
 
 ### Step 6: Execute Analysis Commands
@@ -225,6 +247,10 @@ Directly execute corresponding `<group> <subcommand>` format
 - **JSON file error:** Check file path, existence, readability, valid JSON format. Ensure `RSDOCTOR=true` was used during build.
 - **File not found:** Confirm `rsdoctor-data.json` exists in output directory (`dist/`, `output/`, `static/`). Use `server port` command to confirm path.
 - **Dependencies not installed:** Check `@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin` in `package.json`. If missing:
+
+<If condition="environment === 'codex'">
+**⚠️ Do not execute install commands in sandbox.** Commands can be executed, but avoid sandbox environment for installation operations.
+</If>
 
 <If condition="projectType === 'rspack'">
 Refer to @skills/rsdoctor-analysis/reference/install-rsdoctor-rspack.md

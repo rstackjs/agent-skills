@@ -14,11 +14,10 @@ A collection of Agent Skills for [Rstack](https://rspack.rs/guide/start/ecosyste
 ## Table of Contents
 
 - [Usage](#usage)
-- [Skills](#skills)
-  - [Rspack](#rspack)
-  - [Rsbuild](#rsbuild)
-  - [Rspress](#rspress)
-  - [Rsdoctor](#rsdoctor)
+- [Rspack Skills](#rspack-skills)
+- [Rsbuild Skills](#rsbuild-skills)
+- [Rspress Skills](#rspress-skills)
+- [Rsdoctor Skills](#rsdoctor-skills)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -30,32 +29,59 @@ Install any skill with:
 npx skills add rstackjs/agent-skills --skill <skill-name>
 ```
 
-## Skills
+## Rspack Skills
 
-### Rspack
+### rspack-debugging
 
-| Skill              | Description                                                                      | Use When                                                 |
-| ------------------ | -------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| `rspack-debugging` | Debug crashes or deadlocks/hangs in Rspack builds using LLDB                     | Encountering "Segmentation fault" errors or build hangs  |
-| `rspack-tracing`   | Diagnose Rspack build issues with crash identification and performance profiling | Build failures, slow builds, or performance optimization |
+```bash
+npx skills add rstackjs/agent-skills --skill rspack-debugging
+```
 
-### Rsbuild
+Helps Rspack users and developers debug crashes or deadlocks/hangs in the Rspack build process using LLDB.
 
-| Skill                | Description                            | Use When                                                               |
-| -------------------- | -------------------------------------- | ---------------------------------------------------------------------- |
-| `rsbuild-v2-upgrade` | Migrate Rsbuild projects from v1 to v2 | Upgrading Rsbuild, updating configs/plugins, or validating the upgrade |
+Use this Skill when users encounter "Segmentation fault" errors during Rspack builds or when the build progress gets stuck.
 
-### Rspress
+### rspack-tracing
 
-| Skill                | Description                            | Use When                                                                       |
-| -------------------- | -------------------------------------- | ------------------------------------------------------------------------------ |
-| `rspress-v2-upgrade` | Migrate Rspress projects from v1 to v2 | Upgrading Rspress, updating packages/configs/themes, or validating the upgrade |
+```bash
+npx skills add rstackjs/agent-skills --skill rspack-tracing
+```
 
-### Rsdoctor
+Comprehensive guide and toolkit for diagnosing Rspack build issues. Quickly identify where crashes/errors occur, or perform detailed performance profiling to resolve bottlenecks.
 
-| Skill               | Description                                                   | Use When                                                                                                         |
-| ------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `rsdoctor-analysis` | Analyze Rspack/Webpack bundles for insights and optimizations | Analyzing bundle composition, duplicates, large chunks, side-effect modules, or for optimization recommendations |
+Use when the user encounters build failures, slow builds, or wants to optimize Rspack performance.
+
+## Rsbuild Skills
+
+### rsbuild-v2-upgrade
+
+```bash
+npx skills add rstackjs/agent-skills --skill rsbuild-v2-upgrade
+```
+
+Migrate Rsbuild projects from v1 to v2. Use when a user asks to upgrade Rsbuild, follow the v1-to-v2 guide, update configs/plugins, or validate the upgrade.
+
+## Rspress Skills
+
+### rspress-v2-upgrade
+
+```bash
+npx skills add rstackjs/agent-skills --skill rspress-v2-upgrade
+```
+
+Migrate Rspress projects from v1 to v2. Use when a user asks to upgrade Rspress, follow the v1-to-v2 guide, update packages/configs/themes, or validate the upgrade.
+
+## Rsdoctor Skills
+
+### rsdoctor-analysis
+
+```bash
+npx skills add rstackjs/agent-skills --skill rsdoctor-analysis
+```
+
+Analyze Rspack/Webpack bundles from local Rsdoctor build data. Provides intelligent analysis of chunk, module, package, and loader data. Provides evidence-based conclusions and actionable optimization recommendations.
+
+Use when you need to analyze bundle composition, identify duplicate packages, detect similar packages, find large chunks, analyze side effects modules, or get comprehensive bundle optimization recommendations.
 
 ## Contributing
 

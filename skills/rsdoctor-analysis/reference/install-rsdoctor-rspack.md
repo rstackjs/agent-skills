@@ -57,10 +57,10 @@ export default {
 };
 ```
 
-### Rsbuild/Rspress/Rslib/Modern.js
+### Rsbuild/Rslib/Modern.js
 
 See [Rsbuild - Use Rsdoctor](https://rsbuild.rs/guide/debug/rsdoctor) for more details.
-Modern.js project can see [tools.rspack](https://modernjs.dev/configure/app/tools/rspack) of `modern.config.ts`:
+If this is Modern.js project can see [tools.rspack](https://modernjs.dev/configure/app/tools/rspack) of `modern.config.ts`:
 
 To generate JSON data for AI tools analysis, configure it in `rsbuild.config.ts`:
 
@@ -85,6 +85,36 @@ export default {
     },
   },
 };
+```
+
+### Rspress
+
+For Rspress projects, configure the plugin in `builderConfig.tools.rspack`:
+
+```ts title="rspress.config.ts"
+import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
+import { defineConfig } from 'rspress/config';
+
+export default defineConfig({
+  builderConfig: {
+    tools: {
+      rspack: {
+        plugins: [
+          process.env.RSDOCTOR === 'true' &&
+            new RsdoctorRspackPlugin({
+              disableClientServer: true, // Required: Prevent starting local server
+              output: {
+                mode: 'brief', // Required: Use brief mode
+                options: {
+                  type: ['json'], // Required: Only generate JSON data
+                },
+              },
+            }),
+        ],
+      },
+    },
+  },
+});
 ```
 
 ## Step 3: Locate the rsdoctor-data.json

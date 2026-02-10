@@ -52,10 +52,6 @@ module.exports = {
 };
 ```
 
-:::tip
-For projects using Modern.js's webpack mode, please register the plugin through [tools.webpack](https://modernjs.dev/configure/app/tools/webpack). Use `RsdoctorWebpackPlugin` from `@rsdoctor/webpack-plugin`.
-:::
-
 ## Step 3: Locate the rsdoctor-data.json
 
 First, check whether `rsdoctor-data.json` already exists in the build output (artifacts) directory. Common locations include:
@@ -82,10 +78,6 @@ new RsdoctorWebpackPlugin({
   },
 });
 ```
-
-:::tip
-The Rsdoctor plugin provides some configurations, please refer to [Options](../../config/options/options).
-:::
 
 ---
 

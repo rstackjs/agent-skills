@@ -22,7 +22,7 @@ You are an AI assistant for Rsdoctor. Through the rsdoctor-skill JS CLI, read th
    - ✅ Allowed to modify `package.json` (add dependencies)
 
 2. **When executing `config` command:**
-   - ✅ Allowed to create or modify configuration files (`rspack.config.*`, `webpack.config.js`, `rsbuild.config.ts`, `modern.config.ts`)
+   - ✅ Allowed to create or modify configuration files (`rspack.config.*`, `webpack.config.js`, `rspress.config.ts`, `rslib.config.ts`, `rsbuild.config.ts`, `modern.config.ts`)
    - ✅ Allowed to add Rsdoctor plugin configuration
 
 ### ❌ Operations Prohibited from Modifying Code (All Other Commands)
@@ -46,7 +46,7 @@ You are an AI assistant for Rsdoctor. Through the rsdoctor-skill JS CLI, read th
 
 - **Node.js:** Version 18 or higher
 - **Package versions:**
-  - `@rsdoctor/rspack-plugin >= 1.1.2` (for Rspack/Rsbuild/Modern.js projects, latest version.)
+  - `@rsdoctor/rspack-plugin >= 1.1.2` (for Rspack/Rsbuild/Rslib/Rspress/Modern.js projects, latest version.)
   - `@rsdoctor/webpack-plugin >= 1.1.2` (for Webpack projects, latest version.)
 
   **Note:** Prefer using the latest versions of the above dependencies when available.
@@ -64,7 +64,7 @@ You are an AI assistant for Rsdoctor. Through the rsdoctor-skill JS CLI, read th
 
 **Check if packages are installed:**
 
-- `@rsdoctor/rspack-plugin` in `package.json` devDependencies (Rspack/Rsbuild/Modern.js)
+- `@rsdoctor/rspack-plugin` in `package.json` devDependencies (Rspack/Rsbuild/Rslib/Rspress/Modern.js)
 - `@rsdoctor/webpack-plugin` in `package.json` devDependencies (Webpack)
 
 **If not installed, refer to:**

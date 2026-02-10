@@ -2,9 +2,11 @@
 
 This guide covers installation for Rspack-based projects, including:
 
-- Pure Rspack
+- Rspack CLI
 - Rsbuild
-- Modern.js (Rspack mode)
+- Modern.js
+- Rslib
+- Rspress
 
 ## Step 1: Install Dependencies
 
@@ -30,7 +32,7 @@ After the dependency installation, you need to integrate the Rsdoctor plugin int
 This configuration ensures that only JSON data is generated, which is suitable for analysis without starting the Rsdoctor server.
 :::
 
-### Pure Rspack
+### Rspack CLI
 
 Initialize the plugin in the [plugins](https://www.rspack.rs/config/plugins.html#plugins) of `rspack.config.ts`:
 
@@ -38,7 +40,6 @@ Initialize the plugin in the [plugins](https://www.rspack.rs/config/plugins.html
 import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
 
 export default {
-  // ...
   plugins: [
     // Only register the plugin when RSDOCTOR is true, as the plugin will increase the build time.
     process.env.RSDOCTOR &&
@@ -52,15 +53,14 @@ export default {
           },
         },
       }),
-  ].filter(Boolean),
+  ],
 };
 ```
 
-- **Options:** The plugin provides some configurations, please refer to [Options](../../config/options/options).
+### Rsbuild/Rspress/Rslib/Modern.js
 
-### Rsbuild
-
-Rsbuild has built-in support for Rsdoctor, so you don't need to manually register plugins. See [Rsbuild - Use Rsdoctor](https://rsbuild.rs/guide/debug/rsdoctor) for more details.
+See [Rsbuild - Use Rsdoctor](https://rsbuild.rs/guide/debug/rsdoctor) for more details.
+Modern.js project can see [tools.rspack](https://modernjs.dev/configure/app/tools/rspack) of `modern.config.ts`:
 
 To generate JSON data for AI tools analysis, configure it in `rsbuild.config.ts`:
 
@@ -86,39 +86,6 @@ export default {
   },
 };
 ```
-
-### Modern.js
-
-Initialize the plugin in the [tools.rspack](https://modernjs.dev/configure/app/tools/rspack) of `modern.config.ts`:
-
-```ts title="modern.config.ts"
-import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
-
-export default {
-  // ...
-  tools: {
-    rspack(config, { appendPlugins }) {
-      // Only register the plugin when RSDOCTOR is true, as the plugin will increase the build time.
-      if (process.env.RSDOCTOR) {
-        appendPlugins(
-          new RsdoctorRspackPlugin({
-            disableClientServer: true,
-            // Generate JSON data only (suitable for AI tools analysis)
-            output: {
-              mode: 'brief',
-              options: {
-                type: ['json'],
-              },
-            },
-          }),
-        );
-      }
-    },
-  },
-};
-```
-
-- **Options:** The plugin provides some configurations, please refer to [Options](../../config/options/options).
 
 ## Step 3: Locate the rsdoctor-data.json
 
@@ -146,10 +113,6 @@ new RsdoctorRspackPlugin({
   },
 });
 ```
-
-:::tip
-The Rsdoctor plugin provides some configurations, please refer to [Options](../../config/options/options).
-:::
 
 ---
 

@@ -52,8 +52,6 @@ module.exports = {
 };
 ```
 
-- **Options:** The plugin provides some configurations, please refer to [Options](../../config/options/options).
-
 :::tip
 For projects using Modern.js's webpack mode, please register the plugin through [tools.webpack](https://modernjs.dev/configure/app/tools/webpack). Use `RsdoctorWebpackPlugin` from `@rsdoctor/webpack-plugin`.
 :::

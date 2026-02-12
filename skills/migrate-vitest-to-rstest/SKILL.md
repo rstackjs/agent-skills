@@ -24,10 +24,10 @@ Migrate Vitest-based tests and configuration to Rstest with minimal behavior cha
 2. **Open the official migration guide**
    - Use the Official guide as the source of truth:
      - https://rstest.rs/guide/migration/vitest.md
-3. Dependency install gate (blocker check)
+3. Dependency install gate (blocker check, see `references/dependency-install-gate.md`)
 4. Migrate configuration and test files following the guide and reference details (minimal patch scope)
 5. Check type errors
-6. Run tests and fix deltas (apply the `providedExports` checklist below when mocks fail unexpectedly)
+6. Run tests and fix deltas (if mocks fail unexpectedly, see `references/provided-exports-troubleshooting.md`)
 7. Remove `vitest` dependency and legacy `vitest.config.*` only after Rstest is green
 8. Summarize changes
 
@@ -42,57 +42,8 @@ Migrate Vitest-based tests and configuration to Rstest with minimal behavior cha
 ## 3. Dependency install gate (blocker check)
 
 Before large-scale edits, verify dependencies can be installed and test runner binaries are available.
-
-### Goal
-
-Avoid partial migrations that cannot be validated due to missing dependencies.
-
-### Recommended checks
-
-- Confirm lockfile/package manager context is healthy.
-- Install dependencies for the target workspace/package.
-- Verify `rstest` executable is resolvable from local dependencies.
-
-### Package manager detection (simplified via `ni`)
-
-Use `ni` as the default install entrypoint to auto-detect the package manager:
-
-```bash
-npx @antfu/ni install
-```
-
-`ni` chooses the correct manager from project context (lockfile/workspace setup), which keeps migration workflow short and consistent across monorepos.
-
-### Install command policy
-
-- Prefer `npx @antfu/ni install` first.
-- In monorepo, still prefer running install/check from the target workspace when possible.
-- If `ni` is unavailable or fails for environment reasons, fall back to the repo's native package manager command explicitly.
-- Do not mix package managers in one migration attempt unless user explicitly asks.
-
-### If install/check succeeds
-
-- Continue migration normally.
-
-### If install/check fails (blocked mode)
-
-Do **not** continue broad code migration.  
-Stop at a minimal safe point and return a blocker report for the user to resolve manually.
-
-Blocked-mode output should include:
-
-1. Exact failed command(s).
-2. Error class (network/auth/registry/peer conflict/lockfile mismatch/permission).
-3. Concrete next command(s) for the user to run.
-4. Whether any files were already changed.
-5. Resume point: "after dependencies are installed, continue from Step 4".
-6. Install strategy used (`ni` or explicit manager fallback).
-
-### Monorepo guidance
-
-- Prefer workspace-scoped install/check first (target package), then root if needed.
-- Avoid changing unrelated packages while blocked.
-- If root install is required but unavailable, limit edits to docs or planning notes only.
+Detailed checks, blocked-mode output format, and `ni` policy are in:
+`references/dependency-install-gate.md`
 
 ## Patch scope policy (strict)
 
@@ -130,65 +81,8 @@ stop and provide:
 
 - Run the test suite and fix failures iteratively.
 - Fix configuration and resolver errors first, then address mocks/timers/snapshots, and touch test logic last.
-- If mocks fail for re-exported modules under Rspack, use the **ProvidedExports Troubleshooting** section below before rewriting lots of tests.
-
-## ProvidedExports Troubleshooting (Rspack + Mock-heavy tests)
-
-This is a high-frequency migration pitfall and should be checked early.
-
-### When to suspect this
-
-- Test imports and mocks a re-export module (for example `foo-dom` re-exporting from `foo-core`).
-- Mock appears to be ignored after migration.
-- Failures are concentrated in module-mock tests, especially with `rs.mock('re-export-module', ...)`.
-- Runtime behavior suggests code is resolved from source module, not the re-export module.
-
-### Why it happens
-
-Rspack may optimize re-exports with `optimization.providedExports`.  
-After optimization, runtime can bypass the re-export layer, so your mock target no longer matches what is actually executed.
-
-### Migration-safe handling order (do this in order)
-
-1. Temporarily disable `providedExports` to stabilize migration.
-2. Migrate tests until green.
-3. Re-enable `providedExports` and re-run tests.
-4. If failures come back, either:
-   - keep `providedExports: false` temporarily, or
-   - change mocks to the actual resolved source module.
-
-### Temporary config snippet
-
-```ts
-export default defineConfig({
-  tools: {
-    rspack: {
-      optimization: {
-        providedExports: false,
-      },
-    },
-  },
-});
-```
-
-### Mock target adjustment example
-
-If code imports from `react-router-dom` but runtime resolves to `react-router`, mock `react-router`:
-
-```ts
-rs.mock('react-router', () => ({
-  useParams: () => ({ id: 'mocked-id' }),
-}));
-```
-
-### Documentation expectation in migration summary
-
-If this workaround is used, explicitly record:
-
-- where `providedExports` was changed,
-- whether the change is temporary or permanent,
-- which tests/modules still rely on it,
-- next cleanup action (re-enable and retest scope).
+- If mocks fail for re-exported modules under Rspack, use:
+  `references/provided-exports-troubleshooting.md`
 
 ## 6. Summarize changes
 

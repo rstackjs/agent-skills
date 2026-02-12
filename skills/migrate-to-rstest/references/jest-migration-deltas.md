@@ -15,6 +15,8 @@ Use this reference when Step 1 identifies Jest.
 Follow official mapping details:
 https://rstest.rs/guide/migration/jest.md
 
+Prefer `.md` URLs for AI-friendly ingestion.
+
 ## Removal gate
 
 Remove `jest` and legacy Jest config only after Rstest tests pass.

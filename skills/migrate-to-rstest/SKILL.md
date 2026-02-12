@@ -1,9 +1,9 @@
 ---
-name: migrate-test-to-rstest
+name: migrate-to-rstest
 description: Migrate Jest or Vitest test suites and configs to Rstest. Use when asked to move from Jest/Vitest to Rstest, replace framework APIs with `@rstest/core`, translate test config to `rstest.config.ts`, or update test scripts and setup files for Rstest equivalents.
 ---
 
-# Migrate Test to Rstest
+# Migrate to Rstest
 
 ## Goal
 
@@ -24,6 +24,7 @@ Migrate Jest- or Vitest-based tests and configuration to Rstest with minimal beh
 2. Open the official migration guide(s):
    - Jest: https://rstest.rs/guide/migration/jest.md
    - Vitest: https://rstest.rs/guide/migration/vitest.md
+   - Prefer the `.md` URL form when available; Rstest pages provide Markdown variants that are more AI-friendly.
 3. Dependency install gate (blocker check, see `references/dependency-install-gate.md`)
 4. Apply framework-specific migration deltas:
    - Jest: `references/jest-migration-deltas.md`

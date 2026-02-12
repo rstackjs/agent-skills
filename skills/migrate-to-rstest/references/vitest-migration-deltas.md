@@ -15,6 +15,8 @@ Use this reference when Step 1 identifies Vitest.
 Follow official mapping details:
 https://rstest.rs/guide/migration/vitest.md
 
+Prefer `.md` URLs for AI-friendly ingestion.
+
 ## Removal gate
 
 Remove `vitest` and `vitest.config.*` only after Rstest tests pass.

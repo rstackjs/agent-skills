@@ -86,13 +86,13 @@ Use when you need to analyze bundle composition, identify duplicate packages, de
 
 ## Rstest Skills
 
-### migrate-vitest-to-rstest
+### migrate-test-to-rstest
 
 ```bash
-npx skills add rstackjs/agent-skills --skill migrate-vitest-to-rstest
+npx skills add rstackjs/agent-skills --skill migrate-test-to-rstest
 ```
 
-Migrate Vitest tests to Rstest. Use when a user asks to migrate Vitest tests to Rstest, follow the migration guide, update test files, or validate the migration.
+Migrate Jest or Vitest tests to Rstest. Use when a user asks to migrate Jest/Vitest tests to Rstest, follow migration guides, update test files, or validate the migration.
 
 ## Contributing
 

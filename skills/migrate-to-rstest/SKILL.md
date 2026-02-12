@@ -29,6 +29,7 @@ Migrate Jest- or Vitest-based tests and configuration to Rstest with minimal beh
 4. Apply framework-specific migration deltas:
    - Jest: `references/jest-migration-deltas.md`
    - Vitest: `references/vitest-migration-deltas.md`
+   - Global API replacement rules: `references/global-api-migration.md`
 5. Check type errors
 6. Run tests and fix deltas (if mocks fail unexpectedly under Rspack, see `references/provided-exports-troubleshooting.md`)
 7. Remove legacy test runner dependency/config only after Rstest is green

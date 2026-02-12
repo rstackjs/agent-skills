@@ -53,34 +53,22 @@ Avoid partial migrations that cannot be validated due to missing dependencies.
 - Install dependencies for the target workspace/package.
 - Verify `rstest` executable is resolvable from local dependencies.
 
-### Package manager detection (do this before install)
+### Package manager detection (simplified via `ni`)
 
-Always detect package manager from repo context before running install commands.
+Use `ni` as the default install entrypoint to auto-detect the package manager:
 
-Preferred signal order:
+```bash
+npx @antfu/ni install
+```
 
-1. `packageManager` field in nearest `package.json`.
-2. Lockfile presence in workspace/root:
-   - `pnpm-lock.yaml` -> `pnpm`
-   - `yarn.lock` -> `yarn`
-   - `package-lock.json` or `npm-shrinkwrap.json` -> `npm`
-3. Monorepo convention/scripts already used in repo docs/CI.
-
-If signals conflict, prefer `packageManager` field, then lockfile.
+`ni` chooses the correct manager from project context (lockfile/workspace setup), which keeps migration workflow short and consistent across monorepos.
 
 ### Install command policy
 
-- Use the detected package manager first.
-- In monorepo, run workspace-scoped install/check before root-level install when possible.
+- Prefer `npx @antfu/ni install` first.
+- In monorepo, still prefer running install/check from the target workspace when possible.
+- If `ni` is unavailable or fails for environment reasons, fall back to the repo's native package manager command explicitly.
 - Do not mix package managers in one migration attempt unless user explicitly asks.
-
-Reference command patterns (choose one by detection):
-
-- `pnpm`: `pnpm install` / workspace-scoped equivalent
-- `yarn`: `yarn install`
-- `npm`: `npm install`
-
-If the chosen manager fails due to environment/tool absence (not dependency conflict), report it and propose the exact next command for the user instead of auto-switching silently.
 
 ### If install/check succeeds
 
@@ -98,7 +86,7 @@ Blocked-mode output should include:
 3. Concrete next command(s) for the user to run.
 4. Whether any files were already changed.
 5. Resume point: "after dependencies are installed, continue from Step 4".
-6. Detected package manager and detection basis (field/lockfile).
+6. Install strategy used (`ni` or explicit manager fallback).
 
 ### Monorepo guidance
 

@@ -4,9 +4,9 @@ Use this reference when tests rely on globally available test APIs.
 
 ## Required replacements
 
-- Replace global `jest.xxx` with `rstest.xxx`.
-- If Vitest enables `globals: true`, replace global `vi.xxx` with `rstest.xxx`.
-- If Vitest enables `globals: true`, replace global `vitest.xxx` with `rstest.xxx`.
+- Replace global `jest.<api>` with `rstest.<api>`.
+- If Vitest enables `globals: true`, replace global `vi.<api>` with `rstest.<api>`.
+- If Vitest enables `globals: true`, replace global `vitest.<api>` with `rstest.<api>`.
 
 ## Scope
 

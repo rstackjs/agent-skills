@@ -9,7 +9,7 @@ Use this reference when Step 1 identifies Jest.
 3. Migrate setup files (`setupFiles`, `setupFilesAfterEnv`) to Rstest equivalents.
 4. Replace Jest-specific imports/APIs with `@rstest/core` equivalents based on official guide.
 5. Validate transform/alias behavior (for example `moduleNameMapper`, transformer-related settings).
-6. For global API usage, replace global `jest.xxx` with `rstest.xxx` (see `references/global-api-migration.md`).
+6. For global API usage, replace global `jest.<api>` with `rstest.<api>` (see `references/global-api-migration.md`).
 
 ## Source of truth
 

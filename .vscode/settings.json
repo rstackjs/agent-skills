@@ -13,5 +13,15 @@
   },
   "mdx.validate.validateFileLinks": "ignore",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "cSpell.words": [
+    "CRACO",
+    "LLDB",
+    "rsbuild",
+    "rsdoctor",
+    "rspack",
+    "rspress",
+    "Rstack",
+    "rstackjs"
+  ]
 }

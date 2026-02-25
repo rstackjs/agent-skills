@@ -31,6 +31,14 @@ npx skills add rstackjs/agent-skills --skill <skill-name>
 
 ## Rspack Skills
 
+### rspack-v2-upgrade
+
+```bash
+npx skills add rstackjs/agent-skills --skill rspack-v2-upgrade
+```
+
+Use when upgrading a Rspack 1.x project to v2, including dependency and configuration updates.
+
 ### rspack-debugging
 
 ```bash
@@ -59,7 +67,7 @@ Use when the user encounters build failures, slow builds, or wants to optimize R
 npx skills add rstackjs/agent-skills --skill rsbuild-v2-upgrade
 ```
 
-Migrate Rsbuild projects from v1 to v2. Use when a user asks to upgrade Rsbuild, follow the v1-to-v2 guide, update configs/plugins, or validate the upgrade.
+Use when upgrading a Rsbuild 1.x project to v2, including dependency and configuration updates.
 
 ### migrate-cra-to-rsbuild
 

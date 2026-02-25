@@ -18,6 +18,7 @@ A collection of Agent Skills for [Rstack](https://rspack.rs/guide/start/ecosyste
 - [Rsbuild Skills](#rsbuild-skills)
 - [Rspress Skills](#rspress-skills)
 - [Rsdoctor Skills](#rsdoctor-skills)
+- [Rstest Skills](#rstest-skills)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -98,6 +99,16 @@ npx skills add rstackjs/agent-skills --skill rsdoctor-analysis
 Analyze Rspack/Webpack bundles from local Rsdoctor build data. Provides intelligent analysis of chunk, module, package, and loader data. Provides evidence-based conclusions and actionable optimization recommendations.
 
 Use when you need to analyze bundle composition, identify duplicate packages, detect similar packages, find large chunks, analyze side effects modules, or get comprehensive bundle optimization recommendations.
+
+## Rstest Skills
+
+### migrate-to-rstest
+
+```bash
+npx skills add rstackjs/agent-skills --skill migrate-to-rstest
+```
+
+Migrate Jest or Vitest tests to Rstest. Use when a user asks to migrate Jest/Vitest tests to Rstest, follow migration guides, update test files, or validate the migration.
 
 ## Contributing
 

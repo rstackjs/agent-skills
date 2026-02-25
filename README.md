@@ -61,6 +61,14 @@ npx skills add rstackjs/agent-skills --skill rsbuild-v2-upgrade
 
 Migrate Rsbuild projects from v1 to v2. Use when a user asks to upgrade Rsbuild, follow the v1-to-v2 guide, update configs/plugins, or validate the upgrade.
 
+### migrate-cra-to-rsbuild
+
+```bash
+npx skills add rstackjs/agent-skills --skill migrate-cra-to-rsbuild
+```
+
+Migrate Create React App (CRA) or CRACO projects to Rsbuild. Use when a user asks to replace react-scripts or CRACO with Rsbuild and complete the migration safely.
+
 ## Rspress Skills
 
 ### rspress-v2-upgrade

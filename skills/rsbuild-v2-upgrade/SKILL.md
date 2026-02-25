@@ -1,6 +1,6 @@
 ---
 name: rsbuild-v2-upgrade
-description: Migrate Rsbuild projects from v1 to v2. Use when a user asks to upgrade Rsbuild, follow the v1-to-v2 guide, update configs/plugins, or validate the upgrade.
+description: Use when upgrading a Rsbuild 1.x project to v2, including dependency and configuration updates.
 ---
 
 # Rsbuild v1 to v2 Upgrade
@@ -16,6 +16,7 @@ description: Migrate Rsbuild projects from v1 to v2. Use when a user asks to upg
      - https://v2.rsbuild.rs/guide/upgrade/v1-to-v2
 
 3. **Plan the upgrade path**
+   - Compare the current project config with the migration guide.
    - List breaking changes that apply to the project’s current config and plugins.
    - Note any removed or renamed options, defaults, or plugin APIs.
 
@@ -28,6 +29,6 @@ description: Migrate Rsbuild projects from v1 to v2. Use when a user asks to upg
    - Remove deprecated or unsupported settings.
 
 6. **Validate**
-   - Run the build and dev server.
-   - Run tests or smoke checks relevant to the project.
+   - Run the build and dev commands.
+   - Run project tests or type checks.
    - Fix any warnings or errors surfaced by the new version.

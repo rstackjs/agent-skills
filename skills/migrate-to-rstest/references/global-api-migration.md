@@ -4,13 +4,13 @@ Use this reference when tests rely on globally available test APIs.
 
 ## Required replacements
 
-- Replace global `jest.<api>` with `rstest.<api>`.
-- If Vitest enables `globals: true`, replace global `vi.<api>` with `rstest.<api>`.
-- If Vitest enables `globals: true`, replace global `vitest.<api>` with `rstest.<api>`.
+- Replace global `jest.<api>` with global `rstest.<api>`.
+- If Vitest enables `globals: true`, replace global `vi.<api>` with global `rs.<api>`.
+- If Vitest enables `globals: true`, replace global `vitest.<api>` with global `rstest.<api>`.
 
 ## Scope
 
-Apply this to test files and setup files where global runner APIs are used.
+Apply this only to test files and setup files where runner APIs are used as globals.
 
 ## Examples
 
@@ -22,11 +22,13 @@ jest.spyOn(obj, 'm') -> rstest.spyOn(obj, 'm')
 
 ```ts
 // Vitest (globals: true)
-vi.fn() -> rstest.fn()
+vi.fn() -> rs.fn()
 vitest.spyOn(obj, 'm') -> rstest.spyOn(obj, 'm')
 ```
 
 ## Notes
 
+- `rs` and `rstest` are equivalent aliases in globals mode; keep `vi -> rs` and `vitest -> rstest` mapping order for consistency.
+- Do not apply these replacements to import-style APIs; this reference is global-only.
 - Do not change assertion intent while replacing APIs.
 - Keep replacements minimal and focused on runner API migration.

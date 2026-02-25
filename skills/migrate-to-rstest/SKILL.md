@@ -30,6 +30,7 @@ Migrate Jest- or Vitest-based tests and configuration to Rstest with minimal beh
    - Jest: `references/jest-migration-deltas.md`
    - Vitest: `references/vitest-migration-deltas.md`
    - Global API replacement rules: `references/global-api-migration.md`
+   - Known compatibility pitfalls: `references/rstest-compat-pitfalls.md`
 5. Check type errors
 6. Run tests and fix deltas (if mocks fail unexpectedly under Rspack, see `references/provided-exports-troubleshooting.md`)
 7. Remove legacy test runner dependency/config only after Rstest is green
@@ -51,10 +52,12 @@ Detailed checks, blocked-mode output format, and `ni` policy are in:
 ### Preferred change order
 
 1. CLI/script/config migration (`package.json`, `rstest.config.ts`, include/exclude, test environment).
-2. Mock compatibility adjustments (target module path, `{ mock: true }`, `importActual`).
-3. Narrow per-test setup fixes (single-file, single-suite level).
-4. As a last resort, test body changes.
-5. Never modify runtime source logic by default.
+2. Test setup adapter migration (for example `@testing-library/jest-dom/vitest` to matcher-based setup in Rstest).
+3. Mock compatibility adjustments (target module path, `{ mock: true }`, `importActual`).
+4. Narrow per-test setup fixes (single-file, single-suite level).
+5. Path resolution compatibility fixes (`import.meta.url` vs `__dirname`) in test/setup helpers.
+6. As a last resort, test body changes.
+7. Never modify runtime source logic by default.
 
 ### Red lines
 
@@ -84,6 +87,8 @@ stop and provide:
 - Fix configuration and resolver errors first, then address mocks/timers/snapshots, and touch test logic last.
 - If mocks fail for re-exported modules under Rspack, use:
   `references/provided-exports-troubleshooting.md`
+- Before broad test rewrites, check known pitfalls in:
+  `references/rstest-compat-pitfalls.md`
 
 ## 8. Summarize changes
 

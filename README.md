@@ -78,6 +78,14 @@ npx skills add rstackjs/agent-skills --skill migrate-cra-to-rsbuild
 
 Migrate Create React App (CRA) or CRACO projects to Rsbuild. Use when a user asks to replace react-scripts or CRACO with Rsbuild and complete the migration safely.
 
+### migrate-webpack-to-rsbuild
+
+```bash
+npx skills add rstackjs/agent-skills --skill migrate-webpack-to-rsbuild
+```
+
+Migrate webpack projects to Rsbuild. Use when a user asks to replace webpack with Rsbuild and complete migration safely.
+
 ## Rspress Skills
 
 ### rspress-v2-upgrade

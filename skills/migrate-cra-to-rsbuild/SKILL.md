@@ -21,5 +21,5 @@ description: Migrate Create React App (CRA) or CRACO projects to Rsbuild. Use wh
    - If the project has CRACO-only customizations, map them to Rsbuild/Rspack equivalents after finishing the baseline guide steps.
 
 4. **Validate behavior after migration**
-   - Run dev server to verify the project starts up without errors.
-   - Run build commands to verify the project builds successfully.
+   - Run dev server to verify the project starts without errors.
+   - Run build command to verify the project builds successfully.

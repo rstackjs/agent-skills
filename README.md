@@ -86,6 +86,14 @@ npx skills add rstackjs/agent-skills --skill migrate-webpack-to-rsbuild
 
 Migrate webpack projects to Rsbuild. Use when a user asks to replace webpack with Rsbuild and complete migration safely.
 
+### migrate-vite-to-rsbuild
+
+```bash
+npx skills add rstackjs/agent-skills --skill migrate-vite-to-rsbuild
+```
+
+Migrate Vite projects to Rsbuild. Use when a user asks to replace Vite with Rsbuild and complete migration safely.
+
 ## Rspress Skills
 
 ### rspress-v2-upgrade

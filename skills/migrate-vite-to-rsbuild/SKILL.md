@@ -21,5 +21,5 @@ description: Migrate Vite projects to Rsbuild. Use when a user asks to replace V
 
 4. **Validate behavior after migration**
    - Run dev server to verify the project starts without errors.
-   - Run production build and preview to verify output is successful.
+   - Run build command to verify the project builds successfully.
    - If issues remain, compare the old Vite config with the migration guide and complete missing mappings.

@@ -15,7 +15,7 @@ Copy this checklist and check off items as you complete them:
   - [ ] Map required customizations
 - [ ] Step 3: Verify behavior
   - [ ] Dev pass without errors
-  - [ ] Ensure build pass without errors
+  - [ ] Build pass without errors
   - [ ] Run type check if required
 - [ ] Step 4: Cleanup and summarize
   - [ ] Remove webpack-only deps/config after verification

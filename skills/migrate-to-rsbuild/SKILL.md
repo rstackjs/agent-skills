@@ -38,7 +38,7 @@ Migrate webpack, Vite, or CRA/CRACO projects to Rsbuild with minimal behavior ch
 3. **Validate behavior**
    - Run dev server to verify the project starts without errors.
    - Run build command to verify the project builds successfully.
-   - If issues remain, compare the old Vite config with the migration guide and complete missing mappings.
+   - If issues remain, compare the old project configuration with the migration guide and complete any missing mappings.
 
 4. **Cleanup and summarize**
    - Remove obsolete dependencies/config only after validation passes.

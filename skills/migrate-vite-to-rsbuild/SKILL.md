@@ -16,7 +16,7 @@ description: Migrate Vite projects to Rsbuild. Use when a user asks to replace V
      - https://rsbuild.rs/guide/migration/vite
 
 3. **Execute migration with minimal deviation**
-   - Follow the guide to replace dependencies, update scripts, and create `rsbuild.config.ts`.
+   - Follow the guide to replace dependencies, update npm scripts, and create `rsbuild.config.ts`.
    - Migrate Vite config, plugin replacements, and Vite-specific usage according to the guide.
 
 4. **Validate behavior after migration**

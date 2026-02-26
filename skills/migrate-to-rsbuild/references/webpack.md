@@ -14,7 +14,7 @@ Copy this checklist and check off items as you complete them:
   - [ ] Apply guide steps with minimal scope
   - [ ] Map required customizations
 - [ ] Step 3: Verify behavior
-  - [ ] Ensure dev pass without errors
+  - [ ] Dev pass without errors
   - [ ] Ensure build pass without errors
   - [ ] Run type check if required
 - [ ] Step 4: Cleanup and summarize

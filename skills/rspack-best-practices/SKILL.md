@@ -9,7 +9,7 @@ Apply these rules when writing or reviewing Rspack projects.
 
 ## Configuration
 
-- Use `rspack.config.ts` and `defineConfig`.
+- Use `rspack.config.ts` and `defineConfig`
 - Define explicit `entry` values for multi-page applications.
 - Keep one main config and branch by `process.env.NODE_ENV` only when needed.
 - Keep rule conditions narrow and explicit (`test`, `include`, `exclude`, `resourceQuery`).

@@ -1,19 +1,20 @@
 ---
 name: migrate-to-rsbuild
-description: Migrate webpack, Vite, or CRA/CRACO projects to Rsbuild. Use when a user asks to migrate an existing project to Rsbuild, follow the migration guide, update scripts/configs/plugins, and verify dev/build behavior.
+description: Migrate webpack, Vite, create-react-app (CRA/CRACO), or Vue CLI projects to Rsbuild.
 ---
 
 # Migrate to Rsbuild
 
 ## Goal
 
-Migrate webpack, Vite, or CRA/CRACO projects to Rsbuild with minimal behavior changes and clear verification.
+Migrate webpack, Vite, create-react-app (CRA/CRACO), or Vue CLI projects to Rsbuild with minimal behavior changes and clear verification.
 
 ## Supported source frameworks
 
 - webpack
 - Vite
 - CRA / CRACO
+- Vue CLI
 
 ## Migration principles (must follow)
 
@@ -29,11 +30,13 @@ Migrate webpack, Vite, or CRA/CRACO projects to Rsbuild with minimal behavior ch
      - webpack: `webpack.config.*`
      - Vite: `vite.config.*`
      - CRA/CRACO: `react-scripts`, `@craco/craco`, `craco.config.*`
+     - Vue CLI: `@vue/cli-service`, `vue.config.*`
 
 2. **Apply framework-specific deltas**
    - webpack: `references/webpack.md`
    - Vite: `references/vite.md`
    - CRA/CRACO: `references/cra.md`
+   - Vue CLI: `references/vue-cli.md`
 
 3. **Validate behavior**
    - Run dev server to verify the project starts without errors.

@@ -9,7 +9,7 @@ Apply these rules when writing or reviewing Rsbuild projects.
 
 ## Configuration
 
-- Use `rsbuild.config.ts` and `defineConfig`.
+- Use `rsbuild.config.ts` and `defineConfig`
 - Use `tools.rspack` or `tools.bundlerChain` only when no first-class Rsbuild option exists.
 - Define explicit `source.entry` values for multi-page applications.
 - In TypeScript projects, prefer `tsconfig.json` path aliases first.

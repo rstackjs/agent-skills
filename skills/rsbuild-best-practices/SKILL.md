@@ -7,6 +7,11 @@ description: Rsbuild best practices for config, CLI workflow, type checking, bun
 
 Apply these rules when writing or reviewing Rsbuild projects.
 
+## Documentation
+
+- For the latest docs, read http://rsbuild.rs/llms.txt
+- For Rsbuild v1 docs, read http://v1.rsbuild.rs/llms.txt.
+
 ## Configuration
 
 - Use `rsbuild.config.ts` and `defineConfig` as the default pattern.

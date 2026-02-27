@@ -52,7 +52,7 @@ Optional:
 
 - Import source-managed assets from project source directories, not from `public`.
 - Reference `public` files by absolute URL path.
-- Prefer asset modules (`asset`, `asset/inline`, `asset/source`) over legacy `file-loader/url-loader/raw-loader`.
+- Prefer asset modules (`asset`, `asset/resource`, `asset/inline`, `asset/source`) over legacy `file-loader`/`url-loader`/`raw-loader`.
 
 ## Profiling
 

@@ -41,7 +41,7 @@ Apply these rules when writing or reviewing Rsbuild projects.
 
 - Do not publish `.map` files to public servers/CDNs when production source maps are enabled.
 
-# Asset management
+## Asset management
 
 - Import source-managed assets from project source directories, not from `public`.
 - Reference `public` files by absolute URL path.

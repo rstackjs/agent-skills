@@ -62,6 +62,14 @@ Use when the user encounters build failures, slow builds, or wants to optimize R
 
 ## Rsbuild Skills
 
+### rsbuild-best-practices
+
+```bash
+npx skills add rstackjs/agent-skills --skill rsbuild-best-practices
+```
+
+Rsbuild best practices for config, CLI workflow, type checking, bundle optimization, assets, and debugging. Use when writing, reviewing, or troubleshooting Rsbuild projects.
+
 ### rsbuild-v2-upgrade
 
 ```bash

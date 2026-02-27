@@ -66,5 +66,5 @@ Optional:
 
 ## Documentation
 
-- For the latest (v2) docs, read http://rspack.rs/llms.txt
+- For the latest (v2) docs, read http://rspack.rs/llms.txt.
 - For Rspack v1 docs, read http://v1.rspack.rs/llms.txt

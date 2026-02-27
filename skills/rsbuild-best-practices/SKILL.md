@@ -9,7 +9,7 @@ Apply these rules when writing or reviewing Rsbuild projects.
 
 ## Documentation
 
-- For the latest docs, read http://rsbuild.rs/llms.txt
+- For the latest (v2) docs, read http://rsbuild.rs/llms.txt
 - For Rsbuild v1 docs, read http://v1.rsbuild.rs/llms.txt.
 
 ## Configuration

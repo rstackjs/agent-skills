@@ -48,7 +48,7 @@ Optional:
 - Prefer lightweight libraries where possible.
 - Keep `target` aligned with real compatibility requirements.
 
-## Assets management
+## Asset management
 
 - Import source-managed assets from project source directories, not from `public`.
 - Reference `public` files by absolute URL path.

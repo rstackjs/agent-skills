@@ -32,6 +32,14 @@ npx skills add rstackjs/agent-skills --skill <skill-name>
 
 ## Rspack Skills
 
+### rspack-best-practices
+
+```bash
+npx skills add rstackjs/agent-skills --skill rspack-best-practices
+```
+
+Rspack best practices for config, CLI workflow, type checking, CSS, bundle optimization, assets and profiling. Use when writing, reviewing, or troubleshooting Rspack projects.
+
 ### rspack-v2-upgrade
 
 ```bash

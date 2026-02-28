@@ -2,18 +2,19 @@
 biomejs
 bundleless
 Bytedance
-CRACO
 condvar
 coredump
 corepack
+CRACO
 cvwait
+docgen
 epoll
 flac
 joda
 kevent
-LLDB
 lightningcss
 lldb
+LLDB
 napi
 pacman
 pluggable
@@ -37,4 +38,5 @@ taze
 transpiling
 treeshaking
 tsbuildinfo
+tsgo
 unplugin

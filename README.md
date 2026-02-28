@@ -16,6 +16,7 @@ A collection of Agent Skills for [Rstack](https://rspack.rs/guide/start/ecosyste
 - [Usage](#usage)
 - [Rspack Skills](#rspack-skills)
 - [Rsbuild Skills](#rsbuild-skills)
+- [Rslib Skills](#rslib-skills)
 - [Rspress Skills](#rspress-skills)
 - [Rsdoctor Skills](#rsdoctor-skills)
 - [Rstest Skills](#rstest-skills)
@@ -93,6 +94,16 @@ npx skills add rstackjs/agent-skills --skill migrate-to-rsbuild
 ```
 
 Migrate webpack, Vite, create-react-app (CRA/CRACO), or Vue CLI projects to Rsbuild.
+
+## Rslib Skills
+
+### rslib-best-practices
+
+```bash
+npx skills add rstackjs/agent-skills --skill rslib-best-practices
+```
+
+Rslib best practices for config, CLI workflow, output, declaration files, dependency handling, build optimization and toolchain integration. Use when writing, reviewing, or troubleshooting Rslib projects.
 
 ## Rspress Skills
 

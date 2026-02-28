@@ -34,7 +34,7 @@ Apply these rules when writing or reviewing Rslib library projects.
 
 ## Dependencies
 
-- Prefer to place dependencies to be bundled in `devDependencies` in bundle mode, dependencies in `dependencies` and `peerDependencies` are automatically externalized (not bundled) by default
+- Prefer to place dependencies to be bundled in `devDependencies` in bundle mode and dependencies in `dependencies` and `peerDependencies` will be automatically externalized (not bundled) by default
 - Verify the build output and dependency specifiers in `package.json` carefully to ensure no missing dependency errors occur when consumers install and use this package
 
 ## Build optimization

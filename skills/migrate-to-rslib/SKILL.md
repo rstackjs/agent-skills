@@ -24,12 +24,14 @@ Migrate `tsc` and `tsup` projects to Rslib with minimal behavior changes and cle
 ## Workflow
 
 1. **Detect source tool**
-   - Check `package.json` scripts and dependencies:
-     - tsc: `typescript` dependency and scripts invoking `tsc`
-     - tsup: `tsup` dependency and scripts invoking `tsup`
-   - Check config files:
-     - tsc: `tsconfig.json` or `tsconfig.*.json`
-     - tsup: `tsup.config.*`
+   - `tsup`
+     - Config: `tsup.config.*`
+     - Dependency: `tsup`
+     - Build script: uses `tsup` to build projects
+   - `tsc`
+     - Config: `tsconfig.json` or `tsconfig.*.json`
+     - Dependency: `typescript`
+     - Build script: uses `tsc` to build projects. And it should be noted that `tsc` used only for type checking (e.g., `tsc --noEmit`) does not make it a `tsc` build project.
 
 2. **Apply tool-specific migration deltas**
    - tsc: `references/tsc.md`

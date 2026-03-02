@@ -8,7 +8,7 @@ Copy this checklist and check off items as you complete them:
 
 - [ ] Step 0: Read official guide (https://rslib.rs/guide/migration/tsup) ⛔ BLOCKING
 - [ ] Step 1: Inventory current `tsup` behavior and customizations
-  - [ ] Record key build scripts, `tsup` CLI args, and configuration files
+  - [ ] Record key build scripts, `tsup` CLI options, and configuration files
   - [ ] Record key config/plugins and output behavior (format, d.ts, externals, output structure, etc.)
   - [ ] Record output usage expectations (how outputs are consumed)
 - [ ] Step 2: Execute migration following the official guide

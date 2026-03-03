@@ -106,6 +106,14 @@ npx skills add rstackjs/agent-skills --skill rslib-best-practices
 
 Rslib best practices for config, CLI workflow, output, declaration files, dependency handling, build optimization and toolchain integration. Use when writing, reviewing, or troubleshooting Rslib projects.
 
+### migrate-to-rslib
+
+```bash
+npx skills add rstackjs/agent-skills --skill migrate-to-rslib
+```
+
+Migrate tsc or tsup library projects to Rslib.
+
 ## Rspress Skills
 
 ### rspress-v2-upgrade

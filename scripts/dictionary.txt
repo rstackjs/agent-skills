@@ -10,11 +10,13 @@ cvwait
 docgen
 epoll
 flac
+frontmatter
 joda
 kevent
 lightningcss
 lldb
 LLDB
+llms
 napi
 pacman
 pluggable

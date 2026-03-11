@@ -124,10 +124,10 @@ npx skills add rstackjs/agent-skills --skill rspress-v2-upgrade
 
 Migrate Rspress projects from v1 to v2. Use when a user asks to upgrade Rspress, follow the v1-to-v2 guide, update packages/configs/themes, or validate the upgrade.
 
-### rspress-ai-description
+### rspress-description-generator
 
 ```bash
-npx skills add rstackjs/agent-skills --skill rspress-ai-description
+npx skills add rstackjs/agent-skills --skill rspress-description-generator
 ```
 
 Generate and maintain description frontmatter for Rspress documentation files (.md/.mdx). Use when adding SEO descriptions, improving search engine snippets, generating llms.txt metadata, preparing docs for AI summarization, or batch-updating frontmatter across an Rspress doc site.

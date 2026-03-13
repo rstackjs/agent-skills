@@ -24,6 +24,7 @@ prebundle
 preprocessors
 psynch
 pthread
+rgba
 rsbuild
 rsdoctor
 rslib

@@ -35,6 +35,7 @@ rstackjs
 rstest
 shiki
 svgr
+samply
 tailwindcss
 taze
 transpiling

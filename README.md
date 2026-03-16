@@ -162,6 +162,14 @@ npx skills add rstackjs/agent-skills --skill migrate-to-rstest
 
 Migrate Jest or Vitest tests to Rstest. Use when a user asks to migrate Jest/Vitest tests to Rstest, follow migration guides, update test files, or validate the migration.
 
+### rstest-best-practices
+
+```bash
+npx skills add rstackjs/agent-skills --skill rstest-best-practices
+```
+
+Rstest best practices for config, CLI workflow, test writing, mocking, snapshot testing, DOM testing, coverage, multi-project setup, CI integration, performance and debugging. Use when writing, reviewing, or troubleshooting Rstest test projects.
+
 ## Storybook Skills
 
 ### storybook-rsbuild

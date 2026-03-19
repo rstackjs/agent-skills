@@ -182,7 +182,11 @@ export async function getExportsAnalysis(): Promise<{
     ok: true,
     data: exports,
     description:
+<<<<<<< HEAD
       'Analyze module exports to identify tree-shaking opportunities. ' +
+=======
+      'Analyse module exports to identify tree-shaking opportunities. ' +
+>>>>>>> f69d216 (feat(rsdoctor): add tree shaking skills)
       'Shows which exports exist across all modules so you can cross-reference ' +
       'with actual import usage. Exports that are never imported are candidates ' +
       'for removal. Re-exported barrel files (index.ts that re-exports everything) ' +
@@ -271,7 +275,11 @@ export function registerTreeShakingCommands(
   treeShakingProgram
     .command('exports-analysis')
     .description(
+<<<<<<< HEAD
       'Analyze module exports to identify unused exports and barrel-file anti-patterns ' +
+=======
+      'Analyse module exports to identify unused exports and barrel-file anti-patterns ' +
+>>>>>>> f69d216 (feat(rsdoctor): add tree shaking skills)
         'that hurt tree-shaking. Cross-reference with actual import usage to find ' +
         'removal candidates.',
     )

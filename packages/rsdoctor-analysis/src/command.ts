@@ -8,6 +8,7 @@ import { registerModuleCommands } from './commands/modules';
 import { registerPackageCommands } from './commands/packages';
 import { registerRuleCommands } from './commands/rules';
 import { registerServerCommands } from './commands/server';
+import { registerTreeShakingCommands } from './commands/tree-shaking';
 import { closeAllSockets } from './socket';
 import { printResult } from './utils/cli-utils';
 
@@ -65,6 +66,7 @@ registerLoaderCommands(program, execute);
 registerBuildCommands(program, execute);
 registerErrorCommands(program, execute);
 registerServerCommands(program, execute);
+registerTreeShakingCommands(program, execute);
 
 export async function run(): Promise<void> {
   if (process.argv.length <= 2) {

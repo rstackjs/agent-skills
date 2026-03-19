@@ -1600,7 +1600,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
 });
 const commander = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/index.js");
 const { program: esm_program, createCommand: createCommand, createArgument: createArgument, createOption: createOption, CommanderError: CommanderError, InvalidArgumentError: InvalidArgumentError, InvalidOptionArgumentError: InvalidOptionArgumentError, Command: Command, Argument: Argument, Option: Option, Help: Help } = commander;
-const constants_API = {
+const API = {
     GetChunkGraphAI: '/api/graph/chunks/graph/ai',
     GetChunkByIdAI: '/api/graph/chunk/id/ai',
     GetModuleDetails: '/api/graph/module/details',
@@ -1941,47 +1941,47 @@ async function sendRequestFromJson(api, params = {}) {
     if (!filePath) throw new Error('No data file specified. Use --data-file <path>');
     const data = loadJsonData(filePath);
     switch(api){
-        case constants_API.GetChunkGraphAI:
+        case API.GetChunkGraphAI:
             {
                 const pageNumber = params.pageNumber ?? 1;
                 const pageSize = params.pageSize ?? 100;
                 return getChunksFromJson(data, pageNumber, pageSize);
             }
-        case constants_API.GetChunkByIdAI:
+        case API.GetChunkByIdAI:
             return getChunkByIdFromJson(data, params.chunkId);
-        case constants_API.GetModuleDetails:
+        case API.GetModuleDetails:
             return getModuleByIdFromJson(data, params.moduleId);
-        case constants_API.GetModuleByName:
+        case API.GetModuleByName:
             return getModulesByPathFromJson(data, params.moduleName);
-        case constants_API.GetModuleIssuerPath:
+        case API.GetModuleIssuerPath:
             return getModuleIssuerPathFromJson(data, params.moduleId);
-        case constants_API.GetPackageInfo:
+        case API.GetPackageInfo:
             return getPackagesFromJson(data);
-        case constants_API.GetPackageDependency:
+        case API.GetPackageDependency:
             {
                 const pageNumber = params.pageNumber ?? 1;
                 const pageSize = params.pageSize ?? 100;
                 return getPackageDependenciesFromJson(data, pageNumber, pageSize);
             }
-        case constants_API.GetOverlayAlerts:
+        case API.GetOverlayAlerts:
             return getOverlayAlertsFromJson(data);
-        case constants_API.GetLoaderChartData:
+        case API.GetLoaderChartData:
             return getLoaderChartDataFromJson(data);
-        case constants_API.GetDirectoriesLoaders:
+        case API.GetDirectoriesLoaders:
             return getDirectoriesLoadersFromJson(data);
-        case constants_API.GetBuildSummary:
+        case API.GetBuildSummary:
             return getBuildSummaryFromJson(data);
-        case constants_API.GetAssets:
+        case API.GetAssets:
             return getAssetsFromJson(data);
-        case constants_API.GetEntrypoints:
+        case API.GetEntrypoints:
             return getEntrypointsFromJson(data);
-        case constants_API.GetBuildConfig:
+        case API.GetBuildConfig:
             return getBuildConfigFromJson(data);
-        case constants_API.GetErrors:
+        case API.GetErrors:
             return getErrorsFromJson(data);
-        case constants_API.GetModuleExports:
+        case API.GetModuleExports:
             return getModuleExportsFromJson(data);
-        case constants_API.GetSideEffects:
+        case API.GetSideEffects:
             {
                 const pageNumber = params.pageNumber ?? 1;
                 const pageSize = params.pageSize ?? 100;
@@ -1991,7 +1991,7 @@ async function sendRequestFromJson(api, params = {}) {
             throw new Error(`Unknown API: ${api}`);
     }
 }
-const socket_sendRequest = async (api, params = {})=>sendRequestFromJson(api, params);
+const sendRequest = async (api, params = {})=>sendRequestFromJson(api, params);
 const closeAllSockets = ()=>{};
 const getMedianChunkSize = (list)=>{
     const sorted = [
@@ -2012,9 +2012,9 @@ const getAllChunks = async (pageNumber, pageSize)=>{
     const params = {};
     if (void 0 !== pageNumber) params.pageNumber = pageNumber;
     if (void 0 !== pageSize) params.pageSize = pageSize;
-    return socket_sendRequest(constants_API.GetChunkGraphAI, params);
+    return sendRequest(API.GetChunkGraphAI, params);
 };
-const getPackageInfo = async ()=>socket_sendRequest(constants_API.GetPackageInfo, {});
+const getPackageInfo = async ()=>sendRequest(API.GetPackageInfo, {});
 const getPackageInfoFiltered = async ()=>{
     const info = await getPackageInfo();
     return info.map((pkg)=>({
@@ -2033,17 +2033,24 @@ const getPackageDependency = async (pageNumber, pageSize)=>{
     const params = {};
     if (void 0 !== pageNumber) params.pageNumber = pageNumber;
     if (void 0 !== pageSize) params.pageSize = pageSize;
-    return socket_sendRequest(constants_API.GetPackageDependency, params);
+    return sendRequest(API.GetPackageDependency, params);
 };
-const getRuleInfo = async ()=>socket_sendRequest(constants_API.GetOverlayAlerts, {});
-const getLoaderTimeForAllFiles = async ()=>socket_sendRequest(constants_API.GetLoaderChartData, {});
+const getRuleInfo = async ()=>sendRequest(API.GetOverlayAlerts, {});
+const getLoaderTimeForAllFiles = async ()=>sendRequest(API.GetLoaderChartData, {});
 const getLongLoadersByCosts = async ()=>getTopThirdLoadersByCosts(await getLoaderTimeForAllFiles());
-const getLoaderTimes = async ()=>socket_sendRequest(constants_API.GetDirectoriesLoaders, {});
-const getBuildSummary = async ()=>socket_sendRequest(constants_API.GetBuildSummary, {});
-const getAssets = async ()=>socket_sendRequest(constants_API.GetAssets, {});
-const getEntrypoints = async ()=>socket_sendRequest(constants_API.GetEntrypoints, {});
-const getBuildConfig = async ()=>socket_sendRequest(constants_API.GetBuildConfig, {});
-const getErrors = async ()=>socket_sendRequest(constants_API.GetErrors, {});
+const getLoaderTimes = async ()=>sendRequest(API.GetDirectoriesLoaders, {});
+const getBuildSummary = async ()=>sendRequest(API.GetBuildSummary, {});
+const getAssets = async ()=>sendRequest(API.GetAssets, {});
+const getEntrypoints = async ()=>sendRequest(API.GetEntrypoints, {});
+const getBuildConfig = async ()=>sendRequest(API.GetBuildConfig, {});
+const getErrors = async ()=>sendRequest(API.GetErrors, {});
+const getModuleExports = async ()=>sendRequest(API.GetModuleExports, {});
+const getSideEffects = async (pageNumber, pageSize)=>{
+    const params = {};
+    if (void 0 !== pageNumber) params.pageNumber = pageNumber;
+    if (void 0 !== pageSize) params.pageSize = pageSize;
+    return sendRequest(API.GetSideEffects, params);
+};
 function requireArg(value, name) {
     if (!value) throw new Error(`Missing ${name}.`);
     return value;
@@ -2410,7 +2417,7 @@ async function optimizeBundle(stepInput, sideEffectsPageNumberInput, sideEffects
             min: 1,
             max: 1000
         }) ?? 100;
-        const sideEffectsData = await socket_sendRequest(constants_API.GetSideEffects, {
+        const sideEffectsData = await sendRequest(API.GetSideEffects, {
             pageNumber,
             pageSize
         });
@@ -2440,7 +2447,7 @@ async function optimizeBundle(stepInput, sideEffectsPageNumberInput, sideEffects
     }) ?? 100;
     const [step1Data, sideEffectsData] = await Promise.all([
         executeStep1(),
-        socket_sendRequest(constants_API.GetSideEffects, {
+        sendRequest(API.GetSideEffects, {
             pageNumber: defaultPageNumber,
             pageSize: defaultPageSize
         })
@@ -2496,7 +2503,7 @@ async function listChunks(pageNumberInput, pageSizeInput) {
 async function getChunkById(chunkIdInput) {
     const chunkId = parseNumber(chunkIdInput, 'id');
     if (void 0 === chunkId) throw new Error('Chunk id is required');
-    const chunk = await socket_sendRequest(constants_API.GetChunkByIdAI, {
+    const chunk = await sendRequest(API.GetChunkByIdAI, {
         chunkId
     });
     if (!chunk) throw new Error(`Chunk ${chunkId} not found`);
@@ -2654,7 +2661,7 @@ function registerLoaderCommands(program, execute) {
 }
 async function getModuleById(moduleIdInput) {
     const moduleId = requireArg(moduleIdInput, 'id');
-    const module = await socket_sendRequest(constants_API.GetModuleDetails, {
+    const module = await sendRequest(API.GetModuleDetails, {
         moduleId
     });
     return {
@@ -2665,7 +2672,7 @@ async function getModuleById(moduleIdInput) {
 }
 async function getModuleByPath(modulePathInput) {
     const modulePath = requireArg(modulePathInput, 'path');
-    const matches = await socket_sendRequest(constants_API.GetModuleByName, {
+    const matches = await sendRequest(API.GetModuleByName, {
         moduleName: modulePath
     }) || [];
     if (!matches.length) throw new Error(`No module found for "${modulePath}"`);
@@ -2678,7 +2685,7 @@ async function getModuleByPath(modulePathInput) {
         },
         description: 'Get module detail by name or path; if multiple match, list them.'
     };
-    const moduleInfo = await socket_sendRequest(constants_API.GetModuleDetails, {
+    const moduleInfo = await sendRequest(API.GetModuleDetails, {
         moduleId: matches[0].id
     });
     return {
@@ -2692,7 +2699,7 @@ async function getModuleByPath(modulePathInput) {
 }
 async function getModuleIssuerPath(moduleIdInput) {
     const moduleId = requireArg(moduleIdInput, 'id');
-    const issuerPath = await socket_sendRequest(constants_API.GetModuleIssuerPath, {
+    const issuerPath = await sendRequest(API.GetModuleIssuerPath, {
         moduleId
     });
     return {
@@ -2705,7 +2712,7 @@ async function getModuleIssuerPath(moduleIdInput) {
     };
 }
 async function modules_getModuleExports() {
-    const exports = await socket_sendRequest(constants_API.GetModuleExports, {});
+    const exports = await sendRequest(API.GetModuleExports, {});
     return {
         ok: true,
         data: exports,
@@ -2720,7 +2727,7 @@ async function modules_getSideEffects(pageNumberInput, pageSizeInput) {
         min: 1,
         max: 1000
     }) ?? 100;
-    const sideEffects = await socket_sendRequest(constants_API.GetSideEffects, {
+    const sideEffects = await sendRequest(API.GetSideEffects, {
         pageNumber,
         pageSize
     });
@@ -2924,6 +2931,121 @@ function registerServerCommands(program, execute) {
         return execute(()=>server_getPort());
     });
 }
+function findRuleByCode(rules, code) {
+    return rules.find((rule)=>rule.code === code || rule.description?.includes(code));
+}
+async function detectSideEffectsOnlyImports() {
+    const rules = await getRuleInfo();
+    const rule = findRuleByCode(rules, 'E1007');
+    return {
+        ok: true,
+        data: {
+            rule: rule ?? null,
+            totalRules: rules?.length ?? 0,
+            note: rule ? void 0 : 'No E1007 side-effects-only import violations found in current analysis.'
+        },
+        description: 'Detect modules pulled in solely for side effects (E1007). These indicate tree-shaking failures caused by missing/incorrect "sideEffects" field in package.json or bare `import "module"` patterns. Rspack\'s sideEffects optimization can eliminate entire modules only when the package declares "sideEffects": false (or a glob list) in package.json. Reference: https://www.rspack.dev/guide/optimization/tree-shaking'
+    };
+}
+async function detectCjsRequire() {
+    const rules = await getRuleInfo();
+    const rule = findRuleByCode(rules, 'E1008');
+    return {
+        ok: true,
+        data: {
+            rule: rule ?? null,
+            totalRules: rules?.length ?? 0,
+            note: rule ? void 0 : 'No E1008 CJS require violations found in current analysis.'
+        },
+        description: 'Detect `require()` calls that prevent tree-shaking (E1008). Bare `require("module")` forces the entire module to be bundled because the bundler cannot statically determine which exports are used. Rspack tree-shaking requires ES module syntax (import/export); CJS require() bypasses usedExports and innerGraph analysis entirely. Fix by using destructured require or ESM imports. Reference: https://www.rspack.dev/guide/optimization/tree-shaking'
+    };
+}
+async function detectEsmResolvedToCjs() {
+    const rules = await getRuleInfo();
+    const rule = findRuleByCode(rules, 'E1009');
+    return {
+        ok: true,
+        data: {
+            rule: rule ?? null,
+            totalRules: rules?.length ?? 0,
+            note: rule ? void 0 : 'No E1009 ESM-resolved-to-CJS violations found in current analysis.'
+        },
+        description: 'Detect ESM imports resolved to CJS despite the package providing an ESM entry (E1009). This prevents tree-shaking and inflates bundle size because Rspack\'s usedExports and providedExports optimizations only work on ES module graphs. Fix by adding "module" to resolve.mainFields or "import" to resolve.conditionNames in bundler config. Reference: https://www.rspack.dev/guide/optimization/tree-shaking'
+    };
+}
+async function getTreeShakingSummary() {
+    const [rules, sideEffects] = await Promise.all([
+        getRuleInfo(),
+        getSideEffects()
+    ]);
+    const e1007 = findRuleByCode(rules, 'E1007') ?? null;
+    const e1008 = findRuleByCode(rules, 'E1008') ?? null;
+    const e1009 = findRuleByCode(rules, 'E1009') ?? null;
+    const totalViolations = [
+        e1007,
+        e1008,
+        e1009
+    ].filter(Boolean).length;
+    return {
+        ok: true,
+        data: {
+            violations: {
+                e1007SideEffectsOnlyImports: e1007,
+                e1008CjsRequire: e1008,
+                e1009EsmToCjs: e1009
+            },
+            totalViolations,
+            sideEffects,
+            totalRules: rules?.length ?? 0
+        },
+        description: "Comprehensive tree-shaking health summary. Aggregates all three rule violations (E1007 side-effects-only imports, E1008 bare require() calls, E1009 ESM-resolved-to-CJS) together with per-module bailout reasons from the build graph. Rspack enables tree-shaking in production mode via usedExports, sideEffects, providedExports, and innerGraph — violations in this report indicate where those optimizations are being blocked. Use this as the starting point when diagnosing unexpected bundle size growth. Reference: https://www.rspack.dev/guide/optimization/tree-shaking"
+    };
+}
+async function getBailoutModules(pageNumberInput, pageSizeInput) {
+    const pageNumber = parsePositiveInt(pageNumberInput, 'pageNumber', {
+        min: 1
+    }) ?? 1;
+    const pageSize = parsePositiveInt(pageSizeInput, 'pageSize', {
+        min: 1,
+        max: 1000
+    }) ?? 100;
+    const sideEffects = await getSideEffects(pageNumber, pageSize);
+    return {
+        ok: true,
+        data: sideEffects,
+        description: 'List modules that cannot be tree-shaken, grouped by bailout reason. bailoutReason explains exactly why the bundler kept a module: "side effects" means package.json declares the package has side effects or the field is missing; "dynamic import" means the module is loaded via import() and its exports are unknown at build time; "unknown exports" means the module uses non-static export patterns (e.g. module.exports = ...) that the bundler cannot analyse statically. In Rspack, the innerGraph and providedExports optimizations are disabled for such modules, preventing dead-code elimination even in production mode. Results are split into node_modules packages and user code with per-package statistics. Fixing node_modules entries usually requires patching "sideEffects" in the upstream package or adding it to bundler sideEffects config; fixing user code requires converting to named ESM exports. Reference: https://www.rspack.dev/guide/optimization/tree-shaking'
+    };
+}
+async function getExportsAnalysis() {
+    const exports = await getModuleExports();
+    return {
+        ok: true,
+        data: exports,
+        description: "Analyse module exports to identify tree-shaking opportunities. Shows which exports exist across all modules so you can cross-reference with actual import usage. Exports that are never imported are candidates for removal. Re-exported barrel files (index.ts that re-exports everything) are a common cause of poor tree-shaking because the bundler must retain all transitive exports unless every consumer uses named imports exclusively. Rspack's providedExports and re-export analysis can redirect imports through re-export chains directly to source modules — but only when all exports use static ESM syntax. Mark side-effect-free calls with /*#__PURE__*/ to help the minimizer remove them safely. Reference: https://www.rspack.dev/guide/optimization/tree-shaking"
+    };
+}
+function registerTreeShakingCommands(program, execute) {
+    const treeShakingProgram = program.command('tree-shaking').description("Tree-shaking analysis operations (E1007, E1008, E1009). Tree shaking removes unused exports to reduce bundle size. It requires ES modules (import/export syntax), production mode, and correct sideEffects config. Rspack applies usedExports, sideEffects, providedExports, and innerGraph optimizations automatically in production. Reference: https://www.rspack.dev/guide/optimization/tree-shaking");
+    treeShakingProgram.command('side-effects-only').description('Detect modules pulled in solely for side effects (E1007). Indicates tree-shaking failures from missing/incorrect "sideEffects" in package.json or bare `import "module"` patterns.').action(function() {
+        return execute(()=>detectSideEffectsOnlyImports());
+    });
+    treeShakingProgram.command('cjs-require').description("Detect bare `require()` calls that prevent tree-shaking (E1008). Fix by using destructured require or ESM imports.").action(function() {
+        return execute(()=>detectCjsRequire());
+    });
+    treeShakingProgram.command('esm-to-cjs').description("Detect ESM imports resolved to CJS despite an ESM entry being available (E1009). Fix via resolve.mainFields or resolve.conditionNames bundler config.").action(function() {
+        return execute(()=>detectEsmResolvedToCjs());
+    });
+    treeShakingProgram.command('summary').description("Comprehensive tree-shaking health summary: all rule violations (E1007/E1008/E1009) plus per-module bailout reasons. Use this as the starting point when diagnosing unexpected bundle size growth.").action(function() {
+        return execute(()=>getTreeShakingSummary());
+    });
+    treeShakingProgram.command('bailout-reasons').description("List modules that cannot be tree-shaken grouped by bailout reason (side effects / dynamic import / unknown exports). Results are split into node_modules and user code with per-package statistics.").option('--page-number <pageNumber>', 'Page number (default: 1)').option('--page-size <pageSize>', 'Page size (default: 100, max: 1000)').action(function() {
+        const options = this.opts();
+        return execute(()=>getBailoutModules(options.pageNumber, options.pageSize));
+    });
+    treeShakingProgram.command('exports-analysis').description("Analyse module exports to identify unused exports and barrel-file anti-patterns that hurt tree-shaking. Cross-reference with actual import usage to find removal candidates.").action(function() {
+        return execute(()=>getExportsAnalysis());
+    });
+}
 const command_program = new Command();
 command_program.name('rsdoctor-skill').description('Rsdoctor skill CLI').option('--data-file <path>', 'Path to rsdoctor-data.json file (required)').option('--compact', 'Compact JSON output').showHelpAfterError().showSuggestionAfterError();
 const command_execute = async (handler)=>{
@@ -2954,6 +3076,7 @@ registerLoaderCommands(command_program, command_execute);
 registerBuildCommands(command_program, command_execute);
 registerErrorCommands(command_program, command_execute);
 registerServerCommands(command_program, command_execute);
+registerTreeShakingCommands(command_program, command_execute);
 async function run() {
     if (process.argv.length <= 2) command_program.help({
         error: true

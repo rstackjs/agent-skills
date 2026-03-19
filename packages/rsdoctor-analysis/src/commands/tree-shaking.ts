@@ -162,7 +162,7 @@ export async function getBailoutModules(
       '"side effects" means package.json declares the package has side effects or the field is missing; ' +
       '"dynamic import" means the module is loaded via import() and its exports are unknown at build time; ' +
       '"unknown exports" means the module uses non-static export patterns (e.g. module.exports = ...) ' +
-      'that the bundler cannot analyse statically. ' +
+      'that the bundler cannot analyze statically. ' +
       'In Rspack, the innerGraph and providedExports optimizations are disabled for such modules, ' +
       'preventing dead-code elimination even in production mode. ' +
       'Results are split into node_modules packages and user code with per-package statistics. ' +
@@ -182,7 +182,7 @@ export async function getExportsAnalysis(): Promise<{
     ok: true,
     data: exports,
     description:
-      'Analyse module exports to identify tree-shaking opportunities. ' +
+      'Analyze module exports to identify tree-shaking opportunities. ' +
       'Shows which exports exist across all modules so you can cross-reference ' +
       'with actual import usage. Exports that are never imported are candidates ' +
       'for removal. Re-exported barrel files (index.ts that re-exports everything) ' +
@@ -271,7 +271,7 @@ export function registerTreeShakingCommands(
   treeShakingProgram
     .command('exports-analysis')
     .description(
-      'Analyse module exports to identify unused exports and barrel-file anti-patterns ' +
+      'Analyze module exports to identify unused exports and barrel-file anti-patterns ' +
         'that hurt tree-shaking. Cross-reference with actual import usage to find ' +
         'removal candidates.',
     )

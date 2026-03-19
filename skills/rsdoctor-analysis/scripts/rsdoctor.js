@@ -3013,7 +3013,7 @@ async function getBailoutModules(pageNumberInput, pageSizeInput) {
     return {
         ok: true,
         data: sideEffects,
-        description: 'List modules that cannot be tree-shaken, grouped by bailout reason. bailoutReason explains exactly why the bundler kept a module: "side effects" means package.json declares the package has side effects or the field is missing; "dynamic import" means the module is loaded via import() and its exports are unknown at build time; "unknown exports" means the module uses non-static export patterns (e.g. module.exports = ...) that the bundler cannot analyse statically. In Rspack, the innerGraph and providedExports optimizations are disabled for such modules, preventing dead-code elimination even in production mode. Results are split into node_modules packages and user code with per-package statistics. Fixing node_modules entries usually requires patching "sideEffects" in the upstream package or adding it to bundler sideEffects config; fixing user code requires converting to named ESM exports. Reference: https://www.rspack.dev/guide/optimization/tree-shaking'
+        description: 'List modules that cannot be tree-shaken, grouped by bailout reason. bailoutReason explains exactly why the bundler kept a module: "side effects" means package.json declares the package has side effects or the field is missing; "dynamic import" means the module is loaded via import() and its exports are unknown at build time; "unknown exports" means the module uses non-static export patterns (e.g. module.exports = ...) that the bundler cannot analyze statically. In Rspack, the innerGraph and providedExports optimizations are disabled for such modules, preventing dead-code elimination even in production mode. Results are split into node_modules packages and user code with per-package statistics. Fixing node_modules entries usually requires patching "sideEffects" in the upstream package or adding it to bundler sideEffects config; fixing user code requires converting to named ESM exports. Reference: https://www.rspack.dev/guide/optimization/tree-shaking'
     };
 }
 async function getExportsAnalysis() {
@@ -3021,7 +3021,7 @@ async function getExportsAnalysis() {
     return {
         ok: true,
         data: exports,
-        description: "Analyse module exports to identify tree-shaking opportunities. Shows which exports exist across all modules so you can cross-reference with actual import usage. Exports that are never imported are candidates for removal. Re-exported barrel files (index.ts that re-exports everything) are a common cause of poor tree-shaking because the bundler must retain all transitive exports unless every consumer uses named imports exclusively. Rspack's providedExports and re-export analysis can redirect imports through re-export chains directly to source modules — but only when all exports use static ESM syntax. Mark side-effect-free calls with /*#__PURE__*/ to help the minimizer remove them safely. Reference: https://www.rspack.dev/guide/optimization/tree-shaking"
+        description: "Analyze module exports to identify tree-shaking opportunities. Shows which exports exist across all modules so you can cross-reference with actual import usage. Exports that are never imported are candidates for removal. Re-exported barrel files (index.ts that re-exports everything) are a common cause of poor tree-shaking because the bundler must retain all transitive exports unless every consumer uses named imports exclusively. Rspack's providedExports and re-export analysis can redirect imports through re-export chains directly to source modules — but only when all exports use static ESM syntax. Mark side-effect-free calls with /*#__PURE__*/ to help the minimizer remove them safely. Reference: https://www.rspack.dev/guide/optimization/tree-shaking"
     };
 }
 function registerTreeShakingCommands(program, execute) {
@@ -3042,7 +3042,7 @@ function registerTreeShakingCommands(program, execute) {
         const options = this.opts();
         return execute(()=>getBailoutModules(options.pageNumber, options.pageSize));
     });
-    treeShakingProgram.command('exports-analysis').description("Analyse module exports to identify unused exports and barrel-file anti-patterns that hurt tree-shaking. Cross-reference with actual import usage to find removal candidates.").action(function() {
+    treeShakingProgram.command('exports-analysis').description("Analyze module exports to identify unused exports and barrel-file anti-patterns that hurt tree-shaking. Cross-reference with actual import usage to find removal candidates.").action(function() {
         return execute(()=>getExportsAnalysis());
     });
 }

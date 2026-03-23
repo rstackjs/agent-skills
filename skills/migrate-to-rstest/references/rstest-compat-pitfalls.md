@@ -10,5 +10,4 @@ https://rstest.rs/guide/migration/vitest
 This issue was fixed in `rstest v0.9.3`.
 Treat this section as a legacy note only for projects pinned to `rstest < 0.9.3`.
 
-- First confirm the installed Rstest version.
-- If the project is still on an older version, upgrade to `rstest >= 0.9.3` before debugging mock behavior further.
+- Confirm the project is using `rstest < 0.9.3`, then upgrade to `rstest >= 0.9.3` before debugging mock behavior further.

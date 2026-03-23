@@ -35,6 +35,7 @@ rstack
 rstackjs
 rstest
 shiki
+SVGSVG
 svgr
 samply
 tailwindcss

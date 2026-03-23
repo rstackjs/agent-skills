@@ -147,7 +147,8 @@ Rspress has 27 built-in icons used across the UI. You can replace any of them by
 **Icon type**: Each icon is a React component or a URL string:
 
 ```ts
-type Icon = React.FC<React.SVGProps<SVGSVGElement>> | string;
+import type { FC, SVGProps } from 'react';
+type Icon = FC<SVGProps<SVGSVGElement>> | string;
 ```
 
 **Example 1** — Replace an icon with a custom SVG component:
@@ -157,7 +158,7 @@ type Icon = React.FC<React.SVGProps<SVGSVGElement>> | string;
 export * from '@rspress/core/theme-original';
 
 // Named export overrides the wildcard — replaces the GitHub icon site-wide
-export const IconGithub: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const IconGithub = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
     <path d="M12 2C6.477 2 2 6.484 2 12.017c0 ..." fill="currentColor" />
   </svg>
@@ -182,7 +183,7 @@ import { SvgWrapper, IconGithub } from '@rspress/core/theme';
 <SvgWrapper icon={IconGithub} width={24} height={24} />
 ```
 
-**Available icons**: `IconArrowDown`, `IconArrowRight`, `IconClose`, `IconCopy`, `IconDeprecated`, `IconDown`, `IconEdit`, `IconEmpty`, `IconExperimental`, `IconExternalLink`, `IconFile`, `IconGithub`, `IconGitlab`, `IconHeader`, `IconJump`, `IconLink`, `IconLoading`, `IconMenu`, `IconMoon`, `IconScrollToTop`, `IconSearch`, `IconSmallMenu`, `IconSuccess`, `IconSun`, `IconTitle`, `IconWrap`, `IconWrapped` etc.
+**Available icons**: `IconArrowDown`, `IconArrowRight`, `IconClose`, `IconCopy`, `IconDeprecated`, `IconDown`, `IconEdit`, `IconEmpty`, `IconExperimental`, `IconExternalLink`, `IconFile`, `IconGithub`, `IconGitlab`, `IconHeader`, `IconJump`, `IconLink`, `IconLoading`, `IconMenu`, `IconMoon`, `IconScrollToTop`, `IconSearch`, `IconSmallMenu`, `IconSuccess`, `IconSun`, `IconTitle`, `IconWrap`, `IconWrapped`.
 
 > **Source**: See the [icons source](https://github.com/web-infra-dev/rspress/blob/main/packages/core/src/theme/icons.ts) for default implementations.
 

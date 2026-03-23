@@ -24,6 +24,7 @@ Guide for customizing Rspress (v2) themes. Rspress offers four levels of customi
 | Add content around existing components (banners, footers, logos) | 3     | Layout slots (wrap)         |
 | Override MDX rendering (custom `<h1>`, `<code>`, etc.)           | 3     | `components` slot           |
 | Wrap the app in a provider (state, analytics, auth)              | 4     | Eject `Root`                |
+| Replace built-in icons (logo, GitHub, search, etc.)              | —     | Icon re-export              |
 | Completely replace a built-in component                          | 4     | Eject that component        |
 | Add a global floating component (back-to-top, chat widget)       | —     | `globalUIComponents` config |
 | Control page layout structure (hide sidebar, blank page)         | —     | Frontmatter `pageType`      |
@@ -139,6 +140,54 @@ export { DocFooter } from './components/DocFooter';
 
 ---
 
+## Custom Icons
+
+Rspress has 27 built-in icons used across the UI. You can replace any of them by re-exporting your own icon component with the same name — no ejection needed. This uses the same `theme/index.tsx` mechanism: your named export takes precedence over the wildcard re-export.
+
+**Icon type**: Each icon is a React component or a URL string:
+
+```ts
+type Icon = React.FC<React.SVGProps<SVGSVGElement>> | string;
+```
+
+**Example 1** — Replace an icon with a custom SVG component:
+
+```tsx
+// theme/index.tsx
+export * from '@rspress/core/theme-original';
+
+// Named export overrides the wildcard — replaces the GitHub icon site-wide
+export const IconGithub: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
+    <path d="M12 2C6.477 2 2 6.484 2 12.017c0 ..." fill="currentColor" />
+  </svg>
+);
+```
+
+**Example 2** — Use an SVGR import:
+
+```tsx
+// theme/index.tsx
+export * from '@rspress/core/theme-original';
+
+import CustomGithubIcon from './icons/github.svg?react';
+export const IconGithub = CustomGithubIcon;
+```
+
+**Using `SvgWrapper` in MDX or custom components**:
+
+```mdx
+import { SvgWrapper, IconGithub } from '@rspress/core/theme';
+
+<SvgWrapper icon={IconGithub} width={24} height={24} />
+```
+
+**Available icons**: `IconArrowDown`, `IconArrowRight`, `IconClose`, `IconCopy`, `IconDeprecated`, `IconDown`, `IconEdit`, `IconEmpty`, `IconExperimental`, `IconExternalLink`, `IconFile`, `IconGithub`, `IconGitlab`, `IconHeader`, `IconJump`, `IconLink`, `IconLoading`, `IconMenu`, `IconMoon`, `IconScrollToTop`, `IconSearch`, `IconSmallMenu`, `IconSuccess`, `IconSun`, `IconTitle`, `IconWrap`, `IconWrapped` etc.
+
+> **Source**: See the [icons source](https://github.com/web-infra-dev/rspress/blob/main/packages/core/src/theme/icons.ts) for default implementations.
+
+---
+
 ## Global UI Components
 
 For components that should render on every page without theme overrides:
@@ -187,5 +236,6 @@ Fine-grained: set `navbar: false`, `sidebar: false`, `outline: false`, `footer: 
 - Custom theme guide: <https://rspress.rs/guide/basic/custom-theme>
 - CSS variables: <https://rspress.rs/ui/vars>
 - Layout component: <https://rspress.rs/ui/layout-components/layout>
+- Built-in icons: <https://rspress.rs/ui/icons/>
 - Built-in hooks: <https://rspress.rs/ui/hooks/>
 - CLI commands (eject): <https://rspress.rs/api/commands>

@@ -5,9 +5,9 @@ Use this reference when migration passes static replacement but runtime tests st
 For general migration pitfalls (globals mode, setup adapters, mock factory/hoisting, path resolution), use the official Vitest migration guide first:
 https://rstest.rs/guide/migration/vitest
 
-## Re-export mock target mismatch under Rspack
+## Re-export mock target mismatch under Rspack (legacy)
 
-When runtime resolves through source module instead of re-export module, migrated mocks may appear ignored.
+This issue was fixed in `rstest v0.9.3`.
+Treat this section as a legacy note only for projects pinned to `rstest < 0.9.3`.
 
-- First follow `references/provided-exports-troubleshooting.md`.
-- If needed, temporarily stabilize build optimization and re-target mock to the actually resolved module.
+- Confirm the project is using `rstest < 0.9.3`, then upgrade to `rstest >= 0.9.3` before debugging mock behavior further.

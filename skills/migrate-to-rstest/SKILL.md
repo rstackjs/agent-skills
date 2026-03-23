@@ -32,7 +32,7 @@ Migrate Jest- or Vitest-based tests and configuration to Rstest with minimal beh
    - Global API replacement rules: `references/global-api-migration.md`
    - Known compatibility pitfalls: `references/rstest-compat-pitfalls.md`
 5. Check type errors
-6. Run tests and fix deltas (if mocks fail unexpectedly under Rspack, see `references/provided-exports-troubleshooting.md`)
+6. Run tests and fix deltas
 7. Remove legacy test runner dependency/config only after Rstest is green
 8. Summarize changes
 
@@ -85,8 +85,7 @@ stop and provide:
 
 - Run the test suite and fix failures iteratively.
 - Fix configuration and resolver errors first, then address mocks/timers/snapshots, and touch test logic last.
-- If mocks fail for re-exported modules under Rspack, use:
-  `references/provided-exports-troubleshooting.md`
+- If mocks fail for re-exported modules under Rspack, first check whether the project is pinned to `rstest < 0.9.3`.
 - Before broad test rewrites, check known pitfalls in:
   `references/rstest-compat-pitfalls.md`
 

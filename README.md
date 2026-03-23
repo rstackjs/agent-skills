@@ -124,6 +124,14 @@ npx skills add rstackjs/agent-skills --skill rspress-v2-upgrade
 
 Migrate Rspress projects from v1 to v2. Use when a user asks to upgrade Rspress, follow the v1-to-v2 guide, update packages/configs/themes, or validate the upgrade.
 
+### rspress-custom-theme
+
+```bash
+npx skills add rstackjs/agent-skills --skill rspress-custom-theme
+```
+
+Customize Rspress themes using CSS variables, Layout slots, component wrapping, or component ejection. Use when a user wants to change the look and feel of an Rspress site, override theme components, add custom navigation/sidebar/footer content, inject global providers, or modify the default Rspress theme in any way.
+
 ### rspress-description-generator
 
 ```bash

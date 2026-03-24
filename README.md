@@ -15,7 +15,6 @@ A collection of Agent Skills for [Rstack](https://rspack.rs/guide/start/ecosyste
 
 - [Usage](#usage)
 - [Rspack Skills](#rspack-skills)
-  - [rspack-split-chunks](#rspack-split-chunks)
 - [Rsbuild Skills](#rsbuild-skills)
 - [Rslib Skills](#rslib-skills)
 - [Rspress Skills](#rspress-skills)

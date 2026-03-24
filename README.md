@@ -70,6 +70,14 @@ Comprehensive guide and toolkit for diagnosing Rspack build issues. Quickly iden
 
 Use when the user encounters build failures, slow builds, or wants to optimize Rspack performance.
 
+### rspack-split-chunks
+
+```bash
+npx skills add rstackjs/agent-skills --skill rspack-split-chunks
+```
+
+Diagnose and optimize Rspack `optimization.splitChunks` configuration. Use when tuning production chunking, reducing duplicated modules, improving cache behavior, or debugging over-fetch caused by `name` and `cacheGroups`.
+
 ## Rsbuild Skills
 
 ### rsbuild-best-practices

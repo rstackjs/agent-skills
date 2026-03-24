@@ -15,6 +15,7 @@ A collection of Agent Skills for [Rstack](https://rspack.rs/guide/start/ecosyste
 
 - [Usage](#usage)
 - [Rspack Skills](#rspack-skills)
+  - [rspack-split-chunks](#rspack-split-chunks)
 - [Rsbuild Skills](#rsbuild-skills)
 - [Rslib Skills](#rslib-skills)
 - [Rspress Skills](#rspress-skills)
@@ -69,6 +70,14 @@ npx skills add rstackjs/agent-skills --skill rspack-tracing
 Comprehensive guide and toolkit for diagnosing Rspack build issues. Quickly identify where crashes/errors occur, or perform detailed performance profiling to resolve bottlenecks.
 
 Use when the user encounters build failures, slow builds, or wants to optimize Rspack performance.
+
+### rspack-split-chunks
+
+```bash
+npx skills add rstackjs/agent-skills --skill rspack-split-chunks
+```
+
+Diagnose and optimize Rspack `optimization.splitChunks` configuration. Use when tuning production chunking, reducing duplicated modules, improving cache behavior, or debugging over-fetch caused by `name` and `cacheGroups`.
 
 ## Rsbuild Skills
 

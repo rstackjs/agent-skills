@@ -207,7 +207,7 @@ Skills in this section are mainly intended for Rstack ecosystem repositories and
 npx skills add rstackjs/agent-skills --skill pr-creator
 ```
 
-Create a pull request for this repository following Rstack team conventions, including branch safety rules, Conventional Commits PR titles, the pull request template, and concise English writing style.
+Use when asked to create a pull request for this repository. It helps the PR follow the repository's branch safety rules, title convention, pull request template, and concise English writing style.
 
 ## Contributing
 

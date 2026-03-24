@@ -21,6 +21,7 @@ A collection of Agent Skills for [Rstack](https://rspack.rs/guide/start/ecosyste
 - [Rsdoctor Skills](#rsdoctor-skills)
 - [Rstest Skills](#rstest-skills)
 - [Storybook Skills](#storybook-skills)
+- [Rstack Workflow Skills](#rstack-workflow-skills)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -195,6 +196,18 @@ npx skills add rstackjs/agent-skills --skill storybook-rsbuild
 ```
 
 Set up or migrate Storybook to use the Rsbuild builder. Handles fresh setup for React, Vue 3, HTML, Web Components, and React Native Web, migration from webpack5 or Vite frameworks, and integrations with Rslib, Modern.js, and Rspack.
+
+## Rstack Workflow Skills
+
+Skills in this section are mainly intended for Rstack ecosystem repositories and the Rstack team's workflow.
+
+### pr-creator
+
+```bash
+npx skills add rstackjs/agent-skills --skill pr-creator
+```
+
+Create a pull request for this repository following Rstack team conventions, including branch safety rules, Conventional Commits PR titles, the pull request template, and concise English writing style.
 
 ## Contributing
 

@@ -21,7 +21,7 @@ description: Use when upgrading a Rsbuild 1.x project to v2, including dependenc
    - Note any removed or renamed options, defaults, or plugin APIs.
 
 4. **Update dependencies**
-   - Bump `@rsbuild/core` to v2 (currently Beta tag).
+   - Bump `@rsbuild/core` to v2 (currently `rc` tag).
    - Bump Rsbuild plugins to latest versions via `npx taze major --include /rsbuild/ -w -r`
 
 5. **Apply config and code changes**

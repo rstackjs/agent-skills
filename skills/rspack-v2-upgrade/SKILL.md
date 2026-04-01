@@ -21,7 +21,7 @@ description: Use when upgrading a Rspack 1.x project to v2, including dependency
    - Note any removed or renamed options, defaults, or plugin APIs.
 
 4. **Update dependencies**
-   - Upgrade Rspack packages to v2 (currently Beta tag): `@rspack/core`, `@rspack/cli`, `@rspack/dev-server`.
+   - Upgrade Rspack packages to v2 (currently `rc` tag): `@rspack/core`, `@rspack/cli`, `@rspack/dev-server`.
 
 5. **Apply migration changes**
    - Update the Rspack config and related code according to the official guide.

@@ -42,3 +42,7 @@ description: Use when asked to create a pull request for this repository. It hel
 7. Push the branch only after re-checking the branch name. Never push the default branch directly.
 
 8. Create the PR with `gh pr create`.
+
+## Constraints
+
+- Do not modify code while following this skill.

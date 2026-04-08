@@ -5,7 +5,7 @@ description: Use when analyzing Rspack/Webpack bundles from local `rsdoctor-data
 
 # Rsdoctor Analysis Assistant Skill
 
-Use the local Rsdoctor analysis CLI script (`scripts/rsdoctor.js`) to read `rsdoctor-data.json` and provide evidence-based optimization recommendations.
+Use the Rsdoctor Agent SDK CLI (`rsdoctor-agent`) to read `rsdoctor-data.json` and provide evidence-based optimization recommendations.
 
 Response order (required): High-Priority Issues -> Reference Chain Traceability -> Proposed Solutions -> Next Deep-Dive Analysis.
 
@@ -23,10 +23,8 @@ Response order (required): High-Priority Issues -> Reference Chain Traceability 
 
 ## Stable CLI Entry
 
-- Repository-root entry:
-  - `node skills/rsdoctor-analysis/scripts/rsdoctor.js <group> <subcommand> [options]`
-- Skill-directory entry:
-  - `node scripts/rsdoctor.js <group> <subcommand> [options]`
+- CLI entry:
+  - `rsdoctor-agent ai <group> <subcommand> [options]`
 - Command format:
   - `<group> <subcommand> [--option value] --data-file <path> [--compact]`
 - Global options:
@@ -89,7 +87,7 @@ Formatting:
 - `rsdoctor-data.json` missing:
   - Configure plugin and run `RSDOCTOR=true npm run build`.
 - Command not found:
-  - Verify CLI entry path and current working directory.
+  - Verify `@rsdoctor/agent-cli` is globally linked and `rsdoctor-agent` is in `PATH`.
 - Build/install blocked in sandbox:
   - Re-run outside sandbox.
 - JSON read error:

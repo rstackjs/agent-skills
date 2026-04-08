@@ -2,8 +2,7 @@
 
 Stable CLI entry:
 
-- Repository root: `node skills/rsdoctor-analysis/scripts/rsdoctor.js <group> <subcommand> [options]`
-- Skill directory: `node scripts/rsdoctor.js <group> <subcommand> [options]`
+- `rsdoctor-agent ai <group> <subcommand> [options]`
 
 Global options:
 

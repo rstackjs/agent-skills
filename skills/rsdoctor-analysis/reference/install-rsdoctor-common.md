@@ -39,26 +39,25 @@ Once you have the `rsdoctor-data.json` file, you can use it for analysis. This J
 
 Stable CLI entry:
 
-- Repository root: `node skills/rsdoctor-analysis/scripts/rsdoctor.js <group> <subcommand> [options]`
-- Skill directory: `node scripts/rsdoctor.js <group> <subcommand> [options]`
+- `rsdoctor-agent ai <group> <subcommand> [options]`
 
 **Example usage (repository root):**
 
 ```bash
 # Analyze chunks
-node skills/rsdoctor-analysis/scripts/rsdoctor.js chunks list --data-file ./dist/rsdoctor-data.json
+rsdoctor-agent ai chunks list --data-file ./dist/rsdoctor-data.json
 
 # Analyze packages
-node skills/rsdoctor-analysis/scripts/rsdoctor.js packages list --data-file ./dist/rsdoctor-data.json
+rsdoctor-agent ai packages list --data-file ./dist/rsdoctor-data.json
 
 # Analyze specific module by path
-node skills/rsdoctor-analysis/scripts/rsdoctor.js modules by-path --path "src/index.tsx" --data-file ./dist/rsdoctor-data.json
+rsdoctor-agent ai modules by-path --path "src/index.tsx" --data-file ./dist/rsdoctor-data.json
 
 # Analyze tree-shaking summary
-node skills/rsdoctor-analysis/scripts/rsdoctor.js tree-shaking summary --data-file ./dist/rsdoctor-data.json
+rsdoctor-agent ai tree-shaking summary --data-file ./dist/rsdoctor-data.json
 
 # Optimize bundle inputs
-node skills/rsdoctor-analysis/scripts/rsdoctor.js bundle optimize --data-file ./dist/rsdoctor-data.json
+rsdoctor-agent ai bundle optimize --data-file ./dist/rsdoctor-data.json
 ```
 
 **Command format:**

@@ -39,21 +39,6 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/rsdoctor-analysis:
-    devDependencies:
-      '@rslib/core':
-        specifier: ^0.19.4
-        version: 0.19.4(typescript@5.9.3)
-      '@types/node':
-        specifier: ^24.10.9
-        version: 24.10.10
-      commander:
-        specifier: ^12.1.0
-        version: 12.1.0
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
   scripts/config:
     devDependencies:
       '@rslib/core':

@@ -39,12 +39,18 @@ Once you have the `rsdoctor-data.json` file, you can use it for analysis. This J
 
 Stable CLI entry:
 
-- Skill directory: `node scripts/rsdoctor.js <group> <subcommand> [options]`
+<<<<<<< Updated upstream
+
+- # Skill directory: `node scripts/rsdoctor.js <group> <subcommand> [options]`
+- `rsdoctor-agent <group> <subcommand> [options]`
+- For agent execution, prefer running CLI commands in background mode when possible, then collect and summarize outputs.
+  > > > > > > > Stashed changes
 
 **Example usage (repository root):**
 
 ```bash
 # Analyze chunks
+<<<<<<< Updated upstream
 node scripts/rsdoctor.js chunks list --data-file ./dist/rsdoctor-data.json
 
 # Analyze packages
@@ -58,6 +64,21 @@ node scripts/rsdoctor.js tree-shaking summary --data-file ./dist/rsdoctor-data.j
 
 # Optimize bundle inputs
 node scripts/rsdoctor.js bundle optimize --data-file ./dist/rsdoctor-data.json
+=======
+rsdoctor-agent chunks list --data-file ./dist/rsdoctor-data.json
+
+# Analyze packages
+rsdoctor-agent packages list --data-file ./dist/rsdoctor-data.json
+
+# Analyze specific module by path
+rsdoctor-agent modules by-path --path "src/index.tsx" --data-file ./dist/rsdoctor-data.json
+
+# Analyze tree-shaking summary
+rsdoctor-agent tree-shaking summary --data-file ./dist/rsdoctor-data.json
+
+# Optimize bundle inputs
+rsdoctor-agent bundle optimize --data-file ./dist/rsdoctor-data.json
+>>>>>>> Stashed changes
 ```
 
 **Command format:**

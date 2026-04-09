@@ -7,11 +7,12 @@ description: Use when analyzing Rspack/Webpack bundles from local `rsdoctor-data
 
 Use the local Rsdoctor analysis CLI script (`scripts/rsdoctor.js`) to read `rsdoctor-data.json` and provide evidence-based optimization recommendations.
 
-Response order (required): High-Priority Issues -> Reference Chain Traceability -> Proposed Solutions -> Next Deep-Dive Analysis.
+Response order (required): High-Priority Issues -> Reference Chain Traceability -> Proposed Solutions -> Next Deep-Dive Issue Categories (Not commands).
 
 ## Guardrails
 
 - Default behavior is read-only analysis.
+- Prefer running CLI commands in background mode when possible, and then collect/inspect results after execution.
 - Do not modify user code/config except these explicit cases:
   - `install`: install `@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin`, and update `package.json`.
   - `config`: add Rsdoctor plugin config to supported config files.
@@ -23,8 +24,15 @@ Response order (required): High-Priority Issues -> Reference Chain Traceability 
 
 ## Stable CLI Entry
 
+<<<<<<< Updated upstream
+
 - Skill-directory entry:
-  - `node scripts/rsdoctor.js <group> <subcommand> [options]`
+  - # `node scripts/rsdoctor.js <group> <subcommand> [options]`
+    The `rsdoctor-agent analyze` command can be kept as a convenient shortcut for non-Agent scenarios (for example, a one-line CI analysis script), but it does not need to be the core path. The core path should be `describe-tools` + `run-tool`, allowing the Agent to orchestrate the workflow.
+
+- CLI entry:
+  - `rsdoctor-agent <group> <subcommand> [options]`
+    > > > > > > > Stashed changes
 - Command format:
   - `<group> <subcommand> [--option value] --data-file <path> [--compact]`
 - Global options:
@@ -75,7 +83,8 @@ Response order (required): High-Priority Issues -> Reference Chain Traceability 
 3. Proposed solutions:
    - Provide actionable recommendations with priority (High/Med/Low).
 4. Whether deeper analysis is still needed:
-   - List remaining gaps and the next command/step to close each gap.
+   - List remaining gaps by issue categories (for example: dependency duplication, chunking strategy, tree-shaking barriers, loader cost, asset volume).
+   - Do not output suggested commands in this section; output category-level follow-up directions only.
 
 Formatting:
 

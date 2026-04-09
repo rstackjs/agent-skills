@@ -2,7 +2,11 @@
 
 Stable CLI entry:
 
-- Skill directory: `node scripts/rsdoctor.js <group> <subcommand> [options]`
+<<<<<<< Updated upstream
+
+- # Skill directory: `node scripts/rsdoctor.js <group> <subcommand> [options]`
+- `rsdoctor-agent <group> <subcommand> [options]`
+  > > > > > > > Stashed changes
 
 Global options:
 

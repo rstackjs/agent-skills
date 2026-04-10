@@ -39,30 +39,46 @@ Once you have the `rsdoctor-data.json` file, you can use it for analysis. This J
 
 Stable CLI entry:
 
-- Skill directory: `node scripts/rsdoctor.js <group> <subcommand> [options]`
+- `npx @rsdoctor/agent-cli <group> <subcommand> [options]` (recommended)
+- `rsdoctor-agent <group> <subcommand> [options]` (if binary is available in PATH)
+- `npx @rsdoctor/agent-cli describe-tools`
+- `npx @rsdoctor/agent-cli run-tool <tool-name> --data-file <path> [--input <json>]`
+- `npx @rsdoctor/agent-cli analyze "<query>" --data-file <path> [--format json|text]`
+- For agent execution, prefer running CLI commands in background mode when possible, then collect and summarize outputs.
 
 **Example usage (repository root):**
 
 ```bash
+# Discover tool catalog for run-tool
+npx @rsdoctor/agent-cli describe-tools
+
+# Run one catalog tool directly
+npx @rsdoctor/agent-cli run-tool build_summary --data-file ./dist/rsdoctor-data.json
+
+# Run one-shot natural-language analysis plan
+npx @rsdoctor/agent-cli analyze "find duplicate dependencies and tree shaking issues" --data-file ./dist/rsdoctor-data.json --format json
+
 # Analyze chunks
-node scripts/rsdoctor.js chunks list --data-file ./dist/rsdoctor-data.json
+npx @rsdoctor/agent-cli chunks list --data-file ./dist/rsdoctor-data.json
 
 # Analyze packages
-node scripts/rsdoctor.js packages list --data-file ./dist/rsdoctor-data.json
+npx @rsdoctor/agent-cli packages list --data-file ./dist/rsdoctor-data.json
 
 # Analyze specific module by path
-node scripts/rsdoctor.js modules by-path --path "src/index.tsx" --data-file ./dist/rsdoctor-data.json
+npx @rsdoctor/agent-cli modules by-path --path "src/index.tsx" --data-file ./dist/rsdoctor-data.json
 
 # Analyze tree-shaking summary
-node scripts/rsdoctor.js tree-shaking summary --data-file ./dist/rsdoctor-data.json
+npx @rsdoctor/agent-cli tree-shaking summary --data-file ./dist/rsdoctor-data.json
 
 # Optimize bundle inputs
-node scripts/rsdoctor.js bundle optimize --data-file ./dist/rsdoctor-data.json
+npx @rsdoctor/agent-cli bundle optimize --data-file ./dist/rsdoctor-data.json
 ```
 
 **Command format:**
 
+- Top-level mode: `describe-tools`, `run-tool`, `analyze`
 - Use `<group> <subcommand>` (for example: `chunks list`, `bundle optimize`, `tree-shaking summary`)
+- `--compact` is for direct/`ai` command mode; `run-tool`/`analyze` use `--input` and `--format` instead
 - Do not use deprecated `<group>:<subcommand>` format
 - Full command map: [command-map.md](command-map.md)
 

@@ -2,12 +2,39 @@
 
 Stable CLI entry:
 
-- Skill directory: `node scripts/rsdoctor.js <group> <subcommand> [options]`
+- `npx @rsdoctor/agent-cli <group> <subcommand> [options]` (recommended)
+- `rsdoctor-agent <group> <subcommand> [options]` (if binary is available in PATH)
 
-Global options:
+Top-level command mode:
 
-- `--data-file <path>` (required)
-- `--compact` (optional)
+- `describe-tools`
+- `run-tool <tool-name> --data-file <path> [--input <json>]`
+- `analyze <query> --data-file <path> [--format json|text]`
+
+`ai` namespace mode:
+
+- `ai --describe`
+- `ai --schema <group>.<subcommand>`
+- `ai <group> <subcommand> --data-file <path> [--compact]`
+
+`run-tool` catalog (current):
+
+- `chunks_list`
+- `packages_duplicates`
+- `packages_similar`
+- `build_summary`
+- `bundle_optimize`
+- `errors_list`
+- `tree_shaking_summary`
+
+Option scopes:
+
+- `--data-file <path>`:
+  - required for `run-tool`, `analyze`, direct `<group> <subcommand>`, and `ai <group> <subcommand>`
+  - not required for `describe-tools`, `ai --describe`, `ai --schema`
+- `--input <json>`: optional for `run-tool`
+- `--format json|text`: optional for `analyze`
+- `--compact`: optional for direct `<group> <subcommand>` and `ai <group> <subcommand>`
 
 ## Chunks
 

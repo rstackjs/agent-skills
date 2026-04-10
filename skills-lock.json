@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "evaluate-skill-quality": {
+      "source": "yifancong/yifan-skills",
+      "sourceType": "github",
+      "computedHash": "bab074211c5182321791199dc3146131bbc87fe28e9e31969ee6de0f8324c8b0"
+    }
+  }
+}

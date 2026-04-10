@@ -5,7 +5,7 @@ description: Use when analyzing Rspack/Webpack bundles from local `rsdoctor-data
 
 # Rsdoctor Analysis Assistant Skill
 
-Use the local Rsdoctor analysis CLI script (`scripts/rsdoctor.js`) to read `rsdoctor-data.json` and provide evidence-based optimization recommendations.
+Use `@rsdoctor/agent-cli` to read `rsdoctor-data.json` and provide evidence-based optimization recommendations.
 
 Response order (required): High-Priority Issues -> Reference Chain Traceability -> Proposed Solutions -> Next Deep-Dive Issue Categories (Not commands).
 
@@ -24,20 +24,34 @@ Response order (required): High-Priority Issues -> Reference Chain Traceability 
 
 ## Stable CLI Entry
 
-<<<<<<< Updated upstream
-
-- Skill-directory entry:
-  - # `node scripts/rsdoctor.js <group> <subcommand> [options]`
-    The `rsdoctor-agent analyze` command can be kept as a convenient shortcut for non-Agent scenarios (for example, a one-line CI analysis script), but it does not need to be the core path. The core path should be `describe-tools` + `run-tool`, allowing the Agent to orchestrate the workflow.
-
-- CLI entry:
-  - `rsdoctor-agent <group> <subcommand> [options]`
-    > > > > > > > Stashed changes
-- Command format:
-  - `<group> <subcommand> [--option value] --data-file <path> [--compact]`
-- Global options:
-  - `--data-file <path>` (required)
-  - `--compact` (optional)
+- Package entry (recommended):
+  - `npx @rsdoctor/agent-cli ...`
+- Binary entry (if available in PATH):
+  - `rsdoctor-agent ...`
+- Top-level command formats:
+  - `describe-tools`
+  - `run-tool <tool-name> --data-file <path> [--input <json>]`
+  - `analyze <query> --data-file <path> [--format json|text]`
+  - `<group> <subcommand> --data-file <path> [--compact]`
+- `ai` namespace command formats:
+  - `ai --describe`
+  - `ai --schema <group>.<subcommand>`
+  - `ai <group> <subcommand> --data-file <path> [--compact]`
+- `run-tool` catalog coverage (current):
+  - `chunks_list`
+  - `packages_duplicates`
+  - `packages_similar`
+  - `build_summary`
+  - `bundle_optimize`
+  - `errors_list`
+  - `tree_shaking_summary`
+- Option scopes:
+  - `--data-file <path>`:
+    - required for `run-tool`, `analyze`, direct `<group> <subcommand>`, and `ai <group> <subcommand>`
+    - not required for `describe-tools`, `ai --describe`, `ai --schema`
+  - `--input <json>`: optional for `run-tool`
+  - `--format json|text`: optional for `analyze`
+  - `--compact`: optional for direct `<group> <subcommand>` and `ai <group> <subcommand>`
 
 ## Workflow
 
@@ -57,9 +71,11 @@ Response order (required): High-Priority Issues -> Reference Chain Traceability 
    - Auto-generate file by running:
      - `RSDOCTOR=true npm run build` (or pnpm/yarn equivalent)
      - In Codex, do not run this build in sandbox.
-4. Run analysis commands:
-   - Path query: run `modules by-path`, then `modules by-id` if multiple matches.
-   - Other queries: run target command directly.
+4. Choose command mode and run analysis:
+   - If query can be covered by tool catalog commands, prefer `describe-tools` + `run-tool` (or `analyze` for one-shot natural language query).
+   - If command is outside tool catalog coverage, run direct subcommand mode: `<group> <subcommand> --data-file <path>`.
+   - If schema discovery is needed for direct mode, use `ai --describe` and `ai --schema <group>.<subcommand>`.
+   - Path query pattern: run `modules by-path`, then `modules by-id` if multiple matches.
 5. Synthesize and output in required response format.
 6. Optional optimization verification (only if user confirms):
    - Update `splitChunks` according to agreed optimization plan.
@@ -68,8 +84,9 @@ Response order (required): High-Priority Issues -> Reference Chain Traceability 
 
 ## Command Coverage
 
-- Covered groups:
+- Direct subcommand mode supports groups:
   - `chunks`, `modules`, `packages`, `assets`, `loaders`, `build`, `bundle`, `errors`, `rules`, `server`, `tree-shaking`
+- `run-tool` only supports tool catalog coverage listed in "Stable CLI Entry".
 - Full command map is in:
   - [reference/command-map.md](reference/command-map.md)
 
@@ -96,7 +113,10 @@ Formatting:
 - `rsdoctor-data.json` missing:
   - Configure plugin and run `RSDOCTOR=true npm run build`.
 - Command not found:
-  - Verify CLI entry path and current working directory.
+  - Verify `npx @rsdoctor/agent-cli describe-tools` works in current shell.
+  - If using binary mode, verify `rsdoctor-agent` exists in PATH.
+- `run-tool` reports unknown tool:
+  - Run `describe-tools` and use one of the catalog tool names, or switch to direct `<group> <subcommand>` mode.
 - Build/install blocked in sandbox:
   - Re-run outside sandbox.
 - JSON read error:

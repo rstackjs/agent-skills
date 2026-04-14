@@ -16,8 +16,8 @@ Apply these rules when writing or reviewing Rslib library projects.
 
 ## CLI
 
-- Use `rslib build` to build
-- Use `rslib build --watch` to build in watch mode for local development
+- Use `rslib` to build
+- Use `rslib --watch` to build in watch mode for local development
 - Use `rslib inspect` to inspect final Rslib/Rsbuild/Rspack configs
 
 ## Output

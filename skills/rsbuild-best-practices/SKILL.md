@@ -16,7 +16,7 @@ Apply these rules when writing or reviewing Rsbuild projects.
 
 ## CLI
 
-- Use `rsbuild dev` for local development
+- Use `rsbuild` for local development
 - Use `rsbuild build` for production build
 - Use `rsbuild preview` only for local production preview
 - Use `rsbuild inspect` to inspect final Rsbuild/Rspack configs

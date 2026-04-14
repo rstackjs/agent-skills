@@ -125,7 +125,7 @@ packages/my-skill/
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "rslib build",
+    "build": "rslib",
     "test": "rstest"
   },
   "dependencies": {

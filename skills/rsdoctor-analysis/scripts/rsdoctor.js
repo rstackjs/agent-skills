@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-import * as __rspack_external_node_child_process_27f17141 from "node:child_process";
-import * as __rspack_external_node_events_0a6aefe7 from "node:events";
-import * as __rspack_external_node_fs_5ea92f0c from "node:fs";
-import * as __rspack_external_node_path_c5b9b54f from "node:path";
-import * as __rspack_external_node_process_786449bf from "node:process";
+import node_path from "node:path";
+import node_fs from "node:fs";
+import { createRequire as __rspack_createRequire } from "node:module";
+const __rspack_createRequire_require = __rspack_createRequire(import.meta.url);
 var __webpack_modules__ = {};
 var __webpack_module_cache__ = {};
 function __webpack_require__(moduleId) {
@@ -23,19 +22,19 @@ __webpack_require__.m = __webpack_modules__;
 })();
 __webpack_require__.add({
     "node:child_process" (module) {
-        module.exports = __rspack_external_node_child_process_27f17141;
+        module.exports = __rspack_createRequire_require("node:child_process");
     },
     "node:events" (module) {
-        module.exports = __rspack_external_node_events_0a6aefe7;
+        module.exports = __rspack_createRequire_require("node:events");
     },
-    "node:fs" (module) {
-        module.exports = __rspack_external_node_fs_5ea92f0c;
+    "node:fs?9592" (module) {
+        module.exports = __rspack_createRequire_require("node:fs");
     },
-    "node:path" (module) {
-        module.exports = __rspack_external_node_path_c5b9b54f;
+    "node:path?435f" (module) {
+        module.exports = __rspack_createRequire_require("node:path");
     },
     "node:process" (module) {
-        module.exports = __rspack_external_node_process_786449bf;
+        module.exports = __rspack_createRequire_require("node:process");
     },
     "../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/index.js" (__unused_rspack_module, exports, __webpack_require__) {
         const { Argument } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/argument.js");
@@ -43,17 +42,17 @@ __webpack_require__.add({
         const { CommanderError, InvalidArgumentError } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/error.js");
         const { Help } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/help.js");
         const { Option } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/option.js");
-        exports.program = new Command();
-        exports.createCommand = (name)=>new Command(name);
-        exports.createOption = (flags, description)=>new Option(flags, description);
-        exports.createArgument = (name, description)=>new Argument(name, description);
-        exports.Command = Command;
-        exports.Option = Option;
-        exports.Argument = Argument;
-        exports.Help = Help;
-        exports.CommanderError = CommanderError;
-        exports.InvalidArgumentError = InvalidArgumentError;
-        exports.InvalidOptionArgumentError = InvalidArgumentError;
+        exports.DM = new Command();
+        exports.gu = (name)=>new Command(name);
+        exports.Ww = (flags, description)=>new Option(flags, description);
+        exports.er = (name, description)=>new Argument(name, description);
+        exports.uB = Command;
+        exports.c$ = Option;
+        exports.ef = Argument;
+        exports._V = Help;
+        exports.b7 = CommanderError;
+        exports.Di = InvalidArgumentError;
+        exports.a2 = InvalidArgumentError;
     },
     "../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/argument.js" (__unused_rspack_module, exports, __webpack_require__) {
         const { InvalidArgumentError } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/error.js");
@@ -130,8 +129,8 @@ __webpack_require__.add({
     "../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/command.js" (__unused_rspack_module, exports, __webpack_require__) {
         const EventEmitter = __webpack_require__("node:events").EventEmitter;
         const childProcess = __webpack_require__("node:child_process");
-        const path = __webpack_require__("node:path");
-        const fs = __webpack_require__("node:fs");
+        const path = __webpack_require__("node:path?435f");
+        const fs = __webpack_require__("node:fs?9592");
         const process1 = __webpack_require__("node:process");
         const { Argument, humanReadableArgName } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/argument.js");
         const { CommanderError } = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/lib/error.js");
@@ -1599,7 +1598,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
     }
 });
 const commander = __webpack_require__("../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/index.js");
-const { program: esm_program, createCommand: createCommand, createArgument: createArgument, createOption: createOption, CommanderError: CommanderError, InvalidArgumentError: InvalidArgumentError, InvalidOptionArgumentError: InvalidOptionArgumentError, Command: Command, Argument: Argument, Option: Option, Help: Help } = commander;
+const { DM: esm_program, gu: createCommand, er: createArgument, Ww: createOption, b7: CommanderError, Di: InvalidArgumentError, a2: InvalidOptionArgumentError, uB: Command, ef: Argument, c$: Option, _V: Help } = commander;
 const API = {
     GetChunkGraphAI: '/api/graph/chunks/graph/ai',
     GetChunkByIdAI: '/api/graph/chunk/id/ai',
@@ -1619,21 +1618,19 @@ const API = {
     GetModuleExports: '/api/module/exports',
     GetSideEffects: '/api/module/side-effects'
 };
-const external_node_fs_ = __webpack_require__("node:fs");
-const external_node_path_ = __webpack_require__("node:path");
 let jsonDataCache = null;
 let dataFilePath = null;
 function datasource_getDataFileFromArgs() {
     const args = process.argv.slice(2);
     const dataFileIndex = args.indexOf('--data-file');
-    if (-1 !== dataFileIndex && args[dataFileIndex + 1]) return external_node_path_["default"].resolve(args[dataFileIndex + 1]);
+    if (-1 !== dataFileIndex && args[dataFileIndex + 1]) return node_path.resolve(args[dataFileIndex + 1]);
     return null;
 }
 function loadJsonData(filePath) {
     if (jsonDataCache && dataFilePath === filePath) return jsonDataCache;
-    if (!external_node_fs_["default"].existsSync(filePath)) throw new Error(`Data file not found: ${filePath}`);
+    if (!node_fs.existsSync(filePath)) throw new Error(`Data file not found: ${filePath}`);
     try {
-        const content = external_node_fs_["default"].readFileSync(filePath, 'utf8');
+        const content = node_fs.readFileSync(filePath, 'utf8');
         const data = JSON.parse(content);
         jsonDataCache = data;
         dataFilePath = filePath;
@@ -2225,8 +2222,8 @@ async function listAssets() {
     };
 }
 async function diffAssets(baselineInput, currentInput) {
-    const baselinePath = external_node_path_["default"].resolve(requireArg(baselineInput, 'baseline'));
-    const currentPath = external_node_path_["default"].resolve(requireArg(currentInput, 'current'));
+    const baselinePath = node_path.resolve(requireArg(baselineInput, 'baseline'));
+    const currentPath = node_path.resolve(requireArg(currentInput, 'current'));
     const baselineData = loadJsonData(baselinePath);
     const currentData = loadJsonData(currentPath);
     const baselineGraph = baselineData?.data?.chunkGraph;
@@ -3089,4 +3086,3 @@ run().catch((error)=>{
     console.error(message);
     process.exit(1);
 });
-export { __webpack_require__ };

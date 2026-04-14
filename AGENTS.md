@@ -14,7 +14,7 @@ agent-skills/
 ├── packages/            # Source code projects for complex scripts
 ├── scripts/             # Project-level configurations and tools
 │   └── config/          # Common configurations (rslib, tsconfig, etc.)
-├── biome.json           # Biome code formatting configuration
+├── rslint.config.ts     # Rslint code linting configuration
 ├── pnpm-workspace.yaml  # pnpm workspace configuration
 ├── pnpm-lock.yaml       # Dependency lock file
 ├── package.json         # Project configuration file

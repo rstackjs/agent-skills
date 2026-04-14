@@ -1,5 +1,4 @@
 # Custom Dictionary Words
-biomejs
 bundleless
 Bytedance
 condvar

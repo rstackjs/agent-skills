@@ -17,7 +17,7 @@ test-temp-*
 .agents/skills
 .gemini/skills
 
-# skils-test
+# skills-test
 skills-test/**/*
 !skills-test/*/
 !skills-test/*/evals/

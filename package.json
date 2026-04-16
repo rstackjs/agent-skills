@@ -13,7 +13,6 @@
     "pre-commit": "pnpm run lint:write"
   },
   "devDependencies": {
-    "skills-package-manager": "^0.6.2",
     "@rslint/core": "^0.4.2",
     "@rstackjs/config": "workspace:*",
     "@types/node": "^24.10.9",
@@ -22,6 +21,7 @@
     "prettier": "^3.8.1",
     "prettier-plugin-packagejson": "^3.0.0",
     "simple-git-hooks": "^2.13.1",
+    "skills-package-manager": "^0.6.2",
     "typescript": "^5.9.3"
   },
   "packageManager": "pnpm@10.28.2",

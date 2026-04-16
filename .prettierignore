@@ -4,7 +4,9 @@ dist-*
 compiled
 coverage
 doc_build
+
 pnpm-lock.yaml
+skills-lock.yaml
 
 skills/**/scripts/*.js
 skills/**/scripts/*.cjs

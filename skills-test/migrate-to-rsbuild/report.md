@@ -4,7 +4,7 @@
 
 - **Date**: 2026-04-16
 - **Skill**: `migrate-to-rsbuild`
-- **Test cases**: 3 evals with real project files (webpack, Vite, CRA)
+- **Test cases**: 3 evaluation cases with real project files (webpack, Vite, CRA)
 - **Iteration**: 2 (real-project file manipulations)
 
 ## Test Cases
@@ -64,7 +64,7 @@
 
 1. **Core migration mechanics are solid**: All runs successfully created valid `rsbuild.config.js`, added correct Rsbuild dependencies, and preserved resolve aliases.
 
-2. **"Validate before cleanup" is not robust enough**: The most important failure was in eval-3, where the with-skill run prematurely removed `react-scripts`. This indicates the skill's phrasing around keeping old tooling until verification is not strong enough to resist the agent's tendency to clean up eagerly.
+2. **"Validate before cleanup" is not robust enough**: The most important failure was in evaluation case 3, where the with-skill run prematurely removed `react-scripts`. This indicates the skill's phrasing around keeping old tooling until verification is not strong enough to resist the agent's tendency to clean up eagerly.
 
 3. **Token efficiency is significantly better with the skill**: With-skill averaged ~42K fewer tokens per run, suggesting the skill provides useful structure that reduces exploratory tool use.
 
@@ -74,4 +74,5 @@
 
 - Eval outputs: `skills-test/migrate-to-rsbuild/migrate-to-rsbuild-workspace/iteration-1/eval-{1,2,3}/`
 - Benchmark: `skills-test/migrate-to-rsbuild/migrate-to-rsbuild-workspace/iteration-1/benchmark.json`
-- Eval definitions: `skills-test/migrate-to-rsbuild/evals/evals.json`
+<!-- cspell:disable-next-line -->
+- Evaluation definitions: `skills-test/migrate-to-rsbuild/evals/evals.json`

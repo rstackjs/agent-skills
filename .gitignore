@@ -19,6 +19,8 @@ test-temp-*
 
 # skills-test
 skills-test/**/*
+!skills-test/*/
+!skills-test/*/evals/
 !skills-test/*/evals/evals.json
 
 .vscode/**/*

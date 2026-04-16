@@ -18,8 +18,8 @@ test-temp-*
 .gemini/skills
 
 # skils-test
-skills-test/*/iteration-*
-
+skills-test/**/*
+!skills-test/*/evals/evals.json
 
 .vscode/**/*
 !.vscode/settings.json

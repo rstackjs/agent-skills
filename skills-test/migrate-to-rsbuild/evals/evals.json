@@ -1,0 +1,52 @@
+{
+  "skill_name": "migrate-to-rsbuild",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "webpack-react-migration",
+      "prompt": "Migrate the project at skills-test/migrate-to-rsbuild/test-projects/webpack-react to Rsbuild. Keep the app logic untouched, preserve the resolve aliases (@app and @shared), and make sure the dev server config is mapped appropriately. Do not remove old webpack config or dependencies until you've verified the migration would work. Summarize what you changed and what manual follow-ups remain.",
+      "expected_output": "A properly configured Rsbuild project with rsbuild.config.js, updated package.json with @rsbuild/core and @rsbuild/plugin-react, aliases preserved, and old config retained for verification.",
+      "files": [
+        "skills-test/migrate-to-rsbuild/test-projects/webpack-react"
+      ],
+      "assertions": [
+        "Created rsbuild.config.js with proper source/alias configuration",
+        "Added @rsbuild/core and @rsbuild/plugin-react to package.json",
+        "Preserved @app and @shared aliases from webpack.config.js",
+        "Did not delete webpack.config.js before verification",
+        "Provided a summary of changes and follow-ups"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "vite-react-migration",
+      "prompt": "Migrate the project at skills-test/migrate-to-rsbuild/test-projects/vite-react to Rsbuild. Keep the app logic untouched, preserve the resolve aliases (@ and @components), and map the build/output settings appropriately. Do not remove old Vite config or dependencies until you've verified the migration would work. Summarize what you changed and what manual follow-ups remain.",
+      "expected_output": "A properly configured Rsbuild project with rsbuild.config.js, updated package.json with @rsbuild/core and @rsbuild/plugin-react, aliases preserved, and old config retained for verification.",
+      "files": [
+        "skills-test/migrate-to-rsbuild/test-projects/vite-react"
+      ],
+      "assertions": [
+        "Created rsbuild.config.js with proper alias configuration",
+        "Added @rsbuild/core and @rsbuild/plugin-react to package.json",
+        "Preserved @ and @components aliases from vite.config.js",
+        "Did not delete vite.config.js before verification",
+        "Provided a summary of changes and follow-ups"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "cra-react-migration",
+      "prompt": "Migrate the project at skills-test/migrate-to-rsbuild/test-projects/cra-react to Rsbuild. Keep the app logic untouched. Follow the official CRA migration guide. Do not remove react-scripts or old config until you've verified the migration would work. Summarize what you changed and what manual follow-ups remain.",
+      "expected_output": "A properly configured Rsbuild project with rsbuild.config.js, updated package.json with @rsbuild/core and @rsbuild/plugin-react, and old CRA config retained for verification.",
+      "files": [
+        "skills-test/migrate-to-rsbuild/test-projects/cra-react"
+      ],
+      "assertions": [
+        "Created rsbuild.config.js",
+        "Added @rsbuild/core and @rsbuild/plugin-react to package.json",
+        "Did not remove react-scripts or old config before verification",
+        "Provided a summary of changes and follow-ups"
+      ]
+    }
+  ]
+}

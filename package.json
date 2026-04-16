@@ -2,15 +2,15 @@
   "name": "@rstackjs/agent-skills",
   "private": true,
   "scripts": {
-    "build": "corepack pnpm --parallel --filter ./packages/** build",
+    "build": "pnpm --parallel --filter ./packages/** build",
     "check-spell": "cspell",
     "format": "prettier -w .",
-    "lint": "rslint && prettier -c . && corepack pnpm run check-spell",
+    "lint": "rslint && prettier -c . && pnpm run check-spell",
     "lint:write": "rslint --fix && prettier -w .",
-    "prepare": "skills-package-manager install && simple-git-hooks && corepack pnpm build"
+    "prepare": "skills-package-manager install && simple-git-hooks && pnpm build"
   },
   "simple-git-hooks": {
-    "pre-commit": "corepack pnpm run lint:write"
+    "pre-commit": "pnpm run lint:write"
   },
   "devDependencies": {
     "@rslint/core": "^0.4.2",
@@ -21,7 +21,7 @@
     "prettier": "^3.8.1",
     "prettier-plugin-packagejson": "^3.0.0",
     "simple-git-hooks": "^2.13.1",
-    "skills-package-manager": "^0.6.2",
+    "skills-package-manager": "^0.7.0",
     "typescript": "^5.9.3"
   },
   "packageManager": "pnpm@10.28.2",

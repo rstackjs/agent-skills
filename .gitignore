@@ -17,12 +17,6 @@ test-temp-*
 .agents/skills
 .gemini/skills
 
-# skills-test
-skills-test/**/*
-!skills-test/*/
-!skills-test/*/evals/
-!skills-test/*/evals/evals.json
-
 .vscode/**/*
 !.vscode/settings.json
 !.vscode/extensions.json

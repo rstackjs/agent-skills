@@ -11,11 +11,6 @@ Top-level command mode:
 - `run-tool <tool-name> --data-file <path> [--input <json>]`
 - `analyze <query> --data-file <path> [--format json|text]`
 
-`ai` namespace mode:
-
-- `ai --describe`
-- `ai --schema <group>.<subcommand>`
-- `ai <group> <subcommand> --data-file <path> [--compact]`
 
 `run-tool` catalog (current):
 

@@ -33,10 +33,6 @@ Response order (required): High-Priority Issues -> Reference Chain Traceability 
   - `run-tool <tool-name> --data-file <path> [--input <json>]`
   - `analyze <query> --data-file <path> [--format json|text]`
   - `<group> <subcommand> --data-file <path> [--compact]`
-- `ai` namespace command formats:
-  - `ai --describe`
-  - `ai --schema <group>.<subcommand>`
-  - `ai <group> <subcommand> --data-file <path> [--compact]`
 - `run-tool` catalog coverage (current):
   - `chunks_list`
   - `packages_duplicates`
@@ -72,7 +68,8 @@ Response order (required): High-Priority Issues -> Reference Chain Traceability 
      - `RSDOCTOR=true npm run build` (or pnpm/yarn equivalent)
      - In Codex, do not run this build in sandbox.
 4. Choose command mode and run analysis:
-   - If query can be covered by tool catalog commands, prefer `describe-tools` + `run-tool` (or `analyze` for one-shot natural language query).
+   - If analysis likely needs multiple tool steps (or user gives a one-shot natural language diagnosis request), prefer `analyze` first.
+   - If request is a single, explicit tool task, use `describe-tools` + `run-tool`.
    - If command is outside tool catalog coverage, run direct subcommand mode: `<group> <subcommand> --data-file <path>`.
    - If schema discovery is needed for direct mode, use `ai --describe` and `ai --schema <group>.<subcommand>`.
    - Path query pattern: run `modules by-path`, then `modules by-id` if multiple matches.

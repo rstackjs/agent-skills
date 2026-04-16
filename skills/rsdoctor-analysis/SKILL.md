@@ -68,9 +68,9 @@ Response order (required): High-Priority Issues -> Reference Chain Traceability 
      - `RSDOCTOR=true npm run build` (or pnpm/yarn equivalent)
      - In Codex, do not run this build in sandbox.
 4. Choose command mode and run analysis:
-   - If analysis likely needs multiple tool steps (or user gives a one-shot natural language diagnosis request), prefer `analyze` first.
-   - If request is a single, explicit tool task, use `describe-tools` + `run-tool`.
-   - If command is outside tool catalog coverage, run direct subcommand mode: `<group> <subcommand> --data-file <path>`.
+   - Start with `analyze` for the initial diagnosis (natural language query → structured findings).
+   - After reviewing `analyze` output, use `describe-tools` + `run-tool` to collect additional data for deeper investigation (e.g., drill into specific chunks, trace duplicate packages, check tree-shaking details).
+   - If the needed data is outside the `run-tool` catalog, fall back to direct subcommand mode: `<group> <subcommand> --data-file <path>`.
    - If schema discovery is needed for direct mode, use `ai --describe` and `ai --schema <group>.<subcommand>`.
    - Path query pattern: run `modules by-path`, then `modules by-id` if multiple matches.
 5. Synthesize and output in required response format.

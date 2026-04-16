@@ -8,3 +8,17 @@ skills:
       type: link
       path: skills/pr-creator
     digest: sha256-e366298cb4661b58bd21df30457075692fa4100bbae47ba742589df1ec05a0a9
+  skill-creator:
+    specifier: https://github.com/anthropics/skills.git#0f7c287eaf0d4fa511cb871bb55e2a7862251fbb&path:/skills/skill-creator
+    resolution:
+      type: git
+      url: https://github.com/anthropics/skills.git
+      commit: 0f7c287eaf0d4fa511cb871bb55e2a7862251fbb
+      path: /skills/skill-creator
+    digest: sha256-bbef1adbfb025ac90fb1dd769be30ead431d37bdfa7b7e151f9310f01026411b
+  rstack-skill-evaluator:
+    specifier: link:./dev-skills/rstack-skill-evaluator
+    resolution:
+      type: link
+      path: dev-skills/rstack-skill-evaluator
+    digest: sha256-eb62efe87a93c0ceaad0830a62fc0f97e9256d3ab22474ce569727b034f48231

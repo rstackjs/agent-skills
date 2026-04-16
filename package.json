@@ -7,12 +7,13 @@
     "format": "prettier -w .",
     "lint": "rslint && prettier -c . && pnpm run check-spell",
     "lint:write": "rslint --fix && prettier -w .",
-    "prepare": "simple-git-hooks && pnpm build"
+    "prepare": "skills-package-manager install && simple-git-hooks && pnpm build"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm run lint:write"
   },
   "devDependencies": {
+    "skills-package-manager": "^0.6.2",
     "@rslint/core": "^0.4.2",
     "@rstackjs/config": "workspace:*",
     "@types/node": "^24.10.9",

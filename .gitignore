@@ -13,6 +13,14 @@ tsconfig.tsbuildinfo
 # Test temp files
 test-temp-*
 
+# skills-package-manager
+.agents/skills
+.gemini/skills
+
+# skils-test
+skills-test/*/iteration-*
+
+
 .vscode/**/*
 !.vscode/settings.json
 !.vscode/extensions.json

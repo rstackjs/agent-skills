@@ -1,0 +1,10 @@
+{
+  "$schema": "https://unpkg.com/skills-package-manager@0.6.1/skills.schema.json",
+  "installDir": ".agents/skills",
+  "linkTargets": [],
+  "skills": {
+    "skill-creator": "https://github.com/anthropics/skills.git#0f7c287eaf0d4fa511cb871bb55e2a7862251fbb&path:/skills/skill-creator",
+    "rstack-skill-evaluator": "link:./dev-skills/rstack-skill-evaluator",
+    "pr-creator": "link:./skills/pr-creator"
+  }
+}

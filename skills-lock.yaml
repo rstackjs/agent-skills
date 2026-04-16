@@ -15,7 +15,7 @@ skills:
     resolution:
       type: link
       path: dev-skills/rstack-skill-evaluator
-    digest: sha256-a9f9b90e091695fb21af83418720b015524dd475634eadc9b0b8f7d4785815da
+    digest: sha256-eb62efe87a93c0ceaad0830a62fc0f97e9256d3ab22474ce569727b034f48231
   pr-creator:
     specifier: link:./skills/pr-creator
     resolution:

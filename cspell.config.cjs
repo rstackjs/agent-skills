@@ -17,6 +17,7 @@ module.exports = {
     'node_modules',
     'pnpm-lock.yaml',
     'skills/**/scripts',
+    'skills-test/**/iteration-*',
   ],
   flagWords: banWords,
   dictionaries: ['dictionary'],

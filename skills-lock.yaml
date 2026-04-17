@@ -2,12 +2,6 @@ lockfileVersion: "0.1"
 installDir: .agents/skills
 linkTargets: []
 skills:
-  pr-creator:
-    specifier: link:./skills/pr-creator
-    resolution:
-      type: link
-      path: skills/pr-creator
-    digest: sha256-e366298cb4661b58bd21df30457075692fa4100bbae47ba742589df1ec05a0a9
   skill-creator:
     specifier: https://github.com/anthropics/skills.git#0f7c287eaf0d4fa511cb871bb55e2a7862251fbb&path:/skills/skill-creator
     resolution:
@@ -21,4 +15,10 @@ skills:
     resolution:
       type: link
       path: dev-skills/rstack-skill-evaluator
-    digest: sha256-eb62efe87a93c0ceaad0830a62fc0f97e9256d3ab22474ce569727b034f48231
+    digest: sha256-75d5a6eca2ceabb492a4680ae05ef7fdb5b124c39c5d2007ea34cb8a314d7478
+  pr-creator:
+    specifier: link:./skills/pr-creator
+    resolution:
+      type: link
+      path: skills/pr-creator
+    digest: sha256-e366298cb4661b58bd21df30457075692fa4100bbae47ba742589df1ec05a0a9

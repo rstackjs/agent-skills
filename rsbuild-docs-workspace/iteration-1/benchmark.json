@@ -1,0 +1,171 @@
+{
+  "metadata": {
+    "skill_name": "rsbuild-docs",
+    "skill_path": "/Users/bytedance/Documents/codes/agent-skills/skills/rsbuild-docs/SKILL.md",
+    "executor_model": "claude-opus-4-6",
+    "timestamp": "2026-03-10T11:51:37Z",
+    "evals_run": ["dev-proxy-config", "css-modules-classname"],
+    "runs_per_configuration": 1,
+    "note": "CRA migration eval was skipped due to rate limit"
+  },
+  "runs": [
+    {
+      "eval_name": "dev-proxy-config",
+      "eval_id": 0,
+      "prompt": "我在用 Rsbuild，想把 /api 开头的请求代理到 http://localhost:3000，怎么配置？",
+      "configurations": [
+        {
+          "name": "with_skill",
+          "pass_rate": 1.0,
+          "passed": 4,
+          "total": 4,
+          "time_seconds": 42.5,
+          "tokens": 12091,
+          "expectations": [
+            {
+              "text": "Has concrete rsbuild.config code snippet with proxy",
+              "passed": true,
+              "evidence": "Multiple server.proxy examples"
+            },
+            {
+              "text": "Mentions correct config path (server.proxy)",
+              "passed": true,
+              "evidence": "Uses server.proxy throughout"
+            },
+            {
+              "text": "Correctly maps /api to http://localhost:3000",
+              "passed": true,
+              "evidence": "'/api': 'http://localhost:3000'"
+            },
+            {
+              "text": "Sourced from fetched docs",
+              "passed": true,
+              "evidence": "References rsbuild.rs/config/server/proxy"
+            }
+          ]
+        },
+        {
+          "name": "without_skill",
+          "pass_rate": 0.75,
+          "passed": 3,
+          "total": 4,
+          "time_seconds": 19.8,
+          "tokens": 9076,
+          "expectations": [
+            {
+              "text": "Has concrete rsbuild.config code snippet with proxy",
+              "passed": true,
+              "evidence": "Multiple server.proxy examples"
+            },
+            {
+              "text": "Mentions correct config path (server.proxy)",
+              "passed": true,
+              "evidence": "Uses server.proxy throughout"
+            },
+            {
+              "text": "Correctly maps /api to http://localhost:3000",
+              "passed": true,
+              "evidence": "'/api': 'http://localhost:3000'"
+            },
+            {
+              "text": "Sourced from fetched docs",
+              "passed": false,
+              "evidence": "No docs fetched, model knowledge only"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "eval_name": "css-modules-classname",
+      "eval_id": 1,
+      "prompt": "Rsbuild 里怎么修改 CSS Modules 生成的类名格式？比如我想用 [name]__[local] 这种格式",
+      "configurations": [
+        {
+          "name": "with_skill",
+          "pass_rate": 1.0,
+          "passed": 4,
+          "total": 4,
+          "time_seconds": 44.3,
+          "tokens": 12796,
+          "expectations": [
+            {
+              "text": "Has concrete cssModules config code snippet",
+              "passed": true,
+              "evidence": "Shows output.cssModules block"
+            },
+            {
+              "text": "Mentions correct config path (output.cssModules.localIdentName)",
+              "passed": true,
+              "evidence": "Correctly identified"
+            },
+            {
+              "text": "Shows [name]__[local] pattern",
+              "passed": true,
+              "evidence": "localIdentName: '[name]__[local]'"
+            },
+            {
+              "text": "Sourced from fetched docs",
+              "passed": true,
+              "evidence": "References rsbuild.rs/config/output/css-modules"
+            }
+          ]
+        },
+        {
+          "name": "without_skill",
+          "pass_rate": 0.75,
+          "passed": 3,
+          "total": 4,
+          "time_seconds": 23.2,
+          "tokens": 9227,
+          "expectations": [
+            {
+              "text": "Has concrete cssModules config code snippet",
+              "passed": true,
+              "evidence": "Shows output.cssModules block"
+            },
+            {
+              "text": "Mentions correct config path (output.cssModules.localIdentName)",
+              "passed": true,
+              "evidence": "Correctly identified"
+            },
+            {
+              "text": "Shows [name]__[local] pattern",
+              "passed": true,
+              "evidence": "localIdentName: '[name]__[local]'"
+            },
+            {
+              "text": "Sourced from fetched docs",
+              "passed": false,
+              "evidence": "No docs fetched, model knowledge only. Production default may be inaccurate."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "mean_pass_rate": 1.0,
+      "mean_time_seconds": 43.4,
+      "mean_tokens": 12444
+    },
+    "without_skill": {
+      "mean_pass_rate": 0.75,
+      "mean_time_seconds": 21.5,
+      "mean_tokens": 9152
+    },
+    "delta": {
+      "pass_rate": "+0.25",
+      "time_seconds": "+21.9",
+      "tokens": "+3292"
+    }
+  },
+  "notes": [
+    "With-skill achieves 100% pass rate vs 75% without skill — the difference is doc sourcing",
+    "With-skill takes ~2x longer and ~40% more tokens due to fetching llms.txt index + specific doc pages",
+    "Both versions produce correct config paths and code for these common Rsbuild topics — the model's built-in knowledge is quite good for Rsbuild basics",
+    "The skill's main value add is verifiable accuracy (doc sourcing) rather than correctness delta on common topics",
+    "CRA migration eval (skipped due to rate limit) would likely show larger correctness delta as migration guides have more specific steps"
+  ]
+}

@@ -1,6 +1,6 @@
 # Detect Test Framework
 
-Use this reference in Step 1 to decide migration path.
+Use this reference to decide the migration path when detecting the current test framework.
 
 ## Detection signals
 

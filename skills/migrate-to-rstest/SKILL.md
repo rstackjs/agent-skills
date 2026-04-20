@@ -16,7 +16,7 @@ Migrate Jest- or Vitest-based tests and configuration to Rstest with minimal beh
 3. **Do not change user source behavior**: avoid modifying production/business source files unless user explicitly requests it.
 4. **Avoid bulk test rewrites**: do not refactor entire test suites when a local compatibility patch can solve it.
 5. **Preserve test intent**: keep assertions and scenario coverage unchanged unless clearly broken by framework differences.
-6. **Two-phase legacy-runner lifecycle**: (a) Until Rstest is green, keep every Jest/Vitest dep + config/setup/workspace file untouched — they are your rollback path. (b) Once Rstest is green, remove the legacy devDeps AND delete the legacy config/setup files in the same commit. Leaving them behind "for reference" creates two source-of-truth configs. Framework-specific file enumeration: see the deltas reference.
+6. **Two-phase legacy-runner lifecycle (per migrated scope)**: (a) While the scope being migrated is not green on Rstest, keep every Jest/Vitest dep + config/setup/workspace file untouched — they are your rollback path. (b) Once that scope is green, delete its scope-local legacy config/setup files in the same commit. Drop the shared legacy devDeps (`jest`, `vitest`, adapters, environments) only when no other scope still relies on them — in a partial / mixed-mode monorepo migration that means the final scope, not the first. Leaving files behind "for reference" creates two source-of-truth configs. Framework-specific file enumeration: see the deltas reference.
 7. **Literal API substitution, no shims**: rewrite every `vi.` / `jest.` / `vitest.` call site — no global aliasing, no local rebinding, no aliased imports. Full forbidden-form list and reasoning in `references/global-api-migration.md`.
 8. **Replace on call sites, not strings**: match only identifiers preceding `(`; after every batch edit, grep `describe\(|it\(|test\(` to confirm no test name string was mutated. Regex template and rationale in `references/global-api-migration.md`.
 9. **Coverage thresholds are not negotiable**: never lower `coverage.thresholds` (lines/functions/branches/statements) to make a migrated suite pass. If thresholds fail under Rstest, investigate `coverage.include` / `exclude` / provider wiring before touching the numbers.
@@ -32,7 +32,7 @@ Migrate Jest- or Vitest-based tests and configuration to Rstest with minimal beh
 4. Apply the mapping from the official guide + the skill-side enforcement rules from the deltas file
 5. Check type errors
 6. Run tests and fix deltas
-7. Apply cleanup phase of principle 6 once Rstest is green (remove legacy devDeps + delete legacy config/setup files in the same commit; framework-specific file list is in the deltas file)
+7. Apply cleanup phase of principle 6 once the migrated scope is green (delete scope-local legacy config/setup in the same commit; drop shared legacy devDeps only when no other scope still relies on them; framework-specific file list is in the deltas file)
 8. Summarize changes
 
 ## Detect current test framework

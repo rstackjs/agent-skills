@@ -13,7 +13,7 @@ description: Use when upgrading a Rspack 1.x project to v2, including dependency
 
 2. **Open the official migration guide**
    - Use the official guide as the single source of truth:
-     - https://v2.rspack.rs/guide/migration/rspack_1.x
+     - https://rspack.rs/guide/migration/rspack_1.x
 
 3. **Plan required changes**
    - Compare the current project config with the migration guide.
@@ -21,7 +21,7 @@ description: Use when upgrading a Rspack 1.x project to v2, including dependency
    - Note any removed or renamed options, defaults, or plugin APIs.
 
 4. **Update dependencies**
-   - Upgrade Rspack packages to v2 (currently `rc` tag): `@rspack/core`, `@rspack/cli`, `@rspack/dev-server`.
+   - Upgrade Rspack packages to v2: `@rspack/core`, `@rspack/cli`, `@rspack/dev-server`, `@rspack/plugin-react-refresh`.
 
 5. **Apply migration changes**
    - Update the Rspack config and related code according to the official guide.

@@ -7,14 +7,13 @@ Stable CLI entry:
 
 Top-level command mode:
 
-- `describe-tools`
-- `run-tool <tool-name> --data-file <path> [--input <json>]`
-- `analyze <query> --data-file <path> [--format json|text]`
+- `list`
+- `query <tool-name> --data-file <path> [--input <json>]`
 
-
-`run-tool` catalog (current):
+`query` catalog (current):
 
 - `chunks_list`
+- `packages_direct_dependencies`
 - `packages_duplicates`
 - `packages_similar`
 - `build_summary`
@@ -25,10 +24,10 @@ Top-level command mode:
 Option scopes:
 
 - `--data-file <path>`:
-  - required for `run-tool`, `analyze`, direct `<group> <subcommand>`, and `ai <group> <subcommand>`
-  - not required for `describe-tools`, `ai --describe`, `ai --schema`
-- `--input <json>`: optional for `run-tool`
-- `--format json|text`: optional for `analyze`
+  - required for `query`, direct `<group> <subcommand>`, and `ai <group> <subcommand>`
+  - not required for `list`, `ai --describe`, `ai --schema`
+- `--input <json>`: optional for `query`
+- `--filter <...>`: supported by every data-fetch function; use it to return only required fields selected from `@rsdoctor/types` / [rsdoctor-data-types.md](rsdoctor-data-types.md)
 - `--compact`: optional for direct `<group> <subcommand>` and `ai <group> <subcommand>`
 
 ## Chunks
@@ -41,16 +40,17 @@ Option scopes:
 
 - `modules by-id --id <id>` -> Module detail by id
 - `modules by-path --path "<path>"` -> Module lookup by path
-- `modules issuer --id <id>` -> Issuer/import chain
+- `modules issuer --id <id>` -> Issuer/import chain (recommended as second-pass, after user confirms chain tracing)
 - `modules exports` -> Module exports info
-- `modules side-effects` -> Non-tree-shakeable modules. Pagination: `--page-number`, `--page-size`
+- `modules side-effects` -> Non-tree-shakeable modules. Pagination: `--page-number`, `--page-size` (recommend `--page-size 10`)
 
 ## Packages
 
 - `packages list` -> Package list with size/duplication info
 - `packages by-name --name <pkg>` -> Package lookup by name
 - `packages dependencies` -> Dependency graph. Pagination: `--page-number`, `--page-size`
-- `packages duplicates` -> Duplicate package detection
+- `packages direct-dependencies` -> Direct third-party package dependencies imported by project/local packages. Tool name: `packages_direct_dependencies`
+- `packages duplicates` -> Duplicate package detection (first-pass summary before optional chain tracing)
 - `packages similar` -> Similar package detection
 
 ## Assets
@@ -69,7 +69,7 @@ Option scopes:
 - `build summary` -> Build summary and costs
 - `build entrypoints` -> Entrypoints
 - `build config` -> Build config snapshot
-- `build optimize` -> Bundle optimization inputs. Options: `--step`, `--side-effects-page-number`, `--side-effects-page-size`
+- `build optimize` -> Bundle optimization inputs. Options: `--step`, `--side-effects-page-number`, `--side-effects-page-size` (recommend `--side-effects-page-size 10`)
 
 ## Bundle
 
@@ -91,9 +91,6 @@ Option scopes:
 
 ## Tree-Shaking
 
-- `tree-shaking summary` -> Overall tree-shaking health summary
-- `tree-shaking side-effects-only` -> E1007 side-effects-only imports
-- `tree-shaking cjs-require` -> E1008 bare require usage
-- `tree-shaking esm-to-cjs` -> E1009 ESM resolved to CJS
-- `tree-shaking bailout-reasons` -> Non-tree-shakeable modules by bailout reason. Pagination: `--page-number`, `--page-size`
+- `tree-shaking summary` -> Overall tree-shaking health summary (can be very large; filter with fields from `rsdoctor-data-types`, compact where useful, and use aggregated results)
+- `tree-shaking bailout-reasons --modules <module-list>` -> Non-tree-shakeable modules by bailout reason for the provided modules. High-volume; only run when explicitly requested, always pass `--modules`, and include at most 100 modules per command.
 - `tree-shaking exports-analysis` -> Export-level tree-shaking opportunities

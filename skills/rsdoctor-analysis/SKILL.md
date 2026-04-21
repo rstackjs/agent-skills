@@ -7,12 +7,21 @@ description: Use when analyzing Rspack/Webpack bundles from local `rsdoctor-data
 
 Use `@rsdoctor/agent-cli` to read `rsdoctor-data.json` and provide evidence-based optimization recommendations.
 
-Response order (required): High-Priority Issues -> Reference Chain Traceability -> Proposed Solutions -> Next Deep-Dive Issue Categories (Not commands).
+Response order (required): High-Priority Issues -> Proposed Solutions -> Optional Reference-Chain Follow-up Choices -> Next Deep-Dive Issue Categories (Not commands).
 
 ## Guardrails
 
 - Default behavior is read-only analysis.
-- Prefer running CLI commands in background mode when possible, and then collect/inspect results after execution.
+- Use `@rsdoctor/agent-cli` for bundle data access; prefer background execution when possible, then collect and summarize outputs.
+- Reuse already returned results from current context whenever possible. Do not re-run the same subcommand unless required fields are missing or the user asks for a refresh.
+- Every `@rsdoctor/agent-cli` data-fetch command supports `--filter`; use it by default to keep only fields required for the current question.
+- Build `--filter` field selections from [reference/rsdoctor-data-types.md](reference/rsdoctor-data-types.md) so field names match `@rsdoctor/types` instead of guessing from raw output.
+- For side-effects investigations, use small pagination (`--page-size 10` / `--side-effects-page-size 10`). Do not use oversized page sizes.
+- For tree-shaking issues, use `tree-shaking summary` directly and control output with `--filter` plus `--compact` where useful.
+- Treat `tree-shaking bailout-reasons` as high-volume by default. Do not run it unless the user explicitly asks for bailout reason analysis, and always pass the target module list with `--modules` (maximum 100 modules).
+- Use a per-step token budget gate: if one command exceeds `20k` tokens (o200k_base) or raw output exceeds `2 MB`, stop adding broad-scope commands and switch to filtered or targeted queries.
+- For duplicate packages and tree-shaking issues, do first-pass issue identification by default. Do not immediately trace reference/import chains.
+- At the end of analysis, provide next-step choices and let the user decide whether to continue with reference-chain tracing.
 - Do not modify user code/config except these explicit cases:
   - `install`: install `@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin`, and update `package.json`.
   - `config`: add Rsdoctor plugin config to supported config files.
@@ -22,80 +31,30 @@ Response order (required): High-Priority Issues -> Reference Chain Traceability 
 - In Codex, do not run `install` or `build` inside sandbox.
 - For all analysis commands, provide recommendations only. Do not auto-apply optimization edits.
 
-## Stable CLI Entry
-
-- Package entry (recommended):
-  - `npx @rsdoctor/agent-cli ...`
-- Binary entry (if available in PATH):
-  - `rsdoctor-agent ...`
-- Top-level command formats:
-  - `describe-tools`
-  - `run-tool <tool-name> --data-file <path> [--input <json>]`
-  - `analyze <query> --data-file <path> [--format json|text]`
-  - `<group> <subcommand> --data-file <path> [--compact]`
-- `run-tool` catalog coverage (current):
-  - `chunks_list`
-  - `packages_duplicates`
-  - `packages_similar`
-  - `build_summary`
-  - `bundle_optimize`
-  - `errors_list`
-  - `tree_shaking_summary`
-- Option scopes:
-  - `--data-file <path>`:
-    - required for `run-tool`, `analyze`, direct `<group> <subcommand>`, and `ai <group> <subcommand>`
-    - not required for `describe-tools`, `ai --describe`, `ai --schema`
-  - `--input <json>`: optional for `run-tool`
-  - `--format json|text`: optional for `analyze`
-  - `--compact`: optional for direct `<group> <subcommand>` and `ai <group> <subcommand>`
-
 ## Workflow
 
-1. Verify prerequisites:
-   - Node.js 18+
-   - `@rsdoctor/rspack-plugin >= 1.1.2` (Rspack ecosystem) or `@rsdoctor/webpack-plugin >= 1.1.2` (Webpack)
-2. Locate `rsdoctor-data.json`:
-   - Common paths: `dist/rsdoctor-data.json`, `output/rsdoctor-data.json`, `static/rsdoctor-data.json`, `.rsdoctor/rsdoctor-data.json`
-3. If `rsdoctor-data.json` is missing:
-   - Configure plugin first:
-     - Rspack/Rsbuild/Rslib/Rspress/Modern.js: [reference/install-rsdoctor-rspack.md](reference/install-rsdoctor-rspack.md)
-     - Webpack: [reference/install-rsdoctor-webpack.md](reference/install-rsdoctor-webpack.md)
-   - Required plugin output:
-     - `disableClientServer: true`
-     - `output.mode: 'brief'`
-     - `output.options.type: ['json']`
-   - Auto-generate file by running:
-     - `RSDOCTOR=true npm run build` (or pnpm/yarn equivalent)
-     - In Codex, do not run this build in sandbox.
-4. Choose command mode and run analysis:
-   - Start with `analyze` for the initial diagnosis (natural language query → structured findings).
-   - After reviewing `analyze` output, use `describe-tools` + `run-tool` to collect additional data for deeper investigation (e.g., drill into specific chunks, trace duplicate packages, check tree-shaking details).
-   - If the needed data is outside the `run-tool` catalog, fall back to direct subcommand mode: `<group> <subcommand> --data-file <path>`.
-   - If schema discovery is needed for direct mode, use `ai --describe` and `ai --schema <group>.<subcommand>`.
-   - Path query pattern: run `modules by-path`, then `modules by-id` if multiple matches.
-5. Synthesize and output in required response format.
-6. Optional optimization verification (only if user confirms):
-   - Update `splitChunks` according to agreed optimization plan.
-   - Rebuild with `RSDOCTOR=true npm run build` (or pnpm/yarn equivalent) outside sandbox in Codex.
-   - Re-run the same analysis commands and compare before/after results.
+1. Locate or verify `rsdoctor-data.json`. If it is missing or plugin setup is needed, use the install references below.
+2. Choose the command from [reference/command-map.md](reference/command-map.md). Start with `list` + `query` when possible; fall back to direct `<group> <subcommand>` when needed.
+3. Before each data fetch, choose the minimal fields needed for the current question, map them with [reference/rsdoctor-data-types.md](reference/rsdoctor-data-types.md), and pass `--filter`.
+4. For common cases such as similar packages, media assets, bundle optimization, duplicate packages, and tree-shaking questions, use [reference/common-analysis-patterns.md](reference/common-analysis-patterns.md).
+5. Synthesize findings in the required response format. Ask before chain tracing or optimization verification.
 
-## Command Coverage
+## References
 
-- Direct subcommand mode supports groups:
-  - `chunks`, `modules`, `packages`, `assets`, `loaders`, `build`, `bundle`, `errors`, `rules`, `server`, `tree-shaking`
-- `run-tool` only supports tool catalog coverage listed in "Stable CLI Entry".
-- Full command map is in:
-  - [reference/command-map.md](reference/command-map.md)
+- Commands and options: [reference/command-map.md](reference/command-map.md)
+- Install, config, data location, and troubleshooting: [reference/install-rsdoctor.md](reference/install-rsdoctor.md), [reference/install-rsdoctor-rspack.md](reference/install-rsdoctor-rspack.md), [reference/install-rsdoctor-webpack.md](reference/install-rsdoctor-webpack.md), [reference/install-rsdoctor-common.md](reference/install-rsdoctor-common.md)
+- Raw data fields and `--filter` construction: [reference/rsdoctor-data-types.md](reference/rsdoctor-data-types.md)
+- Similar packages, media assets, bundle optimize, and common question patterns: [reference/common-analysis-patterns.md](reference/common-analysis-patterns.md)
 
 ## Response Format
 
 1. High-priority issues in current build data:
    - Include concrete evidence (size/time/count/path/rule code).
-2. Whether reference chains can be traced:
-   - For example, duplicate packages should include import/reference chain findings when available.
-   - If not available, explicitly state what is missing.
-3. Proposed solutions:
+2. Proposed solutions:
    - Provide actionable recommendations with priority (High/Med/Low).
+3. Optional reference-chain follow-up choices:
+   - For duplicate packages and tree-shaking issues, provide a short "continue tracing vs stop here" choice.
+   - Only trace chains after user confirmation.
 4. Whether deeper analysis is still needed:
    - List remaining gaps by issue categories (for example: dependency duplication, chunking strategy, tree-shaking barriers, loader cost, asset volume).
    - Do not output suggested commands in this section; output category-level follow-up directions only.
@@ -110,10 +69,10 @@ Formatting:
 - `rsdoctor-data.json` missing:
   - Configure plugin and run `RSDOCTOR=true npm run build`.
 - Command not found:
-  - Verify `npx @rsdoctor/agent-cli describe-tools` works in current shell.
+  - Verify `npx @rsdoctor/agent-cli list` works in current shell.
   - If using binary mode, verify `rsdoctor-agent` exists in PATH.
-- `run-tool` reports unknown tool:
-  - Run `describe-tools` and use one of the catalog tool names, or switch to direct `<group> <subcommand>` mode.
+- `query` reports unknown tool:
+  - Run `list` and use one of the catalog tool names, or switch to direct `<group> <subcommand>` mode.
 - Build/install blocked in sandbox:
   - Re-run outside sandbox.
 - JSON read error:

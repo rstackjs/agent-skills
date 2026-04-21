@@ -1,69 +1,14 @@
 # Jest Migration Deltas
 
-Use this reference when Step 1 identifies Jest.
-
-## High-priority checks
-
-1. Translate Jest config (`jest.config.*` or `package.json#jest`) to `rstest.config.ts`.
-2. Update scripts from `jest` to `rstest`.
-3. Migrate setup files (`setupFiles`, `setupFilesAfterEnv`) to Rstest equivalents.
-4. Replace Jest-specific imports/APIs with `@rstest/core` equivalents based on official guide.
-5. Validate transform/alias behavior (for example `moduleNameMapper`, transformer-related settings).
-6. For global API usage, replace global `jest.<api>` with `rstest.<api>` (see `references/global-api-migration.md`).
-
-## Snapshot deltas to expect
-
-1. Snapshot file header may change from Jest to Rstest format.
-2. Snapshot key separators can change. A common Jest key style uses `:`,
-   while Rstest snapshots often use hierarchical separators with `>`.
-3. Snapshot entry order can change without semantic changes. In large files,
-   two keys may swap positions while each key's snapshot body stays identical.
-
-### Updating snapshots with Rstest
-
-Use update mode when snapshot changes are expected:
-
-- Update all snapshots:
-  `rstest -u`
-- Update a filtered scope (for example overlay-related tests, depending on project script/CLI wiring):
-  `rstest -u overlay`
-  or
-  `rstest overlay -u`
-
-### Example key separator delta
-
-- Before (Jest style):
-  `overlay should not show a warning when "client.overlay.warnings" is "false": page html 1`
-- After (Rstest style):
-  `overlay > should not show a warning when "client.overlay.warnings" is "false" > page html 1`
-
-### Snapshot key anatomy (how to read one key)
-
-For a key like:
-`overlay > should not show a warning when "client.overlay.warnings" is "false" > page html 1`
-
-1. `overlay` = suite name (`describe(...)`)
-2. `should not show a warning when "client.overlay.warnings" is "false"` = case name (`it(...)` / `test(...)`)
-3. `page html` = snapshot label from `.toMatchSnapshot('page html')`
-4. `1` = snapshot index for that label in the current test
-
-Implication: many Jest->Rstest diffs are key formatting changes (separator/tokenization) for the same suite/case/snapshot identity.
-
-### Review guidance for migration PRs
-
-1. Treat separator-only key renames as expected migration noise.
-2. Distinguish key-order churn from content churn:
-   - If only key order changed and snapshot bodies are identical, this is non-functional.
-   - If body content changed under the same key, review as behavior change.
-3. For noisy snapshot diffs, compare by key+body hash before deciding there is a regression.
+Use this reference when the current framework is Jest.
 
 ## Source of truth
 
-Follow official mapping details:
+Follow the official migration guide for all Jest → Rstest field/API mapping (config table, CLI option mapping, snapshot format change, `done`/hooks/timeout differences, etc.):
+
 https://rstest.rs/guide/migration/jest.md
 
-Prefer `.md` URLs for AI-friendly ingestion.
+## Jest-specific enforcement
 
-## Removal gate
-
-Remove `jest` and legacy Jest config only after Rstest tests pass.
+1. **Legacy file enumeration for phase (b) of SKILL principle 6.** Scope-local legacy files to delete once the migrated scope is green: per-scope `jest.config.*`, `jest.setup.*`, and any companion `jest.*.ts` (for example `jest.global-setup.ts`, `jest.global-teardown.ts`). Shared infrastructure to drop only when no other scope still relies on it (final scope only in a partial / mixed-mode migration): root `jest.config.*` with `projects: [...]`, any root shared setup, and devDeps `jest`, `ts-jest`, `@types/jest`, `jest-environment-jsdom`, `identity-obj-proxy`.
+2. **Defer snapshot re-recording until everything else is green.** Jest's `:` separator in snapshot keys changes to Rstest's `>` (see "Snapshot format" in the official guide), so every snapshot mismatches on the first `rstest` run. Running `rstest -u` too early masks real test failures under formatting noise. Migrate config/API/deps first; run `-u` only when the remaining failures are exclusively key-format mismatches.

@@ -1,31 +1,14 @@
 # Vitest Migration Deltas
 
-Use this reference when Step 1 identifies Vitest.
-
-## High-priority checks
-
-1. Translate Vitest config (`vitest.config.*` or `vite.config.*` test block) to `rstest.config.ts`.
-   - Remove `test: { ... }` nesting in most Vitest configs and move keys to top-level in `defineConfig`.
-   - Rename `environment` to `testEnvironment`.
-   - Keep `projects` at top-level (`{ projects: [...] }`), not under `test`.
-   - Do not assume `mergeConfig` is available from `@rstest/core`; prefer `defineConfig({ ...base, ...overrides })` unless official docs require otherwise.
-2. Update scripts from `vitest` to `rstest`.
-3. Replace Vitest imports/APIs with `@rstest/core` equivalents based on official guide.
-4. Replace imported `vi.<api>` with `rs.<api>` when tests explicitly import APIs from `@rstest/core`.
-5. If `globals: true` is enabled, replace global `vi.<api>` with `rs.<api>` and global `vitest.<api>` with `rstest.<api>` (see `references/global-api-migration.md`).
-6. Migrate setup adapters that are Vitest-specific (for example `@testing-library/jest-dom/vitest`) to matcher-based setup via `expect.extend`.
-7. Watch for path resolution differences in tests/setup (`new URL(..., import.meta.url)` may need `resolve(__dirname, ...)` fallback depending on transform/runtime mode).
-8. Re-check mock behavior for re-export modules in Rspack projects if failures appear.
-9. Re-check async mock factories: Rstest migration may require sync factory + `importActual` patterns.
-10. Validate environment/globals/include-exclude behavior after config migration.
+Use this reference when the current framework is Vitest.
 
 ## Source of truth
 
-Follow official mapping details:
+Follow the official migration guide for all Vitest → Rstest field/API mapping (config table, CLI option mapping, setup adapter rewrite, mock-async pattern, path-resolution caveat, `mergeConfig` substitute, etc.):
+
 https://rstest.rs/guide/migration/vitest.md
 
-Prefer `.md` URLs for AI-friendly ingestion.
+## Vitest-specific enforcement
 
-## Removal gate
-
-Remove `vitest` and `vitest.config.*` only after Rstest tests pass.
+1. **Legacy file enumeration for phase (b) of SKILL principle 6.** Scope-local legacy files to delete once the migrated scope is green: per-scope `vitest.config.*` and `vitest.setup.*` owned by the migrated package only (rename `vitest.setup.*` → `rstest.setup.*` only when the file is genuinely reused). Shared infrastructure to drop only when no other scope still relies on it (final scope only in a partial / mixed-mode migration): root `vitest.workspace.*`, any root shared `vitest.config.*` / `vitest.shared.*`, and devDeps `vitest`, `@vitest/coverage-v8`, and any other `@vitest/*` packages.
+2. **Do not re-record Vitest snapshots.** Vitest and Rstest snapshot files are byte-compatible below the header line (see the "Snapshots" section in the official guide). Running `rstest -u` during a Vitest → Rstest migration rewrites every snapshot file's first line with zero behavioral change and floods the migration diff. Only run `-u` when a snapshot test is actually failing and the body diff is expected.

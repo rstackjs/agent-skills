@@ -33,8 +33,8 @@ importers:
         specifier: ^2.13.1
         version: 2.13.1
       skills-package-manager:
-        specifier: ^0.7.0
-        version: 0.7.0
+        specifier: ^0.9.0
+        version: 0.9.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -731,8 +731,8 @@ packages:
     resolution: {integrity: sha512-WszCLXwT4h2k1ufIXAgsbiTOazqqevFCIncOuUBZJ91DdvWcC5+OFkluWRQPrcuSYd8fjq+o2y1QfWqYMoAToQ==}
     hasBin: true
 
-  skills-package-manager@0.7.0:
-    resolution: {integrity: sha512-PZm6xOTWwodNQEABzWIFZZj8WCFUEAVdlOzhGMm+21WBJE1W5ma/AlmHPwRxcvL1l39EjhP0EIiET4XHAjYEdw==}
+  skills-package-manager@0.9.0:
+    resolution: {integrity: sha512-9RlfpPClQvInTBegfxUhMr/UuNvX4OMx7dCSepegruhxnXRtHanb2XVUiK/yqCTDWlBl9LSaY1AwkI1LyeYWRw==}
     hasBin: true
 
   smol-toml@1.6.0:
@@ -1390,7 +1390,7 @@ snapshots:
 
   simple-git-hooks@2.13.1: {}
 
-  skills-package-manager@0.7.0: {}
+  skills-package-manager@0.9.0: {}
 
   smol-toml@1.6.0: {}
 

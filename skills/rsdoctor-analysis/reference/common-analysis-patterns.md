@@ -93,13 +93,52 @@ Use `bundle optimize` / `build optimize` as an aggregate optimization pass. It c
 
 Do not treat aggregate output as enough by itself when the recommendation needs concrete evidence. Fetch the narrow supporting data with `--filter` before recommending a config or dependency change.
 
+## Build Performance
+
+Use these as short recommendation candidates when Rsdoctor evidence points to build-time cost, loader hotspots, too many modules, or slow dev rebuilds. Source: [Rsbuild build performance guide](https://rsbuild.rs/zh/guide/optimization/build-performance).
+
+- Start with build performance analysis. Use measured bottlenecks before recommending config changes.
+- General improvements: upgrade Rsbuild, enable `performance.buildCache` for faster rebuilds, reduce module count, and keep Tailwind CSS v3 `content` narrow and correct.
+- Tooling choices: prefer SWC over Babel transforms, avoid Less-heavy pipelines when possible, and prefer faster minification such as Rsbuild/Rspack SWC minification over Terser when compatible.
+- Sass handling: do not send already-built `node_modules/**/*.css` through `sass-loader`; prefer third-party `dist/*.css` outputs when available. Compile third-party `.scss` / `.sass` only when Sass source features are required, such as variables, mixins, functions, or theme customization, and use an allowlist for those packages instead of all `node_modules`.
+- Less projects: if many Less files are present, consider `@rsbuild/plugin-less` parallel compilation.
+- Development mode: consider `dev.lazyCompilation`, Rspack `experiments.nativeWatcher`, cheaper or disabled dev source maps, and a narrower development Browserslist.
+- Rsdoctor loader evidence: if `sass-loader` time is concentrated in third-party package directories and those packages ship CSS artifacts, recommend importing the CSS artifact or narrowing Sass rule `include` to app source plus specific allowlisted theme packages.
+- Call out tradeoffs: development Browserslist and source map changes can make dev output differ from production or reduce debugging detail.
+
+## Retained Module Tree-shaking Analysis
+
+Use `tree-shaking retained-modules` for first-pass tree-shaking evidence when the goal is to find retained emitted modules by reason category. Prefer it over broad `tree-shaking summary` when the user asks for top retained modules, CommonJS retention, barrel imports, side effects, or gzip-size priority.
+
+Recommended first-pass command shape:
+
+```bash
+rsdoctor-agent tree-shaking retained-modules \
+  --data-file dist/rsdoctor-data.json \
+  --emitted-only \
+  --category cjs,barrel,side-effects \
+  --sort gzipSize \
+  --limit 50 \
+  --filter id,path,packageName,version,category,size,chunks,bailoutReason,recommendation
+```
+
+Guidance:
+
+1. Keep `--emitted-only` by default so findings map to shipped bundle impact.
+2. Use `--category cjs,barrel,side-effects` for optimization scans; narrow `--category` when the user asks about one class.
+3. Sort by `gzipSize` for bundle impact, unless the user asks for source or parsed size.
+4. Keep `--limit` bounded. Start with `50` or lower for first-pass analysis.
+5. Report rows as `Path | Package | Category | Gzip/Parsed Size | Chunks | Bailout | Recommendation`.
+6. Treat results as first-pass evidence. Use `modules issuer` only after the user asks to trace who imported a retained module.
+
 ## Common Questions
 
 ### Why is a module not tree-shaken?
 
 Example: "Why is `node_modules/rc-tree/lib/util.js` not tree-shaken?"
 
-- Use `tree-shaking summary` with a filter that keeps module path, bailout reason, and issuer/import-chain fields.
+- Start with `tree-shaking retained-modules` filtered to id, path, package, category, size, chunks, bailout reason, and recommendation when the module appears in emitted output.
+- Use `tree-shaking summary` only when retained modules do not include the needed field or the question needs broader aggregate context.
 - Return the module's `bailoutReason`.
 - Explain the bailout in plain language.
 - Show `issuerPath` only when the user asks for chain tracing or when it is necessary to explain the issue.
@@ -123,8 +162,9 @@ Example: "List all modules in chunk `123`."
 
 Example: "Show all modules with side effects."
 
-- Use `tree-shaking summary` or the relevant module-side-effects command.
-- Filter to module path and bailout reason.
+- Prefer `tree-shaking retained-modules --emitted-only --category side-effects` for emitted side-effect modules.
+- Fall back to `tree-shaking summary` or the relevant module-side-effects command only when retained-module output is insufficient.
+- Filter to module id, path, package, size, chunks, bailout reason, and recommendation.
 - List modules with non-empty `bailoutReason` containing `side_effects`.
 
 ### Why is a package duplicated?
@@ -137,8 +177,8 @@ Example: "Why is package X duplicated?"
 
 ### Which modules are not tree-shaken because of side effects?
 
-- Use `tree-shaking summary`.
-- Filter to module path, bailout reason, and issuer path.
+- Prefer `tree-shaking retained-modules --emitted-only --category side-effects`.
+- Filter to module id, path, package, size, chunks, bailout reason, and recommendation.
 - List modules with `bailoutReason` containing `side_effects`.
 - Show `issuerPath` when needed to identify the import source.
 

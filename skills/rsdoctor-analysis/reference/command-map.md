@@ -92,5 +92,19 @@ Option scopes:
 ## Tree-Shaking
 
 - `tree-shaking summary` -> Overall tree-shaking health summary (can be very large; filter with fields from `rsdoctor-data-types`, compact where useful, and use aggregated results)
+- `tree-shaking retained-modules` -> Retained emitted modules by category for tree-shaking diagnosis. Useful options: `--emitted-only`, `--category cjs,barrel,side-effects`, `--sort gzipSize`, `--limit <n>`, and `--filter id,path,packageName,version,category,size,chunks,bailoutReason,recommendation`.
 - `tree-shaking bailout-reasons --modules <module-list>` -> Non-tree-shakeable modules by bailout reason for the provided modules. High-volume; only run when explicitly requested, always pass `--modules`, and include at most 100 modules per command.
 - `tree-shaking exports-analysis` -> Export-level tree-shaking opportunities
+
+`tree-shaking retained-modules` returns retained module rows with:
+
+| Field                     | Meaning                                       |
+| ------------------------- | --------------------------------------------- |
+| `id`                      | Module id                                     |
+| `path`                    | Module path                                   |
+| `packageName` / `version` | Owning package                                |
+| `category`                | `cjs`, `barrel`, `side-effects`, or `unknown` |
+| `size`                    | Source, parsed, and gzip sizes when available |
+| `chunks`                  | Chunk id/name/assets                          |
+| `bailoutReason`           | Original bailout/retention reason             |
+| `recommendation`          | Optional short recommendation                 |

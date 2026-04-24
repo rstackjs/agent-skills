@@ -17,7 +17,8 @@ Response order (required): High-Priority Issues -> Proposed Solutions -> Optiona
 - Every `@rsdoctor/agent-cli` data-fetch command supports `--filter`; use it by default to keep only fields required for the current question.
 - Build `--filter` field selections from [reference/rsdoctor-data-types.md](reference/rsdoctor-data-types.md) so field names match `@rsdoctor/types` instead of guessing from raw output.
 - For side-effects investigations, use small pagination (`--page-size 10` / `--side-effects-page-size 10`). Do not use oversized page sizes.
-- For tree-shaking issues, use `tree-shaking summary` directly and control output with `--filter` plus `--compact` where useful.
+- For retained emitted module analysis, prefer `tree-shaking retained-modules` with `--emitted-only`, bounded `--category`, `--sort gzipSize`, `--limit`, and a narrow `--filter`.
+- For broader tree-shaking issues, use `tree-shaking summary` directly and control output with `--filter` plus `--compact` where useful.
 - Treat `tree-shaking bailout-reasons` as high-volume by default. Do not run it unless the user explicitly asks for bailout reason analysis, and always pass the target module list with `--modules` (maximum 100 modules).
 - Use a per-step token budget gate: if one command exceeds `20k` tokens (o200k_base) or raw output exceeds `2 MB`, stop adding broad-scope commands and switch to filtered or targeted queries.
 - For duplicate packages and tree-shaking issues, do first-pass issue identification by default. Do not immediately trace reference/import chains.

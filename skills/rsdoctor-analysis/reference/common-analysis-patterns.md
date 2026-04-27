@@ -96,7 +96,7 @@ Do not treat aggregate output as enough by itself when the recommendation needs 
 
 Use these as short recommendation candidates when Rsdoctor evidence points to build-time cost, loader cost, too many modules, or slow dev rebuilds. Source: [Rsbuild build performance guide](https://rsbuild.rs/zh/guide/optimization/build-performance).
 
-- Start with build performance analysis. Use measured bottlenecks before recommending config changes. Use Rsdoctor loader costs datas.
+- Start with build performance analysis. Use measured bottlenecks before recommending config changes. Use Rsdoctor loader costs data.
 - General improvements: upgrade Rsbuild, enable `performance.buildCache` for faster rebuilds, reduce module count, and keep Tailwind CSS v3 `content` narrow and correct.
 - Tooling choices: prefer SWC over Babel transforms, avoid Less-heavy pipelines when possible, and prefer faster minification such as Rsbuild/Rspack SWC minification over Terser when compatible.
 - Sass handling: do not send already-built `node_modules/**/*.css` through `sass-loader`; prefer third-party `dist/*.css` outputs when available. Compile third-party `.scss` / `.sass` only when Sass source features are required, such as variables, mixins, functions, or theme customization, and use an allowlist for those packages instead of all `node_modules`.

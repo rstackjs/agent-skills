@@ -72,7 +72,7 @@ Formatting:
 - `rsdoctor-data.json` missing:
   - Configure plugin and run `RSDOCTOR=true npm run build`.
 - Command not found:
-  - Verify `npx @rsdoctor/agent-cli list` works in current shell.
+  - Verify `npx @rsdoctor/agent-cli@latest list` works in current shell.
   - If using binary mode, verify `rsdoctor-agent` exists in PATH.
 - `query` reports unknown tool:
   - Run `list` and use one of the catalog tool names, or switch to direct `<group> <subcommand>` mode.

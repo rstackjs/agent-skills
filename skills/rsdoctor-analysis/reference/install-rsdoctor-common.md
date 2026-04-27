@@ -39,10 +39,10 @@ Once you have the `rsdoctor-data.json` file, you can use it for analysis. This J
 
 Stable CLI entry:
 
-- `npx @rsdoctor/agent-cli <group> <subcommand> [options]` (recommended)
+- `npx @rsdoctor/agent-cli@latest <group> <subcommand> [options]` (recommended)
 - `rsdoctor-agent <group> <subcommand> [options]` (if binary is available in PATH)
-- `npx @rsdoctor/agent-cli list`
-- `npx @rsdoctor/agent-cli query <tool-name> --data-file <path> [--input <json>]`
+- `npx @rsdoctor/agent-cli@latest list`
+- `npx @rsdoctor/agent-cli@latest query <tool-name> --data-file <path> [--input <json>]`
 - `--filter` is supported by every data-fetch function; use it by default to keep only required fields and reduce token usage
 - For agent execution, prefer running CLI commands in background mode when possible, then collect and summarize outputs.
 - Reuse already returned results from context/history first, then run only missing queries.
@@ -56,34 +56,13 @@ Stable CLI entry:
 
 ```bash
 # Discover tool catalog for query
-npx @rsdoctor/agent-cli list
-
-# Run one catalog tool directly
-npx @rsdoctor/agent-cli query build_summary --data-file ./dist/rsdoctor-data.json
-
-# Analyze chunks
-npx @rsdoctor/agent-cli chunks list --data-file ./dist/rsdoctor-data.json
-
-# Analyze packages
-npx @rsdoctor/agent-cli packages list --data-file ./dist/rsdoctor-data.json
-
-# Analyze specific module by path
-npx @rsdoctor/agent-cli modules by-path --path "src/index.tsx" --data-file ./dist/rsdoctor-data.json
-
-# Analyze side-effects (keep small page size to control output volume)
-npx @rsdoctor/agent-cli modules side-effects --data-file ./dist/rsdoctor-data.json --page-size 10
-
-# Only when explicitly requested: analyze bailout reasons for up to 100 modules
-npx @rsdoctor/agent-cli tree-shaking bailout-reasons --data-file ./dist/rsdoctor-data.json --modules "<module-list>"
-
-# Analyze tree-shaking issues (filter using rsdoctor-data-types fields, compact, and aggregate before using)
-npx @rsdoctor/agent-cli tree-shaking summary --data-file ./dist/rsdoctor-data.json --filter "<command-specific-filter>"
+npx @rsdoctor/agent-cli@latest list
 
 # Build optimize with side-effects pagination tuned for analysis
-npx @rsdoctor/agent-cli bundle optimize --data-file ./dist/rsdoctor-data.json --side-effects-page-size 10
+npx @rsdoctor/agent-cli@latest bundle optimize --data-file ./dist/rsdoctor-data.json --side-effects-page-size 10
 
 # Example: return only required fields
-npx @rsdoctor/agent-cli packages duplicates --data-file ./dist/rsdoctor-data.json --filter "<command-specific-filter>"
+npx @rsdoctor/agent-cli@latest packages duplicates --data-file ./dist/rsdoctor-data.json --filter "<command-specific-filter>"
 ```
 
 **Command format:**

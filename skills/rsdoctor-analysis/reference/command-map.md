@@ -2,7 +2,7 @@
 
 Stable CLI entry:
 
-- `npx @rsdoctor/agent-cli <group> <subcommand> [options]` (recommended)
+- `npx @rsdoctor/agent-cli@latest <group> <subcommand> [options]` (recommended)
 - `rsdoctor-agent <group> <subcommand> [options]` (if binary is available in PATH)
 
 Top-level command mode:

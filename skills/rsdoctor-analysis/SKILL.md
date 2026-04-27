@@ -7,6 +7,8 @@ description: Use when analyzing Rspack/Webpack bundles from local `rsdoctor-data
 
 Use `@rsdoctor/agent-cli` to read `rsdoctor-data.json` and provide evidence-based optimization recommendations.
 
+**Use the latest version of `@rsdoctor/agent-cli`, and ensure `@rsdoctor/rspack-plugin` is >= 1.5.9.**
+
 Response order (required): High-Priority Issues -> Proposed Solutions -> Optional Reference-Chain Follow-up Choices -> Next Deep-Dive Issue Categories (Not commands).
 
 ## Guardrails

@@ -9,7 +9,7 @@ Use direct dependency package data to inspect similar packages. Start with `pack
 Suggested flow:
 
 1. Fetch direct dependency package data with `packages direct-dependencies` or `query packages_direct_dependencies`. Use `--filter` fields for package name, version, issuer/dependency relation, and size when available.
-2. Treat this direct dependency list as the replacement-candidate set. Do not make replacement recommendations from transitive package-only evidence.
+2. Treat this direct dependency list as the replacement-candidate set. Do not make replacement recommendations from indirect package-only evidence.
 3. Check the known families below. The presence of one package from a family is fine; only consider replacement when multiple packages from the same family are present.
 4. After known-family checks, inspect the direct dependency list for other potentially similar packages not listed below. Treat these as candidates only when package purpose overlaps clearly; avoid speculative replacement advice.
 5. Use `packages similar` or `query packages_similar` as an additional signal, not the only source of evidence.
@@ -96,7 +96,7 @@ Do not treat aggregate output as enough by itself when the recommendation needs 
 
 Use these as short recommendation candidates when Rsdoctor evidence points to build-time cost, loader cost, too many modules, or slow dev rebuilds. Source: [Rsbuild build performance guide](https://rsbuild.rs/zh/guide/optimization/build-performance).
 
-- Start with build performance analysis. Use measured bottlenecks before recommending config changes.
+- Start with build performance analysis. Use measured bottlenecks before recommending config changes. Use Rsdoctor loader costs datas.
 - General improvements: upgrade Rsbuild, enable `performance.buildCache` for faster rebuilds, reduce module count, and keep Tailwind CSS v3 `content` narrow and correct.
 - Tooling choices: prefer SWC over Babel transforms, avoid Less-heavy pipelines when possible, and prefer faster minification such as Rsbuild/Rspack SWC minification over Terser when compatible.
 - Sass handling: do not send already-built `node_modules/**/*.css` through `sass-loader`; prefer third-party `dist/*.css` outputs when available. Compile third-party `.scss` / `.sass` only when Sass source features are required, such as variables, mixins, functions, or theme customization, and use an allowlist for those packages instead of all `node_modules`.
@@ -149,14 +149,6 @@ Example: "Who imported `lodash-es/constant.js`?"
 - Use module lookup by path, then issuer/import-chain data.
 - Show the dependency chain using arrow notation or a tree.
 
-### List modules in a chunk
-
-Example: "List all modules in chunk `123`."
-
-- Use chunk lookup by id.
-- Return module paths in a compact table or list.
-- Include size fields only if the user asks about weight or optimization priority.
-
 ### Show modules with side effects
 
 Example: "Show all modules with side effects."
@@ -165,6 +157,7 @@ Example: "Show all modules with side effects."
 - Fall back to `tree-shaking summary` or the relevant module-side-effects command only when retained-module output is insufficient.
 - Filter to module id, path, package, size, chunks, bailout reason, and recommendation.
 - List modules with non-empty `bailoutReason` containing `side_effects`.
+- Limit 50 moduLes. Sort by size, give priority to the large size.
 
 ### Why is a package duplicated?
 
@@ -176,8 +169,8 @@ Example: "Why is package X duplicated?"
 
 ### Which modules are not tree-shaken because of side effects?
 
-- Prefer `tree-shaking retained-modules --emitted-only --category side-effects`.
-- Filter to module id, path, package, size, chunks, bailout reason, and recommendation.
+- Use the E1007 rule results directly to identify modules that are not tree-shaken due to side effects. By `tree-shaking summary`.
+- If further details are needed, you may also use `tree-shaking retained-modules --emitted-only --category side-effects` and filter to module id, path, package, size, chunks, bailout reason, and recommendation.
 - List modules with `bailoutReason` containing `side_effects`.
 - Show `issuerPath` when needed to identify the import source.
 

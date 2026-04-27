@@ -58,7 +58,6 @@ Font thresholds:
 
 Font recommendations:
 
-- Generate font subsets with tools such as Glyphhanger or Font Subsetter.
 - Prefer system fonts when custom fonts are not required.
 - Use `font-display: swap` or `@font-face unicode-range` for more efficient loading.
 - Ensure server-side Gzip or Brotli compression is enabled.
@@ -95,7 +94,7 @@ Do not treat aggregate output as enough by itself when the recommendation needs 
 
 ## Build Performance
 
-Use these as short recommendation candidates when Rsdoctor evidence points to build-time cost, loader hotspots, too many modules, or slow dev rebuilds. Source: [Rsbuild build performance guide](https://rsbuild.rs/zh/guide/optimization/build-performance).
+Use these as short recommendation candidates when Rsdoctor evidence points to build-time cost, loader cost, too many modules, or slow dev rebuilds. Source: [Rsbuild build performance guide](https://rsbuild.rs/zh/guide/optimization/build-performance).
 
 - Start with build performance analysis. Use measured bottlenecks before recommending config changes.
 - General improvements: upgrade Rsbuild, enable `performance.buildCache` for faster rebuilds, reduce module count, and keep Tailwind CSS v3 `content` narrow and correct.

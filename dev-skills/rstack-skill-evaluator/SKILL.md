@@ -3,6 +3,7 @@ name: rstack-skill-evaluator
 description: Benchmark agent skills by generating evaluation cases, comparing skill-guided and baseline runs, and recording the resulting artifacts under skills-test/{skill-name}.
 metadata:
   dependencies: ['skill-creator']
+  internal: true
 ---
 
 # rstack-skill-evaluator

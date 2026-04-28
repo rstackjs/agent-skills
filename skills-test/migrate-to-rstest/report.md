@@ -16,10 +16,10 @@
 
 ## Aggregate
 
-| Config        | Pass  | Pct   | Tokens (mean)      | Time (s) |
-| ------------- | ----- | ----- | ------------------ | -------- |
-| with_skill    | 64/64 | 100%  | ~45,000            | ~318     |
-| without_skill | 48/61 | 78.7% | 77,675             | 676      |
+| Config        | Pass  | Pct   | Tokens (mean) | Time (s) |
+| ------------- | ----- | ----- | ------------- | -------- |
+| with_skill    | 64/64 | 100%  | ~45,000       | ~318     |
+| without_skill | 48/61 | 78.7% | 77,675        | 676      |
 
 Skill lift: **+21.3 pts pass rate**. Skill also cuts mean token spend ~42% and mean wall time ~53% — the baseline burns extra budget discovering things the skill states up front (globals API mapping, two-phase lifecycle, adapter rewrite, coverage provider swap).
 
@@ -27,13 +27,13 @@ Note: `with_skill` and `without_skill` runs were graded against slightly differe
 
 ## Per-eval
 
-| Eval                        | With Skill      | Without Skill   | With Skill Time | Without Skill Time |
-| --------------------------- | --------------- | --------------- | --------------- | ------------------ |
-| jest-basic                  | 11/11           | 9/9             | 283.9s          | 554.3s             |
-| vitest-basic                | 12/12           | 8/11            | 175.7s          | 311.9s             |
-| vitest-multiproject         | 16/16           | 14/17           | 238.2s          | 1016.9s            |
-| vitest-multiproject-partial | 12/12           | 8/11            | 219.3s          | 588.6s             |
-| jest-multiproject           | 13/13           | 9/13            | 552.4s          | 907.9s             |
+| Eval                        | With Skill | Without Skill | With Skill Time | Without Skill Time |
+| --------------------------- | ---------- | ------------- | --------------- | ------------------ |
+| jest-basic                  | 11/11      | 9/9           | 283.9s          | 554.3s             |
+| vitest-basic                | 12/12      | 8/11          | 175.7s          | 311.9s             |
+| vitest-multiproject         | 16/16      | 14/17         | 238.2s          | 1016.9s            |
+| vitest-multiproject-partial | 12/12      | 8/11          | 219.3s          | 588.6s             |
+| jest-multiproject           | 13/13      | 9/13          | 552.4s          | 907.9s             |
 
 `jest-basic` is the smallest fixture and the only cell where the baseline matches the skill on assertions — Sonnet derives everything from first principles without over-shooting.
 

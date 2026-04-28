@@ -2,6 +2,20 @@ lockfileVersion: "0.1"
 installDir: .agents/skills
 linkTargets: []
 skills:
+  skill-creator:
+    specifier: https://github.com/anthropics/skills.git#0f7c287eaf0d4fa511cb871bb55e2a7862251fbb&path:/skills/skill-creator
+    resolution:
+      type: git
+      url: https://github.com/anthropics/skills.git
+      commit: 0f7c287eaf0d4fa511cb871bb55e2a7862251fbb
+      path: /skills/skill-creator
+    digest: sha256-bbef1adbfb025ac90fb1dd769be30ead431d37bdfa7b7e151f9310f01026411b
+  rstack-skill-evaluator:
+    specifier: link:./dev-skills/rstack-skill-evaluator
+    resolution:
+      type: link
+      path: dev-skills/rstack-skill-evaluator
+    digest: sha256-75d5a6eca2ceabb492a4680ae05ef7fdb5b124c39c5d2007ea34cb8a314d7478
   pr-creator:
     specifier: link:./skills/pr-creator
     resolution:

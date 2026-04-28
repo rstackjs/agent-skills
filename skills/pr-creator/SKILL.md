@@ -30,7 +30,7 @@ description: Use when asked to create a pull request for this repository. It hel
    - Prioritize high-signal information: public API changes, behavior changes, breaking changes, migration notes, and important compatibility implications.
    - Then describe the main implementation change only as much as needed to understand the review.
    - Keep it short: one compact paragraph or 2-4 bullets is usually enough.
-   - Avoid low-signal sections such as `Test plan`, routine verification commands, generated file lists, or obvious implementation details unless the repository template explicitly requires them or the change has unusual validation risk.
+   - Avoid low-signal sections such as `Test plan` or `Validation`, routine verification commands, generated file lists, or obvious implementation details unless the repository template explicitly requires them or the change has unusual validation risk.
    - Good background examples:
      - `This PR adds support for custom logger injection so CLI output can be isolated per instance.`
      - `This PR fixes incorrect padding in URL labels to keep terminal output aligned across different label lengths.`

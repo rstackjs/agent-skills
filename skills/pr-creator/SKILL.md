@@ -19,7 +19,7 @@ description: Use when asked to create a pull request for this repository. It hel
 
 4. Draft the PR title in the repository's standard format. If the repository uses Conventional Commits, common patterns include:
    - `feat(core): add ...`
-   - `fix(plugin-less): ...`
+   - `fix(types): ...`
    - `docs: ...`
    - `refactor(types): ...`
    - `chore(deps): ...`
@@ -39,7 +39,7 @@ description: Use when asked to create a pull request for this repository. It hel
 6. Fill `Related Links` with issue links, design docs, related PRs, or discussion pages.
    If the PR upgrades an npm dependency, add a link to the upgraded version's release notes or tag page when available.
    Example: `https://github.com/web-infra-dev/rspack/releases/tag/v1.0.0`
-   If there is no relevant link, omit the entire `Related Links` section from the PR body, including both the heading and its content.
+   If there is no relevant link, omit the entire `Related Links` section from the PR body.
 
 7. Push the branch only after re-checking the branch name. Never push the default branch directly.
 

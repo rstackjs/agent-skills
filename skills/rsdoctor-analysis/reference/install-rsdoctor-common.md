@@ -4,7 +4,7 @@ This document contains common steps that apply to both Rspack and Webpack projec
 
 ## Step 3: Locate the rsdoctor-data.json
 
-First, check whether `rsdoctor-data.json` already exists in the build output (artifacts) directory. Common locations include:
+First, check whether `rsdoctor-data.json` already exists in the build artifact/output directory. It is commonly emitted under directories such as `dist`, `output`, `static`, or a custom `reportDir`. Common locations include:
 
 - `dist/rsdoctor-data.json` (most common)
 - `output/rsdoctor-data.json`
@@ -39,30 +39,42 @@ Once you have the `rsdoctor-data.json` file, you can use it for analysis. This J
 
 Stable CLI entry:
 
-- Skill directory: `node scripts/rsdoctor.js <group> <subcommand> [options]`
+- `npx @rsdoctor/agent-cli@latest <group> <subcommand> [options]` (recommended)
+- `rsdoctor-agent <group> <subcommand> [options]` (if binary is available in PATH)
+- `npx @rsdoctor/agent-cli@latest list`
+- `npx @rsdoctor/agent-cli@latest query <tool-name> --data-file <path> [--input <json>]`
+- `--filter` is supported by every data-fetch function; use it by default to keep only required fields and reduce token usage
+- For agent execution, prefer running CLI commands in background mode when possible, then collect and summarize outputs.
+- Reuse already returned results from context/history first, then run only missing queries.
+- For duplicate packages and tree-shaking issues, do first-pass issue summary first; ask user before continuing reference-chain tracing.
+- Choose `--filter` fields from [rsdoctor-data-types.md](rsdoctor-data-types.md) so filters match `@rsdoctor/types` data fields.
+- For tree-shaking issues, use `tree-shaking summary` directly and control output size with `--filter` plus `--compact` where useful.
+- Budget gate: if one response exceeds `20k` tokens (o200k_base) or raw JSON exceeds `2 MB`, skip broad commands and continue with filtered/targeted ones.
+- For `tree-shaking summary`, filter/compact first and only use aggregated final findings.
 
 **Example usage (repository root):**
 
 ```bash
-# Analyze chunks
-node scripts/rsdoctor.js chunks list --data-file ./dist/rsdoctor-data.json
+# Discover tool catalog for query
+npx @rsdoctor/agent-cli@latest list
 
-# Analyze packages
-node scripts/rsdoctor.js packages list --data-file ./dist/rsdoctor-data.json
+# Build optimize with side-effects pagination tuned for analysis
+npx @rsdoctor/agent-cli@latest bundle optimize --data-file ./dist/rsdoctor-data.json --side-effects-page-size 10
 
-# Analyze specific module by path
-node scripts/rsdoctor.js modules by-path --path "src/index.tsx" --data-file ./dist/rsdoctor-data.json
-
-# Analyze tree-shaking summary
-node scripts/rsdoctor.js tree-shaking summary --data-file ./dist/rsdoctor-data.json
-
-# Optimize bundle inputs
-node scripts/rsdoctor.js bundle optimize --data-file ./dist/rsdoctor-data.json
+# Example: return only required fields
+npx @rsdoctor/agent-cli@latest packages duplicates --data-file ./dist/rsdoctor-data.json --filter "<command-specific-filter>"
 ```
 
 **Command format:**
 
+- Top-level mode: `list`, `query`
 - Use `<group> <subcommand>` (for example: `chunks list`, `bundle optimize`, `tree-shaking summary`)
+- `--compact` is for direct/`ai` command mode; `query` uses `--input`
+- Use `--filter` on every data-fetch command to return only required fields
+- Derive `--filter` field names from [rsdoctor-data-types.md](rsdoctor-data-types.md)
+- For tree-shaking diagnostics, use `tree-shaking summary` directly and control output size with `--filter` plus `--compact` where useful
+- Only run `tree-shaking bailout-reasons` when the user explicitly asks for bailout reason analysis; pass `--modules <module-list>` to limit the query to the requested modules, with at most 100 modules per command
+- If `tree-shaking summary` is used, filter/compact first and only use reduced results
 - Do not use deprecated `<group>:<subcommand>` format
 - Full command map: [command-map.md](command-map.md)
 

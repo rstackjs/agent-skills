@@ -39,21 +39,6 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/rsdoctor-analysis:
-    devDependencies:
-      '@rslib/core':
-        specifier: ^0.21.0
-        version: 0.21.0(@emnapi/core@1.8.1)(@emnapi/runtime@1.8.1)(core-js@3.47.0)(typescript@5.9.3)
-      '@types/node':
-        specifier: ^24.10.9
-        version: 24.10.10
-      commander:
-        specifier: ^12.1.0
-        version: 12.1.0
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
   scripts/config:
     devDependencies:
       '@rslib/core':
@@ -540,10 +525,6 @@ packages:
   clear-module@4.1.2:
     resolution: {integrity: sha512-LWAxzHqdHsAZlPlEyJ2Poz6AIs384mPeqLVCru2p0BrP9G/kVGuhNyZYClLO6cXlnuJjzC8xtsJIuMjKqLXoAw==}
     engines: {node: '>=8'}
-
-  commander@12.1.0:
-    resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
-    engines: {node: '>=18'}
 
   commander@14.0.3:
     resolution: {integrity: sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw==}
@@ -1205,8 +1186,6 @@ snapshots:
     dependencies:
       parent-module: 2.0.0
       resolve-from: 5.0.0
-
-  commander@12.1.0: {}
 
   commander@14.0.3: {}
 

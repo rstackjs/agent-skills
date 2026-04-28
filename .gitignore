@@ -22,6 +22,7 @@ skills-test/**/*
 !skills-test/*/
 !skills-test/*/evals/
 !skills-test/*/evals/evals.json
+!skills-test/*/report.md
 
 .vscode/**/*
 !.vscode/settings.json

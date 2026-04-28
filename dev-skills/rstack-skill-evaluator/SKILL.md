@@ -1,6 +1,6 @@
 ---
 name: rstack-skill-evaluator
-description: Benchmark agent skills by generating evaluation cases, comparing skill-guided and baseline runs, and recording the resulting artifacts under skills-test/{skill-name}.
+description: Benchmark agent skills by generating eval cases, comparing skill-guided vs baseline runs, and recording artifacts under skills-test/{skill-name}.
 metadata:
   dependencies: ['skill-creator']
   internal: true
@@ -8,8 +8,27 @@ metadata:
 
 # rstack-skill-evaluator
 
-Use skill-creator to test the skill. If the user hasn't mentioned, proactively ask the user which skill they want to test
+A thin repo-specific layer on top of `skill-creator`. For workflow (Test / Improve / Benchmark modes), JSON schemas, grading, and viewer details, defer to `skill-creator`'s own SKILL.md and `references/schemas.md`.
 
-If the user is not using claude code, they can switch to other agent CLI with one shot feature flag (you can use cli with --help to find one) and ask the user.
+## Targeting a skill
 
-**Make sure to generate the test-related files in the "skills-test/{skill-name}" directory.**
+If the user hasn't named a target, ask. Skills live under `skills/` (production) and `dev-skills/` (internal-only).
+
+## Artifact layout
+
+For skill `<name>`, two paths are tracked in git; everything else under `skills-test/` is gitignored:
+
+```plaintext
++--------------------------------------+----------------------------------+
+|  Tracked path                        |  Purpose                         |
++--------------------------------------+----------------------------------+
+|  skills-test/<name>/evals/evals.json |  eval definitions                |
+|  skills-test/<name>/report.md        |  human-readable run summary      |
++--------------------------------------+----------------------------------+
+```
+
+Workspaces, raw run outputs, and fixtures may live anywhere — under `skills-test/<name>/` or an OS scratch dir — as long as `report.md` references the path so a reader can find them.
+
+## `report.md`
+
+Committed Markdown summary of the latest run. At minimum cover: setup (model, skill version / commit ref, date), aggregate pass rate / tokens / wall time for `with_skill` vs `without_skill`, per-eval breakdown, and pointers to the raw artifacts.

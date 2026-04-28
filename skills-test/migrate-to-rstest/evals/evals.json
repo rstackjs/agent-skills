@@ -1,0 +1,180 @@
+{
+  "skill_name": "migrate-to-rstest",
+  "fixture_root": "/tmp/agent-skills-evals/migrate-to-rstest/fixtures",
+  "runs_root": "/tmp/agent-skills-evals/migrate-to-rstest/runs",
+  "runner_instructions": "Fixtures are intentionally NOT committed to the repo (5 fixtures including pnpm monorepos with React + MSW would balloon it) and are scratch-grade by design — fixture_root and runs_root must be absolute paths under /tmp (or an OS scratch dir). The runner agent's contract: (1) before running any eval, check whether fixture_root exists and contains a subdirectory per evals[].fixture; (2) if any fixture is missing, generate it from that eval's pre_migration_baseline (framework, test counts, coverage_provider, extra_patterns) plus the top-level notes — both fields together fully describe the fixture shape; (3) verify the generated fixture runs green pre-migration (tests_passed / coverage_threshold_met must hold) before grading; (4) reuse existing fixtures across runs — do NOT regenerate unless the user explicitly asks. The same applies to runs_root: each grading run writes a fresh subdirectory under it; never reuse a previous run's working tree.",
+  "notes": "Fixtures use realistic production patterns: ts-jest, vi.mock with factories, vi.hoisted, @testing-library/jest-dom adapter, coverage thresholds, clearMocks/mockReset, path aliases. They also exercise patterns NOT covered by the official rstest migration docs: __mocks__ directory automock, CSS modules via identity-obj-proxy, React + @vitejs/plugin-react + MSW, workspace cross-package imports, Jest multi-project config with globalSetup/globalTeardown, project-scoped displayName + testEnvironmentOptions, polyfills via setupFiles split. Every fixture's test script runs with coverage and enforces thresholds — post-migration coverage must also meet those thresholds.",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "jest-basic",
+      "fixture": "jest-basic",
+      "pre_migration_baseline": {
+        "framework": "jest + ts-jest",
+        "test_files": 5,
+        "tests_passed": 12,
+        "tests_failed": 0,
+        "coverage_threshold_met": true,
+        "coverage_provider": "istanbul (jest default)",
+        "extra_patterns": [
+          "__mocks__/logger.ts manual mock via bare jest.mock()",
+          "CSS module imports via identity-obj-proxy in moduleNameMapper",
+          "transformIgnorePatterns for ESM deps"
+        ]
+      },
+      "prompt": "Migrate the ts-jest project to Rstest. The project uses jest + ts-jest + @types/jest + TypeScript, has clearMocks, moduleNameMapper (including identity-obj-proxy for CSS modules), transformIgnorePatterns, and coverageThreshold set in jest.config.js. Tests include jest.fn, jest.spyOn, jest.mock with factory, a bare jest.mock() that pulls from a src/__mocks__/ manual-mock directory, and CSS module imports. The `test` script runs `jest --coverage` and enforces the thresholds. Migrate to Rstest preserving all behavior AND coverage threshold enforcement. Keep Jest deps until Rstest is green.",
+      "assertions": [
+        "rstest.config.ts (or equivalent) exists",
+        "package.json replaces ts-jest/jest with @rstest/core (+ @rstest/coverage-istanbul) as devDeps",
+        "scripts.test invokes rstest with coverage enabled",
+        "moduleNameMapper alias translated to rstest alias",
+        "CSS module moduleNameMapper translated (CSS imports still resolve to identity-like string map or equivalent)",
+        "coverageThreshold translated to rstest coverage thresholds (lines>=80, functions>=80, branches>=70, statements>=80)",
+        "jest.<api> usages literally replaced with rstest.<api> in test files (no globalThis.jest shim)",
+        "jest.mock factory translated to rstest.mock equivalent",
+        "Bare jest.mock('@app/logger') + src/__mocks__/logger.ts pattern still works (either preserved or equivalent auto-mock setup)",
+        "jest deps and jest.config.js not deleted before Rstest is green",
+        "Post-migration pnpm test: 12 tests pass across 5 files with coverage thresholds met"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "vitest-basic",
+      "fixture": "vitest-basic",
+      "pre_migration_baseline": {
+        "framework": "vitest",
+        "test_files": 3,
+        "tests_passed": 6,
+        "tests_failed": 0,
+        "coverage_threshold_met": true,
+        "coverage_provider": "v8"
+      },
+      "prompt": "Migrate the Vitest (globals mode) project to Rstest. The config has coverage (v8 provider with thresholds), setupFiles, clearMocks, mockReset, @app alias. Tests use vi.fn/spyOn/useFakeTimers and vi.mock with factory + vi.mocked for module mocking. `test` script runs `vitest run --coverage`. Migrate preserving behavior AND coverage thresholds. Rstest's only coverage provider is @rstest/coverage-istanbul. Keep Vitest deps until Rstest is green.",
+      "assertions": [
+        "rstest.config.ts exists",
+        "package.json replaces @vitest/coverage-v8 with @rstest/coverage-istanbul and vitest with @rstest/core",
+        "scripts.test invokes rstest with coverage enabled",
+        "@app alias preserved in rstest config",
+        "clearMocks/mockReset preserved",
+        "coverage thresholds translated (istanbul provider)",
+        "Global vi.<api> replaced with rs.<api> (no globalThis.vi shim)",
+        "vi.mock / vi.mocked translated to rs.mock / rs.mocked correctly",
+        "describe/it name strings preserved verbatim",
+        "setupFiles path preserved",
+        "vitest deps not deleted before Rstest is green",
+        "Post-migration pnpm test: 6 tests pass across 3 files with coverage thresholds met"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "vitest-multiproject",
+      "fixture": "vitest-multiproject",
+      "pre_migration_baseline": {
+        "framework": "vitest",
+        "test_files": 8,
+        "tests_passed": 16,
+        "tests_failed": 0,
+        "coverage_threshold_met": true,
+        "coverage_provider": "v8",
+        "projects": ["utils (node)", "web (jsdom + React + MSW + jest-dom)"],
+        "extra_patterns": [
+          "@fixture/shared workspace package via pnpm workspace:* (source and test-level imports)",
+          "web uses @vitejs/plugin-react for React+TSX",
+          "web setup: MSW setupServer with HTTP handlers + server.use override + @testing-library/jest-dom/vitest adapter + afterEach cleanup",
+          "web tests: @testing-library/react render/findByTestId/waitFor, snapshot, vi.hoisted + vi.mock"
+        ]
+      },
+      "prompt": "Migrate this pnpm monorepo from Vitest to Rstest entirely. Root vitest.config.ts holds coverage config (v8 + thresholds); vitest.workspace.ts lists two test projects (utils/web). A third workspace package @fixture/shared is a library consumed by utils/ and web/ via pnpm workspace:* — its source (normalize) is imported by utils/slug.ts and web/id.ts, and one of its helpers (expectIdShape) is imported by web/tests/id.test.ts. packages/utils uses node env; packages/web uses jsdom + @vitejs/plugin-react for a React+TSX component, MSW setupServer (with server.use override in a test), @testing-library/jest-dom/vitest adapter in the setup file, @testing-library/react render/findByTestId/waitFor, vi.hoisted + vi.mock, snapshot. Per Rstest convention, `projects` goes at top level of defineConfig (not under test). @fixture/shared must continue to resolve correctly from both source and test files after migration. Coverage thresholds must still be enforced post-migration (use @rstest/coverage-istanbul). Replace the @testing-library/jest-dom/vitest adapter with the Rstest-compatible expect.extend pattern. SWC handles TSX so @vitejs/plugin-react is not needed. Keep vitest until Rstest is green across both projects.",
+      "assertions": [
+        "Root rstest.config.ts with projects at top level of defineConfig",
+        "Per-package rstest.config.ts with correct environment (utils=node, web=jsdom)",
+        "Root package.json replaces @vitest/coverage-v8 with @rstest/coverage-istanbul and vitest with @rstest/core",
+        "scripts.test invokes rstest with coverage enabled",
+        "coverage thresholds translated (istanbul provider)",
+        "Test imports changed from 'vitest' to '@rstest/core'; vi -> rs (not rstest); no aliased shim (no `rs as vi`, no `globalThis.vi = rs`, no `const vi = rs`)",
+        "vi.hoisted + vi.mock translated correctly",
+        "describe/it names preserved verbatim",
+        "@testing-library/jest-dom/vitest adapter replaced with expect.extend(matchers) pattern",
+        "afterEach DOM cleanup preserved",
+        "React + TSX component renders under jsdom in Rstest (SWC handles TSX; @vitejs/plugin-react removed)",
+        "MSW setupServer lifecycle (beforeAll/afterEach/afterAll + server.use) still works",
+        "snapshot file preserved; tests still match byte-for-byte",
+        "@fixture/shared workspace package still resolves from source (utils/slug.ts, web/id.ts) and test (web/tests/id.test.ts) imports",
+        "vitest deps/configs not deleted before Rstest is green; old vitest.config.ts / vitest.workspace.ts / per-package vitest.config.ts removed after green",
+        "Post-migration pnpm test: 16 tests pass across 8 files covering both projects with coverage thresholds met"
+      ]
+    },
+    {
+      "id": 4,
+      "eval_name": "vitest-multiproject-partial",
+      "fixture": "vitest-multiproject-partial",
+      "pre_migration_baseline": {
+        "framework": "vitest",
+        "test_files": 6,
+        "tests_passed": 12,
+        "tests_failed": 0,
+        "coverage_threshold_met": true,
+        "coverage_provider": "v8",
+        "packages": [
+          "core (node, 2 tests)",
+          "api (node, 4 tests, vi.mock in handler test)",
+          "ui (jsdom, 2 tests)",
+          "web (jsdom, 4 tests, vi.mock + jest-dom)"
+        ],
+        "migration_target": "packages/web only"
+      },
+      "prompt": "Migrate ONLY packages/web of this pnpm monorepo from Vitest to Rstest. packages/core, packages/api, packages/ui must stay on Vitest. Root vitest.shared.ts is imported by every package via mergeConfig and contains include / testTimeout / globals / clearMocks / coverage (v8 with thresholds). Each package's test script runs with coverage. packages/web uses jsdom + @testing-library/jest-dom/vitest setup + vi.mock for id.ts. Translate web's configuration to a standalone packages/web/rstest.config.ts (should NOT import from vitest/config). Rstest needs @rstest/coverage-istanbul since Rstest doesn't support v8 coverage. Root vitest devDep and @vitest/coverage-v8 must stay (other packages still need them). Keep packages/web/vitest.config.ts and vitest.setup.ts until Rstest is green.",
+      "assertions": [
+        "packages/web/rstest.config.ts exists standalone (no import from vitest/config)",
+        "packages/web has jsdom env, coverage thresholds (istanbul provider), setupFiles, clearMocks inlined from shared config",
+        "packages/web/package.json test script uses rstest with coverage enabled",
+        "packages/web adds @rstest/core and @rstest/coverage-istanbul devDeps",
+        "packages/core, packages/api, packages/ui completely untouched (no file diff, excluding coverage/)",
+        "Root vitest.shared.ts completely unchanged",
+        "Root package.json still has vitest + @vitest/coverage-v8",
+        "packages/web tests import '@rstest/core' (vi -> rs, no `rs as vi` alias), vi.mock -> rs.mock",
+        "@testing-library/jest-dom/vitest adapter migrated to Rstest expect.extend pattern",
+        "packages/web alone post-migration: 4 tests pass on Rstest with coverage thresholds met (istanbul)",
+        "Root pnpm -r test: 12 tests pass across 6 files (web on Rstest + core/api/ui on Vitest) with all coverage thresholds met",
+        "packages/web/vitest.config.ts and vitest.setup.ts removed after Rstest green"
+      ]
+    },
+    {
+      "id": 5,
+      "eval_name": "jest-multiproject",
+      "fixture": "jest-multiproject",
+      "pre_migration_baseline": {
+        "framework": "jest + ts-jest",
+        "test_files": 2,
+        "tests_passed": 8,
+        "tests_failed": 0,
+        "coverage_threshold_met": true,
+        "coverage_provider": "istanbul (jest default)",
+        "projects": ["node-lib (node)", "dom-lib (jsdom)"],
+        "extra_patterns": [
+          "root jest.config.js uses `projects: [...]` to reference per-package configs",
+          "root-level globalSetup / globalTeardown seeding process.env.__DB_SEED__",
+          "per-project displayName (object form with color)",
+          "per-project testEnvironmentOptions (url, userAgent, pretendToBeVisual) for dom-lib",
+          "setupFiles (jest.polyfills.ts — matchMedia) split from setupFilesAfterEnv (jest.setup.ts — jest-dom matchers / custom matcher via expect.extend)"
+        ]
+      },
+      "prompt": "Migrate this pnpm monorepo Jest multi-project setup to Rstest. The root jest.config.js uses `projects: ['<rootDir>/packages/node-lib', '<rootDir>/packages/dom-lib']` plus `globalSetup` / `globalTeardown` (seeds and tears down `process.env.__DB_SEED__`) and a root `coverageThreshold`. Each project has its own jest.config.js with: displayName (object form, {name, color}), preset 'ts-jest', its own testEnvironment (node vs jsdom), setupFilesAfterEnv, clearMocks, collectCoverageFrom. dom-lib additionally sets testEnvironmentOptions (url: 'https://app.example.com/dashboard', userAgent: 'FixtureAgent/1.0', pretendToBeVisual: true), setupFiles (jest.polyfills.ts — polyfills matchMedia before framework) separate from setupFilesAfterEnv (jest.setup.ts — imports @testing-library/jest-dom). node-lib's jest.setup.ts both hydrates globalThis.__DB__ from process.env.__DB_SEED__ and registers a custom matcher via expect.extend (with declare global namespace jest for types). Migrate the whole setup to Rstest: projects top-level, globalSetup/globalTeardown preserved (Rstest globalSetup returns the teardown fn), jest-dom matchers via expect.extend, jest-specific types/namespaces replaced with Rstest equivalents, jest.<api> -> rstest.<api> if any appear. Coverage thresholds must still be enforced (use @rstest/coverage-istanbul). Keep Jest deps and configs until Rstest is green.",
+      "assertions": [
+        "Root rstest.config.ts with projects at top level of defineConfig",
+        "Per-package rstest.config.ts with correct environment (node-lib=node, dom-lib=jsdom)",
+        "Root package.json replaces jest + ts-jest + jest-environment-jsdom with @rstest/core + @rstest/coverage-istanbul",
+        "scripts.test invokes rstest with coverage enabled",
+        "coverage thresholds translated (istanbul provider)",
+        "globalSetup + globalTeardown translated (seeding process.env.__DB_SEED__ still works; teardown deletes it)",
+        "dom-lib jsdom url / userAgent / pretendToBeVisual options preserved in rstest config",
+        "dom-lib setupFiles (matchMedia polyfill) runs before framework; setupFilesAfterEnv (jest-dom) runs after — both still wired",
+        "node-lib setupFilesAfterEnv hydrates globalThis.__DB__ from env + registers custom matcher via expect.extend",
+        "Jest types/namespaces for custom matcher (declare global namespace jest) migrated to Rstest-compatible declaration",
+        "jest.<api> -> rstest.<api> literal replacement in any test code (no globalThis.jest shim, no `rstest as jest` alias)",
+        "Jest deps/configs not deleted before Rstest is green; old jest.config.js / jest.global-setup.ts / jest.global-teardown.ts / per-package jest.config.js removed after green",
+        "Post-migration pnpm test: 8 tests pass across 2 files covering both projects with coverage thresholds met"
+      ]
+    }
+  ]
+}

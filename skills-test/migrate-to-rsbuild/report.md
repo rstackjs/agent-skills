@@ -74,5 +74,4 @@
 
 - Eval outputs: `skills-test/migrate-to-rsbuild/migrate-to-rsbuild-workspace/iteration-1/eval-{1,2,3}/`
 - Benchmark: `skills-test/migrate-to-rsbuild/migrate-to-rsbuild-workspace/iteration-1/benchmark.json`
-<!-- cspell:disable-next-line -->
 - Evaluation definitions: `skills-test/migrate-to-rsbuild/evals/evals.json`

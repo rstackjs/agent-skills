@@ -33,6 +33,8 @@ Apply these rules when writing or reviewing Rstest test projects.
 - Use `.only` to focus on specific tests during development, but never commit `.only` to the codebase
 - Use `.skip` or `.todo` to mark incomplete or temporarily skipped tests
 - Prefer small, focused test cases that test a single behavior
+- For async error paths, prefer `await expect(fn()).rejects.toThrow(ErrorClass)` (or `.rejects.toMatchObject({ ... })`) over `try/catch` with `expect.fail` or `.catch(e => e)` patterns — the matcher form fails clearly if the promise unexpectedly resolves, keeps the assertion in one chain, and avoids forgetting to assert the throw at all
+- For async happy paths, use `await expect(fn()).resolves.toEqual(...)` for the same reason
 - Use `includeSource` for in-source testing of small utility functions (Rust-style `import.meta.rstest`)
 - For in-source tests, wrap test code in `if (import.meta.rstest) { ... }` and define `import.meta.rstest` as `false` in production build config
 

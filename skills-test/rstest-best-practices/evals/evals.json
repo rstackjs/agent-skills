@@ -1,0 +1,164 @@
+{
+  "skill_name": "rstest-best-practices",
+  "fixture_root": "/tmp/agent-skills-evals/rstest-best-practices/fixtures",
+  "runs_root": "/tmp/agent-skills-evals/rstest-best-practices/runs",
+  "runner_instructions": "Fixtures are intentionally NOT committed to the repo (10 fixtures including a Playwright-Chromium browser-mode setup with pre-installed node_modules would balloon it) and are scratch-grade by design — fixture_root and runs_root must be absolute paths under /tmp (or any OS scratch dir). The runner agent's contract: (1) before running any eval, check whether fixture_root exists and contains a subdirectory per evals[].fixture; (2) if any fixture is missing, generate it from the eval's prompt — each prompt describes the fixture shape (package layout, package.json scripts, rstest.config.ts, source files, and the starting state of test files including any seeded code to rewrite); (3) verify the fixture installs and `pnpm test` runs in the expected pre-task state before grading the agent's edits; (4) reuse existing fixtures across runs — do NOT regenerate unless the user explicitly asks. The same applies to runs_root: each grading run writes a fresh subdirectory; never reuse a previous run's working tree.",
+  "notes": "10 eval scenarios derived from 6 independent subagent samples (none of which saw the skill's rule list). Scenarios were clustered by topic; 8 of 10 were unanimous (6/6) across samples, the other 2 were near-unanimous (5/6 or 4/6). Assertions describe what a senior Rstest user would write in the given scenario — NOT rules reverse-engineered from the skill. Baseline comparison is the old SKILL.md snapshot at ../skill-snapshot/rstest-best-practices/SKILL.md (checklist-style, 131 lines). Each scenario triggers a realistic testing task; the agent writes or rewrites test code against a starter fixture, and the assertions verify both process (API choices, hygiene) and outcome (pnpm test passes).",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "pure-util-edge-cases",
+      "fixture": "pure-util-edge-cases",
+      "prompt": "This is a minimal Node.js TypeScript package. `src/query.ts` exports `parseQuery(input: string): Record<string, string | string[]>` that parses URL query strings — it must handle: leading '?', duplicate keys (producing string[] arrays), URL-encoded values (percent-encoded bytes and '+' as space), empty string input, and malformed pairs like '=value' / 'key=' / bare tokens. `test/query.test.ts` is empty. `rstest.config.ts` is minimal (Node env). Write a complete Rstest test suite covering all edge cases. All tests must pass on `pnpm test`.",
+      "assertions": [
+        "Test file imports { describe, test (or it), expect } from '@rstest/core' — not relying on globals",
+        "Test covers empty string input case",
+        "Test covers duplicate-key to array behavior",
+        "Test covers URL-encoded value decoding (percent-encoded bytes and/or '+' as space)",
+        "Test covers malformed pair handling (e.g. '=value', 'key=', bare token)",
+        "Uses parametric helpers (test.each / describe.each) OR cleanly separated it() blocks per behavior — no single giant test with many assertions",
+        "No beforeEach/afterEach/beforeAll/afterAll hooks used (pure function requires no setup)",
+        "No mocks or spies used (pure function)",
+        "pnpm test passes with all cases green"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "fetch-with-retry",
+      "fixture": "fetch-with-retry",
+      "prompt": "This is a Node.js TypeScript package. `src/api/fetchUserProfile.ts` exports `fetchUserProfile(userId: string): Promise<UserProfile>`. Internally it calls `globalThis.fetch('https://api.example.com/users/' + userId)`, retries up to 3 attempts on 5xx responses, and throws `ApiError` if the final attempt also fails. `test/fetchUserProfile.test.ts` is empty. `rstest.config.ts` uses Node env. Write tests covering: (a) first call returns 200 with valid body — function resolves, (b) two 500s then third returns 200 — function still resolves (retry path), (c) all three attempts return 500 — function throws ApiError. Do not make real HTTP calls. All tests must pass.",
+      "assertions": [
+        "Uses rstest.spyOn(globalThis, 'fetch') OR module-level rstest.mock('./api' or similar) to intercept fetch — no real network call",
+        "Sequential responses scripted with mockResolvedValueOnce (or mockImplementationOnce) chained, not a manual counter variable",
+        "Error path asserted via .rejects.toThrow() or await expect(...).rejects.toXxx — not try/catch + expect.fail",
+        "Mock restoration: either afterEach with restoreAllMocks/mockRestore, OR config sets restoreMocks: true / clearMocks: true",
+        "Test asserts fetch was called the expected number of times for the retry path (3 calls)",
+        "No real HTTP library (node-fetch / axios / undici) imported at test scope",
+        "pnpm test passes with all three paths green"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "debounce-fake-timers",
+      "fixture": "debounce-fake-timers",
+      "prompt": "This is a TypeScript utility package. `src/debounce.ts` implements `debounce(fn, wait)` with trailing-edge semantics and a `.cancel()` method. `test/debounce.test.ts` already has one test that uses real `setTimeout` to wait 500ms, making it slow and occasionally flaky on CI. Rewrite the test using Rstest fake timers and add the following coverage: (a) multiple calls within the wait window trigger the underlying fn only once with the last arguments, (b) a new call within the wait window resets the timer (the fn fires `wait` ms after the LAST call), (c) calling `.cancel()` before the timer fires prevents invocation. The rewritten test must pass in well under one second.",
+      "assertions": [
+        "Uses rstest.useFakeTimers() (in beforeEach or at test scope)",
+        "Uses rstest.useRealTimers() in afterEach (or at end of test) to avoid leaking fake timers into later files",
+        "Uses rstest.advanceTimersByTime for time progression (not a blanket runAllTimers when testing boundary semantics)",
+        "No `new Promise(r => setTimeout(r, ...))`, no `await sleep(...)`, no other real-time wait patterns in the test file",
+        "The debounced callback is wrapped in rstest.fn() for call-count/args assertions",
+        "Covers all three scenarios (multi-call collapse, timer reset on new call, cancel prevents)",
+        "pnpm test passes and completes in under 1 second (indicates no real waits)"
+      ]
+    },
+    {
+      "id": 4,
+      "eval_name": "react-form-jsdom",
+      "fixture": "react-form-jsdom",
+      "prompt": "This is a React 18 + Rsbuild project configured for DOM testing via happy-dom. `src/LoginForm.tsx` is a controlled form with username and password inputs and a submit button. On submit it calls the async `onSubmit(credentials)` prop, showing 'Signing in...' while the promise is pending and 'Welcome back' after it resolves. `rstest.config.ts` has pluginReact(), testEnvironment: 'happy-dom', and setupFiles pointing to `test/rstest.setup.ts`. The setup file already imports `@testing-library/jest-dom/matchers` and calls `expect.extend(matchers)`, plus an afterEach `cleanup()`. `test/LoginForm.test.tsx` is empty. Write tests covering: initial render (both inputs empty, button visible), submitting valid credentials triggers onSubmit with the entered values, the loading state is shown while onSubmit is pending, and the success message appears after onSubmit resolves.",
+      "assertions": [
+        "Uses render from @testing-library/react (or re-export) to mount the component",
+        "Uses semantic queries: getByRole / getByLabelText for inputs and button — not getByTestId for elements that have a semantic role",
+        "onSubmit prop passed as rstest.fn().mockResolvedValue(...) — not a real async function",
+        "Async UI states asserted via findBy* or waitFor — not via manual setTimeout / arbitrary await",
+        "jest-dom matchers used (toBeInTheDocument, toHaveValue, toBeDisabled, etc.) instead of raw DOM property reads",
+        "User interaction uses fireEvent OR @testing-library/user-event (either is acceptable) — not manual element.click() / .value = ...",
+        "pnpm test passes with all four behaviors covered"
+      ]
+    },
+    {
+      "id": 5,
+      "eval_name": "react-dropdown-browser-mode",
+      "fixture": "react-dropdown-browser-mode",
+      "prompt": "This React component library has `src/Dropdown.tsx` — a searchable combobox with keyboard navigation (ArrowUp/ArrowDown to move selection, Enter to commit, Esc to close) and focus trap. jsdom cannot correctly simulate the focus/pointer behaviors this component depends on, so testing is done in real Chromium via Rstest browser mode. `rstest.config.ts` is configured with `browser: { enabled: true, provider: 'playwright', headless: true }` and pluginReact(). Playwright is already installed. `tests/Dropdown.test.tsx` is empty. Write tests covering: (a) opening the dropdown reveals all options, (b) typing into the search field filters visible options, (c) ArrowDown moves the highlight and Enter commits the highlighted option, (d) Esc closes the dropdown and restores focus to the trigger.",
+      "assertions": [
+        "Imports render from @rstest/browser-react (NOT @testing-library/react) for mounting",
+        "Element queries use Locator API via the `page` object: page.getByRole / getByLabel / getByText — not CSS selectors or getByTestId for semantic elements",
+        "Assertions use expect.element(locator).toXxx (web-first auto-retry) — e.g. toBeVisible / toHaveText / toBeFocused / toBeDisabled",
+        "Keyboard events dispatched via Locator.press('ArrowDown' etc.) (e.g. page.getByRole(...).press('ArrowDown')) — not fireEvent.keyDown or manual KeyboardEvent construction",
+        "Every Locator action and expect.element is awaited",
+        "No page.waitForTimeout(N) or setTimeout/sleep pattern in the test",
+        "No manual DOM poking (document.*, querySelector) inside the test",
+        "pnpm test passes in browser mode with all four behaviors covered"
+      ]
+    },
+    {
+      "id": 6,
+      "eval_name": "esm-partial-mock-router",
+      "fixture": "esm-partial-mock-router",
+      "prompt": "This React + react-router-dom v6 project has `src/pages/Product.tsx` that reads `:id` via `useParams()` and renders `Product {id}`. The developer wants to unit-test the component without wrapping it in a `MemoryRouter` — instead mocking only `useParams` to return `{ id: 'p-42' }` while keeping all other react-router-dom exports (MemoryRouter, Link, etc.) working so any other consumers in the rendered tree continue to function. `rstest.config.ts` has pluginReact() + testEnvironment happy-dom. `src/pages/Product.test.tsx` is empty. Write a passing test.",
+      "assertions": [
+        "rstest.mock call is at module scope (top of file), targeting 'react-router-dom' (or 'react-router' as the true export source)",
+        "Factory preserves non-mocked exports via spreading `...actual` obtained through import attribute `with { rstest: 'importActual' }` OR via rstest.importActual()",
+        "Only useParams is overridden; MemoryRouter / Link / other exports are not replaced",
+        "Mock factory does not reference test-scope variables that are defined AFTER it (respects hoisting)",
+        "Test does NOT wrap the component in MemoryRouter / BrowserRouter / any router provider",
+        "Rendered output reflects the mocked id ('p-42' visible in component output)",
+        "pnpm test passes"
+      ]
+    },
+    {
+      "id": 7,
+      "eval_name": "cjs-mock-memfs",
+      "fixture": "cjs-mock-memfs",
+      "prompt": "This is a CommonJS Node.js CLI tool (package.json has `\"type\": \"commonjs\"`). `src/reportWriter.cjs` does `const fs = require('node:fs')` and writes JSON to `path.join(cwd, 'report.json')` via `fs.writeFileSync`. The developer wants to test the function without writing to the real disk, using `memfs` to provide an in-memory filesystem. `tests/reportWriter.test.cjs` currently has a failing placeholder; `memfs` is installed. `rstest.config.cjs` has include pattern for *.test.cjs. Write a passing test that verifies the function wrote the expected JSON content without touching the real filesystem.",
+      "assertions": [
+        "Uses rstest.mockRequire (not rstest.mock) to intercept the fs module — matches the require() loading path used by the CJS source",
+        "Mocks 'node:fs' (or whichever specifier the source uses) via memfs",
+        "No real files written to disk during the test run (no cleanup needed on real paths)",
+        "Volume / fs state is reset between tests (vol.reset() or equivalent in beforeEach / afterEach)",
+        "Assertions verify file content via memfs API (vol.readFileSync / vol.toJSON) — not by re-reading real disk",
+        "pnpm test passes"
+      ]
+    },
+    {
+      "id": 8,
+      "eval_name": "snapshot-dynamic-fields",
+      "fixture": "snapshot-dynamic-fields",
+      "prompt": "This TypeScript utility package has `src/buildReport.ts` exporting `buildReport(opts: { rootDir: string }): Report`. The returned object has fields: `generatedAt` (Date object, set to `new Date()`), `buildId` (string from `crypto.randomUUID()`), `version` (string constant), `files` (string[] of absolute paths obtained from walking rootDir). Developer wants a snapshot test of buildReport's output that is stable across runs and across machines. `path-serializer` is installed. `test/buildReport.test.ts` is empty. Write a passing test.",
+      "assertions": [
+        "Snapshot is stable: running the test twice in a row produces no diff (no literal volatile values in .snap)",
+        "Dynamic fields handled via property matchers (expect.any / expect.stringMatching) in toMatchSnapshot OR via fixed injection (setSystemTime + spy on crypto.randomUUID)",
+        "Absolute paths normalized via expect.addSnapshotSerializer with path-serializer (or equivalent) — snapshot does not contain user-specific absolute paths",
+        "Snapshot file exists under __snapshots__/ OR inline snapshot used with the normalized content",
+        "Snapshot still asserts the full structure (all keys present) — test does not bypass by `delete result.generatedAt` then snapshotting",
+        "pnpm test passes on first run; second run passes without -u",
+        "Snapshot content does not contain a literal timestamp matching the current test-run time"
+      ]
+    },
+    {
+      "id": 9,
+      "eval_name": "coverage-thresholds-glob",
+      "fixture": "coverage-thresholds-glob",
+      "prompt": "This TypeScript library project has `src/core/` (hot-path business logic), `src/legacy/` (deprecated code being phased out), `dist/` (build artifacts committed for some reason), and a `tests/` directory with existing tests. `rstest.config.ts` currently does not configure coverage. `@rstest/coverage-istanbul` is already a devDependency. Configure coverage so CI enforces: `src/core/**` at 95% statements and 90% branches (per-file, so a single uncovered file cannot hide behind an average), `src/legacy/**` at 60% statements, with `dist/**` and `**/*.d.ts` excluded. Update the test script so CI fails when coverage is below threshold.",
+      "assertions": [
+        "coverage.enabled is true (or test script passes --coverage)",
+        "coverage.provider is 'istanbul'",
+        "coverage.thresholds uses glob-keyed form with distinct thresholds for src/core/** and src/legacy/**",
+        "src/core/** glob has perFile: true set",
+        "src/core/** thresholds meet the required numbers (statements >= 95, branches >= 90)",
+        "src/legacy/** threshold set to 60% statements",
+        "coverage.exclude contains '**/*.d.ts' and 'dist/**' (or equivalent blocking pattern)",
+        "coverage.include (or default) limits scope to src/** — does not count tests or dist",
+        "Running pnpm test with a deliberately under-covered src/core file results in non-zero exit"
+      ]
+    },
+    {
+      "id": 10,
+      "eval_name": "monorepo-projects-multi-env",
+      "fixture": "monorepo-projects-multi-env",
+      "prompt": "This is a pnpm monorepo: `packages/api` (Node server code, no DOM), `packages/ui` (React component library, needs DOM), `packages/shared` (isomorphic utilities). Root `rstest.config.ts` is empty. Each package has test files already but no config. Configure `rstest` so a single command from the root runs tests for both api and ui (shared has no tests, can be skipped). api must run in Node env; ui must run in happy-dom with pluginReact. Also add a root-level coverage threshold of 80% statements across src files.",
+      "assertions": [
+        "Root rstest.config.ts declares projects (either as a list of paths or inline entries)",
+        "Each runnable package (api, ui) has its own rstest.config.ts using defineProject",
+        "packages/ui config sets testEnvironment to 'happy-dom' (or 'jsdom') and includes pluginReact()",
+        "packages/api config uses Node env (default or explicit testEnvironment: 'node')",
+        "coverage configuration lives at the ROOT rstest.config.ts — not inside any projects[] entry",
+        "No root-only options (reporters / pool / bail / coverage / isolate) appear inside any projects[].test block",
+        "coverage.thresholds sets statements >= 80 at root (global or equivalent)",
+        "`pnpm -C <root> test` (or equivalent) runs tests from both api and ui in a single invocation"
+      ]
+    }
+  ]
+}

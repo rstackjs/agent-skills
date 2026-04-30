@@ -125,6 +125,14 @@ Migrate tsc or tsup library projects to Rslib.
 
 ## Rspress Skills
 
+### rspress-best-practices
+
+```bash
+npx skills add rstackjs/agent-skills --skill rspress-best-practices
+```
+
+Rspress best practices for config, CLI workflow, content organization, frontmatter, MDX, themes, i18n, search, static assets, deployment, and debugging. Use when writing, reviewing, or troubleshooting Rspress documentation sites.
+
 ### rspress-v2-upgrade
 
 ```bash

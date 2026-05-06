@@ -50,7 +50,7 @@ Four failing assertions across three buckets:
 
 ## Skill / rubric changes captured in this report
 
-- **Skill (`SKILL.md`, Principles + Migration Step 7)** — Phase B cleanup is framed as imperative obligation, not passive permission. Migration is one task with two ordered phases: install + reconfigure, then *in the same task* delete the old framework package, the old builder package, and the legacy `webpackFinal` / `viteFinal` block.
+- **Skill (`SKILL.md`, Principles + Migration Step 7)** — Phase B cleanup is framed as imperative obligation, not passive permission. Migration is one task with two ordered phases: install + reconfigure, then _in the same task_ delete the old framework package, the old builder package, and the legacy `webpackFinal` / `viteFinal` block.
 - **Skill (`SKILL.md`, Principle 2)** — version pins must come from each framework guide's Requirements table; the skill no longer mentions sandboxes / examples as a referent at all (positive instruction only).
 - **Skill (`SKILL.md`)** — the trailing `## Examples` link to upstream sandboxes was removed. The skill depends on documentation (SSOT), not on examples.
 - **Rubric (`evals/evals.json`, eval 4)** — removed the `@rsbuild/plugin-react` direct-devDep assertion. The framework guide install command does not include it, and `@rsbuild/plugin-react` is a transitive dep of `storybook-react-rsbuild`. The assertion was over-strict for a Vite-host fresh setup; only the pure Rspack integration (eval 9) requires it explicitly because that path constructs a custom `rsbuild.config.ts`.
@@ -91,7 +91,7 @@ Initial instinct was to amend `integrations/modernjs.mdx` with a `rsbuildFinal` 
 
 **Bug location:** `packages/addon-modernjs/src/preset.ts`, before the final `mergeRsbuildConfig`.
 
-**Fix applied:** strip output fields that Storybook's preview iframe owns (`distPath`, `assetPrefix`, `cleanDistPath`, `filename`) from the Modern.js-derived Rsbuild config before merging. `builder-rsbuild` hardcodes these as defensive defaults in `iframe-rsbuild.config.ts`, but that merge runs *before* the `rsbuildFinal` hook, so any value Modern.js produced silently overrides them.
+**Fix applied:** strip output fields that Storybook's preview iframe owns (`distPath`, `assetPrefix`, `cleanDistPath`, `filename`) from the Modern.js-derived Rsbuild config before merging. `builder-rsbuild` hardcodes these as defensive defaults in `iframe-rsbuild.config.ts`, but that merge runs _before_ the `rsbuildFinal` hook, so any value Modern.js produced silently overrides them.
 
 **Verified end-to-end** by rebuilding the addon, swapping the patched `dist/preset.js` into the eval fixture's `node_modules/.pnpm/.../storybook-addon-modernjs/dist/`, removing all manual workarounds from `.storybook/main.ts`, and running `pnpm build && pnpm build-storybook` in sequence:
 
@@ -108,7 +108,7 @@ The fix lands in `packages/addon-modernjs/src/preset.ts` plus a regression test 
 
 ## Architecture validation
 
-The skill is structured as **action router + behavioral checklist**. All factual mappings — version table, package names, install commands, config conversion patterns including the relative-alias tip — live upstream at `storybook.rsbuild.rs`. The skill does not duplicate the docs; it tells agents *which page to fetch* and *what behavioral SOPs to follow* (Phase B cleanup, scope discipline, addon preservation).
+The skill is structured as **action router + behavioral checklist**. All factual mappings — version table, package names, install commands, config conversion patterns including the relative-alias tip — live upstream at `storybook.rsbuild.rs`. The skill does not duplicate the docs; it tells agents _which page to fetch_ and _what behavioral SOPs to follow_ (Phase B cleanup, scope discipline, addon preservation).
 
 The 96.6% pass rate is the steady state of that partitioning. Of the 4 failing assertions:
 

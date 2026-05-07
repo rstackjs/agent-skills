@@ -16,13 +16,13 @@ Suggested flow:
 
 Similar package families:
 
-1. `lodash`, `lodash-es`, `string_decode`
+1. `lodash`, `lodash-es`
    - Consider migrating from `lodash` to `lodash-es` for better tree-shaking support when both are present.
 2. `dayjs`, `moment`, `date-fns`, `js-joda`
    - Consider replacing `moment` with `dayjs` for smaller bundle size when both are present and project requirements allow it.
 3. `antd`, `material-ui`, `semantic-ui-react`, `arco-design`
 4. `axios`, `node-fetch`
-5. `redux`, `mobx`, `Zustand`, `Recoil`, `Jotai`
+5. `redux`, `mobx`, `zustand`, `recoil`, `jotai`
 6. `chalk`, `colors`, `picocolors`, `kleur`
 7. `fs-extra`, `graceful-fs`
 
@@ -90,7 +90,11 @@ Use `bundle optimize` / `build optimize` as an aggregate optimization pass. It c
 - Media asset checks (`assets media`).
 - Chunk checks (`chunks list`, `chunks large`, or chunk details) for oversized resources and `splitChunks` recommendations.
 
-Do not treat aggregate output as enough by itself when the recommendation needs concrete evidence. Fetch the narrow supporting data with `--filter` before recommending a config or dependency change.
+Do not run `bundle optimize` / `build optimize` in the default analysis path. Use it only for a user-requested optimization deep dive or when the compact default evidence set is missing required fields.
+
+When using it, keep output compact with `--compact`, narrow `--filter` fields, and pagination options such as `--side-effects-page-size 10`. If the command still returns thousands of lines, stop and switch to narrower supporting commands.
+
+Do not treat aggregate output as enough by itself when the recommendation needs concrete evidence. Fetch the narrow supporting data before recommending a config or dependency change.
 
 ## Build Performance
 
@@ -117,7 +121,7 @@ rsdoctor-agent tree-shaking retained-modules \
   --emitted-only \
   --category cjs,barrel,side-effects \
   --sort gzipSize \
-  --limit 50 \
+  --limit 10 \
   --filter id,path,packageName,version,category,size,chunks,bailoutReason,recommendation
 ```
 
@@ -126,9 +130,10 @@ Guidance:
 1. Keep `--emitted-only` by default so findings map to shipped bundle impact.
 2. Use `--category cjs,barrel,side-effects` for optimization scans; narrow `--category` when the user asks about one class.
 3. Sort by `gzipSize` for bundle impact, unless the user asks for source or parsed size.
-4. Keep `--limit` bounded. Start with `50` or lower for first-pass analysis.
-5. Report rows as `Path | Package | Category | Gzip/Parsed Size | Chunks | Bailout | Recommendation`.
-6. Treat results as first-pass evidence. Use `modules issuer` only after the user asks to trace who imported a retained module.
+4. Keep `--limit` bounded. Use `--limit 10` for default analysis. Increase to `50` only for user-requested deep dives.
+5. Do not add `--compact`; `tree-shaking retained-modules` output size is controlled with `--limit` and `--filter`.
+6. Report rows as `Path | Package | Category | Gzip/Parsed Size | Chunks | Bailout | Recommendation`.
+7. Treat results as first-pass evidence. Use `modules issuer` only after the user asks to trace who imported a retained module.
 
 ## Common Questions
 
@@ -157,7 +162,9 @@ Example: "Show all modules with side effects."
 - Fall back to `tree-shaking summary` or the relevant module-side-effects command only when retained-module output is insufficient.
 - Filter to module id, path, package, size, chunks, bailout reason, and recommendation.
 - List modules with non-empty `bailoutReason` containing `side_effects`.
-- Limit 50 moduLes. Sort by size, give priority to the large size.
+- Use `--limit 10` for default output. Increase only after user confirmation.
+- If falling back to `tree-shaking summary` or `modules side-effects`, use `--page-size 10` or `--side-effects-page-size 10`, keep the same narrow fields, and stop expanding when one command exceeds `5k` tokens or `500 KB` raw output.
+- Sort by size, give priority to the largest emitted modules.
 
 ### Why is a package duplicated?
 
@@ -172,6 +179,7 @@ Example: "Why is package X duplicated?"
 - Use the E1007 rule results directly to identify modules that are not tree-shaken due to side effects. By `tree-shaking summary`.
 - If further details are needed, you may also use `tree-shaking retained-modules --emitted-only --category side-effects` and filter to module id, path, package, size, chunks, bailout reason, and recommendation.
 - List modules with `bailoutReason` containing `side_effects`.
+- Use `--limit 10` by default and the same `5k` token / `500 KB` raw-output stop rule for fallback commands.
 - Show `issuerPath` when needed to identify the import source.
 
 ## Output Style

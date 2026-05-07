@@ -23,14 +23,7 @@ pnpm add @rsdoctor/rspack-plugin -D
 
 After the dependency installation, you need to integrate the Rsdoctor plugin into your project. Below are configuration examples for different Rspack-based frameworks:
 
-:::important
-**Important:** To generate `rsdoctor-data.json` file that can be analyzed by AI tools, you must configure the plugin with:
-
-- `output.mode: 'brief'`
-- `output.options.type: ['json']`
-
-This configuration ensures that only JSON data is generated, which is suitable for analysis without starting the Rsdoctor server.
-:::
+> Important: To generate `rsdoctor-data.json` file that can be analyzed by AI tools, configure the plugin with `output.mode: 'brief'` and `output.options.type: ['json']`. This ensures that only JSON data is generated, which is suitable for analysis without starting the Rsdoctor server.
 
 ### Rspack CLI
 

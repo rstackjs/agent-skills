@@ -1,0 +1,374 @@
+{
+  "skill_name": "storybook-rsbuild",
+  "fixture_root": "/tmp/agent-skills-evals/storybook-rsbuild/fixtures",
+  "runs_root": "/tmp/agent-skills-evals/storybook-rsbuild/runs",
+  "runner_instructions": "Fixtures are intentionally NOT committed to the repo (10 fixtures including a pnpm monorepo and several Vite/Rsbuild apps with installed node_modules would balloon it) and are scratch-grade by design — fixture_root and runs_root must be absolute paths under /tmp (or any OS scratch dir). The runner agent's contract: (1) before running any eval, check whether fixture_root exists and contains a subdirectory per evals[].fixture; (2) if any fixture is missing, generate it from that eval's pre_run_baseline (project_kind, ui_framework, builder/integration, key files and their seeded contents, package.json scripts) plus the top-level notes — both fields together fully describe the fixture shape; (3) for migration / already-set-up fixtures, verify that `pnpm install` succeeds and `pnpm storybook --ci` (or `pnpm build-storybook`) runs in the expected pre-task state before grading; for fresh-setup / integration fixtures, verify that the host app's existing `pnpm dev` / `pnpm build` still works pre-task; (4) reuse existing fixtures across runs — do NOT regenerate unless the user explicitly asks. The same applies to runs_root: each grading run writes a fresh subdirectory; never reuse a previous run's working tree.",
+  "notes": "10 scenarios mapped 1:1 onto the SKILL.md decision tree: fresh setup (React/Vanilla/Web Components), migration (react-vite, react-webpack5, vue3-vite), integration overlay (Rslib, Modern.js, Pure Rspack), and monorepo partial migration. Storybook major versions are intentionally varied (8, 9, 10) across migration fixtures so the agent must consult the version-compatibility table at https://storybook.rsbuild.rs/guide/migration and pick the matching storybook-rsbuild major (v10→^3, v9→^2, v8→^1). Fresh-setup fixtures pin no Storybook deps so the agent installs the latest stable matching pair. Migration fixtures keep working pre-task: tests assert that the agent does not delete legacy framework deps before the new builder is verified. Every fixture's existing app `pnpm dev` / `pnpm build` must remain green post-task — touching business source files is a red line.",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "react-vite-migration",
+      "fixture": "react-vite-migration",
+      "pre_run_baseline": {
+        "project_kind": "single-package app",
+        "ui_framework": "React 18 + TypeScript",
+        "host_builder": "Vite 5",
+        "package_manager": "pnpm",
+        "storybook_version": "8.6.x",
+        "current_storybook_framework": "@storybook/react-vite",
+        "storybook_devDeps": [
+          "storybook@^8.6.0",
+          "@storybook/react-vite@^8.6.0",
+          "@storybook/react@^8.6.0",
+          "@storybook/addon-essentials@^8.6.0",
+          "@storybook/addon-links@^8.6.0",
+          "@storybook/blocks@^8.6.0"
+        ],
+        "key_files": [
+          ".storybook/main.ts — framework: '@storybook/react-vite', viteFinal sets resolve.alias for @app and @components via path.resolve(__dirname, '../src/...')",
+          ".storybook/preview.ts — minimal preview parameters",
+          "src/Button.tsx + src/Button.stories.tsx — one working CSF3 story importing from @app/utils",
+          "vite.config.ts — host app config with the same @app/@components aliases",
+          "package.json scripts: storybook=storybook dev -p 6006, build-storybook=storybook build"
+        ]
+      },
+      "prompt": "Migrate this Vite + React 18 + TypeScript project's Storybook from @storybook/react-vite to the Rsbuild builder. The .storybook/main.ts has a viteFinal hook that adds @app and @components path aliases via path.resolve(__dirname, '../src/...'). Keep the existing addons (@storybook/addon-essentials, @storybook/addon-links) and the Button story working post-migration. The host app's vite.config.ts and src/ files must not be modified. Storybook is pinned to 8.6.x — pick the storybook-react-rsbuild major that matches per the upstream version-compatibility table.",
+      "assertions": [
+        "package.json removes @storybook/react-vite (and @storybook/builder-vite if listed)",
+        "package.json adds storybook-react-rsbuild with a version range matching Storybook v8 (^1) — NOT ^2 or ^3",
+        "package.json adds @rsbuild/core (>=1.0.1) as devDep",
+        ".storybook/main.ts framework field changed to 'storybook-react-rsbuild' (string form, not the @storybook/* form)",
+        ".storybook/main.ts no longer contains a viteFinal hook",
+        ".storybook/main.ts uses rsbuildFinal with mergeRsbuildConfig from @rsbuild/core",
+        "@app and @components aliases preserved under source.alias as relative paths ('./src/...'), not absolute path.resolve(__dirname, ...) — per upstream migration guide",
+        "@storybook/addon-essentials and @storybook/addon-links remain in addons unchanged (no move to webpackAddons — these are framework-agnostic)",
+        "vite.config.ts not modified",
+        "src/Button.tsx and src/Button.stories.tsx not modified",
+        "package.json scripts.storybook and scripts.build-storybook unchanged",
+        "Post-migration `pnpm install && pnpm build-storybook` exits 0 and the build log mentions Rsbuild (not Vite)"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "react-webpack5-migration-svgr",
+      "fixture": "react-webpack5-migration-svgr",
+      "pre_run_baseline": {
+        "project_kind": "single-package app",
+        "ui_framework": "React 18 + TypeScript",
+        "host_builder": "no host bundler (Storybook-only)",
+        "package_manager": "pnpm",
+        "storybook_version": "8.6.x",
+        "current_storybook_framework": "@storybook/react-webpack5",
+        "storybook_devDeps": [
+          "storybook@^8.6.0",
+          "@storybook/react-webpack5@^8.6.0",
+          "@storybook/react@^8.6.0",
+          "@storybook/addon-essentials@^8.6.0",
+          "@storybook/addon-styling-webpack@^1.0.0",
+          "@svgr/webpack@^8.1.0"
+        ],
+        "key_files": [
+          ".storybook/main.ts — framework: '@storybook/react-webpack5', webpackFinal pushes a *.svg rule using @svgr/webpack as a React-component loader",
+          ".storybook/preview.ts — imports global CSS",
+          "src/Icon.tsx — imports './heart.svg' as a React component (typed via svg.d.ts)",
+          "src/Icon.stories.tsx — renders <Icon />",
+          "src/heart.svg — actual SVG asset"
+        ]
+      },
+      "prompt": "Migrate this Storybook 8 setup from @storybook/react-webpack5 to the Rsbuild builder. .storybook/main.ts uses webpackFinal to register an @svgr/webpack rule so *.svg files are imported as React components (consumed by src/Icon.tsx). The styling addon is @storybook/addon-styling-webpack. Preserve the SVG-as-React-component capability (either via @rsbuild/plugin-svgr OR by passing the existing webpack rule through tools.rspack — both are acceptable). Do not modify src/. Keep the project on Storybook 8.6.x and pick the storybook-rsbuild major that matches.",
+      "assertions": [
+        "package.json removes @storybook/react-webpack5 and @storybook/builder-webpack5 (if listed)",
+        "package.json adds storybook-react-rsbuild ^1 (matches Storybook v8) and @rsbuild/core",
+        ".storybook/main.ts framework changed to 'storybook-react-rsbuild'",
+        ".storybook/main.ts no longer contains a webpackFinal hook (replaced with rsbuildFinal OR the addon moved to webpackAddons)",
+        "SVG-as-React-component still works: either (a) @rsbuild/plugin-svgr added and registered via plugins/rsbuildFinal, OR (b) the @svgr/webpack rule passed through tools.rspack inside rsbuildFinal",
+        "@storybook/addon-styling-webpack — either kept and moved to webpackAddons (auto-translated), OR replaced with the equivalent Rsbuild-native styling setup; not silently dropped",
+        "src/Icon.tsx, src/Icon.stories.tsx, src/heart.svg unchanged",
+        "src/svg.d.ts type declaration unchanged (or, if removed, replaced with the equivalent typing for the new svgr setup)",
+        "Post-migration `pnpm install && pnpm build-storybook` exits 0",
+        "Build log shows Rsbuild active (not webpack)"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "vue3-vite-migration",
+      "fixture": "vue3-vite-migration",
+      "pre_run_baseline": {
+        "project_kind": "single-package app",
+        "ui_framework": "Vue 3 SFC + TypeScript",
+        "host_builder": "Vite 5 + @vitejs/plugin-vue",
+        "package_manager": "pnpm",
+        "storybook_version": "9.0.x",
+        "current_storybook_framework": "@storybook/vue3-vite",
+        "storybook_devDeps": [
+          "storybook@^9.0.0",
+          "@storybook/vue3-vite@^9.0.0",
+          "@storybook/vue3@^9.0.0",
+          "@storybook/addon-essentials@^9.0.0"
+        ],
+        "key_files": [
+          ".storybook/main.ts — framework: '@storybook/vue3-vite', no viteFinal customization",
+          ".storybook/preview.ts — minimal",
+          "src/HelloWorld.vue — single-file component (template + script setup + scoped style)",
+          "src/HelloWorld.stories.ts — CSF3 story importing the .vue component",
+          "vite.config.ts — host app uses @vitejs/plugin-vue"
+        ]
+      },
+      "prompt": "Migrate this Vue 3 + Vite project's Storybook from @storybook/vue3-vite to the Rsbuild builder. The HelloWorld.vue SFC must continue to render in the storybook build. Storybook is pinned at 9.0.x — pick the storybook-rsbuild major that matches per the upstream version-compatibility table. Do not modify vite.config.ts or src/.",
+      "assertions": [
+        "package.json removes @storybook/vue3-vite (and @storybook/builder-vite if listed)",
+        "package.json adds storybook-vue3-rsbuild ^2 (matches Storybook v9) — NOT ^1 or ^3",
+        "package.json adds @rsbuild/core (>=1.0.1)",
+        "Vue SFC support wired: @rsbuild/plugin-vue added as devDep AND registered (either via plugins[] in rsbuildFinal or via a co-located rsbuild.config.ts that storybook-builder-rsbuild picks up)",
+        ".storybook/main.ts framework changed to 'storybook-vue3-rsbuild'",
+        ".storybook/main.ts uses StorybookConfig type imported from 'storybook-vue3-rsbuild'",
+        "vite.config.ts unchanged",
+        "src/HelloWorld.vue and src/HelloWorld.stories.ts unchanged",
+        "Post-migration `pnpm install && pnpm build-storybook` exits 0 and the SFC renders (HelloWorld.stories.ts.json present in storybook-static)",
+        "Build log shows Rsbuild active"
+      ]
+    },
+    {
+      "id": 4,
+      "eval_name": "react-fresh-setup-vite-app",
+      "fixture": "react-fresh-setup-vite-app",
+      "pre_run_baseline": {
+        "project_kind": "single-package app",
+        "ui_framework": "React 18 + TypeScript",
+        "host_builder": "Vite 5",
+        "package_manager": "pnpm",
+        "storybook_present": false,
+        "key_files": [
+          "vite.config.ts — host app config",
+          "src/App.tsx + src/Button.tsx — example components",
+          "package.json — has dev=vite, build=vite build, preview=vite preview; NO storybook-related deps"
+        ]
+      },
+      "prompt": "This Vite + React 18 + TypeScript project does not have Storybook yet. Set up Storybook with the Rsbuild builder for it. Add at least one example story for the existing src/Button.tsx. Do not change vite.config.ts or any business source. The app's existing pnpm dev / pnpm build must keep working.",
+      "assertions": [
+        "package.json adds storybook (latest, ^10), storybook-react-rsbuild (^3 — matches Storybook v10), @rsbuild/core (>=1.0.1) as devDeps",
+        ".storybook/main.ts created with framework: 'storybook-react-rsbuild'",
+        ".storybook/main.ts imports StorybookConfig type from 'storybook-react-rsbuild'",
+        ".storybook/main.ts stories pattern matches src/**/*.stories.@(ts|tsx) (or equivalent that picks up the example story)",
+        ".storybook/preview.ts (or .tsx) created",
+        "package.json scripts add storybook (storybook dev) and build-storybook (storybook build)",
+        "Existing scripts.dev / scripts.build / scripts.preview unchanged",
+        "vite.config.ts unchanged",
+        "src/App.tsx and src/Button.tsx unchanged",
+        "An example src/Button.stories.tsx (or similar) created — at least one CSF3 default-export story",
+        "Post-setup `pnpm install && pnpm build-storybook` exits 0",
+        "Post-setup `pnpm build` (host app build) still exits 0"
+      ]
+    },
+    {
+      "id": 5,
+      "eval_name": "vanilla-html-fresh-setup",
+      "fixture": "vanilla-html-fresh-setup",
+      "pre_run_baseline": {
+        "project_kind": "single-package app",
+        "ui_framework": "vanilla TypeScript (no framework)",
+        "host_builder": "Vite 5",
+        "package_manager": "pnpm",
+        "storybook_present": false,
+        "key_files": [
+          "vite.config.ts — minimal Vite config",
+          "src/badge.ts — exports `createBadge(label: string): HTMLElement` (a function returning a DOM element)",
+          "src/main.ts — host app entrypoint that mounts createBadge into #app",
+          "package.json — has dev/build/preview scripts; NO storybook deps; NO react/vue/lit"
+        ]
+      },
+      "prompt": "This is a Vite + TypeScript app with no UI framework — src/badge.ts exports createBadge() that returns a raw HTMLElement. Set up Storybook with the Rsbuild builder for it. Add at least one example story for createBadge. Do not change vite.config.ts or src/badge.ts. The agent should pick the framework package that matches a vanilla-DOM project.",
+      "assertions": [
+        "package.json adds storybook-html-rsbuild (^3 — matches Storybook v10) — NOT storybook-react-rsbuild or storybook-web-components-rsbuild",
+        "package.json adds storybook (^10) and @rsbuild/core (>=1.0.1)",
+        "package.json does NOT add @rsbuild/plugin-react or @rsbuild/plugin-vue (no UI framework in project)",
+        ".storybook/main.ts created with framework: 'storybook-html-rsbuild'",
+        ".storybook/main.ts imports StorybookConfig type from 'storybook-html-rsbuild'",
+        ".storybook/main.ts stories pattern includes *.stories.ts (or equivalent that picks up the example)",
+        "package.json scripts add storybook + build-storybook entries",
+        "Existing scripts.dev / scripts.build / scripts.preview unchanged",
+        "src/badge.ts and src/main.ts unchanged",
+        "vite.config.ts unchanged",
+        "An example badge.stories.ts created — exports a default with title + at least one named story; the story render returns an HTMLElement (HTML CSF format), not JSX",
+        "Post-setup `pnpm install && pnpm build-storybook` exits 0",
+        "Post-setup `pnpm build` (host app) still exits 0"
+      ]
+    },
+    {
+      "id": 6,
+      "eval_name": "web-components-lit-fresh-setup",
+      "fixture": "web-components-lit-fresh-setup",
+      "pre_run_baseline": {
+        "project_kind": "single-package app",
+        "ui_framework": "Lit 3 (Web Components) + TypeScript",
+        "host_builder": "Vite 5",
+        "package_manager": "pnpm",
+        "storybook_present": false,
+        "key_files": [
+          "vite.config.ts — minimal Vite config",
+          "src/my-counter.ts — Lit element using @customElement('my-counter') with reactive @state count + render() returning html``",
+          "src/main.ts — host entry that registers <my-counter>",
+          "tsconfig.json — has experimentalDecorators + useDefineForClassFields false (Lit decorator requirements)",
+          "package.json — lit ^3 in deps; NO storybook deps"
+        ]
+      },
+      "prompt": "This is a Vite + Lit 3 + TypeScript Web Components project. Set up Storybook with the Rsbuild builder. Add at least one example story for src/my-counter.ts. Do not change vite.config.ts, tsconfig.json (decorator settings are intentional), or src/.",
+      "assertions": [
+        "package.json adds storybook-web-components-rsbuild (^3 — matches Storybook v10) — NOT storybook-html-rsbuild",
+        "package.json adds storybook (^10) and @rsbuild/core (>=1.0.1)",
+        "lit dep retained at ^3",
+        ".storybook/main.ts created with framework: 'storybook-web-components-rsbuild'",
+        ".storybook/main.ts imports StorybookConfig type from 'storybook-web-components-rsbuild'",
+        ".storybook/main.ts stories pattern picks up *.stories.ts",
+        "package.json scripts add storybook + build-storybook entries",
+        "src/my-counter.ts unchanged",
+        "tsconfig.json experimentalDecorators / useDefineForClassFields unchanged",
+        "vite.config.ts unchanged",
+        "An example my-counter.stories.ts created — story render returns an html`` template (lit-html), not JSX or a raw HTMLElement",
+        "Post-setup `pnpm install && pnpm build-storybook` exits 0",
+        "Post-setup `pnpm build` (host app) still exits 0"
+      ]
+    },
+    {
+      "id": 7,
+      "eval_name": "rslib-react-integration",
+      "fixture": "rslib-react-integration",
+      "pre_run_baseline": {
+        "project_kind": "single-package library",
+        "ui_framework": "React 18 + TypeScript",
+        "host_builder": "Rslib (rslib.config.ts)",
+        "package_manager": "pnpm",
+        "storybook_present": false,
+        "key_files": [
+          "rslib.config.ts — exports defineConfig with two lib outputs (esm + cjs), source.entry index, format/dts settings",
+          "src/index.ts — barrel that re-exports Button",
+          "src/Button.tsx — React component using forwardRef",
+          "package.json — @rslib/core in devDeps, react/react-dom in peerDeps; NO storybook deps; build script runs rslib build"
+        ]
+      },
+      "prompt": "This is an Rslib React component library. Set up Storybook with the Rsbuild builder so the component gallery reuses the library's Rsbuild config from rslib.config.ts (do not duplicate the build pipeline). Add at least one example story for src/Button.tsx. Do not modify rslib.config.ts or src/.",
+      "assertions": [
+        "package.json adds storybook-react-rsbuild (^3) and @rsbuild/core",
+        "package.json adds storybook-addon-rslib as devDep",
+        "package.json adds storybook (^10)",
+        ".storybook/main.ts framework: 'storybook-react-rsbuild'",
+        ".storybook/main.ts addons array includes 'storybook-addon-rslib' (string form OR object form with options)",
+        "If a configPath option is provided to storybook-addon-rslib, it points to the existing rslib.config.ts (not a duplicated config)",
+        "rslib.config.ts unchanged byte-for-byte",
+        "src/Button.tsx and src/index.ts unchanged",
+        "package.json scripts add storybook + build-storybook entries; existing build (rslib build) script unchanged",
+        "An example Button.stories.tsx created",
+        "Post-setup `pnpm install && pnpm build-storybook` exits 0",
+        "Post-setup `pnpm build` (rslib build) still exits 0 — Rslib output not broken"
+      ]
+    },
+    {
+      "id": 8,
+      "eval_name": "modernjs-app-integration",
+      "fixture": "modernjs-app-integration",
+      "pre_run_baseline": {
+        "project_kind": "single-package app",
+        "ui_framework": "React 18 + TypeScript",
+        "host_builder": "Modern.js (appTools with bundler: 'rspack')",
+        "package_manager": "pnpm",
+        "storybook_present": false,
+        "key_files": [
+          "modern.config.ts — defineConfig with appTools({ bundler: 'rspack' }), runtime.router enabled",
+          "src/routes/page.tsx — Modern.js convention-based route exporting default React component",
+          "src/components/Card.tsx — reusable React component",
+          "package.json — @modern-js/app-tools in devDeps; dev/build scripts use modern dev / modern build; NO storybook deps"
+        ]
+      },
+      "prompt": "This is a Modern.js application using appTools with the Rspack bundler. Set up Storybook with the Rsbuild builder so that Storybook reuses the Modern.js configuration via the official Modern.js integration. Add at least one example story for src/components/Card.tsx. Do not break the host app's `pnpm dev` / `pnpm build`.",
+      "assertions": [
+        "package.json adds storybook-react-rsbuild (^3), storybook-addon-modernjs, @rsbuild/core, storybook (^10)",
+        ".storybook/main.ts framework: 'storybook-react-rsbuild'",
+        ".storybook/main.ts addons array includes 'storybook-addon-modernjs'",
+        "If modern.config.ts contains a moduleFederationPlugin (it does NOT in this fixture, so this assertion is N/A), it would be gated by process.env.STORYBOOK — since absent, modern.config.ts must be byte-for-byte unchanged",
+        "modern.config.ts unchanged",
+        "src/routes/page.tsx and src/components/Card.tsx unchanged",
+        "package.json scripts add storybook + build-storybook; existing dev/build (modern dev / modern build) scripts unchanged",
+        "An example Card.stories.tsx created",
+        "Post-setup `pnpm install && pnpm build-storybook` exits 0",
+        "Post-setup `pnpm build` (modern build) still exits 0"
+      ]
+    },
+    {
+      "id": 9,
+      "eval_name": "pure-rspack-react-integration",
+      "fixture": "pure-rspack-react-integration",
+      "pre_run_baseline": {
+        "project_kind": "single-package app",
+        "ui_framework": "React 18 + TypeScript",
+        "host_builder": "Pure Rspack (rspack.config.ts) — NO @rsbuild/core in devDeps",
+        "package_manager": "pnpm",
+        "storybook_present": false,
+        "key_files": [
+          "rspack.config.ts — uses @rspack/core defineConfig with custom resolve.alias (@app), HtmlRspackPlugin, swc-loader for TSX",
+          "src/App.tsx + src/index.tsx — React app entry",
+          "package.json — @rspack/core, @rspack/cli, react, react-dom; scripts dev=rspack serve, build=rspack build; NO @rsbuild/core, NO storybook"
+        ]
+      },
+      "prompt": "This is a pure Rspack project (rspack.config.ts, no @rsbuild/core). Set up Storybook with the Rsbuild builder using the official Pure Rspack integration path: create a thin rsbuild.config.ts that merges the existing custom Rspack rules via tools.rspack so Storybook respects the project's loaders/aliases. Do not modify rspack.config.ts or src/. The host app's `pnpm dev` / `pnpm build` (which use rspack directly) must continue to work unchanged.",
+      "assertions": [
+        "package.json adds @rsbuild/core, @rsbuild/plugin-react, storybook-react-rsbuild (^3), storybook (^10) as devDeps",
+        "@rspack/core and @rspack/cli retained as devDeps (host app still uses them)",
+        "A new rsbuild.config.ts created at project root (or at a path explicitly referenced by the storybook builder rsbuildConfigPath option)",
+        "rsbuild.config.ts registers @rsbuild/plugin-react and merges the custom Rspack rules (resolve.alias @app and any custom loaders) via tools.rspack — i.e. Storybook will not lose the project's loader pipeline",
+        ".storybook/main.ts framework: 'storybook-react-rsbuild'",
+        ".storybook/main.ts imports StorybookConfig from 'storybook-react-rsbuild'",
+        "rspack.config.ts unchanged byte-for-byte",
+        "src/App.tsx and src/index.tsx unchanged",
+        "package.json scripts add storybook + build-storybook; existing dev (rspack serve) and build (rspack build) scripts unchanged",
+        "An example story file created",
+        "Post-setup `pnpm install && pnpm build-storybook` exits 0",
+        "Post-setup `pnpm build` (rspack build, NOT rsbuild) still exits 0 — host pipeline unaffected"
+      ]
+    },
+    {
+      "id": 10,
+      "eval_name": "monorepo-partial-react-webpack5-migration",
+      "fixture": "monorepo-partial-react-webpack5-migration",
+      "pre_run_baseline": {
+        "project_kind": "pnpm workspace monorepo",
+        "ui_framework": "React 18 (in ui-kit) + Node service (in api) + Next.js (in web)",
+        "package_manager": "pnpm",
+        "storybook_version": "8.6.x (only in packages/ui-kit)",
+        "current_storybook_framework": "@storybook/react-webpack5 (only in packages/ui-kit)",
+        "packages": [
+          "packages/ui-kit — React component library; HAS Storybook (@storybook/react-webpack5) with .storybook/main.ts using webpackFinal that adds resolve.alias for @ui-kit/* and registers a postcss-loader rule",
+          "packages/api — Express service in TypeScript; NO storybook",
+          "packages/web — Next.js 14 app; NO storybook",
+          "root — devDeps: typescript, eslint, prettier; NO storybook"
+        ],
+        "key_files": [
+          "pnpm-workspace.yaml — packages: ['packages/*']",
+          "packages/ui-kit/.storybook/main.ts",
+          "packages/ui-kit/package.json — includes @storybook/react-webpack5 ^8.6, storybook ^8.6, @storybook/addon-essentials, postcss, postcss-loader",
+          "packages/ui-kit/src/Button.tsx + Button.stories.tsx",
+          "packages/api/package.json + packages/api/src/server.ts",
+          "packages/web/package.json + packages/web/pages/index.tsx",
+          "root package.json"
+        ]
+      },
+      "prompt": "Migrate ONLY packages/ui-kit's Storybook from @storybook/react-webpack5 to the Rsbuild builder. The other workspace packages (packages/api, packages/web) and the root package.json must NOT be touched at all (no new deps at root, no script changes). packages/ui-kit/.storybook/main.ts has a webpackFinal hook that adds a @ui-kit/* alias and registers a postcss-loader rule. Preserve both behaviors. Storybook is on 8.6.x — pick the matching storybook-rsbuild major.",
+      "assertions": [
+        "packages/ui-kit/package.json removes @storybook/react-webpack5 and @storybook/builder-webpack5 (if listed)",
+        "packages/ui-kit/package.json adds storybook-react-rsbuild ^1 (matches Storybook v8) and @rsbuild/core",
+        "packages/ui-kit/.storybook/main.ts framework changed to 'storybook-react-rsbuild'",
+        "packages/ui-kit/.storybook/main.ts no longer contains webpackFinal (replaced with rsbuildFinal OR the postcss-loader addon migrated to webpackAddons)",
+        "@ui-kit/* alias preserved under source.alias (relative path form)",
+        "PostCSS still active in stories — either via Rsbuild's built-in postcss.config.* discovery, OR via @rsbuild/plugin-postcss / equivalent registration",
+        "packages/api/package.json byte-for-byte unchanged",
+        "packages/api/src/server.ts unchanged",
+        "packages/web/package.json byte-for-byte unchanged",
+        "packages/web/pages/index.tsx unchanged",
+        "Root package.json byte-for-byte unchanged (no storybook-* or @rsbuild/* added at root)",
+        "pnpm-workspace.yaml unchanged",
+        "packages/ui-kit/src/Button.tsx and Button.stories.tsx unchanged",
+        "Post-migration `pnpm -C packages/ui-kit install && pnpm -C packages/ui-kit build-storybook` exits 0",
+        "Post-migration root-level commands targeting api/web (e.g. pnpm -C packages/api build, pnpm -C packages/web build) still exit 0 — unaffected scopes"
+      ]
+    }
+  ]
+}

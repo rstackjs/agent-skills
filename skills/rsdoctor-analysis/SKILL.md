@@ -45,14 +45,14 @@ Response order (required): High-Priority Issues -> Proposed Solutions -> Optiona
 
 For default bundle analysis, populate only this compact summary shape: `assetsTop`, `packagesTop`, `duplicatePackages`, `crossChunkPackages`, `retainedModulesTop`, and `buildCost`.
 
-| Summary key | Evidence source | Bounds |
-| --- | --- | --- |
-| `buildCost` | `build summary` | filtered fields only |
-| `assetsTop` | top assets by raw/gzip size | fixed Top-N |
-| `packagesTop` | top packages by gzip size | fixed Top-N; do not read full `packages list` pages |
-| `duplicatePackages` | E1001 duplicate package summary | first-pass issue summary only |
-| `crossChunkPackages` | E1002 cross-chunk duplication summary | first-pass issue summary only |
-| `retainedModulesTop` | `tree-shaking retained-modules --limit 10` | filtered fields only; no `--compact` |
+| Summary key          | Evidence source                            | Bounds                                              |
+| -------------------- | ------------------------------------------ | --------------------------------------------------- |
+| `buildCost`          | `build summary`                            | filtered fields only                                |
+| `assetsTop`          | top assets by raw/gzip size                | fixed Top-N                                         |
+| `packagesTop`        | top packages by gzip size                  | fixed Top-N; do not read full `packages list` pages |
+| `duplicatePackages`  | E1001 duplicate package summary            | first-pass issue summary only                       |
+| `crossChunkPackages` | E1002 cross-chunk duplication summary      | first-pass issue summary only                       |
+| `retainedModulesTop` | `tree-shaking retained-modules --limit 10` | filtered fields only; no `--compact`                |
 
 ## Workflow
 

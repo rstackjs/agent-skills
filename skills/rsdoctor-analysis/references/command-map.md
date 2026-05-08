@@ -2,8 +2,11 @@
 
 Stable CLI entry:
 
-- `npx @rsdoctor/agent-cli@latest <group> <subcommand> [options]` (recommended)
-- `rsdoctor-agent <group> <subcommand> [options]` (if binary is available in PATH)
+- Install and verify the global CLI first:
+  - `npm view @rsdoctor/agent-cli version`
+  - `rsdoctor-agent --version`
+  - If missing or outdated: `npm install -g @rsdoctor/agent-cli@latest`
+- Run data-fetch commands directly with `rsdoctor-agent <group> <subcommand> [options]`.
 
 Top-level command mode:
 
@@ -28,13 +31,13 @@ Option scopes:
   - not required for `list`, `ai --describe`, `ai --schema`
 - `--input <json>`: optional for `query`
 - `--filter <...>`: supported by every data-fetch function; use it to return only required fields selected from `@rsdoctor/types` / [rsdoctor-data-types.md](rsdoctor-data-types.md)
-- `--compact`: optional for direct `<group> <subcommand>` and `ai <group> <subcommand>`
+- `--compact`: add whenever possible to keep CLI JSON compact. Do not use it with `tree-shaking retained-modules`; use `--filter` and `--limit` instead.
 
 ## Chunks
 
 - `chunks list` -> List all chunks. Pagination: `--page-number`, `--page-size`
 - `chunks by-id --id <n>` -> Get chunk detail by numeric id
-- `chunks large` -> Find oversized chunks
+- `chunks large` -> Find oversized chunks. High-noise in default analysis; avoid unless the user asks for chunk deep dive.
 
 ## Modules
 
@@ -42,11 +45,11 @@ Option scopes:
 - `modules by-path --path "<path>"` -> Module lookup by path
 - `modules issuer --id <id>` -> Issuer/import chain (recommended as second-pass, after user confirms chain tracing)
 - `modules exports` -> Module exports info
-- `modules side-effects` -> Non-tree-shakeable modules. Pagination: `--page-number`, `--page-size` (recommend `--page-size 10`)
+- `modules side-effects` -> Non-tree-shakeable modules. Fallback only for side-effects analysis; use `--page-size 10`, narrow filters, and stop if output exceeds `5k` tokens or `500 KB`.
 
 ## Packages
 
-- `packages list` -> Package list with size/duplication info
+- `packages list` -> Package list with size/duplication info. Do not read full pages in default analysis; use fixed Top-N package summaries or narrowly filtered/package-targeted queries.
 - `packages by-name --name <pkg>` -> Package lookup by name
 - `packages dependencies` -> Dependency graph. Pagination: `--page-number`, `--page-size`
 - `packages direct-dependencies` -> Direct third-party package dependencies imported by project/local packages. Tool name: `packages_direct_dependencies`
@@ -69,7 +72,7 @@ Option scopes:
 - `build summary` -> Build summary and costs
 - `build entrypoints` -> Entrypoints
 - `build config` -> Build config snapshot
-- `build optimize` -> Bundle optimization inputs. Options: `--step`, `--side-effects-page-number`, `--side-effects-page-size` (recommend `--side-effects-page-size 10`)
+- `build optimize` -> Bundle optimization inputs. High-noise in default analysis; avoid unless the user asks for bundle optimization deep dive or default evidence is insufficient. Options: `--step`, `--side-effects-page-number`, `--side-effects-page-size` (recommend `--side-effects-page-size 10`).
 
 ## Bundle
 
@@ -78,7 +81,7 @@ Option scopes:
 ## Errors
 
 - `errors list` -> All errors and warnings
-- `errors by-code --code <code>` -> Filter by code
+- `errors by-code --code <code>` -> Filter by code. For default E1001/E1002 summaries, prefer local JSON summarization.
 - `errors by-level --level <level>` -> Filter by level
 
 ## Rules
@@ -92,7 +95,7 @@ Option scopes:
 ## Tree-Shaking
 
 - `tree-shaking summary` -> Overall tree-shaking health summary (can be very large; filter with fields from `rsdoctor-data-types`, compact where useful, and use aggregated results)
-- `tree-shaking retained-modules` -> Retained emitted modules by category for tree-shaking diagnosis. Useful options: `--emitted-only`, `--category cjs,barrel,side-effects`, `--sort gzipSize`, `--limit <n>`, and `--filter id,path,packageName,version,category,size,chunks,bailoutReason,recommendation`.
+- `tree-shaking retained-modules` -> Retained emitted modules by category for tree-shaking diagnosis. Useful options: `--emitted-only`, `--category cjs,barrel,side-effects`, `--sort gzipSize`, `--limit <n>`, and `--filter id,path,packageName,version,category,size,chunks,bailoutReason,recommendation`. Does not support `--compact`.
 - `tree-shaking bailout-reasons --modules <module-list>` -> Non-tree-shakeable modules by bailout reason for the provided modules. High-volume; only run when explicitly requested, always pass `--modules`, and include at most 100 modules per command.
 - `tree-shaking exports-analysis` -> Export-level tree-shaking opportunities
 

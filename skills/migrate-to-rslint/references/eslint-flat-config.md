@@ -1,7 +1,5 @@
 # ESLint Flat Config -> Rslint Migration Guide
 
-<!-- cspell:words Rslint rslint dbaeumer unmigrated -->
-
 Use this reference when the source project uses `eslint.config.*`.
 
 ## Official references

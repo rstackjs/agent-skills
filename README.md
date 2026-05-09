@@ -20,6 +20,7 @@ A collection of Agent Skills for [Rstack](https://rspack.rs/guide/start/ecosyste
 - [Rspress Skills](#rspress-skills)
 - [Rsdoctor Skills](#rsdoctor-skills)
 - [Rstest Skills](#rstest-skills)
+- [Rslint Skills](#rslint-skills)
 - [Storybook Skills](#storybook-skills)
 - [Contribution Workflow Skills](#contribution-workflow-skills)
 - [Contributing](#contributing)
@@ -194,6 +195,16 @@ npx skills add rstackjs/agent-skills --skill rstest-best-practices
 ```
 
 Rstest best practices for config, CLI workflow, test writing, mocking, snapshot testing, DOM testing, coverage, multi-project setup, CI integration, performance and debugging. Use when writing, reviewing, or troubleshooting Rstest test projects.
+
+## Rslint Skills
+
+### migrate-to-rslint
+
+```bash
+npx skills add rstackjs/agent-skills --skill migrate-to-rslint
+```
+
+Migrate ESLint or other lint tools to Rslint. Use when replacing ESLint flat config, lint scripts, VS Code ESLint settings, inline directives, rules, presets, plugins, or lint dependencies with Rslint equivalents.
 
 ## Storybook Skills
 

@@ -169,15 +169,5 @@ Default recommendation for new JS/TS libraries:
 
 ## Documentation
 
-- Node releases: https://nodejs.org/en/about/previous-releases
-- Node packages and `exports`: https://nodejs.org/api/packages.html
-- Node `require(esm)`: https://nodejs.org/api/modules.html#loading-ecmascript-modules-using-require
+- For the latest Rslib docs, read https://rslib.rs/llms.txt
 - Shipping ESM for CommonJS consumers: https://nodejs.github.io/package-examples/04-cjs-esm-interop/shipping-esm-for-cjs/
-- Rslib docs: https://rslib.rs/llms.txt
-- Rsbuild publint plugin: https://github.com/rstackjs/rsbuild-plugin-publint
-- Rsbuild Are The Types Wrong plugin: https://github.com/rstackjs/rsbuild-plugin-arethetypeswrong
-- npm package.json: https://docs.npmjs.com/cli/v11/configuring-npm/package-json/
-- npm pack: https://docs.npmjs.com/cli/v11/commands/npm-pack/
-- npm provenance: https://docs.npmjs.com/generating-provenance-statements/
-- npm trusted publishing: https://docs.npmjs.com/trusted-publishers
-- TypeScript compiler options for packages: https://www.typescriptlang.org/docs/handbook/modules/guides/choosing-compiler-options.html

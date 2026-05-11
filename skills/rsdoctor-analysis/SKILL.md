@@ -52,14 +52,14 @@ output: {
 
 Default Evidence Set:
 
-| Summary key | Evidence source | Bounds |
-| --- | --- | --- |
-| `buildCost` | `build summary` | filtered fields only |
-| `assetsTop` | top assets by raw/gzip size | fixed Top-N |
-| `packagesTop` | top packages by gzip size | fixed Top-N; avoid full `packages list` pages |
-| `duplicatePackages` | E1001 duplicate package summary | first-pass summary only |
-| `crossChunkPackages` | E1002 cross-chunk duplication summary | first-pass summary only |
-| `retainedModulesTop` | `tree-shaking retained-modules --limit 10` | filtered fields only; no `--compact` |
+| Summary key          | Evidence source                            | Bounds                                        |
+| -------------------- | ------------------------------------------ | --------------------------------------------- |
+| `buildCost`          | `build summary`                            | filtered fields only                          |
+| `assetsTop`          | top assets by raw/gzip size                | fixed Top-N                                   |
+| `packagesTop`        | top packages by gzip size                  | fixed Top-N; avoid full `packages list` pages |
+| `duplicatePackages`  | E1001 duplicate package summary            | first-pass summary only                       |
+| `crossChunkPackages` | E1002 cross-chunk duplication summary      | first-pass summary only                       |
+| `retainedModulesTop` | `tree-shaking retained-modules --limit 10` | filtered fields only; no `--compact`          |
 
 Scope rules:
 

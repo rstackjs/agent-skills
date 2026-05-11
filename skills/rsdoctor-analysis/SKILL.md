@@ -18,7 +18,7 @@ Response order (required): High-Priority Issues -> Proposed Solutions -> Optiona
 5. After a real data file exists, run Analysis Gate at most once before the first `rsdoctor-agent` data-fetch command: verify global `@rsdoctor/agent-cli` with `npm view @rsdoctor/agent-cli version` and `rsdoctor-agent --version`; install latest only if missing/outdated, a version-related error occurs, or the user asks to refresh.
 6. Fetch only the Default Evidence Set first; run independent fetches in parallel when possible; synthesize findings in the required response order.
 
-Performance rules: parallelize independent checks, cache only derived facts (`dataFile`, `dataFileMtime`, `pluginName`, `pluginVersion`, dependency/config/plugin mtimes), and invalidate cache when paths disappear, mtimes change, the user asks to refresh, or cached values fail. Speculative plugin checks must not trigger generation; use them only after confirming the data file is missing.
+Performance rules: parallelize independent checks, cache only derived facts (`dataFile`, `dataFileMtime`, `pluginName`, `pluginVersion`, dependency/config/plugin modification times), and invalidate cache when paths disappear, modification times change, the user asks to refresh, or cached values fail. Speculative plugin checks must not trigger generation; use them only after confirming the data file is missing.
 
 ## Generation Gate
 

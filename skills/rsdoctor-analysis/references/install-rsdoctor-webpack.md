@@ -20,7 +20,7 @@ After the dependency installation, check the installed `@rsdoctor/webpack-plugin
 Required version gate (use exactly this if/else order):
 
 1. Set `pluginName = '@rsdoctor/webpack-plugin'`.
-2. Determine `pluginVersion` from local files first: dependency declarations in `package.json`, lockfile entries, then `node_modules/@rsdoctor/webpack-plugin/package.json` if installed. Use `pnpm why @rsdoctor/webpack-plugin` / `npm ls @rsdoctor/webpack-plugin` only as a fallback. When repeating analysis, reuse a valid `.rsdoctor-analysis-cache.json` plugin entry before re-reading files; invalidate it if `package.json`, lockfiles, or the plugin package file mtime changed.
+2. Determine `pluginVersion` from local files first: dependency declarations in `package.json`, lockfile entries, then `node_modules/@rsdoctor/webpack-plugin/package.json` if installed. Use `pnpm why @rsdoctor/webpack-plugin` / `npm ls @rsdoctor/webpack-plugin` only as a fallback. When repeating analysis, reuse a valid `.rsdoctor-analysis-cache.json` plugin entry before re-reading files; invalidate it if `package.json`, lock files, or the plugin package file modification time changed.
 3. Choose one branch; do not merge branches:
 
 ```text

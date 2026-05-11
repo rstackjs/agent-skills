@@ -21,9 +21,32 @@ pnpm add @rsdoctor/rspack-plugin -D
 
 ## Step 2: Register Plugin
 
-After the dependency installation, you need to integrate the Rsdoctor plugin into your project. Below are configuration examples for different Rspack-based frameworks:
+After the dependency installation, check the installed `@rsdoctor/rspack-plugin` version before changing config or running a build. Do not infer plugin capabilities from `@rsdoctor/agent-cli --version`.
 
-> Important: To generate `rsdoctor-data.json` file that can be analyzed by AI tools, configure the plugin with `output.mode: 'brief'` and `output.options.type: ['json']`. This ensures that only JSON data is generated, which is suitable for analysis without starting the Rsdoctor server.
+Required version gate (use exactly this if/else order):
+
+1. Set `pluginName = '@rsdoctor/rspack-plugin'`.
+2. Determine `pluginVersion` from local files first: dependency declarations in `package.json`, lockfile entries, then `node_modules/@rsdoctor/rspack-plugin/package.json` if installed. Use `pnpm why @rsdoctor/rspack-plugin` / `npm ls @rsdoctor/rspack-plugin` only as a fallback. When repeating analysis, reuse a valid `.rsdoctor-analysis-cache.json` plugin entry before re-reading files; invalidate it if `package.json`, lock files, or the plugin package file modification time changed.
+3. Choose one branch; do not merge branches:
+
+```text
+if @rsdoctor/rspack-plugin is missing:
+  install/register @rsdoctor/rspack-plugin, then configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
+else if pluginVersion is unknown:
+  resolve pluginVersion first; if still unknown, configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
+else if pluginVersion >= 1.5.11:
+  do not modify plugin config just for JSON; build with RSDOCTOR_OUTPUT=json and RSDOCTOR=true if needed
+else: # pluginVersion < 1.5.11
+  MUST configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
+```
+
+Preflight every build command: `RSDOCTOR_OUTPUT=json` is allowed only in the `pluginVersion >= 1.5.11` branch. For missing, unknown, or `< 1.5.11`, `RSDOCTOR_OUTPUT=json` is forbidden. For example, when `@rsdoctor/rspack-plugin` is `1.5.7`, this command is incorrect:
+
+```bash
+RSDOCTOR_OUTPUT=json RSDOCTOR=true pnpm run build:rspack
+```
+
+Below are configuration examples for old Rspack plugin versions, unknown versions, missing plugins, or projects that still need to register the plugin:
 
 ### Rspack CLI
 
@@ -38,7 +61,7 @@ export default {
     process.env.RSDOCTOR &&
       new RsdoctorRspackPlugin({
         disableClientServer: true,
-        // Generate JSON data only (suitable for AI tools analysis)
+        // Required for @rsdoctor/rspack-plugin < 1.5.11.
         output: {
           mode: 'brief',
           options: {
@@ -55,7 +78,7 @@ export default {
 See [Rsbuild - Use Rsdoctor](https://rsbuild.rs/guide/debug/rsdoctor) for more details.
 If this is Modern.js project can see [tools.rspack](https://modernjs.dev/configure/app/tools/rspack) of `modern.config.ts`:
 
-To generate JSON data for AI tools analysis, configure it in `rsbuild.config.ts`:
+For `@rsdoctor/rspack-plugin` < `1.5.11`, configure JSON output in `rsbuild.config.ts`:
 
 ```ts title="rsbuild.config.ts"
 import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
@@ -66,11 +89,11 @@ export default {
       plugins: [
         process.env.RSDOCTOR === 'true' &&
           new RsdoctorRspackPlugin({
-            disableClientServer: true, // Required: Prevent starting local server
+            disableClientServer: true, // Prevent starting local server
             output: {
-              mode: 'brief', // Required: Use brief mode
+              mode: 'brief', // Required for plugin versions < 1.5.11
               options: {
-                type: ['json'], // Required: Only generate JSON data
+                type: ['json'], // Only generate JSON data
               },
             },
           }),
@@ -95,11 +118,11 @@ export default defineConfig({
         plugins: [
           process.env.RSDOCTOR === 'true' &&
             new RsdoctorRspackPlugin({
-              disableClientServer: true, // Required: Prevent starting local server
+              disableClientServer: true, // Prevent starting local server
               output: {
-                mode: 'brief', // Required: Use brief mode
+                mode: 'brief', // Required for plugin versions < 1.5.11
                 options: {
-                  type: ['json'], // Required: Only generate JSON data
+                  type: ['json'], // Only generate JSON data
                 },
               },
             }),

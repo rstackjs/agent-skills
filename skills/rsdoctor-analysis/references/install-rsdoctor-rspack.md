@@ -21,9 +21,12 @@ pnpm add @rsdoctor/rspack-plugin -D
 
 ## Step 2: Register Plugin
 
-After the dependency installation, you need to integrate the Rsdoctor plugin into your project. Below are configuration examples for different Rspack-based frameworks:
+After the dependency installation, check the installed `@rsdoctor/rspack-plugin` version before changing config:
 
-> Important: To generate `rsdoctor-data.json` file that can be analyzed by AI tools, configure the plugin with `output.mode: 'brief'` and `output.options.type: ['json']`. This ensures that only JSON data is generated, which is suitable for analysis without starting the Rsdoctor server.
+- For `@rsdoctor/rspack-plugin` >= `1.5.11`, use the existing Rsdoctor-enabled build and set `RSDOCTOR_OUTPUT='json'` to generate `rsdoctor-data.json`. If the project gates plugin activation with `RSDOCTOR`, set that too. Do not modify the Rsdoctor plugin config only for JSON output.
+- For `@rsdoctor/rspack-plugin` < `1.5.11`, configure the plugin with `output.mode: 'brief'` and `output.options.type: ['json']` as shown below.
+
+Below are configuration examples for older Rspack plugin versions or projects that still need to register the plugin:
 
 ### Rspack CLI
 
@@ -38,7 +41,7 @@ export default {
     process.env.RSDOCTOR &&
       new RsdoctorRspackPlugin({
         disableClientServer: true,
-        // Generate JSON data only (suitable for AI tools analysis)
+        // Required for @rsdoctor/rspack-plugin < 1.5.11.
         output: {
           mode: 'brief',
           options: {
@@ -55,7 +58,7 @@ export default {
 See [Rsbuild - Use Rsdoctor](https://rsbuild.rs/guide/debug/rsdoctor) for more details.
 If this is Modern.js project can see [tools.rspack](https://modernjs.dev/configure/app/tools/rspack) of `modern.config.ts`:
 
-To generate JSON data for AI tools analysis, configure it in `rsbuild.config.ts`:
+For `@rsdoctor/rspack-plugin` < `1.5.11`, configure JSON output in `rsbuild.config.ts`:
 
 ```ts title="rsbuild.config.ts"
 import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
@@ -66,11 +69,11 @@ export default {
       plugins: [
         process.env.RSDOCTOR === 'true' &&
           new RsdoctorRspackPlugin({
-            disableClientServer: true, // Required: Prevent starting local server
+            disableClientServer: true, // Prevent starting local server
             output: {
-              mode: 'brief', // Required: Use brief mode
+              mode: 'brief', // Required for plugin versions < 1.5.11
               options: {
-                type: ['json'], // Required: Only generate JSON data
+                type: ['json'], // Only generate JSON data
               },
             },
           }),
@@ -95,11 +98,11 @@ export default defineConfig({
         plugins: [
           process.env.RSDOCTOR === 'true' &&
             new RsdoctorRspackPlugin({
-              disableClientServer: true, // Required: Prevent starting local server
+              disableClientServer: true, // Prevent starting local server
               output: {
-                mode: 'brief', // Required: Use brief mode
+                mode: 'brief', // Required for plugin versions < 1.5.11
                 options: {
-                  type: ['json'], // Required: Only generate JSON data
+                  type: ['json'], // Only generate JSON data
                 },
               },
             }),

@@ -15,13 +15,14 @@ pnpm add @rsdoctor/webpack-plugin -D
 
 ## Step 2: Register Plugin
 
-After the dependency installation, you need to integrate the Rsdoctor plugin into your project.
+After the dependency installation, check the installed `@rsdoctor/webpack-plugin` version before changing config:
 
-> Important: To generate `rsdoctor-data.json` file that can be analyzed by AI tools, configure the plugin with `output.mode: 'brief'` and `output.options.type: ['json']`. This ensures that only JSON data is generated, which is suitable for analysis without starting the Rsdoctor server.
+- For `@rsdoctor/webpack-plugin` >= `1.5.11`, use the existing Rsdoctor-enabled build and set `RSDOCTOR_OUTPUT='json'` to generate `rsdoctor-data.json`. If the project gates plugin activation with `RSDOCTOR`, set that too. Do not modify the Rsdoctor plugin config only for JSON output.
+- For `@rsdoctor/webpack-plugin` < `1.5.11`, configure the plugin with `output.mode: 'brief'` and `output.options.type: ['json']` as shown below.
 
 ### Webpack
 
-Initialize the plugin in the [plugins](https://webpack.js.org/configuration/plugins/#plugins) of `webpack.config.js`:
+For older plugin versions or projects that still need to register the plugin, initialize it in the [plugins](https://webpack.js.org/configuration/plugins/#plugins) of `webpack.config.js`:
 
 ```js title="webpack.config.js"
 const { RsdoctorWebpackPlugin } = require('@rsdoctor/webpack-plugin');
@@ -33,7 +34,7 @@ module.exports = {
     process.env.RSDOCTOR &&
       new RsdoctorWebpackPlugin({
         disableClientServer: true,
-        // Generate JSON data only (suitable for AI tools analysis)
+        // Required for @rsdoctor/webpack-plugin < 1.5.11.
         output: {
           mode: 'brief',
           options: {

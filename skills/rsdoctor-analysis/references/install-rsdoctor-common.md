@@ -11,9 +11,12 @@ First, check whether `rsdoctor-data.json` already exists in the build artifact/o
 - `static/rsdoctor-data.json`
 - `.rsdoctor/rsdoctor-data.json` (if using custom reportDir)
 
-If you cannot find the file, ask the user to provide the path to `rsdoctor-data.json`. If the file truly does not exist, they will need to run a build with `RSDOCTOR=true` to generate it.
+If you cannot find the file, ask the user to provide the path to `rsdoctor-data.json`. If the file truly does not exist, check the installed `@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin` version before changing config:
 
-The file is typically generated in the same directory as your build output (e.g., `dist`, `output`, `static`). You can configure a custom output directory using the `output.reportDir` option:
+- For plugin versions >= `1.5.11`, run the existing Rsdoctor-enabled build with `RSDOCTOR_OUTPUT='json'`. If the project gates plugin activation with `RSDOCTOR`, set that too. Do not modify the Rsdoctor plugin config just to generate `rsdoctor-data.json`.
+- For plugin versions < `1.5.11`, configure the plugin with JSON output as shown below, then run the build with `RSDOCTOR=true`.
+
+The file is typically generated in the same directory as your build output (e.g., `dist`, `output`, `static`). For plugin versions < `1.5.11`, configure a custom output directory using the `output.reportDir` option:
 
 ```js
 // Example for Rspack: use RsdoctorRspackPlugin

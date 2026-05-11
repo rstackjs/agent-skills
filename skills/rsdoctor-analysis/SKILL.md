@@ -7,7 +7,7 @@ description: Use when analyzing Rspack/Webpack bundles from local `rsdoctor-data
 
 Use the globally installed `rsdoctor-agent` CLI from `@rsdoctor/agent-cli` to read `rsdoctor-data.json` and provide evidence-based optimization recommendations.
 
-**Use the latest version of `@rsdoctor/agent-cli`, and ensure `@rsdoctor/rspack-plugin` is >= 1.5.9.**
+**Use the latest version of `@rsdoctor/agent-cli`. For `@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin` >= 1.5.11, generate JSON with `RSDOCTOR_OUTPUT='json'`; for older versions, configure the plugin output manually.**
 
 Response order (required): High-Priority Issues -> Proposed Solutions -> Optional Reference-Chain Follow-up Choices -> Next Deep-Dive Issue Categories (Not commands).
 
@@ -94,7 +94,8 @@ Formatting:
 ## Troubleshooting
 
 - `rsdoctor-data.json` missing:
-  - Configure plugin and run `RSDOCTOR=true npm run build`.
+  - If `@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin` is >= 1.5.11, run the Rsdoctor-enabled build with `RSDOCTOR_OUTPUT='json'`. If the project gates plugin activation with `RSDOCTOR`, set that too.
+  - If the plugin version is older than 1.5.11, configure plugin JSON output and run `RSDOCTOR=true npm run build`.
 - Command not found:
   - Verify `rsdoctor-agent` exists in PATH.
   - Check `npm view @rsdoctor/agent-cli version` and `rsdoctor-agent --version`.

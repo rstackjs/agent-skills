@@ -72,6 +72,7 @@ Remove ESLint-only dependencies only after validation passes. Built-in Rslint pr
 - `eslint-plugin-promise`
 - `eslint-plugin-jest`
 - `eslint-plugin-unicorn`
+- `eslint-plugin-jsx-a11y`
 
 Before removing any package, verify it is not used by another tool, workspace package, or still-unmigrated scope.
 
@@ -122,6 +123,7 @@ import {
   promisePlugin,
   jestPlugin,
   unicornPlugin,
+  jsxA11yPlugin,
 } from '@rslint/core';
 
 export default defineConfig([
@@ -133,6 +135,7 @@ export default defineConfig([
   promisePlugin.configs.recommended,
   jestPlugin.configs.recommended,
   unicornPlugin.configs.recommended,
+  jsxA11yPlugin.configs.recommended,
   {
     rules: {
       'no-console': 'warn',
@@ -158,6 +161,7 @@ Rslint has built-in presets that cover common ESLint flat config imports:
 | `eslint-plugin-promise` recommended config     | `promisePlugin.configs.recommended`          |
 | `eslint-plugin-jest` recommended config        | `jestPlugin.configs.recommended`             |
 | `eslint-plugin-unicorn` recommended config     | `unicornPlugin.configs.recommended`          |
+| `eslint-plugin-jsx-a11y` recommended config    | `jsxA11yPlugin.configs.recommended`          |
 
 Rslint aligns its JavaScript recommended preset with ESLint's `js.configs.recommended` and its TypeScript recommended preset with `typescript-eslint` `ts.configs.recommended`. These presets are built in; do not install `@eslint/js` or `typescript-eslint` just to use recommended configs after migration.
 

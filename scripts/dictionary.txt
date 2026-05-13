@@ -18,6 +18,7 @@ lightningcss
 lldb
 LLDB
 llms
+mktemp
 napi
 pacman
 pluggable

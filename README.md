@@ -228,6 +228,14 @@ Set up or migrate Storybook to use the Rsbuild builder. Handles fresh setup for 
 
 Skills in this section are mainly intended for contribution workflows in repositories across the Rstack ecosystem.
 
+### create-draft-release-notes
+
+```bash
+npx skills add rstackjs/agent-skills --skill create-draft-release-notes
+```
+
+Create or update draft GitHub releases, then organize GitHub-generated release notes into user-friendly sections without rewriting release note items.
+
 ### pr-creator
 
 ```bash

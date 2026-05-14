@@ -244,6 +244,14 @@ npx skills add rstackjs/agent-skills --skill pr-creator
 
 Use when asked to create a pull request for this repository. It helps the PR follow the repository's branch safety rules, title convention, pull request template, and concise English writing style.
 
+### micro-optimization
+
+```bash
+npx skills add rstackjs/agent-skills --skill micro-optimization
+```
+
+Use when making automated micro-optimizations with Valgrind Callgrind or CodSpeed benchmark data. Guides agents to open a draft PR first, collect baseline Instruction Read (Ir) data, set an optimization goal, iterate on small safe changes, commit measurable progress, and keep the PR description updated with Ir deltas.
+
 ## Contributing
 
 Contributions are welcome! Feel free to open an [issue](https://github.com/rstackjs/agent-skills/issues) or submit a [pull request](https://github.com/rstackjs/agent-skills/pulls).

@@ -250,7 +250,7 @@ Use when asked to create a pull request for this repository. It helps the PR fol
 npx skills add rstackjs/agent-skills --skill micro-optimization
 ```
 
-Use when making automated micro-optimizations with Valgrind Callgrind or CodSpeed benchmark data. Guides agents to open a draft PR first, collect baseline Instruction Read (Ir) data, set an optimization goal, iterate on small safe changes, commit measurable progress, and keep the PR description updated with Ir deltas.
+Use when making automated micro-optimizations with Valgrind or CodSpeed benchmark data. Guides agents to open a draft PR first, choose the right Valgrind tool and metric for the scenario, collect baseline data, set an optimization goal, iterate on small verified changes, commit measurable progress, and keep the PR description updated with metric deltas.
 
 ## Contributing
 

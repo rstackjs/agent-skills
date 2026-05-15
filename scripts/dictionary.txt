@@ -1,7 +1,9 @@
 # Custom Dictionary Words
 bundleless
 Bytedance
+Cachegrind
 Callgrind
+Bcm
 callgrind
 condvar
 CodSpeed
@@ -12,6 +14,9 @@ CRACO
 cvwait
 dbaeumer
 docgen
+DHAT
+D1mr
+DLmr
 epoll
 evals
 flac
@@ -22,6 +27,8 @@ lightningcss
 lldb
 LLDB
 llms
+Massif
+Memcheck
 mktemp
 napi
 pacman

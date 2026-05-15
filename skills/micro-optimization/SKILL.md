@@ -66,6 +66,50 @@ ms_print <massif-output>
 
 For benchmark harnesses that run many cases, narrow to the case being optimized. If setup code dominates the profile, prefer existing harness support for measuring one case or use collection controls only when the project already has a reliable pattern for them.
 
+## macOS With Docker
+
+Use Docker on macOS when the chosen Valgrind tool is unavailable locally, the project is normally benchmarked on Linux, or CodSpeed simulation needs a Linux-like environment.
+
+- Prefer the project's existing Dockerfile, devcontainer, or CI image so dependencies and system libraries match review and CI.
+- Pin the Docker image and platform. On Apple Silicon, Docker defaults to `linux/arm64`; use `--platform linux/amd64` only when the target benchmark data is also amd64, and label the PR table with that platform.
+- Do not compare metrics across macOS native runs, `linux/arm64`, and `linux/amd64`. If the platform changes, capture a new baseline.
+- Write profiling output into the mounted repository artifact directory so it remains available after the container exits.
+- Record Docker image, platform, `uname -m`, Valgrind or CodSpeed version, benchmark command, and dependency install command in the PR notes.
+
+If the project already has a Docker image:
+
+```bash
+docker build --platform <linux/arm64|linux/amd64> -t micro-opt -f <Dockerfile> .
+docker run --rm -it \
+  --platform <linux/arm64|linux/amd64> \
+  -v "$PWD:/work" \
+  -w /work \
+  micro-opt bash
+```
+
+For a temporary Linux profiling shell:
+
+```bash
+docker run --rm -it \
+  --platform <linux/arm64|linux/amd64> \
+  -v "$PWD:/work" \
+  -w /work \
+  ubuntu:24.04 bash
+```
+
+Inside the container, install only the dependencies needed for the benchmark and selected profiler:
+
+```bash
+apt-get update
+apt-get install -y ca-certificates curl build-essential pkg-config valgrind
+<install-project-dependencies>
+valgrind --tool=<tool> \
+  --<tool>-out-file=optimization-artifacts/valgrind/<tool>/<run>/<tool>.out.%p \
+  <benchmark-command>
+```
+
+For CodSpeed projects, run the existing CodSpeed benchmark command inside the same container and prefer `codspeed run -m simulation` or `codspeed exec -m simulation -- <benchmark-command>`.
+
 ## CodSpeed Projects
 
 Detect CodSpeed by looking for `codspeed.yml`, `.codspeed.yml`, CodSpeed GitHub Actions, or dependencies such as `pytest-codspeed`, `@codspeed/*`, `codspeed-criterion-compat`, or `codspeed`.

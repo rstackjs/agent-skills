@@ -22,11 +22,11 @@ Use this skill when the user wants an agent to reduce low-level cost in a benchm
    - For cache locality, branch prediction, and memory access behavior, use Cachegrind and compare the relevant cache, branch, or instruction events.
    - For heap growth, allocation churn, and peak memory, use Massif or DHAT and compare peak bytes, allocation counts, or retained bytes.
    - For suspected invalid memory access, leaks, or undefined behavior affecting performance, use Memcheck first as a correctness gate, then switch to a performance metric after the issue is fixed.
-   - When CodSpeed CPU simulation is present, prefer it for benchmarks that CodSpeed CI will judge and use estimated cycles as the primary iteration metric.
+   - When CodSpeed CPU simulation is present, prefer it for benchmarks that CodSpeed CI will judge and track both cycles and estimated cycles as paired iteration metrics.
 4. Collect a baseline with the selected Valgrind or CodSpeed mode before setting the optimization goal.
    - Save raw profiler outputs and summarized annotations under an ignored artifact directory such as `optimization-artifacts/valgrind/<tool>/<timestamp>/`.
    - Record the exact command, selected tool, selected metric, commit SHA, OS, CPU architecture, compiler/runtime versions, Valgrind or CodSpeed version, benchmark input, and relevant environment variables.
-   - Use one primary metric for the optimization goal. For CodSpeed CPU simulation, use estimated cycles; for non-CodSpeed Valgrind runs, use the selected tool's most relevant event or metric.
+   - Use one primary metric for the optimization goal. For CodSpeed CPU simulation, use paired cycles and estimated cycles; for non-CodSpeed Valgrind runs, use the selected tool's most relevant event or metric.
    - Track secondary metrics only when they explain tradeoffs.
 5. Set the agent goal.
    - Use the code agent's `/goal` or equivalent persistent goal feature after the baseline is known.
@@ -118,9 +118,11 @@ Detect CodSpeed by looking for `codspeed.yml`, `.codspeed.yml`, CodSpeed GitHub 
 When CodSpeed is present:
 
 - Prefer CodSpeed's CPU simulation instrument for consistency with CodSpeed CI.
-- Use estimated cycles as the key performance metric for iteration. CodSpeed estimates cycles from executed instructions (`Ir`), L1 cache misses, and last-level cache misses, so it captures instruction, cache, and memory-access costs better than `Ir` alone.
+- Use cycles and estimated cycles together as the key performance metrics for iteration. Record both values when CodSpeed exposes them, with before, after, absolute delta, and percentage delta for each.
+- CodSpeed estimates cycles from executed instructions (`Ir`), L1 cache misses, and last-level cache misses, so estimated cycles capture instruction, cache, and memory-access costs better than `Ir` alone.
 - Use the CodSpeed profile or inspector breakdown to decide whether a hot path is instruction-bound, cache-bound, or memory-bound before choosing the next optimization.
-- If a CodSpeed report exposes execution speed instead of raw cycles, treat it as cycle-derived: higher speed is better, while lower estimated cycles is better. Keep PR tables explicit about which value is recorded.
+- If a CodSpeed report exposes only one of cycles or estimated cycles, do not invent the missing value. Mark the missing field as `n/a`, include the available cycle-derived value, and note the report source.
+- If a CodSpeed report exposes execution speed instead of raw cycles, treat it as cycle-derived: higher speed is better, while lower cycles and estimated cycles are better. Keep PR tables explicit about which value is recorded.
 - Use existing CodSpeed benchmark definitions when possible: `codspeed run -m simulation`.
 - For a single ad hoc command, use `codspeed exec -m simulation -- <benchmark-command>`.
 - Verify that the `valgrind` on `PATH` is CodSpeed's Valgrind fork when local simulation requires it.
@@ -138,13 +140,15 @@ Use a compact table and update it after every progress commit:
 
 Target benchmark: `<benchmark>`
 Measurement mode: `<valgrind tool | codspeed simulation>`
-Primary metric: `<estimated cycles | selected Valgrind metric>`
+Primary metric: `<cycles + estimated cycles | selected Valgrind metric>`
 Baseline command: `<command>`
 
-| Commit  | Benchmark | Tool          | Metric | Before      | After     | Delta           | Checks    | Notes      |
-| ------- | --------- | ------------- | ------ | ----------- | --------- | --------------- | --------- | ---------- |
-| `<sha>` | `<name>`  | `<callgrind>` | `<Ir>` | `1,000,000` | `950,000` | `-50,000 (-5%)` | `<tests>` | `<reason>` |
+| Commit  | Benchmark | Mode                    | Cycles Before | Cycles After | Cycles Delta | Estimated Cycles Before | Estimated Cycles After | Estimated Cycles Delta | Checks    | Notes      |
+| ------- | --------- | ----------------------- | ------------- | ------------ | ------------ | ----------------------- | ---------------------- | ---------------------- | --------- | ---------- |
+| `<sha>` | `<name>`  | `<codspeed simulation>` | `1,000,000`   | `950,000`    | `-5.0%`      | `1,120,000`             | `1,060,000`            | `-5.4%`                | `<tests>` | `<reason>` |
 ```
+
+For non-CodSpeed Valgrind runs, replace the cycle columns with the selected tool metric before/after/delta, or add a separate table when mixing measurement modes.
 
 ## Stop Conditions
 

@@ -22,11 +22,11 @@ Use this skill when the user wants an agent to reduce low-level cost in a benchm
    - For cache locality, branch prediction, and memory access behavior, use Cachegrind and compare the relevant cache, branch, or instruction events.
    - For heap growth, allocation churn, and peak memory, use Massif or DHAT and compare peak bytes, allocation counts, or retained bytes.
    - For suspected invalid memory access, leaks, or undefined behavior affecting performance, use Memcheck first as a correctness gate, then switch to a performance metric after the issue is fixed.
-   - When CodSpeed CPU simulation is present, prefer it for benchmarks that CodSpeed CI will judge and track both cycles and estimated cycles as paired iteration metrics.
+   - When CodSpeed CPU simulation is present, prefer it for benchmarks that CodSpeed CI will judge and track both accesses and estimated cycles as paired iteration metrics.
 4. Collect a baseline with the selected Valgrind or CodSpeed mode before setting the optimization goal.
    - Save raw profiler outputs and summarized annotations under an ignored artifact directory such as `optimization-artifacts/valgrind/<tool>/<timestamp>/`.
    - Record the exact command, selected tool, selected metric, commit SHA, OS, CPU architecture, compiler/runtime versions, Valgrind or CodSpeed version, benchmark input, and relevant environment variables.
-   - Use one primary metric for the optimization goal. For CodSpeed CPU simulation, use paired cycles and estimated cycles; for non-CodSpeed Valgrind runs, use the selected tool's most relevant event or metric.
+   - Use one primary metric for the optimization goal. For CodSpeed CPU simulation, use paired accesses and estimated cycles; for non-CodSpeed Valgrind runs, use the selected tool's most relevant event or metric.
    - Track secondary metrics only when they explain tradeoffs.
 5. Set the agent goal.
    - Use the code agent's `/goal` or equivalent persistent goal feature after the baseline is known.
@@ -35,7 +35,9 @@ Use this skill when the user wants an agent to reduce low-level cost in a benchm
    - Read the profiler summary first; optimize functions or code paths with clear ownership and meaningful inclusive, self, allocation, cache, or memory cost.
    - Prefer simple changes that remove repeated work, allocations, conversions, hashing, parsing, cloning, dispatch, or avoidable traversal.
    - Avoid `unsafe` by default. Consider it only when profiling shows a substantial improvement that cannot be reached with safe code, the invariant is small enough to audit, and tests or assertions cover the boundary.
-   - Preserve public behavior. Run the relevant tests before treating a result as progress.
+   - Preserve public behavior, test results, benchmark outputs, and observable side effects. A micro-optimization must not change correctness results to become faster.
+   - If an optimization changes any test result, snapshot, fixture output, benchmark result payload, ordering contract, warning, error, or externally visible behavior, treat it as a correctness bug first and do not count the performance delta as progress until behavior is restored or the behavior change is explicitly requested.
+   - Run the relevant tests before treating a result as progress.
 7. Re-measure after each candidate change with the same benchmark command, tool, and metric.
    - Compare against the baseline and previous best using absolute metric value, delta, and percentage change.
    - Treat noise, benchmark input drift, or changed measurement tooling as invalid until a new baseline is captured and explained.
@@ -118,11 +120,31 @@ Detect CodSpeed by looking for `codspeed.yml`, `.codspeed.yml`, CodSpeed GitHub 
 When CodSpeed is present:
 
 - Prefer CodSpeed's CPU simulation instrument for consistency with CodSpeed CI.
-- Use cycles and estimated cycles together as the key performance metrics for iteration. Record both values when CodSpeed exposes them, with before, after, absolute delta, and percentage delta for each.
-- CodSpeed estimates cycles from executed instructions (`Ir`), L1 cache misses, and last-level cache misses, so estimated cycles capture instruction, cache, and memory-access costs better than `Ir` alone.
+- Use accesses and estimated cycles together as the key performance metrics for iteration. Record both values when CodSpeed exposes them, with before, after, absolute delta, and percentage delta for each.
+- CodSpeed estimates CPU simulation cost from Callgrind events with this formula:
+
+  ```text
+  accesses = Ir + Dr + Dw
+  l1_misses = I1mr + D1mr + D1mw
+  ll_misses = ILmr + DLmr + DLmw
+  estimated_cycles = accesses + 5 * l1_misses + 100 * ll_misses
+  estimated_seconds = estimated_cycles / 3_600_000_000
+  ```
+
+  This corresponds to CodSpeed's `timeDistribution` fields:
+
+  ```text
+  ir = accesses / 3_600_000_000
+  l1m = 5 * l1_misses / 3_600_000_000
+  llm = 100 * ll_misses / 3_600_000_000
+  value = ir + l1m + llm
+  ```
+
+  If syscall time is explicitly included, add `sysTime / 1e9`; otherwise keep syscall time separate from the CPU simulation value.
+
 - Use the CodSpeed profile or inspector breakdown to decide whether a hot path is instruction-bound, cache-bound, or memory-bound before choosing the next optimization.
-- If a CodSpeed report exposes only one of cycles or estimated cycles, do not invent the missing value. Mark the missing field as `n/a`, include the available cycle-derived value, and note the report source.
-- If a CodSpeed report exposes execution speed instead of raw cycles, treat it as cycle-derived: higher speed is better, while lower cycles and estimated cycles are better. Keep PR tables explicit about which value is recorded.
+- If a CodSpeed report exposes only one of accesses or estimated cycles, do not invent the missing value. Mark the missing field as `n/a`, include the available value, and note the report source.
+- If a CodSpeed report exposes execution speed instead of raw counters, treat it as simulation-derived: higher speed is better, while lower accesses and estimated cycles are better. Keep PR tables explicit about which value is recorded.
 - Use existing CodSpeed benchmark definitions when possible: `codspeed run -m simulation`.
 - For a single ad hoc command, use `codspeed exec -m simulation -- <benchmark-command>`.
 - Verify that the `valgrind` on `PATH` is CodSpeed's Valgrind fork when local simulation requires it.
@@ -140,12 +162,12 @@ Use a compact table and update it after every progress commit:
 
 Target benchmark: `<benchmark>`
 Measurement mode: `<valgrind tool | codspeed simulation>`
-Primary metric: `<cycles + estimated cycles | selected Valgrind metric>`
+Primary metric: `<accesses + estimated cycles | selected Valgrind metric>`
 Baseline command: `<command>`
 
-| Commit  | Benchmark | Mode                    | Cycles Before | Cycles After | Cycles Delta | Estimated Cycles Before | Estimated Cycles After | Estimated Cycles Delta | Checks    | Notes      |
-| ------- | --------- | ----------------------- | ------------- | ------------ | ------------ | ----------------------- | ---------------------- | ---------------------- | --------- | ---------- |
-| `<sha>` | `<name>`  | `<codspeed simulation>` | `1,000,000`   | `950,000`    | `-5.0%`      | `1,120,000`             | `1,060,000`            | `-5.4%`                | `<tests>` | `<reason>` |
+| Commit  | Benchmark | Mode                    | Accesses Before | Accesses After | Accesses Delta | Estimated Cycles Before | Estimated Cycles After | Estimated Cycles Delta | Checks    | Notes      |
+| ------- | --------- | ----------------------- | --------------- | -------------- | -------------- | ----------------------- | ---------------------- | ---------------------- | --------- | ---------- |
+| `<sha>` | `<name>`  | `<codspeed simulation>` | `1,000,000`     | `950,000`      | `-5.0%`        | `1,120,000`             | `1,060,000`            | `-5.4%`                | `<tests>` | `<reason>` |
 ```
 
 For non-CodSpeed Valgrind runs, replace the cycle columns with the selected tool metric before/after/delta, or add a separate table when mixing measurement modes.

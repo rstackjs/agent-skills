@@ -1,9 +1,9 @@
 ---
-name: micro-optimization
+name: micro-opt
 description: Use when making automated micro-optimizations with Valgrind or CodSpeed benchmark data. Guides agents to open a draft PR first, choose the right Valgrind tool and metric for the scenario, collect baseline data, set an optimization goal, iterate on small verified changes, commit measurable progress, and keep the PR description updated with metric deltas.
 ---
 
-# Micro-Optimization
+# Micro-Opt
 
 Use this skill when the user wants an agent to reduce low-level cost in a benchmarked hot path, especially when Valgrind or CodSpeed benchmark data is the source of truth.
 

@@ -1,6 +1,9 @@
 # Custom Dictionary Words
 bundleless
 Bytedance
+callgrind
+Callgrind
+codspeed
 condvar
 coredump
 corepack
@@ -26,6 +29,7 @@ prebundle
 preprocessors
 psynch
 pthread
+hotspots
 rgba
 rsbuild
 rsdoctor

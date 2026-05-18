@@ -80,6 +80,14 @@ npx skills add rstackjs/agent-skills --skill rspack-split-chunks
 
 Diagnose and optimize Rspack `optimization.splitChunks` configuration. Use when tuning production chunking, reducing duplicated modules, improving cache behavior, or debugging over-fetch caused by `name` and `cacheGroups`.
 
+### codspeed-regression-analysis
+
+```bash
+npx skills add rstackjs/agent-skills --skill codspeed-regression-analysis
+```
+
+Analyze CodSpeed performance regressions from GitHub Actions artifacts and Callgrind outputs. Use when comparing a PR against a valid baseline, explaining accesses and estimated_cycles deltas, separating I-cache vs D-cache regressions, or producing an evidence-based root-cause report for a CodSpeed slowdown.
+
 ## Rsbuild Skills
 
 ### rsbuild-best-practices

@@ -1,11 +1,11 @@
 ---
 name: micro-opt
-description: Use when making automated micro-optimizations with Valgrind or CodSpeed benchmark data. Guides agents to open a draft PR first, choose the right Valgrind tool and metric for the scenario, collect baseline data, set an optimization goal, iterate on small verified changes, commit measurable progress, and keep the PR description updated with metric deltas.
+description: Use when making automated micro-optimizations with benchmark-driven CodSpeed or Valgrind data. If the project already has benchmarks, prefer CodSpeed-generated temporary Valgrind data first; otherwise fall back to direct Valgrind with explicit tool-specific parameters. Guides agents to open a draft PR first, choose the right profiler mode and metric, collect baseline data, set an optimization goal, iterate on small verified changes, commit measurable progress, and keep the PR description updated with metric deltas.
 ---
 
 # Micro-Opt
 
-Use this skill when the user wants an agent to reduce low-level cost in a benchmarked hot path, especially when Valgrind or CodSpeed benchmark data is the source of truth.
+Use this skill when the user wants an agent to reduce low-level cost in a benchmarked hot path, especially when benchmark-backed CodSpeed or Valgrind data is the source of truth.
 
 ## Required Workflow
 
@@ -17,6 +17,8 @@ Use this skill when the user wants an agent to reduce low-level cost in a benchm
    - Prefer the command named by the user.
    - Otherwise inspect package scripts, benchmark directories, `criterion`, `benches`, `benchmark`, `codspeed.yml`, `.github/workflows`, or language-specific benchmark config.
 3. Choose the measurement mode before collecting data.
+   - If the project already has a runnable benchmark for the target path, prefer CodSpeed-generated temporary Valgrind data first when the benchmark can run under CodSpeed or the repository already uses CodSpeed CI.
+   - Use direct Valgrind only when there is no usable benchmark, CodSpeed cannot run for that benchmark locally or in CI, or the benchmarked flow needs a Valgrind tool that CodSpeed does not expose.
    - Let the optimization scenario decide the Valgrind tool and metric; do not force Callgrind when another tool better matches the suspected bottleneck.
    - For CPU instruction count and call-graph hot paths, use Callgrind and compare `Ir` or another explicitly chosen event.
    - For cache locality, branch prediction, and memory access behavior, use Cachegrind and compare the relevant cache, branch, or instruction events.
@@ -51,13 +53,29 @@ Use this skill when the user wants an agent to reduce low-level cost in a benchm
 
 ## Collecting Valgrind Data
 
-Use stable, reproducible commands. A typical command shape is:
+If the project has a benchmark, use the benchmark command as the profiling entrypoint and prefer CodSpeed's temporary Valgrind data over ad hoc direct Valgrind collection.
+
+Use stable, reproducible commands. For direct Valgrind fallback, use one command shape aligned with CodSpeed's current `measure.rs` defaults:
 
 ```bash
 valgrind --tool=<tool> \
+  -q \
+  --trace-children=yes \
+  --fair-sched=yes \
+  --cache-sim=yes \
+  --I1=32768,8,64 \
+  --D1=32768,8,64 \
+  --LL=8388608,16,64 \
+  --instr-atstart=no \
+  --collect-systime=nsec \
+  --read-inline-info=yes \
+  --trace-children-skip='*esbuild' \
   --<tool>-out-file=optimization-artifacts/valgrind/<tool>/<run>/<tool>.out.%p \
+  --log-file=optimization-artifacts/valgrind/<tool>/<run>/valgrind.log \
   <benchmark-command>
 ```
+
+Keep `--fair-sched=yes` in the fallback command by default, because CodSpeed enables fair scheduling by default. Only remove it when the local CodSpeed executor is explicitly configured to disable fair scheduling. For Callgrind fallback, also use `--compress-strings=no`, `--combine-dumps=yes`, and `--dump-line=no`. Source: `src/executor/valgrind/measure.rs` in CodSpeed.
 
 Use the matching summarizer for the selected tool, for example:
 
@@ -111,7 +129,7 @@ valgrind --tool=<tool> \
   <benchmark-command>
 ```
 
-For CodSpeed projects, run the existing CodSpeed benchmark command inside the same container and prefer `codspeed run -m simulation` or `codspeed exec -m simulation -- <benchmark-command>`.
+For CodSpeed projects, run the existing CodSpeed benchmark command inside the same container and follow the workflow in `CodSpeed Projects`.
 
 ## CodSpeed Projects
 
@@ -119,7 +137,15 @@ Detect CodSpeed by looking for `codspeed.yml`, `.codspeed.yml`, CodSpeed GitHub 
 
 When CodSpeed is present:
 
-- Prefer CodSpeed's CPU simulation instrument for consistency with CodSpeed CI.
+- If the project has a benchmark, prefer CodSpeed's CPU simulation instrument and its temporary Valgrind data for consistency with CodSpeed CI. For Rust `cargo-codspeed` projects, generate the temporary Valgrind data with:
+
+  ```bash
+  cargo codspeed build
+  mkdir -p /tmp/codspeed-valgrind
+  TMPDIR=/tmp/codspeed-valgrind codspeed run -m simulation -- cargo codspeed run -m simulation
+  ```
+
+  Then inspect `/tmp/codspeed-valgrind/profile.*.out` and use the largest `*.out` file as the benchmark's Callgrind file.
 - Use accesses and estimated cycles together as the key performance metrics for iteration. Record both values when CodSpeed exposes them, with before, after, absolute delta, and percentage delta for each.
 - CodSpeed estimates CPU simulation cost from Callgrind events with this formula:
 
@@ -147,6 +173,7 @@ When CodSpeed is present:
 - If a CodSpeed report exposes execution speed instead of raw counters, treat it as simulation-derived: higher speed is better, while lower accesses and estimated cycles are better. Keep PR tables explicit about which value is recorded.
 - Use existing CodSpeed benchmark definitions when possible: `codspeed run -m simulation`.
 - For a single ad hoc command, use `codspeed exec -m simulation -- <benchmark-command>`.
+- Treat CodSpeed's temporary Valgrind or Callgrind artifacts as the first-choice profiling input for benchmarked paths; only drop to direct Valgrind when those artifacts are unavailable or insufficient for the chosen tool.
 - Verify that the `valgrind` on `PATH` is CodSpeed's Valgrind fork when local simulation requires it.
 - Do not mix regular Valgrind results and CodSpeed simulation results in the same delta table unless the PR clearly labels them as separate measurement modes.
 - Reference: https://codspeed.io/docs/instruments/cpu#estimating-cycles

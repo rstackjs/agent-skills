@@ -25,31 +25,18 @@ Field meanings:
 
 Interpretation:
 
-- `accesses` approximates total work done.
+- `accesses` approximates total work.
 - `estimated_cycles` approximates total work plus cache penalties.
 
 ## How to Read Deltas
 
 ### `accesses` up, cache misses roughly flat
 
-Likely explanations:
-
-- More instructions executed
-- More data traversed
-- More hashing, parsing, cloning, formatting, or graph work
-
-This usually points to a direct algorithmic or control-flow expansion.
+Usually a direct work increase: more instructions, traversal, hashing, parsing, cloning, formatting, or graph work.
 
 ### `estimated_cycles` up more than `accesses`
 
-Likely explanations:
-
-- Worse cache locality
-- More branchy traversal patterns
-- More pointer chasing
-- Extra allocations or table growth
-
-Treat this as a memory hierarchy problem until proven otherwise.
+Usually a cache or memory-hierarchy issue: worse locality, more pointer chasing, more branchy traversal, or more allocation and table growth.
 
 ## How to Interpret L1 Growth
 
@@ -61,30 +48,15 @@ delta_l1 = delta(I1mr) + delta(D1mr) + delta(D1mw)
 
 ### If `I1mr` dominates
 
-Likely explanations:
-
-- Binary code layout changed
-- Hot functions moved across instruction-cache sets
-- More inlining or code-size growth expanded the hot instruction footprint
-- A benchmark started executing a broader set of helper functions than before
-
-This is often an indirect effect. The changed source file may not appear on the hot path.
+Usually an indirect effect: binary layout changed, hot code moved across I-cache sets, inlining or code-size expanded the instruction footprint, or the benchmark now executes a broader helper path.
 
 ### If `D1mr` or `D1mw` dominate
 
-Likely explanations:
-
-- Widely carried structs grew
-- Shared metadata became larger
-- Hash maps or vectors reallocated more often
-- Traversal order reduced locality
-- More pointer-heavy structures entered the path
-
-This is where layout-size checks and allocation-path inspection matter.
+Usually a data-layout issue: shared structs grew, metadata got larger, containers reallocated more, traversal order got worse, or pointer-heavy structures entered the path.
 
 ## Strong Evidence for an Indirect Regression
 
-Treat an explanation as strongly supported when most of these are true:
+Treat an explanation as strong when most of these are true:
 
 1. The benchmark does not execute the new feature path directly.
 2. The hot functions are old paths in unchanged files.

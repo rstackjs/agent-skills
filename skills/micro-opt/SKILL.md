@@ -146,6 +146,7 @@ When CodSpeed is present:
   ```
 
   Then inspect `/tmp/codspeed-valgrind/profile.*.out` and use the largest `*.out` file as the benchmark's Callgrind file.
+
 - Use accesses and estimated cycles together as the key performance metrics for iteration. Record both values when CodSpeed exposes them, with before, after, absolute delta, and percentage delta for each.
 - CodSpeed estimates CPU simulation cost from Callgrind events with this formula:
 

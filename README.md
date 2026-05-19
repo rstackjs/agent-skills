@@ -196,6 +196,14 @@ npx skills add rstackjs/agent-skills --skill migrate-to-rstest
 
 Migrate Jest or Vitest tests to Rstest. Use when a user asks to migrate Jest/Vitest tests to Rstest, follow migration guides, update test files, or validate the migration.
 
+### rstest-performance
+
+```bash
+npx skills add rstackjs/agent-skills --skill rstest-performance
+```
+
+Diagnose and improve Rstest performance regressions. Use when Rstest is slower than expected, slower than Jest or Vitest, or when you need to determine whether the bottleneck is in build startup or test execution before trying config or code changes.
+
 ### rstest-best-practices
 
 ```bash

@@ -174,11 +174,11 @@ Every optimization attempt must follow this loop:
 
 Report the result in a compact table when possible:
 
-| Change | Cold run | Warm run | Outcome |
-| --- | --- | --- | --- |
-| Baseline |  |  |  |
-| `output.bundleDependencies: false` |  |  |  |
-| CSS stub via `NormalModuleReplacementPlugin` |  |  |  |
+| Change                                       | Cold run | Warm run | Outcome |
+| -------------------------------------------- | -------- | -------- | ------- |
+| Baseline                                     |          |          |         |
+| `output.bundleDependencies: false`           |          |          |         |
+| CSS stub via `NormalModuleReplacementPlugin` |          |          |         |
 
 Do not stack multiple “maybe faster” changes before measuring. That destroys the ability to attribute the result.
 

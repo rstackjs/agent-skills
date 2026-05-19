@@ -26,7 +26,7 @@ Use this skill when the user wants an agent to reduce low-level cost in a benchm
    - For suspected invalid memory access, leaks, or undefined behavior affecting performance, use Memcheck first as a correctness gate, then switch to a performance metric after the issue is fixed.
    - When CodSpeed CPU simulation is present, prefer it for benchmarks that CodSpeed CI will judge and track both accesses and estimated cycles as paired iteration metrics.
 4. Collect a baseline with the selected Valgrind or CodSpeed mode before setting the optimization goal.
-   - Save raw profiler outputs and summarized annotations under an ignored artifact directory such as `optimization-artifacts/valgrind/<tool>/<timestamp>/`.
+   - Save raw profiler outputs and summarized annotations under an ignored artifact directory such as `optimization-artifacts/codspeed/<timestamp>/` or `optimization-artifacts/valgrind/<tool>/<timestamp>/`.
    - Record the exact command, selected tool, selected metric, commit SHA, OS, CPU architecture, compiler/runtime versions, Valgrind or CodSpeed version, benchmark input, and relevant environment variables.
    - Use one primary metric for the optimization goal. For CodSpeed CPU simulation, use paired accesses and estimated cycles; for non-CodSpeed Valgrind runs, use the selected tool's most relevant event or metric.
    - Track secondary metrics only when they explain tradeoffs.
@@ -85,6 +85,13 @@ cg_annotate --show=D1mr,DLmr,Bcm --sort=D1mr <cachegrind-output>
 ms_print <massif-output>
 ```
 
+When Callgrind output is split across multiple `*.out` files, inspect file sizes first and annotate the largest output before digging deeper:
+
+```bash
+ls -lS optimization-artifacts/valgrind/callgrind/<run>/*.out
+callgrind_annotate --show=Ir --sort=Ir --threshold=90 <largest-out-file>
+```
+
 For benchmark harnesses that run many cases, narrow to the case being optimized. If setup code dominates the profile, prefer existing harness support for measuring one case or use collection controls only when the project already has a reliable pattern for them.
 
 ## macOS With Docker
@@ -140,12 +147,27 @@ When CodSpeed is present:
 - If the project has a benchmark, prefer CodSpeed's CPU simulation instrument and its temporary Valgrind data for consistency with CodSpeed CI. For Rust `cargo-codspeed` projects, generate the temporary Valgrind data with:
 
   ```bash
-  cargo codspeed build
-  mkdir -p /tmp/codspeed-valgrind
-  TMPDIR=/tmp/codspeed-valgrind codspeed run -m simulation -- cargo codspeed run -m simulation
+  run_id="$(date +%Y%m%d-%H%M%S)-baseline"
+  out_dir="optimization-artifacts/codspeed/$run_id"
+  mkdir -p "$out_dir/profile"
+  cargo codspeed build --bench <bench-target> -m simulation >"$out_dir/build.log" 2>&1
+  codspeed run -m simulation \
+    --profile-folder "$out_dir/profile" \
+    -- cargo codspeed run --bench <bench-target> -m simulation "<case-filter>" \
+    >"$out_dir/run.log" 2>&1
   ```
 
-  Then inspect `/tmp/codspeed-valgrind/profile.*.out` and use the largest `*.out` file as the benchmark's Callgrind file.
+  Replace `<bench-target>` with the benchmark target, such as `resolver`. Replace `"<case-filter>"` with the benchmark case filter when the harness supports it, such as `"single-thread"`. Pre-create the `--profile-folder`; `codspeed run` does not create it automatically.
+
+  Then inspect `"$out_dir/profile"` and use the largest `*.out` file as the benchmark's Callgrind file:
+
+  ```bash
+  ls -lS "$out_dir"/profile/*.out
+  largest="$(ls -S "$out_dir"/profile/*.out | head -n 1)"
+  callgrind_annotate --show=Ir --sort=Ir --threshold=90 "$largest"
+  ```
+
+  Also record the benchmark summary from `"$out_dir/run.log"` so the PR can cite the same numbers shown by the local CodSpeed run.
 
 - Use accesses and estimated cycles together as the key performance metrics for iteration. Record both values when CodSpeed exposes them, with before, after, absolute delta, and percentage delta for each.
 - CodSpeed estimates CPU simulation cost from Callgrind events with this formula:
@@ -170,9 +192,10 @@ When CodSpeed is present:
   If syscall time is explicitly included, add `sysTime / 1e9`; otherwise keep syscall time separate from the CPU simulation value.
 
 - Use the CodSpeed profile or inspector breakdown to decide whether a hot path is instruction-bound, cache-bound, or memory-bound before choosing the next optimization.
+- For Rust Criterion or codspeed-criterion harnesses, prefer `cargo codspeed run --bench <bench-target> -m simulation "<case-filter>"` over running the full bench suite when the target case is known. This reduces noise and makes artifacts easier to inspect.
 - If a CodSpeed report exposes only one of accesses or estimated cycles, do not invent the missing value. Mark the missing field as `n/a`, include the available value, and note the report source.
 - If a CodSpeed report exposes execution speed instead of raw counters, treat it as simulation-derived: higher speed is better, while lower accesses and estimated cycles are better. Keep PR tables explicit about which value is recorded.
-- Use existing CodSpeed benchmark definitions when possible: `codspeed run -m simulation`.
+- Use existing CodSpeed benchmark definitions when possible: `codspeed run -m simulation -- <bench-command>`.
 - For a single ad hoc command, use `codspeed exec -m simulation -- <benchmark-command>`.
 - Treat CodSpeed's temporary Valgrind or Callgrind artifacts as the first-choice profiling input for benchmarked paths; only drop to direct Valgrind when those artifacts are unavailable or insufficient for the chosen tool.
 - Verify that the `valgrind` on `PATH` is CodSpeed's Valgrind fork when local simulation requires it.

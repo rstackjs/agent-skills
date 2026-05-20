@@ -203,6 +203,7 @@ When CodSpeed is present:
   ```bash
   $MICRO_OPT_RUN codspeed exec -m simulation -- <benchmark-command>
   ```
+
 - Treat CodSpeed's temporary Valgrind or Callgrind artifacts as the first-choice profiling input for benchmarked paths; only drop to direct Valgrind when those artifacts are unavailable or insufficient for the chosen tool.
 - Verify that the `valgrind` on `PATH` is CodSpeed's Valgrind fork when local simulation requires it.
 - Do not mix regular Valgrind results and CodSpeed simulation results in the same delta table unless the PR clearly labels them as separate measurement modes.
@@ -222,9 +223,9 @@ Measurement mode: `<valgrind tool | codspeed simulation>`
 Primary metric: `<accesses + estimated cycles | selected Valgrind metric>`
 Baseline command: `<command>`
 
-| Commit  | Benchmark | Mode                                  | Accesses Before | Accesses After | Accesses Delta | Estimated Cycles Before | Estimated Cycles After | Estimated Cycles Delta | Checks    | Notes      |
-| ------- | --------- | ------------------------------------- | --------------- | -------------- | -------------- | ----------------------- | ---------------------- | ---------------------- | --------- | ---------- |
-| `<sha>` | `<name>`  | `<codspeed simulation> @ <platform>`  | `1,000,000`     | `950,000`      | `-5.0%`        | `1,120,000`             | `1,060,000`            | `-5.4%`                | `<tests>` | `<reason>` |
+| Commit  | Benchmark | Mode                                 | Accesses Before | Accesses After | Accesses Delta | Estimated Cycles Before | Estimated Cycles After | Estimated Cycles Delta | Checks    | Notes      |
+| ------- | --------- | ------------------------------------ | --------------- | -------------- | -------------- | ----------------------- | ---------------------- | ---------------------- | --------- | ---------- |
+| `<sha>` | `<name>`  | `<codspeed simulation> @ <platform>` | `1,000,000`     | `950,000`      | `-5.0%`        | `1,120,000`             | `1,060,000`            | `-5.4%`                | `<tests>` | `<reason>` |
 ```
 
 The `Mode` cell value MUST end with `@ <platform>`, where `<platform>` is one of `linux-native`, `macOS+linux/arm64`, or `macOS+linux/amd64`. A baseline and its candidate must share the same `<platform>`; comparing across platforms requires collecting a fresh baseline on the target platform first.

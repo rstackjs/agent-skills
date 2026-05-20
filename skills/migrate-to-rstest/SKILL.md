@@ -92,7 +92,8 @@ output: {
 },
 ```
 
-   Use this when a dependency is being interpreted as the wrong module format under Rstest/Rspack.
+Use this when a dependency is being interpreted as the wrong module format under Rstest/Rspack.
+
 - If mocks fail for re-exported modules under Rspack, first check whether the project is pinned to `rstest < 0.9.3` (fixed in 0.9.3 — upgrade before debugging mock behavior further).
 
 ## Summarize changes

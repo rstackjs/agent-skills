@@ -1,6 +1,6 @@
+---
 name: rstest-debugging
 description: Debug Rstest issues systematically, including performance regressions. First determine whether the slowdown is in build startup or test execution, then run controlled config or code experiments and compare before/after timings.
-
 ---
 
 # Rstest Debugging Workflow

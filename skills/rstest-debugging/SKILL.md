@@ -1,9 +1,8 @@
----
-name: rstest-performance
-description: Diagnose and improve Rstest performance regressions. First determine whether the slowdown is in build startup or test execution, then run controlled config or code experiments and compare before/after timings.
+name: rstest-debugging
+description: Debug Rstest issues systematically, including performance regressions. First determine whether the slowdown is in build startup or test execution, then run controlled config or code experiments and compare before/after timings.
 ---
 
-# Rstest Performance Workflow
+# Rstest Debugging Workflow
 
 Use this skill when Rstest is slower than expected, slower than Jest or Vitest, slower than a previous Rstest baseline, or when users report that tests spend a long time before starting.
 

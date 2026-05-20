@@ -1,11 +1,43 @@
 ---
 name: micro-opt
-description: Use when making automated micro-optimizations with benchmark-driven CodSpeed or Valgrind data. If the project already has benchmarks, prefer CodSpeed-generated temporary Valgrind data first; otherwise fall back to direct Valgrind with explicit tool-specific parameters. Guides agents to open a draft PR first, choose the right profiler mode and metric, collect baseline data, set an optimization goal, iterate on small verified changes, commit measurable progress, and keep the PR description updated with metric deltas.
+description: Use when making automated micro-optimizations with benchmark-driven CodSpeed or Valgrind data. If the project already has benchmarks, prefer CodSpeed-generated temporary Valgrind data first; otherwise fall back to direct Valgrind with explicit tool-specific parameters. Guides agents to open a draft PR first, choose the right profiler mode and metric, collect baseline data, set an optimization goal, iterate on small verified changes, commit measurable progress, and keep the PR description updated with metric deltas. Works on Linux natively and on macOS through a bundled Docker wrapper with identical commands.
 ---
 
 # Micro-Opt
 
 Use this skill when the user wants an agent to reduce low-level cost in a benchmarked hot path, especially when benchmark-backed CodSpeed or Valgrind data is the source of truth.
+
+## Platform Setup
+
+Run this once at the start of every session before any profiling step. It is a no-op on Linux and prepares the Docker wrapper on macOS.
+
+```bash
+SKILL_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]:-$0}")")/assets"
+# If you are not running this from a script, replace SKILL_DIR with the absolute path of skills/micro-opt/assets.
+
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  command -v docker >/dev/null || { echo "Install Docker Desktop first." >&2; exit 1; }
+  docker info >/dev/null 2>&1 || { echo "Start Docker Desktop, then re-run." >&2; exit 1; }
+  export MICRO_OPT_RUN="$SKILL_DIR/docker-run.sh"
+  # MICRO_OPT_PLATFORM defaults host-arch-aware inside docker-run.sh; override only when you need a specific arch.
+else
+  export MICRO_OPT_RUN=""
+fi
+```
+
+Verify the wrapper before doing anything else:
+
+```bash
+$MICRO_OPT_RUN valgrind --version
+$MICRO_OPT_RUN cargo codspeed --version
+$MICRO_OPT_RUN bash -c 'echo PLATFORM=$(uname -m) OS=$(uname -s)'
+```
+
+Expected: a valgrind 3.2x version, `cargo-codspeed 2.x`, and on macOS `PLATFORM=aarch64 OS=Linux` on Apple Silicon (or `x86_64` on Intel Mac and when `MICRO_OPT_PLATFORM=linux/amd64`).
+
+CodSpeed Valgrind fork compatibility: if a later `codspeed run -m simulation` step fails with a missing Valgrind fork on `linux/arm64`, export `MICRO_OPT_PLATFORM=linux/amd64` and rerun. Treat any prior baseline taken on the other platform as invalid; collect a new baseline on the chosen platform before proceeding.
+
+First-time image build on macOS takes 5-10 minutes. Do this before recording a baseline so build time is not counted in benchmark numbers. The wrapper rebuilds automatically when the Dockerfile changes (it labels the image with a hash of the Dockerfile).
 
 ## Required Workflow
 
@@ -58,7 +90,7 @@ If the project has a benchmark, use the benchmark command as the profiling entry
 Use stable, reproducible commands. For direct Valgrind fallback, use one command shape aligned with CodSpeed's current `measure.rs` defaults:
 
 ```bash
-valgrind --tool=<tool> \
+$MICRO_OPT_RUN valgrind --tool=<tool> \
   -q \
   --trace-children=yes \
   --fair-sched=yes \
@@ -80,63 +112,25 @@ Keep `--fair-sched=yes` in the fallback command by default, because CodSpeed ena
 Use the matching summarizer for the selected tool, for example:
 
 ```bash
-callgrind_annotate --show=Ir --sort=Ir --threshold=90 <callgrind-output>
-cg_annotate --show=D1mr,DLmr,Bcm --sort=D1mr <cachegrind-output>
-ms_print <massif-output>
+$MICRO_OPT_RUN callgrind_annotate --show=Ir --sort=Ir --threshold=90 <callgrind-output>
+$MICRO_OPT_RUN cg_annotate --show=D1mr,DLmr,Bcm --sort=D1mr <cachegrind-output>
+$MICRO_OPT_RUN ms_print <massif-output>
 ```
 
 When Callgrind output is split across multiple `*.out` files, inspect file sizes first and annotate the largest output before digging deeper:
 
 ```bash
-ls -lS optimization-artifacts/valgrind/callgrind/<run>/*.out
-callgrind_annotate --show=Ir --sort=Ir --threshold=90 <largest-out-file>
+$MICRO_OPT_RUN bash -c 'ls -lS optimization-artifacts/valgrind/callgrind/<run>/*.out'
+$MICRO_OPT_RUN callgrind_annotate --show=Ir --sort=Ir --threshold=90 <largest-out-file>
 ```
 
 For benchmark harnesses that run many cases, narrow to the case being optimized. If setup code dominates the profile, prefer existing harness support for measuring one case or use collection controls only when the project already has a reliable pattern for them.
 
-## macOS With Docker
+## macOS Notes
 
-Use Docker on macOS when the chosen Valgrind tool is unavailable locally, the project is normally benchmarked on Linux, or CodSpeed simulation needs a Linux-like environment.
+The canonical macOS workflow lives in `Platform Setup` above. The same shell snippets in this document run on macOS once `MICRO_OPT_RUN` is exported; do not write a separate macOS command path.
 
-- Prefer the project's existing Dockerfile, devcontainer, or CI image so dependencies and system libraries match review and CI.
-- Pin the Docker image and platform. On Apple Silicon, Docker defaults to `linux/arm64`; use `--platform linux/amd64` only when the target benchmark data is also amd64, and label the PR table with that platform.
-- Do not compare metrics across macOS native runs, `linux/arm64`, and `linux/amd64`. If the platform changes, capture a new baseline.
-- Write profiling output into the mounted repository artifact directory so it remains available after the container exits.
-- Record Docker image, platform, `uname -m`, Valgrind or CodSpeed version, benchmark command, and dependency install command in the PR notes.
-
-If the project already has a Docker image:
-
-```bash
-docker build --platform <linux/arm64|linux/amd64> -t micro-opt -f <Dockerfile> .
-docker run --rm -it \
-  --platform <linux/arm64|linux/amd64> \
-  -v "$PWD:/work" \
-  -w /work \
-  micro-opt bash
-```
-
-For a temporary Linux profiling shell:
-
-```bash
-docker run --rm -it \
-  --platform <linux/arm64|linux/amd64> \
-  -v "$PWD:/work" \
-  -w /work \
-  ubuntu:24.04 bash
-```
-
-Inside the container, install only the dependencies needed for the benchmark and selected profiler:
-
-```bash
-apt-get update
-apt-get install -y ca-certificates curl build-essential pkg-config valgrind
-<install-project-dependencies>
-valgrind --tool=<tool> \
-  --<tool>-out-file=optimization-artifacts/valgrind/<tool>/<run>/<tool>.out.%p \
-  <benchmark-command>
-```
-
-For CodSpeed projects, run the existing CodSpeed benchmark command inside the same container and follow the workflow in `CodSpeed Projects`.
+When the project ships its own Docker image (for example a CodSpeed CI image), set `MICRO_OPT_IMAGE=<that-tag>` so the wrapper reuses it. The image must contain Valgrind and any project build dependencies; the wrapper does not install anything inside a user-provided image.
 
 ## CodSpeed Projects
 
@@ -150,11 +144,14 @@ When CodSpeed is present:
   run_id="$(date +%Y%m%d-%H%M%S)-baseline"
   out_dir="optimization-artifacts/codspeed/$run_id"
   mkdir -p "$out_dir/profile"
-  cargo codspeed build --bench <bench-target> -m simulation >"$out_dir/build.log" 2>&1
-  codspeed run -m simulation \
-    --profile-folder "$out_dir/profile" \
-    -- cargo codspeed run --bench <bench-target> -m simulation "<case-filter>" \
-    >"$out_dir/run.log" 2>&1
+  $MICRO_OPT_RUN bash -c "
+    set -euo pipefail
+    cargo codspeed build --bench <bench-target> -m simulation >\"$out_dir/build.log\" 2>&1
+    codspeed run -m simulation \\
+      --profile-folder \"$out_dir/profile\" \\
+      -- cargo codspeed run --bench <bench-target> -m simulation \"<case-filter>\" \\
+      >\"$out_dir/run.log\" 2>&1
+  "
   ```
 
   Replace `<bench-target>` with the benchmark target, such as `resolver`. Replace `"<case-filter>"` with the benchmark case filter when the harness supports it, such as `"single-thread"`. Pre-create the `--profile-folder`; `codspeed run` does not create it automatically.
@@ -162,9 +159,9 @@ When CodSpeed is present:
   Then inspect `"$out_dir/profile"` and use the largest `*.out` file as the benchmark's Callgrind file:
 
   ```bash
-  ls -lS "$out_dir"/profile/*.out
-  largest="$(ls -S "$out_dir"/profile/*.out | head -n 1)"
-  callgrind_annotate --show=Ir --sort=Ir --threshold=90 "$largest"
+  $MICRO_OPT_RUN bash -c "ls -lS \"$out_dir\"/profile/*.out"
+  largest="$($MICRO_OPT_RUN bash -c "ls -S \"$out_dir\"/profile/*.out | head -n 1")"
+  $MICRO_OPT_RUN callgrind_annotate --show=Ir --sort=Ir --threshold=90 "$largest"
   ```
 
   Also record the benchmark summary from `"$out_dir/run.log"` so the PR can cite the same numbers shown by the local CodSpeed run.
@@ -195,8 +192,17 @@ When CodSpeed is present:
 - For Rust Criterion or codspeed-criterion harnesses, prefer `cargo codspeed run --bench <bench-target> -m simulation "<case-filter>"` over running the full bench suite when the target case is known. This reduces noise and makes artifacts easier to inspect.
 - If a CodSpeed report exposes only one of accesses or estimated cycles, do not invent the missing value. Mark the missing field as `n/a`, include the available value, and note the report source.
 - If a CodSpeed report exposes execution speed instead of raw counters, treat it as simulation-derived: higher speed is better, while lower accesses and estimated cycles are better. Keep PR tables explicit about which value is recorded.
-- Use existing CodSpeed benchmark definitions when possible: `codspeed run -m simulation -- <bench-command>`.
-- For a single ad hoc command, use `codspeed exec -m simulation -- <benchmark-command>`.
+- Use existing CodSpeed benchmark definitions when possible:
+
+  ```bash
+  $MICRO_OPT_RUN codspeed run -m simulation -- <bench-command>
+  ```
+
+- For a single ad hoc command:
+
+  ```bash
+  $MICRO_OPT_RUN codspeed exec -m simulation -- <benchmark-command>
+  ```
 - Treat CodSpeed's temporary Valgrind or Callgrind artifacts as the first-choice profiling input for benchmarked paths; only drop to direct Valgrind when those artifacts are unavailable or insufficient for the chosen tool.
 - Verify that the `valgrind` on `PATH` is CodSpeed's Valgrind fork when local simulation requires it.
 - Do not mix regular Valgrind results and CodSpeed simulation results in the same delta table unless the PR clearly labels them as separate measurement modes.
@@ -216,12 +222,36 @@ Measurement mode: `<valgrind tool | codspeed simulation>`
 Primary metric: `<accesses + estimated cycles | selected Valgrind metric>`
 Baseline command: `<command>`
 
-| Commit  | Benchmark | Mode                    | Accesses Before | Accesses After | Accesses Delta | Estimated Cycles Before | Estimated Cycles After | Estimated Cycles Delta | Checks    | Notes      |
-| ------- | --------- | ----------------------- | --------------- | -------------- | -------------- | ----------------------- | ---------------------- | ---------------------- | --------- | ---------- |
-| `<sha>` | `<name>`  | `<codspeed simulation>` | `1,000,000`     | `950,000`      | `-5.0%`        | `1,120,000`             | `1,060,000`            | `-5.4%`                | `<tests>` | `<reason>` |
+| Commit  | Benchmark | Mode                                  | Accesses Before | Accesses After | Accesses Delta | Estimated Cycles Before | Estimated Cycles After | Estimated Cycles Delta | Checks    | Notes      |
+| ------- | --------- | ------------------------------------- | --------------- | -------------- | -------------- | ----------------------- | ---------------------- | ---------------------- | --------- | ---------- |
+| `<sha>` | `<name>`  | `<codspeed simulation> @ <platform>`  | `1,000,000`     | `950,000`      | `-5.0%`        | `1,120,000`             | `1,060,000`            | `-5.4%`                | `<tests>` | `<reason>` |
 ```
 
+The `Mode` cell value MUST end with `@ <platform>`, where `<platform>` is one of `linux-native`, `macOS+linux/arm64`, or `macOS+linux/amd64`. A baseline and its candidate must share the same `<platform>`; comparing across platforms requires collecting a fresh baseline on the target platform first.
+
 For non-CodSpeed Valgrind runs, replace the cycle columns with the selected tool metric before/after/delta, or add a separate table when mixing measurement modes.
+
+## macOS Caveats
+
+- Docker Desktop must be running. The wrapper fails fast with `start Docker Desktop, then re-run` if `docker info` is unreachable.
+- The CodSpeed Valgrind fork ships amd64-only today. If `codspeed run -m simulation` reports a missing fork on `linux/arm64`, switch with `export MICRO_OPT_PLATFORM=linux/amd64` and collect a fresh baseline; do not mix platforms in one comparison.
+- First-time image build takes 5-10 minutes. Run a smoke command (`$MICRO_OPT_RUN valgrind --version`) before collecting a baseline so the build does not skew the first measurement. The wrapper auto-rebuilds when the bundled Dockerfile changes (image is labeled with a content hash).
+- `target/` is invisible on the host because a named volume covers `/work/target` for IO speed. Perf artifacts under `optimization-artifacts/` remain host-visible; if you need a binary out of `target/`, copy it with `$MICRO_OPT_RUN cp /work/target/<path>/<bin> optimization-artifacts/<run>/`.
+- Non-TTY callers (CI, subprocesses) are handled: the wrapper omits `-t` when stdin or stdout is not a TTY.
+- The default platform follows host architecture: Apple Silicon → `linux/arm64`, Intel Mac → `linux/amd64`. Override with `MICRO_OPT_PLATFORM=linux/<arch>` only when you specifically need the other arch.
+
+## Cleanup
+
+Remove cached state when disk is reclaimed:
+
+```bash
+imgs="$(docker images --format '{{.Repository}}:{{.Tag}}' | grep '^micro-opt:' || true)"
+[[ -n "$imgs" ]] && echo "$imgs" | xargs docker rmi
+vols="$(docker volume ls --format '{{.Name}}' | grep '^micro-opt-' || true)"
+[[ -n "$vols" ]] && echo "$vols" | xargs docker volume rm
+```
+
+This also discards the per-project Rust target volume; the next build inside Docker will be a cold compile.
 
 ## Stop Conditions
 

@@ -1,0 +1,20 @@
+# syntax=docker/dockerfile:1.7
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    PATH=/usr/local/cargo/bin:/usr/local/rustup/bin:$PATH
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates curl git pkg-config build-essential \
+        libssl-dev cmake clang lld \
+        valgrind \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+      | sh -s -- -y --default-toolchain stable --profile minimal --no-modify-path
+
+RUN cargo install cargo-codspeed --locked
+
+WORKDIR /work

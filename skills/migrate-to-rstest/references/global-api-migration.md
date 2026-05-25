@@ -12,9 +12,9 @@ The rules below are skill-side enforcement on top of that mapping.
 ## Red lines
 
 1. **No shims.** All three forms below leave the migration incomplete and must be rejected in every test and setup file:
-   - `globalThis.vi = rs;` / `global.jest = rstest;` (direct global aliasing)
-   - `const vi = rs;` / `const jest = rstest;` (local rebinding)
-   - `import { rs as vi } from '@rstest/core';` / `import { rstest as jest } from '@rstest/core';` (aliased named import)
+   - `globalThis.vi = rs;` / `global.jest = rs;` (direct global aliasing)
+   - `const vi = rs;` / `const jest = rs;` (local rebinding)
+   - `import { rs as vi } from '@rstest/core';` / `import { rs as jest } from '@rstest/core';` (aliased named import)
 
    Fix at every call site instead. Do not propose a shim "just to keep the diff small" — it hides whether the migration actually happened, blocks IDE refactors, and silences future deprecation warnings.
 

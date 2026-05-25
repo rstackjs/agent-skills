@@ -28,7 +28,7 @@
       "fixture": "fetch-with-retry",
       "prompt": "This is a Node.js TypeScript package. `src/api/fetchUserProfile.ts` exports `fetchUserProfile(userId: string): Promise<UserProfile>`. Internally it calls `globalThis.fetch('https://api.example.com/users/' + userId)`, retries up to 3 attempts on 5xx responses, and throws `ApiError` if the final attempt also fails. `test/fetchUserProfile.test.ts` is empty. `rstest.config.ts` uses Node env. Write tests covering: (a) first call returns 200 with valid body — function resolves, (b) two 500s then third returns 200 — function still resolves (retry path), (c) all three attempts return 500 — function throws ApiError. Do not make real HTTP calls. All tests must pass.",
       "assertions": [
-        "Uses rstest.spyOn(globalThis, 'fetch') OR module-level rstest.mock('./api' or similar) to intercept fetch — no real network call",
+        "Uses rs.spyOn(globalThis, 'fetch') OR module-level rs.mock('./api' or similar) to intercept fetch — no real network call",
         "Sequential responses scripted with mockResolvedValueOnce (or mockImplementationOnce) chained, not a manual counter variable",
         "Error path asserted via .rejects.toThrow() or await expect(...).rejects.toXxx — not try/catch + expect.fail",
         "Mock restoration: either afterEach with restoreAllMocks/mockRestore, OR config sets restoreMocks: true / clearMocks: true",
@@ -43,11 +43,11 @@
       "fixture": "debounce-fake-timers",
       "prompt": "This is a TypeScript utility package. `src/debounce.ts` implements `debounce(fn, wait)` with trailing-edge semantics and a `.cancel()` method. `test/debounce.test.ts` already has one test that uses real `setTimeout` to wait 500ms, making it slow and occasionally flaky on CI. Rewrite the test using Rstest fake timers and add the following coverage: (a) multiple calls within the wait window trigger the underlying fn only once with the last arguments, (b) a new call within the wait window resets the timer (the fn fires `wait` ms after the LAST call), (c) calling `.cancel()` before the timer fires prevents invocation. The rewritten test must pass in well under one second.",
       "assertions": [
-        "Uses rstest.useFakeTimers() (in beforeEach or at test scope)",
-        "Uses rstest.useRealTimers() in afterEach (or at end of test) to avoid leaking fake timers into later files",
-        "Uses rstest.advanceTimersByTime for time progression (not a blanket runAllTimers when testing boundary semantics)",
+        "Uses rs.useFakeTimers() (in beforeEach or at test scope)",
+        "Uses rs.useRealTimers() in afterEach (or at end of test) to avoid leaking fake timers into later files",
+        "Uses rs.advanceTimersByTime for time progression (not a blanket runAllTimers when testing boundary semantics)",
         "No `new Promise(r => setTimeout(r, ...))`, no `await sleep(...)`, no other real-time wait patterns in the test file",
-        "The debounced callback is wrapped in rstest.fn() for call-count/args assertions",
+        "The debounced callback is wrapped in rs.fn() for call-count/args assertions",
         "Covers all three scenarios (multi-call collapse, timer reset on new call, cancel prevents)",
         "pnpm test passes and completes in under 1 second (indicates no real waits)"
       ]
@@ -60,7 +60,7 @@
       "assertions": [
         "Uses render from @testing-library/react (or re-export) to mount the component",
         "Uses semantic queries: getByRole / getByLabelText for inputs and button — not getByTestId for elements that have a semantic role",
-        "onSubmit prop passed as rstest.fn().mockResolvedValue(...) — not a real async function",
+        "onSubmit prop passed as rs.fn().mockResolvedValue(...) — not a real async function",
         "Async UI states asserted via findBy* or waitFor — not via manual setTimeout / arbitrary await",
         "jest-dom matchers used (toBeInTheDocument, toHaveValue, toBeDisabled, etc.) instead of raw DOM property reads",
         "User interaction uses fireEvent OR @testing-library/user-event (either is acceptable) — not manual element.click() / .value = ...",
@@ -89,8 +89,8 @@
       "fixture": "esm-partial-mock-router",
       "prompt": "This React + react-router-dom v6 project has `src/pages/Product.tsx` that reads `:id` via `useParams()` and renders `Product {id}`. The developer wants to unit-test the component without wrapping it in a `MemoryRouter` — instead mocking only `useParams` to return `{ id: 'p-42' }` while keeping all other react-router-dom exports (MemoryRouter, Link, etc.) working so any other consumers in the rendered tree continue to function. `rstest.config.ts` has pluginReact() + testEnvironment happy-dom. `src/pages/Product.test.tsx` is empty. Write a passing test.",
       "assertions": [
-        "rstest.mock call is at module scope (top of file), targeting 'react-router-dom' (or 'react-router' as the true export source)",
-        "Factory preserves non-mocked exports via spreading `...actual` obtained through import attribute `with { rstest: 'importActual' }` OR via rstest.importActual()",
+        "rs.mock call is at module scope (top of file), targeting 'react-router-dom' (or 'react-router' as the true export source)",
+        "Factory preserves non-mocked exports via spreading `...actual` obtained through import attribute `with { rstest: 'importActual' }` OR via rs.importActual()",
         "Only useParams is overridden; MemoryRouter / Link / other exports are not replaced",
         "Mock factory does not reference test-scope variables that are defined AFTER it (respects hoisting)",
         "Test does NOT wrap the component in MemoryRouter / BrowserRouter / any router provider",
@@ -104,7 +104,7 @@
       "fixture": "cjs-mock-memfs",
       "prompt": "This is a CommonJS Node.js CLI tool (package.json has `\"type\": \"commonjs\"`). `src/reportWriter.cjs` does `const fs = require('node:fs')` and writes JSON to `path.join(cwd, 'report.json')` via `fs.writeFileSync`. The developer wants to test the function without writing to the real disk, using `memfs` to provide an in-memory filesystem. `tests/reportWriter.test.cjs` currently has a failing placeholder; `memfs` is installed. `rstest.config.cjs` has include pattern for *.test.cjs. Write a passing test that verifies the function wrote the expected JSON content without touching the real filesystem.",
       "assertions": [
-        "Uses rstest.mockRequire (not rstest.mock) to intercept the fs module — matches the require() loading path used by the CJS source",
+        "Uses rs.mockRequire (not rs.mock) to intercept the fs module — matches the require() loading path used by the CJS source",
         "Mocks 'node:fs' (or whichever specifier the source uses) via memfs",
         "No real files written to disk during the test run (no cleanup needed on real paths)",
         "Volume / fs state is reset between tests (vol.reset() or equivalent in beforeEach / afterEach)",

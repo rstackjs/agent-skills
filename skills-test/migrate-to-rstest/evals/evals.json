@@ -30,8 +30,8 @@
         "moduleNameMapper alias translated to rstest alias",
         "CSS module moduleNameMapper translated (CSS imports still resolve to identity-like string map or equivalent)",
         "coverageThreshold translated to rstest coverage thresholds (lines>=80, functions>=80, branches>=70, statements>=80)",
-        "jest.<api> usages literally replaced with rstest.<api> in test files (no globalThis.jest shim)",
-        "jest.mock factory translated to rstest.mock equivalent",
+        "jest.<api> usages literally replaced with rs.<api> in test files (no globalThis.jest shim)",
+        "jest.mock factory translated to rs.mock equivalent",
         "Bare jest.mock('@app/logger') + src/__mocks__/logger.ts pattern still works (either preserved or equivalent auto-mock setup)",
         "jest deps and jest.config.js not deleted before Rstest is green",
         "Post-migration pnpm test: 12 tests pass across 5 files with coverage thresholds met"
@@ -159,7 +159,7 @@
           "setupFiles (jest.polyfills.ts — matchMedia) split from setupFilesAfterEnv (jest.setup.ts — jest-dom matchers / custom matcher via expect.extend)"
         ]
       },
-      "prompt": "Migrate this pnpm monorepo Jest multi-project setup to Rstest. The root jest.config.js uses `projects: ['<rootDir>/packages/node-lib', '<rootDir>/packages/dom-lib']` plus `globalSetup` / `globalTeardown` (seeds and tears down `process.env.__DB_SEED__`) and a root `coverageThreshold`. Each project has its own jest.config.js with: displayName (object form, {name, color}), preset 'ts-jest', its own testEnvironment (node vs jsdom), setupFilesAfterEnv, clearMocks, collectCoverageFrom. dom-lib additionally sets testEnvironmentOptions (url: 'https://app.example.com/dashboard', userAgent: 'FixtureAgent/1.0', pretendToBeVisual: true), setupFiles (jest.polyfills.ts — polyfills matchMedia before framework) separate from setupFilesAfterEnv (jest.setup.ts — imports @testing-library/jest-dom). node-lib's jest.setup.ts both hydrates globalThis.__DB__ from process.env.__DB_SEED__ and registers a custom matcher via expect.extend (with declare global namespace jest for types). Migrate the whole setup to Rstest: projects top-level, globalSetup/globalTeardown preserved (Rstest globalSetup returns the teardown fn), jest-dom matchers via expect.extend, jest-specific types/namespaces replaced with Rstest equivalents, jest.<api> -> rstest.<api> if any appear. Coverage thresholds must still be enforced (use @rstest/coverage-istanbul). Keep Jest deps and configs until Rstest is green.",
+      "prompt": "Migrate this pnpm monorepo Jest multi-project setup to Rstest. The root jest.config.js uses `projects: ['<rootDir>/packages/node-lib', '<rootDir>/packages/dom-lib']` plus `globalSetup` / `globalTeardown` (seeds and tears down `process.env.__DB_SEED__`) and a root `coverageThreshold`. Each project has its own jest.config.js with: displayName (object form, {name, color}), preset 'ts-jest', its own testEnvironment (node vs jsdom), setupFilesAfterEnv, clearMocks, collectCoverageFrom. dom-lib additionally sets testEnvironmentOptions (url: 'https://app.example.com/dashboard', userAgent: 'FixtureAgent/1.0', pretendToBeVisual: true), setupFiles (jest.polyfills.ts — polyfills matchMedia before framework) separate from setupFilesAfterEnv (jest.setup.ts — imports @testing-library/jest-dom). node-lib's jest.setup.ts both hydrates globalThis.__DB__ from process.env.__DB_SEED__ and registers a custom matcher via expect.extend (with declare global namespace jest for types). Migrate the whole setup to Rstest: projects top-level, globalSetup/globalTeardown preserved (Rstest globalSetup returns the teardown fn), jest-dom matchers via expect.extend, jest-specific types/namespaces replaced with Rstest equivalents, jest.<api> -> rs.<api> if any appear. Coverage thresholds must still be enforced (use @rstest/coverage-istanbul). Keep Jest deps and configs until Rstest is green.",
       "assertions": [
         "Root rstest.config.ts with projects at top level of defineConfig",
         "Per-package rstest.config.ts with correct environment (node-lib=node, dom-lib=jsdom)",
@@ -171,7 +171,7 @@
         "dom-lib setupFiles (matchMedia polyfill) runs before framework; setupFilesAfterEnv (jest-dom) runs after — both still wired",
         "node-lib setupFilesAfterEnv hydrates globalThis.__DB__ from env + registers custom matcher via expect.extend",
         "Jest types/namespaces for custom matcher (declare global namespace jest) migrated to Rstest-compatible declaration",
-        "jest.<api> -> rstest.<api> literal replacement in any test code (no globalThis.jest shim, no `rstest as jest` alias)",
+        "jest.<api> -> rs.<api> literal replacement in any test code (no globalThis.jest shim, no `rs as jest` alias)",
         "Jest deps/configs not deleted before Rstest is green; old jest.config.js / jest.global-setup.ts / jest.global-teardown.ts / per-package jest.config.js removed after green",
         "Post-migration pnpm test: 8 tests pass across 2 files covering both projects with coverage thresholds met"
       ]

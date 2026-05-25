@@ -241,6 +241,37 @@ For non-CodSpeed Valgrind runs, replace the cycle columns with the selected tool
 - Non-TTY callers (CI, subprocesses) are handled: the wrapper omits `-t` when stdin or stdout is not a TTY.
 - The default platform follows host architecture: Apple Silicon → `linux/arm64`, Intel Mac → `linux/amd64`. Override with `MICRO_OPT_PLATFORM=linux/<arch>` only when you specifically need the other arch.
 
+## Source-Path Remapping (macOS)
+
+Callgrind embeds absolute source paths in `fl=` / `fe=` / `fi=` lines, and KCachegrind/QCachegrind opens those exact paths to show annotated source. When Valgrind ran inside the Linux container, the paths point at `/work/...`, `/usr/local/cargo/...`, `/rust/deps/<crate>/...` (codspeed's `--remap-path-prefix`), and `/rustc/<sha>/...` — none of which exist on the macOS host. Rewrite the file once after collection.
+
+Inspect the prefixes in any callgrind output with:
+
+```bash
+grep -E '^(fl|fe|fi)=' optimization-artifacts/<...>/callgrind.out.<pid> \
+  | awk -F= '{print $2}' | grep '^/' \
+  | awk -F/ '{print "/"$2"/"$3}' | sort -u
+```
+
+The bundled helper handles the four known prefixes and writes a one-time `.remap.bak` next to the input:
+
+```bash
+"$(dirname "$MICRO_OPT_RUN")/remap-callgrind.sh" \
+  optimization-artifacts/<...>/callgrind.out.<pid> [--auto-rustup]
+```
+
+Provisioning on the host (the helper will print these when something is missing):
+
+- `/work/` → host project root (auto-detected via `git rev-parse --show-toplevel`).
+- `/usr/local/cargo/` → `$CARGO_HOME` (default `~/.cargo`). If a sampled file is missing, run `cargo fetch` from the project root to populate the registry cache.
+- `/rust/deps/<crate>/` → `$CARGO_HOME/registry/src/index.crates.io-<hash>/<crate>/`. The `<hash>` is deterministic for crates.io and auto-detected by listing `$CARGO_HOME/registry/src/`.
+- `/rustc/<sha>/` → `~/.rustup/toolchains/<channel>-<host-target>/lib/rustlib/src/rust/`. Channel is read from `rust-toolchain.toml`. Install with `rustup component add rust-src --toolchain <channel>` or pass `--auto-rustup` to let the helper run it.
+- `/usr/local/rustup/toolchains/<channel>-aarch64-unknown-linux-gnu/` → `~/.rustup/toolchains/<channel>-<host-target>/`. Some std-lib refs bypass `--remap-path-prefix` and point at the container rustup install; the helper rewrites them to the host rustup install (same `rust-src` install requirement as above).
+
+After remap, restart QCachegrind so it re-reads the file (`osascript -e 'tell application "QCachegrind" to quit'` then `open -a qcachegrind <file>`); reopening from the GUI's recent-files list may keep stale parsed state.
+
+The script is idempotent: re-running on an already-remapped file only re-validates that the rewritten paths still resolve on the host.
+
 ## Cleanup
 
 Remove cached state when disk is reclaimed:

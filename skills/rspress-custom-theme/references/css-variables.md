@@ -64,6 +64,8 @@ Complete list of CSS variables exposed by Rspress for theme customization.
 
 ## Shiki Syntax Highlighting
 
+Rspress uses `.dark` on `html` as the public dark-mode toggle for general theme overrides. The Shiki token blocks below target `html:not(.rp-dark)` and `html.rp-dark`, which Rspress uses internally for syntax highlighting variables.
+
 ### Light
 
 ```css
@@ -142,6 +144,8 @@ html.rp-dark {
 
 ## Home Page
 
+Note: `...` in gradient values marks omitted gradient parameters, not literal CSS. See the official docs link above for complete values.
+
 | Variable                         | Light                                                                                                                     | Dark                                                                        |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | `--rp-home-hero-secondary-color` | `#a673ff`                                                                                                                 | `#a673ff`                                                                   |
@@ -164,5 +168,10 @@ html.rp-dark {
   --rp-c-brand-tint: rgba(255, 94, 0, 0.07);
 
   --rp-home-hero-secondary-color: #ff5e00;
+}
+
+.dark {
+  --rp-c-brand: #ff8c4d;
+  --rp-home-hero-secondary-color: #ff8c4d;
 }
 ```

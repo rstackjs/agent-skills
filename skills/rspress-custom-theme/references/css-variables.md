@@ -153,16 +153,16 @@ html.rp-dark {
 ## Quick Start
 
 ```css
-/* theme/index.css */
+/* Example brand color overrides for the custom theme scaffold. */
+/* For more CSS variables, see https://rspress.rs/ui/vars. */
 :root {
-  --rp-c-brand: #7c3aed;
-  --rp-c-brand-light: #8b5cf6;
-  --rp-c-brand-dark: #6d28d9;
-}
+  --rp-c-brand: #ff5e00;
+  --rp-c-brand-dark: #ff704d;
+  --rp-c-brand-darker: #ff704d;
+  --rp-c-brand-light: #ff7524;
+  --rp-c-brand-lighter: #ff7524;
+  --rp-c-brand-tint: rgba(255, 94, 0, 0.07);
 
-.dark {
-  --rp-c-brand: #a78bfa;
-  --rp-c-brand-light: #c4b5fd;
-  --rp-c-brand-dark: #8b5cf6;
+  --rp-home-hero-secondary-color: #ff5e00;
 }
 ```

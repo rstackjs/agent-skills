@@ -186,6 +186,16 @@ Analyze Rspack/Webpack bundles from local Rsdoctor build data. Provides intellig
 
 Use when you need to analyze bundle composition, identify duplicate packages, detect similar packages, find large chunks, analyze side effects modules, or get comprehensive bundle optimization recommendations.
 
+### rsdoctor-performance-analyze
+
+```bash
+npx skills add rstackjs/agent-skills --skill rsdoctor-performance-analyze
+```
+
+Diagnose Rspack, Rsbuild, Rslib, Rspress, Modern.js, or Webpack page runtime performance with browser evidence from Chrome DevTools MCP.
+
+Use when you need to diagnose Core Web Vitals, network waterfalls, long tasks, hydration, or page runtime performance. For build artifact analysis or build-time analysis, install and use `rsdoctor-analysis` with `npx skills add rstackjs/agent-skills --skill rsdoctor-analysis`.
+
 ## Rstest Skills
 
 ### migrate-to-rstest

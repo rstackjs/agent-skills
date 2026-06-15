@@ -1,0 +1,10 @@
+Docs build passed successfully.
+
+Updated pages:
+- website/docs/api/index.mdx — Added formatBytes to the API Overview list
+- website/docs/api/formatBytes.mdx — New dedicated API page with signature, parameters, return value, and usage examples
+- website/docs/api/_meta.json — Added "formatBytes" to the API sidebar navigation
+- website/docs/index.md — Updated home page to mention formatBytes alongside camelCase
+- website/docs/guide/getting-started.md — Added formatBytes usage example
+
+Build output: Rspress v2.0.14 built successfully in 0.94s. All 13 pages rendered including the new api/formatBytes.html page.

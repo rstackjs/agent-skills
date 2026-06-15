@@ -1,9 +1,9 @@
 ---
-name: rspress-generate-docs
+name: rspress-docs-generator
 description: Generate or maintain Rspress documentation for a project. Use whenever the user wants to create a new docs site from a project that has no documentation, automatically add docs for user-facing feature work or PRs, or migrate an existing Rspress v1 docs site to v2. Also use when the project uses Rslib and needs documentation integration.
 ---
 
-# Rspress Generate Docs
+# Rspress Docs Generator
 
 Create and maintain Rspress documentation as part of normal project work. Prefer source-backed docs over generic prose: read the code, tests, examples, package metadata, and existing README before writing.
 
@@ -13,7 +13,7 @@ Create and maintain Rspress documentation as part of normal project work. Prefer
    - Locate package files, source entry points, examples, tests, changelogs, and README files.
    - Search for Rspress config files: `rspress.config.ts`, `.js`, `.mjs`, or `.cjs`.
    - Inspect dependencies for `rspress`, `@rspress/core`, and `@rspress/plugin-*`.
-   - Detect the package manager and workspace setup from lockfiles (`pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`, `bun.lockb`) and `pnpm-workspace.yaml`.
+   - Detect the package manager and workspace setup from lock files (`pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`, `bun.lockb`) and `pnpm-workspace.yaml`.
    - If a config exists, resolve the docs root from its `root` option; otherwise check common roots such as `docs/`, `doc/`, `website/`, and `site/`.
 
 2. **Choose the correct path**

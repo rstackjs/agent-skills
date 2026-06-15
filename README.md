@@ -134,6 +134,14 @@ Migrate tsc or tsup library projects to Rslib.
 
 ## Rspress Skills
 
+### rspress-docs-generator
+
+```bash
+npx skills add rstackjs/agent-skills --skill rspress-docs-generator
+```
+
+Generate or maintain Rspress documentation for a project. Use when creating a new Rspress v2 docs site from an undocumented project, adding docs for user-facing feature PRs, or migrating an existing Rspress v1 docs site before continuing documentation work.
+
 ### rspress-best-practices
 
 ```bash
@@ -173,14 +181,6 @@ description: A concise summary of the page content for SEO and AI consumption.
 
 # Page Title
 ```
-
-### rspress-generate-docs
-
-```bash
-npx skills add rstackjs/agent-skills --skill rspress-generate-docs
-```
-
-Generate or maintain Rspress documentation for a project. Use when creating a new Rspress v2 docs site from an undocumented project, adding docs for user-facing feature PRs, or migrating an existing Rspress v1 docs site before continuing documentation work.
 
 ## Rsdoctor Skills
 

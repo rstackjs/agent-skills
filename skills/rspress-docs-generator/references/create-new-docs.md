@@ -7,6 +7,10 @@ Use this path when the current project has no existing Rspress documentation sit
    - Identify the project type: library, CLI tool, application, plugin, monorepo package, etc.
    - Read public source entry points, exported types, examples, and representative tests to understand the user-facing surface.
    - Determine the target audience and what to document: getting started, configuration, API reference, CLI commands, examples, migration notes, or plugin usage.
+   - Cross-check Rspress basics against the official docs when choosing structure or syntax:
+     - Quick start: <https://rspress.rs/guide/start/getting-started>
+     - Conventional route: <https://rspress.rs/guide/basic/conventional-route>
+     - Frontmatter: <https://rspress.rs/guide/use-mdx/frontmatter>
 
 2. **Choose the docs site location**
    - If the repository already has a conventional docs directory (`docs/`, `doc/`, `website/`, `site/`), prefer reusing it.
@@ -59,6 +63,11 @@ Use this path when the current project has no existing Rspress documentation sit
    - Write source-backed pages from the project README, package exports, public types, examples, and tests.
    - Add `title` and `description` frontmatter to each page.
    - Configure navigation with `_nav.json` (top navbar) and `_meta.json` (sidebar) where the generated structure needs explicit labels or order. See [doc-structure-conventions.md](doc-structure-conventions.md) for examples.
+   - Follow official Rspress guidance for content features before inventing custom patterns:
+     - MDX and React components: <https://rspress.rs/guide/use-mdx/components>
+     - Code blocks: <https://rspress.rs/guide/use-mdx/code-blocks>
+     - Links: <https://rspress.rs/guide/use-mdx/link>
+     - Static assets: <https://rspress.rs/guide/basic/static-assets>
 
 6. **Wire project commands**
    - Add or reuse scripts for docs development and build, such as `docs:dev` and `docs:build`, following the repo's package manager and workspace conventions.

@@ -1,0 +1,39 @@
+---
+title: formatBytes
+---
+
+# formatBytes
+
+Formats a byte count into a human-readable string.
+
+## Signature
+
+```ts
+function formatBytes(
+  bytes: number,
+  opts?: { decimals?: number }
+): string;
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `bytes` | `number` | The byte count to format. |
+| `opts` | `object` | Optional configuration. |
+| `opts.decimals` | `number` | Number of decimal places (default: `2`). |
+
+## Returns
+
+A human-readable string such as `'1 KB'`, `'1.5 MB'`, or `'0 B'`.
+
+## Examples
+
+```ts
+import { formatBytes } from 'format-bytes-project';
+
+formatBytes(1024);              // '1 KB'
+formatBytes(1048576);           // '1 MB'
+formatBytes(1536, { decimals: 1 }); // '1.5 KB'
+formatBytes(0);                 // '0 B'
+```

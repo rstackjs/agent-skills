@@ -1,0 +1,96 @@
+{
+  "skill_name": "rspress-docs-generator",
+  "iteration": 1,
+  "runs": [
+    {
+      "eval": "create-new-docs",
+      "config": "with_skill",
+      "run_id": "create-new-docs-with_skill",
+      "passed": 5,
+      "total": 5,
+      "rate": 1.0,
+      "tokens": 24242,
+      "duration_seconds": 172.9
+    },
+    {
+      "eval": "create-new-docs",
+      "config": "without_skill",
+      "run_id": "create-new-docs-without_skill",
+      "passed": 4,
+      "total": 5,
+      "rate": 0.8,
+      "tokens": 29035,
+      "duration_seconds": 1338.4
+    },
+    {
+      "eval": "maintain-docs-for-pr",
+      "config": "with_skill",
+      "run_id": "maintain-docs-for-pr-with_skill",
+      "passed": 4,
+      "total": 4,
+      "rate": 1.0,
+      "tokens": 36784,
+      "duration_seconds": 244.0
+    },
+    {
+      "eval": "maintain-docs-for-pr",
+      "config": "without_skill",
+      "run_id": "maintain-docs-for-pr-without_skill",
+      "passed": 4,
+      "total": 4,
+      "rate": 1.0,
+      "tokens": 29510,
+      "duration_seconds": 325.1
+    },
+    {
+      "eval": "migrate-rspress-v1",
+      "config": "with_skill",
+      "run_id": "migrate-rspress-v1-with_skill",
+      "passed": 3,
+      "total": 3,
+      "rate": 1.0,
+      "tokens": 20598,
+      "duration_seconds": 159.8
+    },
+    {
+      "eval": "migrate-rspress-v1",
+      "config": "without_skill",
+      "run_id": "migrate-rspress-v1-without_skill",
+      "passed": 3,
+      "total": 3,
+      "rate": 1.0,
+      "tokens": 16933,
+      "duration_seconds": 103.7
+    }
+  ],
+  "summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "std": 0.0
+      },
+      "duration_seconds": {
+        "mean": 192.23333333333335,
+        "std": 45.307210610821464
+      },
+      "tokens": {
+        "mean": 27208,
+        "std": 8490.848956376505
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.9333333333333333,
+        "std": 0.11547005383792514
+      },
+      "duration_seconds": {
+        "mean": 589.0666666666667,
+        "std": 658.3158993472157
+      },
+      "tokens": {
+        "mean": 25159.333333333332,
+        "std": 7128.171317619501
+      }
+    }
+  }
+}

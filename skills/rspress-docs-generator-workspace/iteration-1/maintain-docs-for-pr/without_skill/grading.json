@@ -1,0 +1,25 @@
+{
+  "run_id": "maintain-docs-for-pr-without_skill",
+  "expectations": [
+    {
+      "text": "formatBytes is documented",
+      "passed": true,
+      "evidence": "formatBytes mentioned=True"
+    },
+    {
+      "text": "formatBytes documentation includes a usage example",
+      "passed": true,
+      "evidence": "code example with formatBytes=True"
+    },
+    {
+      "text": "Navigation updated if a new page was added",
+      "passed": true,
+      "evidence": "formatBytes in nav/meta files=True"
+    },
+    {
+      "text": "Docs build passed",
+      "passed": true,
+      "evidence": "build.log indicates success"
+    }
+  ]
+}

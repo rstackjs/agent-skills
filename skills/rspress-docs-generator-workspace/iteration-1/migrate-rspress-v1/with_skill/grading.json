@@ -1,0 +1,20 @@
+{
+  "run_id": "migrate-rspress-v1-with_skill",
+  "expectations": [
+    {
+      "text": "Docs site depends on Rspress v2",
+      "passed": true,
+      "evidence": "Found Rspress v2: @rspress/core=^2.0.0, rspress="
+    },
+    {
+      "text": "rspress.config.ts follows v2 conventions",
+      "passed": true,
+      "evidence": "config imports from @rspress/core"
+    },
+    {
+      "text": "Docs build passed",
+      "passed": true,
+      "evidence": "build.log indicates success"
+    }
+  ]
+}

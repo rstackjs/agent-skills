@@ -1,0 +1,48 @@
+{
+  "skill_name": "rspress-generate-docs",
+  "fixture_root": "/Users/bytedance/Documents/codes/agent-skills/skills/rspress-generate-docs-workspace/fixtures",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "create-new-docs",
+      "fixture": "create-new-docs",
+      "prompt": "This repository is a small TypeScript utility package called `string-kit` with no documentation site. It lives at /Users/bytedance/Documents/codes/agent-skills/skills/rspress-generate-docs-workspace/fixtures/create-new-docs. The package exports `camelCase`, `kebabCase`, and `snakeCase` from `src/case.ts`, plus `truncate` and `ellipsis` from `src/truncate.ts`. The README explains basic usage and the package.json has a `test` script using vitest. Create a new Rspress v2 documentation site for this project. Choose an appropriate docs directory, scaffold with the correct package manager, write source-backed pages, configure navigation, and ensure the docs build passes.",
+      "expected_output": "A Rspress v2 docs site is scaffolded under a sensible directory (e.g. website/ or docs/), with real pages derived from the source, correct navigation, and a passing docs build. No placeholder starter content remains.",
+      "files": [],
+      "assertions": [
+        "The docs site uses Rspress v2 (package.json contains @rspress/core ^2.x or rspress ^2.x, not v1)",
+        "A docs directory exists (e.g. website/docs/ or docs/) with an index/home page",
+        "Navigation files (_nav.json or _meta.json) are present and valid JSON",
+        "The generated docs mention the project's utilities (camelCase, kebabCase, snakeCase, truncate, ellipsis)",
+        "The docs build command exits with code 0"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "maintain-docs-for-pr",
+      "fixture": "maintain-docs-pr",
+      "prompt": "This repository already has a Rspress v2 docs site under `website/`. It lives at /Users/bytedance/Documents/codes/agent-skills/skills/rspress-generate-docs-workspace/fixtures/maintain-docs-pr. A feature branch has been checked out that adds a new exported function `formatBytes(bytes: number, opts?: { decimals?: number }): string` in `src/formatBytes.ts`, along with tests. The PR title is 'feat: add formatBytes utility'. Update the Rspress documentation to cover this new feature, following the existing docs conventions. The docs build must still pass.",
+      "expected_output": "The docs site is updated with a new or existing page that documents formatBytes, including a usage example and type signature. Navigation is updated if needed and the docs build passes.",
+      "files": [],
+      "assertions": [
+        "formatBytes is documented in at least one docs page",
+        "The formatBytes documentation includes a usage example",
+        "If a new page was added, navigation (_meta.json or _nav.json) is updated to include it",
+        "The docs build command exits with code 0"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "migrate-rspress-v1",
+      "fixture": "migrate-rspress-v1",
+      "prompt": "This repository has an existing Rspress v1 documentation site under `site/`. It lives at /Users/bytedance/Documents/codes/agent-skills/skills/rspress-generate-docs-workspace/fixtures/migrate-rspress-v1. The site uses `@rspress/core` v1 and has a minimal config and docs. Migrate the site to Rspress v2 by following the official migration guide, update dependencies and config, and ensure the docs build passes on v2.",
+      "expected_output": "The docs site depends on Rspress v2 packages, the config and imports follow v2 conventions, and `rspress build` succeeds.",
+      "files": [],
+      "assertions": [
+        "The docs site depends on Rspress v2 (package.json contains @rspress/core ^2.x or rspress ^2.x, not v1)",
+        "The rspress.config.ts imports and API usage follow v2 conventions",
+        "The docs build command exits with code 0"
+      ]
+    }
+  ]
+}

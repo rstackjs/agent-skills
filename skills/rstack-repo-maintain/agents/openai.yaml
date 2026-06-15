@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Rstack Repo Maintain'
+  short_description: 'Modernize Rstack repo infrastructure'
+  default_prompt: 'Use $rstack-repo-maintain to modernize an Rstack repository baseline.'

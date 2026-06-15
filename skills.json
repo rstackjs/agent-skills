@@ -3,8 +3,9 @@
   "installDir": ".agents/skills",
   "linkTargets": [],
   "skills": {
-    "skill-creator": "github:anthropics/skills.git#0f7c287eaf0d4fa511cb871bb55e2a7862251fbb&path:/skills/skill-creator",
+    "skill-creator": "github:anthropics/skills#57546260929473d4e0d1c1bb75297be2fdfa1949&path:/skills/skill-creator",
     "rstack-skill-evaluator": "link:./dev-skills/rstack-skill-evaluator",
     "pr-creator": "link:./skills/pr-creator"
-  }
+  },
+  "selfSkill": true
 }

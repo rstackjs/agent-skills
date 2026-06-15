@@ -62,6 +62,14 @@ Helps Rspack users and developers debug crashes or deadlocks/hangs in the Rspack
 
 Use this Skill when users encounter "Segmentation fault" errors during Rspack builds or when the build progress gets stuck.
 
+### rstack-eco-ci-debug
+
+```bash
+npx skills add rstackjs/agent-skills --skill rstack-eco-ci-debug
+```
+
+Debug Rstack ecosystem CI failures and attribute the real source PR behind Rspack eco-ci red suites.
+
 ### rspack-tracing
 
 ```bash

@@ -72,6 +72,27 @@ Eco-ci debugging has two phases. Do not mix them up.
 
 Goal: identify the actual source PR, date window, or downstream change that caused the suite to become red.
 
+#### Fast-Exit Checks
+
+Run these checks first before doing deep pivot analysis. If any check fires with high confidence, produce the Phase 1 output immediately and skip unnecessary steps.
+
+1. **Same Rspack commit, different outcome**
+   - If the exact same tested Rspack commit appears in both a green run and a red run of the same suite, the cause is **not** that Rspack commit.
+   - Stop and attribute the failure to a downstream change, test expectation change, dependency update, or environment difference between the two runs.
+   - Output example: `Actual source: downstream/test change (same Rspack SHA <sha> succeeded in run <green-id> and failed in run <red-id>)`.
+
+2. **Surface PR diff is unrelated to the failure signature**
+   - After fetching the surface PR, if its changed files and diff have no plausible connection to the observed error text, assertion, stack frame, or generated output, treat the surface PR as innocent.
+   - Shift focus to downstream changes or an earlier Rspack commit that actually touched the failing path.
+   - Output example: `Actual source: not surface PR #<n> (diff only touches <unrelated-paths>; failure signature is <signature>)`.
+
+3. **Failure signature directly maps to surface PR changed files**
+   - If the error text, failing command, or changed generated output directly involves files or APIs modified by the surface PR, the surface PR is likely the actual source.
+   - Move to a lightweight Phase 2 to confirm the mechanism; do not spend time hunting alternative culprits.
+   - Output example: `Actual source: surface PR #<n> (failure signature <signature> matches changed files <paths>)`.
+
+Only continue with the full process below if none of the fast-exit checks gives a clear answer.
+
 Use these evidence sources:
 
 - Eco-ci status data, including current failed runs and previous green runs.
@@ -84,9 +105,9 @@ Process:
 
 1. Identify the latest completed Rspack eco-ci run and the previous completed Rspack commit run.
 2. List failed suites, failed count, run URL or run id, and the tested Rspack commit.
-3. For each failed suite, find the green-to-red pivot in the visible history.
+3. For each failed suite, find the green-to-red pivot in the visible history. If the same tested Rspack commit appears in both green and red runs, apply fast-exit check #1 and stop.
 4. Pull logs for the current failure and the candidate pivot failure.
-5. Compare failure signatures before attributing a root cause.
+5. Compare failure signatures before attributing a root cause. After inspecting the surface PR diff, apply fast-exit checks #2 and #3 when the relationship between the diff and the signature is clear.
 6. If the signature changed, search forward or binary-search red rows until the current signature appears.
 7. Check whether the downstream project changed in the same window.
 8. Reproduce enough combinations to decide whether the failure comes from Rspack, downstream, or their interaction.

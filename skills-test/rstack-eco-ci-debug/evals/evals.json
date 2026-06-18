@@ -1,0 +1,44 @@
+{
+  "skill_name": "rstack-eco-ci-debug",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "plugin-suite-empty-lines",
+      "prompt": "The plugin suite is failing in rstack-ecosystem-ci and the status data shows it turned red around Rspack PR #14254. Can you help me figure out whether that PR is really the cause? My local Rspack checkout is at /Users/bytedance/Documents/codes/rspack.",
+      "expected_output": "The skill identifies PR #14254 as the actual source of the plugin suite failure, explains that the failure signature involves extra empty lines being added to the error stack, and provides supporting evidence such as run URLs, log snippets, or commit inspection.",
+      "files": [],
+      "expectations": [
+        "The output names the plugin suite as the failing suite",
+        "The output identifies PR #14254 as the actual source, not just the surface pivot",
+        "The output explains the failure signature (extra empty lines in the error stack)",
+        "The output includes at least one piece of evidence (run URL, log snippet, or commit reference)"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "rstest-suite-misattribution",
+      "prompt": "The rstest suite started failing in rstack-ecosystem-ci and the green-to-red pivot points to Rspack PR #14353. I'm skeptical that #14353 is the real cause. Can you investigate and tell me what actually broke it? My local Rspack checkout is at /Users/bytedance/Documents/codes/rspack.",
+      "expected_output": "The skill does not blame PR #14353. Instead it identifies rstest PR #1357 as the actual source, explaining that #1357 upgraded to Rspack 2.0.8 (released between PR #14283 and PR #14350) and updated snapshots, which caused the rstest suite failure when the newer Rspack artifact was tested. It distinguishes surface attribution from actual source.",
+      "files": [],
+      "expectations": [
+        "The output does not attribute the failure to PR #14353 as the actual source",
+        "The output identifies rstest PR #1357 as the actual source or points to it",
+        "The output explains the snapshot update and Rspack 2.0.8 timing",
+        "The output distinguishes surface attribution from actual source"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "rsdoctor-swc-semantic-bug",
+      "prompt": "In this rstack-ecosystem-ci run the rsdoctor suite failed: https://github.com/rstackjs/rstack-ecosystem-ci/actions/runs/27249648948. Can you find the real source PR and explain the mechanism? My local Rspack checkout is at /Users/bytedance/Documents/codes/rspack.",
+      "expected_output": "The skill identifies PR #14256 (the swc refactoring) as the actual source of the rsdoctor suite failure. It explains the mechanism: swc exp produced semantic results that differed from swc core, causing the concatenated module not to treat the top-level lightColor variable and the for-loop-init lightColor variable as the same variable during renaming.",
+      "files": [],
+      "expectations": [
+        "The output names the rsdoctor suite as the failing suite",
+        "The output identifies PR #14256 as the actual source",
+        "The output explains the swc semantic inconsistency mechanism",
+        "The output mentions the concatenated module variable renaming issue with lightColor"
+      ]
+    }
+  ]
+}

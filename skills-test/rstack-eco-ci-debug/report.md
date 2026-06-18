@@ -13,7 +13,7 @@
 One round of evaluation was run against 3 real rstack-ecosystem-ci failures. Each eval ran once with the skill and once without the skill.
 
 | Metric | With Skill | Without Skill | Delta |
-|--------|------------|---------------|-------|
+| -------- | ------------ | --------------- | ------- |
 | Pass rate | **100%** (12/12) | **75%** (9/12) | **+25 pp** |
 | Avg. wall time | 956.7 s | 2,135.5 s | −1,178.8 s |
 | Avg. tokens | 92,102 | 46,862 | +45,240 |
@@ -31,7 +31,7 @@ The skill produced materially better attribution on the hardest case (rsdoctor S
 **Actual source:** PR #14254 — but the failure mechanism is *incidental* trailing newlines in 5 EJS templates, not the runtimeMode feature itself.
 
 | Configuration | Pass Rate | Time | Tokens |
-|---------------|-----------|------|--------|
+| ------------- | --------- | ---- | ------ |
 | with_skill | 4/4 (100%) | 856.1 s | 91,265 |
 | without_skill | 4/4 (100%) | 5,374.1 s | 42,605 |
 
@@ -46,7 +46,7 @@ Both configurations correctly identified PR #14254 and the extra-blank-line sign
 **Actual source:** rstest PR #1357 (downstream snapshot/timeout expectation change).
 
 | Configuration | Pass Rate | Time | Tokens |
-|---------------|-----------|------|--------|
+| ------------- | --------- | ---- | ------ |
 | with_skill | 4/4 (100%) | 1,014.0 s | 105,041 |
 | without_skill | 4/4 (100%) | 334.8 s | 29,430 |
 
@@ -61,7 +61,7 @@ Both configurations correctly exonerated PR #14353 and pointed to rstest PR #135
 **Actual source:** PR #14256 (`refactor: swc exp for javascript parser plugin`), interacting with PR #14335's scope-info rewrite.
 
 | Configuration | Pass Rate | Time | Tokens |
-|---------------|-----------|------|--------|
+| ------------- | --------- | ---- | ------ |
 | with_skill | 4/4 (100%) | ~1,000 s* | 80,000* |
 | without_skill | 1/4 (25%) | 697.7 s | 68,552 |
 

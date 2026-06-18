@@ -2,7 +2,7 @@
 
 # Rstack Repository Baselines
 
-Snapshot date: 2026-06-15.
+Snapshot date: 2026-06-18.
 
 This reference is based on public GitHub PR and repository inspection for `chenjiahan` activity under `rstackjs/*`. Re-check current main branches before applying these patterns.
 
@@ -14,9 +14,13 @@ Why it is the best first template:
 
 - It has the strongest chenjiahan maintenance signal among inspected candidates: 50 authored PRs.
 - It shows the full migration history from Rslib to pure ESM, Node 20+, Rslint, TypeScript 6, and CI cleanup.
-- Its current package shape is simple enough to copy: `type: "module"`, explicit `exports`, `files: ["dist"]`, `build: "rslib"`, `lint: "rslint"`, `test: "rstest"`.
-- Current `rslib.config.ts` is minimal: `lib: [{ syntax: "es2023", dts: true }]`.
+- Its current package shape is simple enough to copy: `type: "module"`, explicit `exports`, `files: ["dist"]`, `build: "rslib"`, `lint: "rslint && prettier --check ."`, `lint:write`, and `test: "rstest"`.
+- Current `rslib.config.ts` uses `syntax: "es2023"`, `dts: { tsgo: true }`, and `pluginPublint()`.
+- Current `rslint.config.ts` keeps `ts.configs.recommended` only because the package is TypeScript-only.
 - Current `package.json#engines.node` is `^20.19.0 || >=22.12.0`.
+- Current `AGENTS.md` follows the concise rsbuild-style structure: Stack, Commands, Project structure, and Code style.
+- Current `.prettierignore` is intentionally minimal: `dist` and `pnpm-lock.yaml`.
+- CI intentionally keeps the current Node 24-only test workflow and does not add a separate build step.
 
 Useful PRs:
 
@@ -29,12 +33,17 @@ Useful PRs:
 - [#77 chore: update tsconfig](https://github.com/rstackjs/rslog/pull/77)
 - [#89 chore: optimize CI pnpm setup](https://github.com/rstackjs/rslog/pull/89)
 - [#91 chore: upgrade rslint to 0.6.1](https://github.com/rstackjs/rslog/pull/91)
+- [#93 chore(infra): enable tsgo, publint, and prettier checks](https://github.com/rstackjs/rslog/pull/93)
 
-Known gaps:
+Review-tested decisions from #93:
 
-- No `AGENTS.md` in current main at snapshot time.
-- No Rslib `dts.tsgo` in current main at snapshot time.
-- Rslint config uses TypeScript recommended rules only because the package is TypeScript-only.
+- Keep `AGENTS.md` short and close to `rsbuild/AGENTS.md`; avoid a long maintenance manual.
+- Do not mention formatter tools the target repo does not use; use "existing format conventions" or the repo's actual formatter.
+- Keep `js.configs.recommended` out of TypeScript-only packages.
+- Do not copy `rslog`'s exact `engines.node` range into target repos unless it matches the package policy.
+- `@typescript/native-preview` is a deliberate tsgo toolchain dependency; pin it exactly and validate the generated declarations.
+- `pnpm stage publish` is a pnpm 11 builtin, not a missing dependency.
+- Knip can be used locally for dependency review, but should not be added as a devDependency unless scripted.
 
 ## Secondary Baseline: rstackjs/rsbuild-plugin-publint
 
@@ -62,9 +71,9 @@ Known gaps:
 - No `AGENTS.md` in current main at snapshot time.
 - No Rslib `dts.tsgo` in current main at snapshot time.
 
-## AGENTS Reference: rstackjs/rsbuild-plugin-arethetypeswrong
+## Package Validation Reference: rstackjs/rsbuild-plugin-arethetypeswrong
 
-Use `rsbuild-plugin-arethetypeswrong` for a concise `AGENTS.md` and stricter package validation reference.
+Use `rsbuild-plugin-arethetypeswrong` as an additional package validation and staged publishing reference. Use `rslog`, not this repo, as the current AGENTS.md shape.
 
 Current traits:
 
@@ -145,5 +154,5 @@ Searches used:
 Findings:
 
 - No chenjiahan-authored `knip` PRs were found in the sampled search results.
-- Rslib `dts.tsgo` is not yet a common chenjiahan-authored bulk-maintenance pattern.
+- `rslog` now provides the chenjiahan-reviewed tsgo + publint baseline for small packages; `rsbuild-plugin-virtual-module` remains useful only as an additional implementation reference.
 - Some heavily maintained packages intentionally remain dual package or use lower output syntax; copy only after checking consumer compatibility.

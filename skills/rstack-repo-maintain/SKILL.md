@@ -1,6 +1,6 @@
 ---
 name: rstack-repo-maintain
-description: 'Audit and modernize RstackJS/Rspack ecosystem repositories to the current shared infrastructure baseline: Rslib ESM or dual builds, Rslint recommended rules, Node 20+ support and CI, TypeScript 6 and tsgo where appropriate, concise README/AGENTS docs, release workflow cleanup, unused dependency removal, and infra PR commit conventions. Use when updating rstackjs repositories, copying infra patterns from maintained exemplars, or reviewing package/tooling consistency.'
+description: 'Audit and modernize RstackJS/Rspack ecosystem repositories to the current shared infrastructure baseline: Rslib ESM or dual builds, Rslint recommended rules, Node 20+ support where appropriate, TypeScript 6 and tsgo where compatible, concise README/AGENTS docs, release workflow cleanup, unused dependency removal, and infra PR commit conventions. Use when updating rstackjs repositories, copying infra patterns from maintained exemplars, or reviewing package/tooling consistency.'
 ---
 
 <!-- cspell:words chenjiahan -->
@@ -17,10 +17,11 @@ Read `references/repo-baselines.md` when choosing a template repo, explaining wh
 
 Default starting points:
 
-- Primary chenjiahan-maintained package baseline: `rstackjs/rslog`.
+- Primary chenjiahan-maintained small-package baseline: `rstackjs/rslog`.
 - Pure ESM and Node 20 plugin package baseline: `rstackjs/rsbuild-plugin-publint`.
-- AGENTS.md plus artifact validation reference: `rstackjs/rsbuild-plugin-arethetypeswrong`.
-- Rslib `dts.tsgo` reference only: `rstackjs/rsbuild-plugin-virtual-module`.
+- Concise AGENTS.md and tsgo/publint reference: `rstackjs/rslog`.
+- Additional package validation reference: `rstackjs/rsbuild-plugin-arethetypeswrong`.
+- Additional Rslib `dts.tsgo` implementation reference: `rstackjs/rsbuild-plugin-virtual-module`.
 
 Always re-check the target repo and exemplar repo before editing. The reference file is a dated snapshot, not a permanent source of truth.
 
@@ -37,14 +38,15 @@ Always re-check the target repo and exemplar repo before editing. The reference 
    - Treat runtime support, package exports, CLI bins, side effects, and documented deep imports as compatibility constraints.
 
 3. **Update the infrastructure in small layers**
-   - **Rslib**: use `rslib` for builds, keep config minimal, set appropriate `lib.syntax`, emit declarations, and align `package.json#exports` with real output.
-   - **Rslint**: use `@rslint/core`; enable `js.configs.recommended` when JavaScript files are linted and `ts.configs.recommended` for TypeScript. Keep rule disables scoped and justified.
-   - **Node/CI**: set Node support to 20+ when the package can support it; run CI on Node 20 plus 24, or document why a narrower/latest-only matrix is acceptable.
-   - **GitHub Actions**: keep `.github/workflows/*` aligned with the chosen baseline repo. Pin third-party actions to commit hashes, not floating tags, and update action pins by copying or refreshing the baseline pattern.
+   - **Rslib**: use `rslib` for builds, keep config minimal, set appropriate `lib.syntax`, emit declarations, and align `package.json#exports` with real output. Add `rsbuild-plugin-publint` when the package should validate publish metadata during build.
+   - **Rslint**: use `@rslint/core`; use `ts.configs.recommended` for TypeScript packages. Add `js.configs.recommended` only when JavaScript source or config files are intentionally linted.
+   - **Prettier**: if the repo already carries Prettier or should check formatting, wire it into lint scripts with the repo's established style (`prettier --check .` / `prettier --write .` or `-c` / `-w`) and keep generated artifacts ignored by `.prettierignore`.
+   - **Node/CI**: set Node support to 20+ when the package can support it, but do not copy an exact `engines.node` range unless the target repo should declare one. Do not blindly add a Node 20 matrix or an extra CI build step when the maintained baseline intentionally keeps CI latest-only for speed or already builds in release.
+   - **GitHub Actions**: keep `.github/workflows/*` aligned with the chosen baseline repo. Pin third-party actions to commit hashes, not floating tags, and update action pins by copying or refreshing the baseline pattern instead of inventing new pins.
    - **TypeScript**: upgrade to TypeScript 6, remove stale/deprecated compiler options, prefer `target: "ES2023"` for Node 20+ packages, and keep module resolution consistent with runtime output.
-   - **tsgo**: enable Rslib declaration `dts: { tsgo: true }` only after checking compatibility with declaration bundling, package shape, and installed `@typescript/native-preview`.
-   - **Docs**: keep `README.md` focused on purpose, install, usage, options, supported runtimes, release/license links. Add a concise `AGENTS.md` with repo layout, commands, package contract, and validation expectations.
-   - **Dependency cleanup**: run a repo-appropriate unused dependency check such as Knip when feasible, then remove only dependencies proven unused or misplaced.
+   - **tsgo**: enable Rslib declaration `dts: { tsgo: true }` only after checking compatibility with declaration bundling, package shape, and installed `@typescript/native-preview`. Pin native-preview to an exact version and validate emitted declarations plus package contents.
+   - **Docs**: keep `README.md` focused on purpose, install, usage, options, supported runtimes, release/license links. Add a concise `AGENTS.md` in the rsbuild-style shape: Stack, Commands, Project structure, and Code style.
+   - **Dependency cleanup**: run a repo-appropriate unused dependency check such as Knip when feasible, then remove only dependencies proven unused or misplaced. Do not add Knip as a dependency unless the repo starts using it in scripts; treat `pnpm stage` and tsgo tool dependencies as known false positives when applicable.
 
 4. **Preserve behavior while modernizing**
    - Do not touch business logic unless the infra change requires it.
@@ -53,7 +55,7 @@ Always re-check the target repo and exemplar repo before editing. The reference 
 
 5. **Prepare the infra PR**
    - Create the infrastructure update branch from the latest `origin/main` unless the user asks for a different base.
-   - Use a PR title starting with `chore(infra):`, for example `chore(infra): update repository baseline`.
+   - Use a specific PR title starting with `chore(infra):`, for example `chore(infra): enable tsgo and package validation` or `chore(infra): align build and lint tooling`.
    - Keep each tool update or tool configuration as its own commit unit. Use commit titles such as `chore(deps): update rslint to 0.6.1`, `chore(infra/tsgo): enable tsgo declaration build`, or `chore(infra/ci): pin workflow actions`.
    - Do not mix unrelated tool changes, generated lockfile updates, and source fixes in a single commit unless the tool update requires them to stay atomic.
 

@@ -48,15 +48,21 @@ Always distinguish:
 
 ## Optional Tools
 
-Read the linked reference before using any of these tools. Do not ask the user generically "which tool do you want"; instead, suggest the specific tool that matches the situation.
+Read the linked reference before using any of these tools. Do not ask the user generically "which tool do you want"; instead, suggest the specific tool that matches the situation. Only invoke a tool when its strict trigger conditions are met; do not run it "just in case".
 
-- **Canary date bisect** — use in Phase 1 when the eco-ci history or release versions are too coarse to pinpoint the exact Rspack PR or date window. Trigger this when:
-  - The green-to-red pivot spans multiple Rspack commits or a whole release version.
-  - The failure signature first appears between two canary releases but the exact commit is unknown.
-  - You need to test `@rspack-canary/core` versions to narrow the window before attributing a PR.
+- **Canary date bisect** — use in Phase 1 only when the Rspack commit window is too coarse to attribute a PR and downstream causes have already been ruled out. Trigger this when **all** of the following are true:
+  - The green-to-red pivot spans **more than 3 Rspack commits** or crosses a release/canary boundary.
+  - The failure signature is stable across the red rows in that window.
+  - The same Rspack commit does **not** appear in both green and red runs (which would indicate a downstream cause).
+  Do **not** trigger when the pivot is a single commit or when the surface PR diff already explains the signature.
   Read [references/canary-date-bisect.md](references/canary-date-bisect.md) and ask the user for the local downstream checkout path and the narrowest failing command.
 
-- **Deep PR debug** — use in Phase 2 after a specific source PR or version window has been identified and the user wants the technical reason behind the failure. Trigger this when the user asks "why did this PR break it", "what is the mechanism", or "how should we fix it". Read [references/deep-pr-debug.md](references/deep-pr-debug.md) automatically once a candidate PR is accepted for deep inspection.
+- **Deep PR debug** — use in Phase 2 only after a specific Rspack source PR or version window has been identified and the user wants the technical reason behind the failure. Trigger this when **all** of the following are true:
+  - The user asks "why did this PR break it", "what is the mechanism", or "how should we fix it".
+  - The actual source is a Rspack PR or Rspack version window (not a downstream test change, snapshot update, or dependency bump).
+  - Phase 1 has already produced evidence linking the PR to the failure signature.
+  Do **not** run deep PR debug on downstream PRs; in those cases, Phase 1 output plus a short note about the downstream change is enough.
+  Read [references/deep-pr-debug.md](references/deep-pr-debug.md) automatically once a candidate PR is accepted for deep inspection.
 
 - **PR report comment** — use only after strict attribution identifies a merged Rspack PR as the cause and the user wants to notify the PR author. Trigger this only when:
   - The failure is confidently attributed to a merged PR (not just a surface pivot).

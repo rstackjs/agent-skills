@@ -21,7 +21,7 @@ When local docs are available, prefer the checked-out source, for example `websi
 - Setup: replace `@testing-library/jest-dom/vitest` with matcher registration via `expect.extend(...)` from `@rstest/core`.
 - Globals/APIs: imports from `vitest` -> `@rstest/core`; `vi.<api>` / `vitest.<api>` -> `rs.<api>`. Avoid mixing `vi` and `rs` in a migrated file.
 - Mocks: Rstest `rs.mock('./module')` looks for `__mocks__`; use `{ mock: true }` for auto-mock and `{ spy: true }` to preserve implementations while spying.
-- Async mock factories: Rstest supports async factory signatures, but Vitest patterns that await the actual module inside the factory are better migrated to static `importActual` imports plus a synchronous factory.
+- Async mock factories: Rstest does not support returning an async function when mocking a module value. Migrate Vitest patterns that await the actual module inside the factory to static `importActual` imports plus a synchronous factory.
 - CJS mocking: use `rs.mockRequire()` / `rs.doMockRequire()` for `require()` paths.
 
 ## Build config and version compatibility

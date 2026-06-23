@@ -1,18 +1,16 @@
-<!-- cspell:words chenjiahan -->
-
 # Rstack Repository Baselines
 
 Snapshot date: 2026-06-18.
 
-This reference is based on public GitHub PR and repository inspection for `chenjiahan` activity under `rstackjs/*`. Re-check current main branches before applying these patterns.
+This reference is based on public GitHub PR and repository inspection under `rstackjs/*`. Re-check current main branches before applying these patterns.
 
 ## Primary Baseline: rstackjs/rslog
 
-Use `rslog` as the primary chenjiahan-maintained baseline when modernizing a small Rstack package.
+Use `rslog` as the primary maintained baseline when modernizing a small Rstack package.
 
 Why it is the best first template:
 
-- It has the strongest chenjiahan maintenance signal among inspected candidates: 50 authored PRs.
+- It has the strongest maintenance signal among inspected candidates.
 - It shows the full migration history from Rslib to pure ESM, Node 20+, Rslint, TypeScript 6, and CI cleanup.
 - Its current package shape is simple enough to copy: `type: "module"`, explicit `exports`, `files: ["dist"]`, `build: "rslib"`, `lint: "rslint && prettier --check ."`, `lint:write`, and `test: "rstest"`.
 - Current `rslib.config.ts` uses `syntax: "es2023"`, `dts: { tsgo: true }`, and `pluginPublint()`.
@@ -102,7 +100,7 @@ Use `prebundle` as a high-activity reference when maintaining a CLI/build-tool s
 
 Current traits:
 
-- 28 chenjiahan-authored PRs at snapshot time.
+- High maintenance activity at snapshot time.
 - Rslib build, Rslint, TypeScript 6, Rstest, README, and `AGENTS.md`.
 - `rslint.config.ts` enables both `js.configs.recommended` and `ts.configs.recommended`.
 
@@ -136,23 +134,23 @@ Relevant PR:
 
 Important caveat:
 
-- The tsgo PR was authored by `SoonIter`, not `chenjiahan`. Treat it as implementation evidence for Rslib tsgo, not as part of the chenjiahan-maintained baseline.
+- Treat this repo as implementation evidence for Rslib tsgo, not as the primary small-package baseline.
 
 ## Search Notes
 
 Searches used:
 
-- `type:pr org:rstackjs author:chenjiahan rslib`
-- `type:pr org:rstackjs author:chenjiahan rslint`
-- `type:pr org:rstackjs author:chenjiahan "typescript 6"`
-- `type:pr org:rstackjs author:chenjiahan "Node 20"`
-- `type:pr org:rstackjs author:chenjiahan AGENTS`
-- `type:pr org:rstackjs author:chenjiahan README`
-- `type:pr org:rstackjs author:chenjiahan "optimize CI"`
-- `type:pr org:rstackjs author:chenjiahan knip`
+- `type:pr org:rstackjs rslib`
+- `type:pr org:rstackjs rslint`
+- `type:pr org:rstackjs "typescript 6"`
+- `type:pr org:rstackjs "Node 20"`
+- `type:pr org:rstackjs AGENTS`
+- `type:pr org:rstackjs README`
+- `type:pr org:rstackjs "optimize CI"`
+- `type:pr org:rstackjs knip`
 
 Findings:
 
-- No chenjiahan-authored `knip` PRs were found in the sampled search results.
-- `rslog` now provides the chenjiahan-reviewed tsgo + publint baseline for small packages; `rsbuild-plugin-virtual-module` remains useful only as an additional implementation reference.
+- No repo-owned scripted Knip baseline was found in the sampled search results.
+- `rslog` now provides the reviewed tsgo + publint baseline for small packages; `rsbuild-plugin-virtual-module` remains useful only as an additional implementation reference.
 - Some heavily maintained packages intentionally remain dual package or use lower output syntax; copy only after checking consumer compatibility.

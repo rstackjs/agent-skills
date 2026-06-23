@@ -3,8 +3,6 @@ name: rstack-repo-maintain
 description: 'Audit and modernize RstackJS/Rspack ecosystem repositories to the current shared infrastructure baseline: Rslib ESM or dual builds, Rslint recommended rules, Rstest test tooling, Node 20+ support where appropriate, TypeScript 6 and tsgo where compatible, concise README/AGENTS docs, release workflow cleanup, unused dependency removal, and infra PR commit conventions. Use when updating rstackjs repositories, copying infra patterns from maintained exemplars, or reviewing package/tooling consistency.'
 ---
 
-<!-- cspell:words chenjiahan -->
-
 # Rstack Repo Maintain
 
 ## Overview
@@ -17,7 +15,7 @@ Read `references/repo-baselines.md` when choosing a template repo, explaining wh
 
 Default starting points:
 
-- Primary chenjiahan-maintained small-package baseline: `rstackjs/rslog`.
+- Primary small-package baseline: `rstackjs/rslog`.
 - Pure ESM and Node 20 plugin package baseline: `rstackjs/rsbuild-plugin-publint`.
 - Concise AGENTS.md and tsgo/publint reference: `rstackjs/rslog`.
 - Additional package validation reference: `rstackjs/rsbuild-plugin-arethetypeswrong`.

@@ -16,6 +16,8 @@ Collect these before starting:
 - Failing suite name.
 - Current failure log URL or saved log.
 - First-bad failure log, if different from current.
+- Flaky/pre-existing signature check result from Phase 1.
+- For config-gated hypotheses, generated downstream config evidence from Phase 1, usually from [rsbuild-config-debug.md](rsbuild-config-debug.md) for Rsbuild-based suites.
 - Local Rspack checkout path.
 - Downstream checkout path, if reproduction or source reading is needed.
 
@@ -37,8 +39,10 @@ Focus on changed code paths that can affect the failure signature. Ignore unrela
 1. Extract the terminal failure block from the log.
 2. Identify the failing command and assertion or stack frame.
 3. Locate the downstream code that produced the assertion or runtime path.
-4. Trace from downstream behavior into Rspack APIs, plugin hooks, generated output, source maps, loaders, or runtime modules.
-5. Match the PR diff to the changed behavior.
+4. Confirm the same signature was not already known as flaky or pre-existing before the candidate PR. If it was, stop and return `not caused` or `inconclusive`.
+5. For config-gated hypotheses in Rsbuild-based suites, read [rsbuild-config-debug.md](rsbuild-config-debug.md) and use its output before claiming the PR is active in the failing path.
+6. Trace from downstream behavior into Rspack APIs, plugin hooks, generated output, source maps, loaders, or runtime modules.
+7. Match the PR diff to the changed behavior.
 
 Use short log snippets only:
 
@@ -57,6 +61,8 @@ This tool is for analysis: connect the PR diff to the failure signature through 
 - Separate confirmed evidence from inference.
 - Use "likely" when the exact internal transition is inferred from diff plus logs.
 - Do not claim root cause from temporal order alone.
+- Do not claim root cause when the same signature was previously observed before the candidate PR, unless there is evidence the PR changed the signature or made the failure deterministic.
+- Do not claim a config-gated PR as the cause when generated config evidence shows the relevant option or path is disabled or absent.
 - If the PR only exposed a downstream fragile assertion, say so.
 - If the downstream suite changed independently, include that interaction.
 
@@ -67,6 +73,7 @@ Candidate PR: <pr-number> <title>
 Suite: <suite>
 Verdict: caused | likely caused | not caused | inconclusive
 Failure signature: <short signature>
+Flaky/config checks: <not pre-existing | pre-existing | feature enabled | feature disabled | not applicable>
 Mechanism: <3-5 sentence explanation of how the PR change caused the observed behavior>
 Evidence:
 - <log URL or run id>

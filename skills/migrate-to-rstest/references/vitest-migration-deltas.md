@@ -16,7 +16,7 @@ When local docs are available, prefer the checked-out source, for example `websi
 - Config imports: `defineConfig` comes from `@rstest/core`; `defineWorkspace` is removed; use the `projects` field.
 - Projects: in latest Rstest, use `defineInlineProject({ name, ... })` for object entries inside `projects`; in Rstest 0.8.x, use plain named objects. Use `defineProject` for top-level project config exports.
 - Config shape: remove Vitest's `test` wrapper and move fields to the Rstest top level. Map exact fields through the official guide.
-- Coverage: replace `@vitest/coverage-*` with Rstest coverage packages and use `coverage.reporters` (plural).
+- Coverage: add Rstest coverage packages and use `coverage.reporters` (plural). Replace `@vitest/coverage-*` only during cleanup after the Rstest scope is green; `@rstest/coverage-v8` requires Rstest >= 0.10.2.
 - Reporters: replace Vitest-only reporters; import third-party reporter classes instead of passing incompatible names.
 - Setup: replace `@testing-library/jest-dom/vitest` with matcher registration via `expect.extend(...)` from `@rstest/core`.
 - Globals/APIs: imports from `vitest` -> `@rstest/core`; `vi.<api>` / `vitest.<api>` -> `rs.<api>`. Avoid mixing `vi` and `rs` in a migrated file.

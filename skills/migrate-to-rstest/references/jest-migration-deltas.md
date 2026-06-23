@@ -21,7 +21,7 @@ When local docs are available, prefer the checked-out source, for example `websi
 - Hooks: `beforeEach` / `beforeAll` return values are cleanup functions in Rstest. Wrap setup-only arrow expressions in braces when needed.
 - Environment: `testEnvironmentOptions` becomes `testEnvironment: { name, options }`; file-level Jest environment comments are recognized during migration, but `@rstest-environment` is native.
 - CJS mocking: use `rs.mockRequire()` for code paths using `require()`.
-- Coverage: install the matching Rstest provider; Jest `coverageProvider: 'babel'` maps to Rstest `istanbul`, and Jest `coverageProvider: 'v8'` maps to Rstest `v8` with `@rstest/coverage-v8`.
+- Coverage: install a Rstest provider supported by the target version. Jest `coverageProvider: 'babel'` maps to Rstest `istanbul`; Jest `coverageProvider: 'v8'` maps to Rstest `v8` with `@rstest/coverage-v8` only on Rstest >= 0.10.2. Use Istanbul for Rstest 0.8.x targets unless the user accepts a toolchain upgrade.
 
 ## Version compatibility
 

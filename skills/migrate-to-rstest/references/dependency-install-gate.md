@@ -4,19 +4,27 @@ Use this reference when running the dependency install gate step of the migratio
 
 ## Quick path
 
-Run install with `ni` and trust its workspace/package-manager detection:
+Use the repository's native package manager instead of adding another package just to detect the manager.
+
+Detect the manager from existing project signals, in this order:
+
+1. `package.json#packageManager`
+2. Lockfile: `pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`, `npm-shrinkwrap.json`, or `bun.lockb`
+3. Existing CI/test scripts or workspace files such as `pnpm-workspace.yaml` or `.yarnrc.yml`
+
+Then install with that manager. For example, in a pnpm repo:
 
 ```bash
-npx -y @antfu/ni install
+pnpm install
 ```
 
-Then verify Rstest is resolvable from local dependencies without falling back to remote package execution:
+After adding `@rstest/core`, verify Rstest through the same local manager path without remote package fallback. For example:
 
 ```bash
 pnpm exec rstest -h
 ```
 
-For npm-only repos, use `npm exec --no -- rstest -h` only after `@rstest/core` is installed locally, or run `./node_modules/.bin/rstest -h` directly.
+For npm-only repos, use `npm exec --no -- rstest -h` after local install, or run `./node_modules/.bin/rstest -h` directly. For Yarn/Bun repos, use the repo's local binary execution path only when it resolves the installed dependency.
 
 If a package manager script already exists after the script migration, also prefer the repo-native script (for example `pnpm test -- --help` only when that is how the repo runs tests).
 
@@ -25,14 +33,14 @@ If a package manager script already exists after the script migration, also pref
 Install only packages the migrated scope needs:
 
 - Always add `@rstest/core` as a dev dependency for a migrated scope.
-- If coverage is enabled, add the matching provider package:
+- If coverage is enabled, add a Rstest provider supported by the target Rstest version:
   - `coverage.provider: 'istanbul'` -> `@rstest/coverage-istanbul`
-  - `coverage.provider: 'v8'` -> `@rstest/coverage-v8`
+  - `coverage.provider: 'v8'` -> `@rstest/coverage-v8` only for Rstest >= 0.10.2; for Rstest 0.8.x targets, use Istanbul or explicitly plan a toolchain upgrade first
 - If migrating a project that already has `rslib.config.*`, prefer `@rstest/adapter-rslib`.
 - If migrating a project that already has `rsbuild.config.*`, prefer `@rstest/adapter-rsbuild`.
 - Keep Jest/Vitest packages until the migrated scope is green. Remove them only in the cleanup phase and only if no other scope still uses them.
 
-Do not add both old and new coverage providers for the same scope unless mixed-mode scopes still require both.
+Temporary overlap between legacy coverage packages and Rstest coverage packages is acceptable until the migrated scope is green. Do not add multiple Rstest coverage providers for the same final scope unless the repo intentionally keeps multiple coverage modes.
 
 ## Rsbuild/Rspack version compatibility gate
 
@@ -47,9 +55,9 @@ Before debugging test failures, check whether the Rstest target version matches 
 Use the repo-native package manager for inspection. Examples:
 
 ```bash
-pnpm why @rstest/core @rsbuild/core @rspack/core @rslib/core
-pnpm why @rstest/adapter-rsbuild @rstest/adapter-rslib @rstest/adapter-rspack
-pnpm ls --depth Infinity | rg '@rsbuild/plugin-'
+pnpm -r list @rstest/core @rsbuild/core @rspack/core @rslib/core --depth Infinity
+pnpm -r list @rstest/adapter-rsbuild @rstest/adapter-rslib @rstest/adapter-rspack --depth Infinity
+pnpm -r list --depth Infinity | rg '@rsbuild/plugin-'
 ```
 
 For npm-only repos, use `npm ls` instead:
@@ -66,9 +74,9 @@ If errors mention Rsbuild/Rspack config schema, plugin hooks, compiler instance 
 If install/check fails:
 
 - Stop broad migration edits.
-- If `ni` is unavailable or environment-blocked, use the repo-native package manager as fallback.
+- Use the repo-native package manager indicated by `packageManager`, lockfiles, workspace files, or existing scripts.
 - Do not mix multiple package managers in one attempt unless user asks.
-- In monorepo, only do manual workspace/root fallback when `ni` cannot be used.
+- In monorepos, run installs/checks from the workspace root unless the repo clearly uses nested package managers.
 - Do not fake a migration by editing code without a runnable `rstest` binary unless the user explicitly accepts a config-only patch.
 
 Return a blocker report with:
@@ -78,4 +86,4 @@ Return a blocker report with:
 3. Concrete next command(s) for the user to run.
 4. Whether files were already changed.
 5. Resume point: "after dependencies are installed, continue from the deltas step".
-6. Install strategy used (`ni` or explicit manager fallback).
+6. Install strategy used and which repo signal selected it (`packageManager`, lockfile, workspace file, or existing script).

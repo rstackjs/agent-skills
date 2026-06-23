@@ -27,7 +27,7 @@ Use this reference to decide the migration path and scope.
 
 - `rslib.config.*` exists -> consider `@rstest/adapter-rslib` and `extends: withRslibConfig()`.
 - `rsbuild.config.*` exists -> consider `@rstest/adapter-rsbuild` and `extends: withRsbuildConfig()`.
-- `rspack.config.*` exists -> consider `@rstest/adapter-rspack` and `extends: withRspackConfig()`.
+- `rspack.config.*` exists -> for Rspack 2.x, consider `@rstest/adapter-rspack` and `extends: withRspackConfig()`; for Rspack 1.x / Rstest 0.8.x, prefer a manual Rstest config that ports the necessary Rspack settings instead of installing the Rspack adapter.
 - `@rsbuild/core`, `@rspack/core`, `@rslib/core`, or `@rsbuild/plugin-*` in dependencies/devDependencies indicates the migration must preserve Rstack toolchain compatibility.
 - `overrides`, `resolutions`, and `pnpm.overrides` can pin Rsbuild/Rspack or plugin majors; inspect them before choosing the Rstest target version.
 - Existing Rspack/Rsbuild aliases, plugins, `source.define`, `tools.swc`, or `output.externals` are often better migrated through adapters/config than by editing tests.
@@ -44,6 +44,6 @@ Use this reference to decide the migration path and scope.
 - If both are detected, treat as mixed mode and migrate one scope at a time (package/suite/project).
 - Prefer migrating the currently CI-critical or higher-failure scope first.
 - Keep both legacy runners until each migrated scope is green on Rstest.
-- Choose the Rstest target version together with the Rstack toolchain major: latest Rstest for Rsbuild/Rspack 2.x, or Rstest 0.8.x for Rsbuild/Rspack 1.x. Align `@rsbuild/plugin-*` with the same Rsbuild major before config migration.
+- Choose the Rstest target version together with the Rstack toolchain major: latest Rstest for Rsbuild/Rspack 2.x, or Rstest 0.8.x for Rsbuild/Rspack 1.x. Check each `@rsbuild/plugin-*` package peer range before changing plugin versions.
 - In monorepos, choose the smallest runnable scope that has its own package/config/test script. Do not migrate unrelated packages just because they share a root lockfile.
 - If the root config is only a project/workspace aggregator, preserve that role: Rstest root `projects` config is not itself a test project unless the root is explicitly included as a project.

@@ -26,8 +26,8 @@ When local docs are available, prefer the checked-out source, for example `websi
 ## Version compatibility
 
 - Latest Rstest uses Rsbuild/Rspack 2.x; Rstest 0.8.x uses Rsbuild/Rspack 1.x.
-- If replacing `babel-jest`, `ts-jest`, or custom transformers with Rsbuild plugins such as `@rsbuild/plugin-babel`, choose plugin majors that match `@rsbuild/core`.
-- Keep `@rstest/adapter-*` aligned with `@rstest/core`. Treat Rsbuild/Rspack/plugin schema or peer errors as dependency skew first, not test failures.
+- If replacing `babel-jest`, `ts-jest`, or custom transformers with Rsbuild plugins such as `@rsbuild/plugin-babel`, choose plugin versions that satisfy the installed `@rsbuild/core` peer range.
+- Choose `@rstest/adapter-*` versions by peer compatibility with `@rstest/core` and the underlying Rsbuild/Rslib/Rspack version. Treat Rsbuild/Rspack/plugin schema or peer errors as dependency skew first, not test failures.
 
 ## Jest-specific enforcement
 

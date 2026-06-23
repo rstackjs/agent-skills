@@ -10,11 +10,13 @@ Run install with `ni` and trust its workspace/package-manager detection:
 npx -y @antfu/ni install
 ```
 
-Then verify Rstest is resolvable from local dependencies:
+Then verify Rstest is resolvable from local dependencies without falling back to remote package execution:
 
 ```bash
-npx rstest -h
+pnpm exec rstest -h
 ```
+
+For npm-only repos, use `npm exec --no -- rstest -h` only after `@rstest/core` is installed locally, or run `./node_modules/.bin/rstest -h` directly.
 
 If a package manager script already exists after the script migration, also prefer the repo-native script (for example `pnpm test -- --help` only when that is how the repo runs tests).
 
@@ -38,8 +40,8 @@ Before debugging test failures, check whether the Rstest target version matches 
 
 - Latest Rstest uses the Rsbuild/Rspack 2.x ecosystem.
 - Rstest 0.8.x uses the Rsbuild/Rspack 1.x ecosystem.
-- `@rsbuild/plugin-*` packages must match the `@rsbuild/core` major version.
-- Adapters such as `@rstest/adapter-rsbuild`, `@rstest/adapter-rslib`, and `@rstest/adapter-rspack` should match `@rstest/core`.
+- `@rsbuild/plugin-*` packages must satisfy the installed `@rsbuild/core` peer range. Do not force major equality for plugins whose published peer range intentionally spans majors.
+- Choose adapters such as `@rstest/adapter-rsbuild`, `@rstest/adapter-rslib`, and `@rstest/adapter-rspack` by peer compatibility with `@rstest/core` and the underlying Rsbuild/Rslib/Rspack version. Rstest 0.8.x migrations may need older adapter package versions whose package major does not match `@rstest/core`.
 - In monorepos, check root and package-level `overrides`, `resolutions`, `pnpm.overrides`, lockfile entries, and nested package managers for duplicate major versions.
 
 Use the repo-native package manager for inspection. Examples:
@@ -47,14 +49,14 @@ Use the repo-native package manager for inspection. Examples:
 ```bash
 pnpm why @rstest/core @rsbuild/core @rspack/core @rslib/core
 pnpm why @rstest/adapter-rsbuild @rstest/adapter-rslib @rstest/adapter-rspack
-pnpm why '@rsbuild/plugin-*'
+pnpm ls --depth Infinity | rg '@rsbuild/plugin-'
 ```
 
 For npm-only repos, use `npm ls` instead:
 
 ```bash
 npm ls @rstest/core @rsbuild/core @rspack/core @rslib/core 2>/dev/null || true
-npm ls '@rsbuild/plugin-*' 2>/dev/null || true
+npm ls --all 2>/dev/null | grep '@rsbuild/plugin-' || true
 ```
 
 If errors mention Rsbuild/Rspack config schema, plugin hooks, compiler instance mismatch, missing plugin APIs, or peer dependency conflicts, fix dependency versions first. Do not rewrite tests to hide a toolchain-major mismatch.

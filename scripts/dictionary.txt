@@ -18,6 +18,7 @@ lightningcss
 lldb
 LLDB
 llms
+modernjs
 mktemp
 napi
 pacman

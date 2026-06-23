@@ -12,11 +12,11 @@
 
 One round of evaluation was run against 3 real rstack-ecosystem-ci failures. Each eval ran once with the skill and once without the skill.
 
-| Metric | With Skill | Without Skill | Delta |
-| -------- | ------------ | --------------- | ------- |
-| Pass rate | **100%** (12/12) | **75%** (9/12) | **+25 pp** |
-| Avg. wall time | 956.7 s | 2,135.5 s | −1,178.8 s |
-| Avg. tokens | 92,102 | 46,862 | +45,240 |
+| Metric         | With Skill       | Without Skill  | Delta      |
+| -------------- | ---------------- | -------------- | ---------- |
+| Pass rate      | **100%** (12/12) | **75%** (9/12) | **+25 pp** |
+| Avg. wall time | 956.7 s          | 2,135.5 s      | −1,178.8 s |
+| Avg. tokens    | 92,102           | 46,862         | +45,240    |
 
 The skill produced materially better attribution on the hardest case (rsdoctor SWC semantic bug) and converged faster on the plugin-suite empty-line case. Token usage is higher with the skill because it performs a structured two-phase investigation (Phase 1 PR location, Phase 2 deep root cause).
 
@@ -28,11 +28,11 @@ The skill produced materially better attribution on the hardest case (rsdoctor S
 
 **Question:** Why did the `plugin` suite turn red, and is Rspack PR #14254 the real source?  
 **Surface pivot:** PR #14254 (`feat(runtime): introduce experimental.runtimeMode`).  
-**Actual source:** PR #14254 — but the failure mechanism is *incidental* trailing newlines in 5 EJS templates, not the runtimeMode feature itself.
+**Actual source:** PR #14254 — but the failure mechanism is _incidental_ trailing newlines in 5 EJS templates, not the runtimeMode feature itself.
 
-| Configuration | Pass Rate | Time | Tokens |
-| ------------- | --------- | ---- | ------ |
-| with_skill | 4/4 (100%) | 856.1 s | 91,265 |
+| Configuration | Pass Rate  | Time      | Tokens |
+| ------------- | ---------- | --------- | ------ |
+| with_skill    | 4/4 (100%) | 856.1 s   | 91,265 |
 | without_skill | 4/4 (100%) | 5,374.1 s | 42,605 |
 
 Both configurations correctly identified PR #14254 and the extra-blank-line signature. The with-skill run reached the same conclusion in ~16% of the wall time by following the structured eco-ci workflow.
@@ -45,10 +45,10 @@ Both configurations correctly identified PR #14254 and the extra-blank-line sign
 **Surface pivot:** PR #14353.  
 **Actual source:** rstest PR #1357 (downstream snapshot/timeout expectation change).
 
-| Configuration | Pass Rate | Time | Tokens |
-| ------------- | --------- | ---- | ------ |
-| with_skill | 4/4 (100%) | 1,014.0 s | 105,041 |
-| without_skill | 4/4 (100%) | 334.8 s | 29,430 |
+| Configuration | Pass Rate  | Time      | Tokens  |
+| ------------- | ---------- | --------- | ------- |
+| with_skill    | 4/4 (100%) | 1,014.0 s | 105,041 |
+| without_skill | 4/4 (100%) | 334.8 s   | 29,430  |
 
 Both configurations correctly exonerated PR #14353 and pointed to rstest PR #1357. The without-skill run was faster here because it gave a brief, shallow answer that happened to be correct; the skill ran its full two-phase workflow anyway. No quality regression, but a token/time trade-off.
 
@@ -60,10 +60,10 @@ Both configurations correctly exonerated PR #14353 and pointed to rstest PR #135
 **Surface attribution:** release branch at commit `ac3fa6a2d0`.  
 **Actual source:** PR #14256 (`refactor: swc exp for javascript parser plugin`), interacting with PR #14335's scope-info rewrite.
 
-| Configuration | Pass Rate | Time | Tokens |
-| ------------- | --------- | ---- | ------ |
-| with_skill | 4/4 (100%) | ~1,000 s* | 80,000* |
-| without_skill | 1/4 (25%) | 697.7 s | 68,552 |
+| Configuration | Pass Rate  | Time       | Tokens   |
+| ------------- | ---------- | ---------- | -------- |
+| with_skill    | 4/4 (100%) | ~1,000 s\* | 80,000\* |
+| without_skill | 1/4 (25%)  | 697.7 s    | 68,552   |
 
 This is the discriminating case. Without the skill, the run latched onto a different nearby PR (#14335) and missed the SWC exp/core semantic inconsistency and the `lightColorCount` variable-renaming failure signature. With the skill, the run used the canary-date bisect and revert-commit evidence to identify PR #14256 as the actual source and explained the concatenated-module scope bug.
 
@@ -96,6 +96,6 @@ This is the discriminating case. Without the skill, the run latched onto a diffe
 
 ## Next Steps (Suggested)
 
-1. Add a few more discriminating cases where the surface pivot is *not* the real source, to confirm the skill's value isn't driven by a single eval.
+1. Add a few more discriminating cases where the surface pivot is _not_ the real source, to confirm the skill's value isn't driven by a single eval.
 2. Consider a shorter "fast path" in the skill for cases where the surface pivot is clearly correct, to reduce token/time overhead on easy attributions.
 3. Commit `report.md` and `evals/evals.json`; raw workspace outputs are gitignored.

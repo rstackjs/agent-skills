@@ -16,7 +16,7 @@ This version covers the Rspack stack.
 Before starting, ask the user which local checkout paths they have available. Do not assume machine-specific paths.
 
 - **Local Rspack checkout** — required for inspecting commits, resolving canary SHAs, and reviewing PR diffs. Ask for it before running any `git -C <rspack-path>` command.
-- **Local downstream project checkout** — required when using `pnpm.overrides` to test specific Rspack versions (for example, during canary bisect). Ask for it before modifying `pnpm-workspace.yaml`, `package.json`, or lockfiles.
+- **Local downstream project checkout** — required when using `pnpm.overrides` to test specific Rspack versions (for example, during canary bisect). Ask for it before making approved temporary reproduction edits to `package.json`, `pnpm-lock.yaml`, or equivalent package-manager files.
 - **Local `rstack-ecosystem-ci` checkout** — optional. If available, use its `data/rspack.json` as the first local status source. Otherwise use the ecosystem CI site and GitHub Actions.
 - **GitHub access** — prefer authenticated `gh` for `web-infra-dev/rspack` and `rstackjs/rstack-ecosystem-ci`. If `gh` is unavailable, use local `origin/data:rspack.json`, workflow/job URLs, and the GitHub connector or public pages where available; state any evidence gap in the report.
 
@@ -27,7 +27,7 @@ git -C <rspack-path> fetch origin main --tags
 ```
 
 - Treat GitHub Actions job logs as the source of truth for failure signatures.
-- Do not modify project files unless the user explicitly asks for a fix.
+- Do not modify project files unless the user explicitly asks for a fix or approves temporary reproduction edits. Temporary reproduction edits must be recorded and restored before reporting results unless the user asks to keep them.
 
 ## Investigation Model
 

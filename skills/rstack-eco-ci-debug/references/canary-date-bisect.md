@@ -33,20 +33,25 @@ git -C <rspack-path> log -1 --pretty=format:'%h %s' <sha>
 
 ## Apply a Canary With pnpm.overrides
 
-Prefer editing the workspace root `pnpm-workspace.yaml` when it already owns overrides:
+Prefer editing the downstream workspace root `package.json` and adding a temporary `pnpm.overrides` entry:
 
-```yaml
-overrides:
-  '@rspack/core': 'npm:@rspack-canary/core@<canary-version>'
+```json
+{
+  "pnpm": {
+    "overrides": {
+      "@rspack/core": "npm:@rspack-canary/core@<canary-version>"
+    }
+  }
+}
 ```
 
-If the project uses root `package.json` overrides instead, use that location consistently.
+If the project already centralizes overrides in another tracked package-manager config, use that location consistently and record the exact changed files before testing.
 
 Install and verify:
 
 ```bash
-pnpm install
-pnpm why @rspack/core --depth 0
+pnpm -C <downstream-path> install
+pnpm -C <downstream-path> why @rspack/core --depth 0
 ```
 
 The test is invalid if `pnpm why` does not show the intended canary.
@@ -88,13 +93,13 @@ Then inspect the PR diff and compare it to the failure signature before calling 
 After testing, remove the temporary override and reinstall if needed:
 
 ```bash
-git -C <downstream-path> diff -- pnpm-workspace.yaml package.json pnpm-lock.yaml
-git -C <downstream-path> restore pnpm-workspace.yaml package.json pnpm-lock.yaml
-pnpm install
-pnpm why @rspack/core --depth 0
+git -C <downstream-path> diff --name-only
+git -C <downstream-path> restore -- <changed-files-from-the-diff-above>
+pnpm -C <downstream-path> install
+pnpm -C <downstream-path> why @rspack/core --depth 0
 ```
 
-If files had pre-existing local changes, do not restore them blindly. Ask the user how to proceed.
+Only restore files that were actually changed by this workflow and are tracked by git. If files had pre-existing local changes, do not restore them blindly. Ask the user how to proceed.
 
 ## Output Format
 

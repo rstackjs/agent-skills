@@ -24,7 +24,7 @@ After adding `@rstest/core`, verify Rstest through the same local manager path w
 pnpm exec rstest -h
 ```
 
-For npm-only repos, use `npm exec --no -- rstest -h` after local install, or run `./node_modules/.bin/rstest -h` directly. For Yarn/Bun repos, use the repo's local binary execution path only when it resolves the installed dependency.
+For npm-only repos, run `./node_modules/.bin/rstest -h` directly, or use `npm exec -- rstest -h` after local install. In Yarn/Bun repos, use the repo's local binary execution path only when it resolves the installed dependency.
 
 If a package manager script already exists after the script migration, also prefer the repo-native script (for example `pnpm test -- --help` only when that is how the repo runs tests).
 

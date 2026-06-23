@@ -9,7 +9,7 @@ Use the repository's native package manager instead of adding another package ju
 Detect the manager from existing project signals, in this order:
 
 1. `package.json#packageManager`
-2. Lockfile: `pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`, `npm-shrinkwrap.json`, or `bun.lockb`
+2. Lockfile: `pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`, `npm-shrinkwrap.json`, `bun.lock`, or `bun.lockb`
 3. Existing CI/test scripts or workspace files such as `pnpm-workspace.yaml` or `.yarnrc.yml`
 
 Then install with that manager. For example, in a pnpm repo:
@@ -24,7 +24,7 @@ After adding `@rstest/core`, verify Rstest through the same local manager path w
 pnpm exec rstest -h
 ```
 
-For npm-only repos, run `./node_modules/.bin/rstest -h` directly, or use `npm exec -- rstest -h` after local install. In Yarn/Bun repos, use the repo's local binary execution path only when it resolves the installed dependency.
+For npm-only repos, run `./node_modules/.bin/rstest -h` directly so the check cannot fall back to a remote package. In Yarn/Bun repos, use the repo's local binary execution path only when it resolves the installed dependency.
 
 If a package manager script already exists after the script migration, also prefer the repo-native script (for example `pnpm test -- --help` only when that is how the repo runs tests).
 
@@ -33,9 +33,9 @@ If a package manager script already exists after the script migration, also pref
 Install only packages the migrated scope needs:
 
 - Always add `@rstest/core` as a dev dependency for a migrated scope.
-- If coverage is enabled, add a Rstest provider supported by the target Rstest version:
+- If coverage is enabled, add a Rstest provider supported by the target Rstest version and environment:
   - `coverage.provider: 'istanbul'` -> `@rstest/coverage-istanbul`
-  - `coverage.provider: 'v8'` -> `@rstest/coverage-v8` only for Rstest >= 0.10.2; for Rstest 0.8.x targets, use Istanbul or explicitly plan a toolchain upgrade first
+  - `coverage.provider: 'v8'` -> `@rstest/coverage-v8` only for Rstest >= 0.10.2 outside Browser Mode; for Browser Mode or Rstest 0.8.x targets, use Istanbul or explicitly plan a toolchain upgrade first
 - If migrating a project that already has `rslib.config.*`, prefer `@rstest/adapter-rslib`.
 - If migrating a project that already has `rsbuild.config.*`, prefer `@rstest/adapter-rsbuild`.
 - Keep Jest/Vitest packages until the migrated scope is green. Remove them only in the cleanup phase and only if no other scope still uses them.
@@ -48,6 +48,7 @@ Before debugging test failures, check whether the Rstest target version matches 
 
 - Latest Rstest uses the Rsbuild/Rspack 2.x ecosystem.
 - Rstest 0.8.x uses the Rsbuild/Rspack 1.x ecosystem.
+- Latest Rstest also requires Node `^20.19.0 || >=22.12.0`; check `node -v` and `package.json#engines` before selecting it. If the project is pinned to an older Node version, ask for a Node upgrade or choose a compatible Rstest line instead.
 - `@rsbuild/plugin-*` packages must satisfy the installed `@rsbuild/core` peer range. Do not force major equality for plugins whose published peer range intentionally spans majors.
 - Choose adapters such as `@rstest/adapter-rsbuild`, `@rstest/adapter-rslib`, and `@rstest/adapter-rspack` by peer compatibility with `@rstest/core` and the underlying Rsbuild/Rslib/Rspack version. Rstest 0.8.x migrations may need older adapter package versions whose package major does not match `@rstest/core`.
 - In monorepos, check root and package-level `overrides`, `resolutions`, `pnpm.overrides`, lockfile entries, and nested package managers for duplicate major versions.

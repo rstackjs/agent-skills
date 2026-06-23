@@ -40,7 +40,7 @@ Migrate Jest- or Vitest-based tests and config to Rstest with minimal behavior c
 - Rstest `globals` defaults to `false`; if globals remain, set `globals: true` and add `@rstest/core/globals` types.
 - For latest Rstest, use `defineInlineProject({ name, ... })` for object entries inside `projects`; for Rstest 0.8.x, use plain named objects because `defineInlineProject` is unavailable. Use `defineProject` for top-level project config files.
 - Coverage providers require Rstest packages (`@rstest/coverage-istanbul` or `@rstest/coverage-v8`); `coverage.reporters` is plural.
-- `detectAsyncLeaks` is only replacement-adjacent for leaked async resources, not a drop-in `detectOpenHandles` clone.
+- `detectAsyncLeaks` is only replacement-adjacent for leaked async resources, not a drop-in `detectOpenHandles` clone. It requires Rstest >= 0.10.1, so omit it for Rstest 0.8.x migrations unless the user accepts a toolchain upgrade.
 - Rstest runs on Rsbuild/Rspack. Prefer `output.bundleDependencies`, `output.externals`, aliases, adapters, or Rsbuild plugins before changing tests.
 - Version compatibility matters: latest Rstest uses Rsbuild/Rspack 2.x; Rstest 0.8.x uses Rsbuild/Rspack 1.x. Choose adapters and Rsbuild plugins by peer dependency compatibility, not package-name major equality.
 

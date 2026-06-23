@@ -34,6 +34,6 @@ When local docs are available, prefer the checked-out source, for example `websi
 
 ## Vitest-specific enforcement
 
-1. Delete scope-local `vitest.config.*` and `vitest.setup.*` only after the migrated scope is green. Drop shared `vitest.workspace.*`, root shared config, and `@vitest/*` devDeps only after no scope still uses Vitest.
+1. Delete scope-local `vitest.config.*` and truly legacy `vitest.setup.*` only after the migrated scope is green. If a setup file was rewritten and is still referenced by Rstest `setupFiles`, rename or copy it to a Rstest-owned name such as `rstest.setup.*` before deleting the legacy Vitest-named file. Drop shared `vitest.workspace.*`, root shared config, and `@vitest/*` devDeps only after no scope still uses Vitest.
 2. Do not re-record Vitest snapshots just to update headers. Vitest and Rstest snapshot files are byte-compatible below the header line; run `-u` only for expected body diffs.
 3. Do not carry the Vite mental model into Rstest. Prefer adapters and Rsbuild/Rspack config translations over custom test rewrites.

@@ -12,22 +12,16 @@ When local docs are available, prefer the checked-out source, for example `websi
 
 ## High-signal deltas
 
-- Scripts: `jest` -> `rstest`; `--watch` / `--watchAll` -> `rstest --watch`; `--runInBand` -> `--pool.maxWorkers 1`; Jest `-w` means workers, but Rstest `-w` means watch.
+- Scripts: `jest` -> `rstest`; `--watch` / `--watchAll` -> `rstest --watch`; `--runInBand` -> `--pool.maxWorkers 1` only when supported, otherwise config `pool.maxWorkers: 1`; Jest `-w` means workers, but Rstest `-w` means watch.
 - Config: create `rstest.config.ts` with `defineConfig` from `@rstest/core`. Map every important Jest field through the official guide; do not silently drop unknown fields.
-- Transforms: remove `preset`, `ts-jest`, and most `transform` config where possible. Rstest uses SWC by default; use `tools.swc`, `output.bundleDependencies`, or an Rsbuild plugin only when the project needs custom behavior.
+- Transforms: remove `preset`, `ts-jest`, and most `transform` config where possible. Rstest uses SWC by default; use version-supported SWC/output/Rsbuild plugin config only when needed.
 - Setup: merge Jest `setupFiles` and `setupFilesAfterEnv` into Rstest `setupFiles` because Rstest setup runs after framework registration.
 - Globals/APIs: `@jest/globals` -> `@rstest/core`; `jest.<api>` -> `rs.<api>`. If globals remain, set `globals: true` and add `@rstest/core/globals` types.
 - Async tests: `done` callback tests are unsupported; convert to Promise or `async` / `await`.
 - Hooks: `beforeEach` / `beforeAll` return values are cleanup functions in Rstest. Wrap setup-only arrow expressions in braces when needed.
-- Environment: `testEnvironmentOptions` becomes `testEnvironment: { name, options }`; file-level Jest environment comments are recognized during migration, but `@rstest-environment` is native.
+- Environment: `testEnvironmentOptions` becomes `testEnvironment: { name, options }`. File-level env comments are latest-only; older targets should split env-specific files into config/projects.
 - CJS mocking: use `rs.mockRequire()` for code paths using `require()`.
-- Coverage: install a Rstest provider supported by the target version. Jest `coverageProvider: 'babel'` maps to Rstest `istanbul`; Jest `coverageProvider: 'v8'` maps to Rstest `v8` with `@rstest/coverage-v8` only on Rstest >= 0.10.2. Use Istanbul for Rstest 0.8.x targets unless the user accepts a toolchain upgrade.
-
-## Version compatibility
-
-- Latest Rstest uses Rsbuild/Rspack 2.x; Rstest 0.8.x uses Rsbuild/Rspack 1.x.
-- If replacing `babel-jest`, `ts-jest`, or custom transformers with Rsbuild plugins such as `@rsbuild/plugin-babel`, choose plugin versions that satisfy the installed `@rsbuild/core` peer range.
-- Choose `@rstest/adapter-*` versions by peer compatibility with `@rstest/core` and the underlying Rsbuild/Rslib/Rspack version. Treat Rsbuild/Rspack/plugin schema or peer errors as dependency skew first, not test failures.
+- Coverage: install a Rstest provider supported by the target version. Jest `babel` maps to Istanbul; Jest `v8` maps to V8 only when the `dependency-install-gate.md` capability gate allows it.
 
 ## Jest-specific enforcement
 

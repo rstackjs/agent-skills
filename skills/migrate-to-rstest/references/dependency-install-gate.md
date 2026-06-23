@@ -4,87 +4,30 @@ Use this reference when running the dependency install gate step of the migratio
 
 ## Quick path
 
-Use the repository's native package manager instead of adding another package just to detect the manager.
+Use the repo's native package manager; do not add a detector package. Pick it from `packageManager`, then lock files (`pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`, `npm-shrinkwrap.json`, `bun.lock`, `bun.lockb`), then CI/workspace hints.
 
-Detect the manager from existing project signals, in this order:
-
-1. `package.json#packageManager`
-2. Lockfile: `pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`, `npm-shrinkwrap.json`, `bun.lock`, or `bun.lockb`
-3. Existing CI/test scripts or workspace files such as `pnpm-workspace.yaml` or `.yarnrc.yml`
-
-Then install with that manager. For example, in a pnpm repo:
-
-```bash
-pnpm install
-```
-
-After adding `@rstest/core`, verify Rstest through the same local manager path without remote package fallback. For example:
-
-```bash
-pnpm exec rstest -h
-```
-
-For npm-only repos, run `./node_modules/.bin/rstest -h` directly so the check cannot fall back to a remote package. In Yarn/Bun repos, use the repo's local binary execution path only when it resolves the installed dependency.
-
-If a package manager script already exists after the script migration, also prefer the repo-native script (for example `pnpm test -- --help` only when that is how the repo runs tests).
+After adding `@rstest/core`, verify through a local-only path: e.g. `pnpm exec rstest -h`, a migrated test script, or `./node_modules/.bin/rstest -h` for npm-only repos. Avoid commands that can fetch a remote `rstest` package.
 
 ## Dependency decisions
 
-Install only packages the migrated scope needs:
+Install only what the migrated scope needs: `@rstest/core`, one capability-supported coverage provider if coverage is enabled, and an adapter only when the existing Rsbuild/Rslib/Rspack config and peer ranges support it.
 
-- Always add `@rstest/core` as a dev dependency for a migrated scope.
-- If coverage is enabled, add a Rstest provider supported by the target Rstest version and environment:
-  - `coverage.provider: 'istanbul'` -> `@rstest/coverage-istanbul`
-  - `coverage.provider: 'v8'` -> `@rstest/coverage-v8` only for Rstest >= 0.10.2 outside Browser Mode; for Browser Mode or Rstest 0.8.x targets, use Istanbul or explicitly plan a toolchain upgrade first
-- If migrating a project that already has `rslib.config.*`, prefer `@rstest/adapter-rslib`.
-- If migrating a project that already has `rsbuild.config.*`, prefer `@rstest/adapter-rsbuild`.
-- Keep Jest/Vitest packages until the migrated scope is green. Remove them only in the cleanup phase and only if no other scope still uses them.
+Keep Jest/Vitest and legacy coverage packages until the migrated scope is green. Remove them only during cleanup and only if no other scope still uses them. Do not add multiple Rstest coverage providers for one final scope unless the repo intentionally keeps multiple coverage modes.
 
-Temporary overlap between legacy coverage packages and Rstest coverage packages is acceptable until the migrated scope is green. Do not add multiple Rstest coverage providers for the same final scope unless the repo intentionally keeps multiple coverage modes.
+## Version and capability gate
 
-## Rsbuild/Rspack version compatibility gate
+Before debugging test failures, choose a compatible Rstest line and avoid latest-only config on older targets:
 
-Before debugging test failures, check whether the Rstest target version matches the installed Rstack toolchain:
+- Latest Rstest needs Node `^20.19.0 || >=22.12.0` and the Rsbuild/Rspack 2.x ecosystem. For Rsbuild/Rspack 1.x or older Node projects, use a compatible older line such as Rstest 0.8.x unless the user accepts a toolchain upgrade.
+- If the target line lacks a needed feature, either use the fallback or ask whether to upgrade first.
+- Prefer config-level fallbacks on older targets: plain project objects, `output.externals`/aliases/manual config, Istanbul coverage, config/projects for env splits, explicit/manual mocks, config `pool.maxWorkers`, or manual Rspack config.
+- Treat `defineInlineProject`, `output.bundleDependencies`, `detectAsyncLeaks`, V8 coverage, file-level env comments, newer mock helpers, CLI `--pool.maxWorkers`, and `@rstest/adapter-rspack` as latest-line features unless target docs/types prove support.
+- Choose Rsbuild plugins and Rstest adapters by peer dependency compatibility, not package-name major equality. In monorepos, check root and package-level overrides/resolutions, lockfile entries, and nested package managers for duplicate majors.
 
-- Latest Rstest uses the Rsbuild/Rspack 2.x ecosystem.
-- Rstest 0.8.x uses the Rsbuild/Rspack 1.x ecosystem.
-- Latest Rstest also requires Node `^20.19.0 || >=22.12.0`; check `node -v` and `package.json#engines` before selecting it. If the project is pinned to an older Node version, ask for a Node upgrade or choose a compatible Rstest line instead.
-- `@rsbuild/plugin-*` packages must satisfy the installed `@rsbuild/core` peer range. Do not force major equality for plugins whose published peer range intentionally spans majors.
-- Choose adapters such as `@rstest/adapter-rsbuild`, `@rstest/adapter-rslib`, and `@rstest/adapter-rspack` by peer compatibility with `@rstest/core` and the underlying Rsbuild/Rslib/Rspack version. Rstest 0.8.x migrations may need older adapter package versions whose package major does not match `@rstest/core`.
-- In monorepos, check root and package-level `overrides`, `resolutions`, `pnpm.overrides`, lockfile entries, and nested package managers for duplicate major versions.
-
-Use the repo-native package manager for inspection. Examples:
-
-```bash
-pnpm -r list @rstest/core @rsbuild/core @rspack/core @rslib/core --depth Infinity
-pnpm -r list @rstest/adapter-rsbuild @rstest/adapter-rslib @rstest/adapter-rspack --depth Infinity
-pnpm -r list --depth Infinity | rg '@rsbuild/plugin-'
-```
-
-For npm-only repos, use `npm ls` instead:
-
-```bash
-npm ls @rstest/core @rsbuild/core @rspack/core @rslib/core 2>/dev/null || true
-npm ls --all 2>/dev/null | grep '@rsbuild/plugin-' || true
-```
-
-If errors mention Rsbuild/Rspack config schema, plugin hooks, compiler instance mismatch, missing plugin APIs, or peer dependency conflicts, fix dependency versions first. Do not rewrite tests to hide a toolchain-major mismatch.
+Inspect with the repo-native manager across workspaces (for example `pnpm -r list ... --depth Infinity`, or `npm ls --all` plus filtering). If errors mention config schema, plugin hooks, compiler mismatch, missing plugin APIs, or peer conflicts, fix dependency versions first; do not rewrite tests to hide toolchain skew.
 
 ## Blocked mode
 
-If install/check fails:
+If install/check fails, stop broad edits. Do not mix package managers or fake a migration without a runnable local `rstest` binary unless the user accepts a config-only patch.
 
-- Stop broad migration edits.
-- Use the repo-native package manager indicated by `packageManager`, lock files, workspace files, or existing scripts.
-- Do not mix multiple package managers in one attempt unless user asks.
-- In monorepos, run installs/checks from the workspace root unless the repo clearly uses nested package managers.
-- Do not fake a migration by editing code without a runnable `rstest` binary unless the user explicitly accepts a config-only patch.
-
-Return a blocker report with:
-
-1. Exact failed command(s).
-2. Error class (network/auth/registry/peer conflict/lockfile mismatch/permission).
-3. Concrete next command(s) for the user to run.
-4. Whether files were already changed.
-5. Resume point: "after dependencies are installed, continue from the deltas step".
-6. Install strategy used and which repo signal selected it (`packageManager`, lockfile, workspace file, or existing script).
+Report the failed command, error class, chosen package-manager signal, files already changed, next command, and resume point.

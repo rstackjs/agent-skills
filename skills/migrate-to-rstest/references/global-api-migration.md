@@ -11,10 +11,8 @@ The rules below are skill-side enforcement on top of that mapping.
 
 ## Mapping policy
 
-- Prefer imported APIs when a file already imports test APIs: `import { describe, expect, it, test, rs } from '@rstest/core'`.
-- If preserving global-style tests, set `globals: true` and add `@rstest/core/globals` to TypeScript types.
-- Rstest global APIs include `test`, `describe`, `it`, `expect`, `assert`, hooks, `onTestFinished`, `onTestFailed`, `rs`, and `rstest`.
-- `rs` and `rstest` are equivalent runtime utility aliases. Prefer `rs` for consistency with Rstest migration docs.
+- Prefer imports from `@rstest/core`; use globals only when preserving global-style tests (`globals: true` plus `@rstest/core/globals` types).
+- Rstest globals include test APIs, hooks, `rs`, and `rstest`. Prefer `rs` for migration consistency.
 
 ## Red lines
 

@@ -74,7 +74,7 @@ If errors mention Rsbuild/Rspack config schema, plugin hooks, compiler instance 
 If install/check fails:
 
 - Stop broad migration edits.
-- Use the repo-native package manager indicated by `packageManager`, lockfiles, workspace files, or existing scripts.
+- Use the repo-native package manager indicated by `packageManager`, lock files, workspace files, or existing scripts.
 - Do not mix multiple package managers in one attempt unless user asks.
 - In monorepos, run installs/checks from the workspace root unless the repo clearly uses nested package managers.
 - Do not fake a migration by editing code without a runnable `rstest` binary unless the user explicitly accepts a config-only patch.

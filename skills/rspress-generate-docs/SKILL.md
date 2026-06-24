@@ -7,13 +7,20 @@ description: Generate or maintain Rspress documentation for a project. Use whene
 
 Create and maintain Rspress documentation as part of normal project work. Prefer source-backed docs over generic prose: read the code, tests, examples, package metadata, and existing README before writing.
 
+## Use Cases
+
+- Create a new Rspress v2 documentation site for a project that has no docs site yet.
+- Update an existing Rspress v2 docs site for a user-facing feature, API change, CLI change, or PR.
+- Migrate an existing Rspress v1 docs site to Rspress v2 before continuing documentation work.
+- Integrate Rspress documentation into an Rslib package or workspace while preserving the repository's package manager and scripts.
+
 ## Workflow
 
 1. **Inspect the project**
    - Locate package files, source entry points, examples, tests, changelogs, and README files.
    - Search for Rspress config files: `rspress.config.ts`, `.js`, `.mjs`, or `.cjs`.
    - Inspect dependencies for `rspress`, `@rspress/core`, and `@rspress/plugin-*`.
-   - Detect the package manager and workspace setup from lock files (`pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`, `bun.lockb`) and `pnpm-workspace.yaml`.
+   - Detect the package manager and workspace setup from lock files (`pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`, `bun.lock`, `bun.lockb`) and `pnpm-workspace.yaml`.
    - If a config exists, resolve the docs root from its `root` option; otherwise check common roots such as `docs/`, `doc/`, `website/`, and `site/`.
 
 2. **Choose the correct path**
@@ -25,6 +32,25 @@ Create and maintain Rspress documentation as part of normal project work. Prefer
    - Run the docs build from the Rspress project directory or through the repo's root script.
    - The build must pass as the primary success criterion.
    - Fix broken links, missing navigation entries, invalid frontmatter, and failed MDX imports before reporting completion.
+
+## Code Examples
+
+Use the repository's package manager when creating or validating docs:
+
+```bash
+# Create a new Rspress docs site with the detected package manager.
+# Replace pnpm with npm, yarn, or bun when that is the repo package manager.
+pnpm create rspress@latest
+
+# Validate from the docs project after replacing starter content.
+pnpm run build
+```
+
+When maintaining docs for a PR, inspect the changed source first, then update the matching docs page and navigation:
+
+```text
+src/formatBytes.ts -> website/docs/api/formatBytes.mdx -> website/docs/api/_meta.json
+```
 
 ## Reference
 

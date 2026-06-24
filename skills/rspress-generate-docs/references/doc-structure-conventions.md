@@ -9,7 +9,7 @@ Official reference:
 - Place `_nav.json` at the docs root (or at the i18n language root such as `docs/en/`).
 - Place `_meta.json` inside each subdirectory that needs explicit sidebar labels, order, or grouping.
 - For clickable directories, add an `index.mdx` (or `index.md`) inside the directory.
-- In leaf directories with only files, `_meta.json` can be omitted; Rspress sorts alphabetically. Prefix filenames with numbers such as `1-introduction.mdx` to customize order.
+- In leaf directories with only files, `_meta.json` can be omitted when alphabetical order is acceptable. Use `_meta.json` to customize order or labels; only preserve numeric filename prefixes when the repository already uses that convention.
 
 ## Example 1: simple Guide + API site
 

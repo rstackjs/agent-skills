@@ -26,18 +26,24 @@ Use this path when the current project has no existing Rspress documentation sit
      npm view create-rspress@latest version
      ```
 
-   - If the version is `2.x`, scaffold with the package manager used by the repo:
+   - If the version is `2.x`, scaffold with the package manager used by the repo. Run one command that matches the detected package manager:
 
      ```bash
      # interactive (recommended for first-time setup)
+     pnpm create rspress@latest
+     yarn create rspress@latest
      npm create rspress@latest
+     bun create rspress@latest
 
      # or non-interactive, e.g. for CI/automation
+     pnpm dlx create-rspress@latest my-docs --template basic-theme --tools rslint,prettier
+     yarn dlx create-rspress@latest my-docs --template basic-theme --tools rslint,prettier
      npx -y create-rspress@latest my-docs --template basic-theme --tools rslint,prettier
+     bun x create-rspress@latest my-docs --template basic-theme --tools rslint,prettier
      ```
 
-   - If `latest` is not `2.x`, do not use a v1 scaffold. Use a current 2.x create package instead, such as `npm create rspress@2`, or pin a known 2.x version.
-   - Prefer the detected package manager for installs and scripts (`pnpm create rspress@latest`, `yarn create rspress@latest`, `bun create rspress@latest`, etc.).
+   - If `latest` is not `2.x`, do not use a v1 scaffold. Use a current 2.x create package with the detected package manager, such as `<package-manager> create rspress@2`, or pin a known 2.x version.
+   - Prefer the detected package manager for installs and scripts. Do not introduce a second package manager or extra lockfile into an existing workspace.
    - Pick a template that matches the project:
      - `basic` — minimal site with the default theme.
      - `basic-theme` — adds a `theme/` folder for customization.
@@ -51,11 +57,11 @@ Use this path when the current project has no existing Rspress documentation sit
 
      ```bash
      cd <docs-project>
-     npm install
-     npm run dev
+     <package-manager> install
+     <package-manager> run dev
      ```
 
-   - Rspress requires Node.js `^20.19.0 || >=22.12.0`. If the repo's Node version is older, surface this to the user before proceeding.
+   - Check the current Node.js requirement from the official Rspress docs or the installed `rspress` / `@rspress/core` package's `engines.node` field. Compare it with the repo's configured Node version and surface any mismatch before proceeding.
    - Default build output goes to `doc_build/`. Keep it out of source control unless the repository already commits it.
 
 5. **Replace starter content**

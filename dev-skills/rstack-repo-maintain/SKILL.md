@@ -1,6 +1,8 @@
 ---
 name: rstack-repo-maintain
 description: 'Audit and modernize RstackJS/Rspack ecosystem repositories to the current shared infrastructure baseline: Rslib ESM or dual builds, Rslint recommended rules, Rstest test tooling, Node 20+ support where appropriate, TypeScript 6 and tsgo where compatible, concise README/AGENTS docs, release workflow cleanup, unused dependency removal, and infra PR commit conventions. Use when updating rstackjs repositories, copying infra patterns from maintained exemplars, or reviewing package/tooling consistency.'
+metadata:
+  internal: true
 ---
 
 # Rstack Repo Maintain
@@ -40,7 +42,7 @@ Always re-check the target repo and exemplar repo before editing. The reference 
    - **Rslint**: use `@rslint/core`; use `ts.configs.recommended` for TypeScript packages. Add `js.configs.recommended` only when JavaScript source or config files are intentionally linted.
    - **Prettier**: if the repo already carries Prettier or should check formatting, wire it into lint scripts with the repo's established style (`prettier --check .` / `prettier --write .` or `-c` / `-w`) and keep generated artifacts ignored by `.prettierignore`.
    - **Test tooling**: prefer Rstest for JavaScript/TypeScript unit tests in Rstack repositories. When a repo still uses Vitest or Jest, use the `migrate-to-rstest` skill, map scripts and configs to `@rstest/core`, keep Playwright or other browser E2E tooling separate, and remove legacy runner deps/configs only after the migrated scope is green.
-   - **Node/CI**: set Node support to 20+ when the package can support it, but do not copy an exact `engines.node` range unless the target repo should declare one. Do not blindly add a Node 20 matrix or an extra CI build step when the maintained baseline intentionally keeps CI latest-only for speed or already builds in release.
+   - **Node/CI**: verify the effective Node support policy from code, dependencies, CI, and release workflows. Do not blindly add a Node 20 matrix or an extra CI build step when the maintained baseline intentionally keeps CI latest-only for speed or already builds in release.
    - **GitHub Actions**: keep `.github/workflows/*` aligned with the chosen baseline repo. Pin third-party actions to commit hashes, not floating tags, and update action pins by copying or refreshing the baseline pattern instead of inventing new pins.
    - **TypeScript**: upgrade to TypeScript 6, remove stale/deprecated compiler options, prefer `target: "ES2023"` for Node 20+ packages, and keep module resolution consistent with runtime output.
    - **tsgo**: enable Rslib declaration `dts: { tsgo: true }` only after checking compatibility with declaration bundling, package shape, and installed `@typescript/native-preview`. Pin native-preview to an exact version and validate emitted declarations plus package contents.
@@ -49,7 +51,7 @@ Always re-check the target repo and exemplar repo before editing. The reference 
 
 4. **Preserve behavior while modernizing**
    - Do not touch business logic unless the infra change requires it.
-   - Keep compatibility breaks explicit in commit/PR notes: Node floor, ESM-only output, removed exports, changed CLI behavior, or dependency placement changes.
+   - Keep compatibility breaks explicit in commit/PR notes: ESM-only output, removed exports, changed CLI behavior, or dependency placement changes.
    - If a repo needs multiple risky changes, split them into reviewable PR-sized batches.
 
 5. **Prepare the infra PR**

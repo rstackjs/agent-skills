@@ -210,7 +210,7 @@ npx skills add rstackjs/agent-skills --skill rsdoctor-performance-analyze
 
 Diagnose Rspack, Rsbuild, Rslib, Rspress, Modern.js, or Webpack page runtime performance with browser evidence from Chrome DevTools MCP.
 
-Use when you need to diagnose Core Web Vitals, network waterfalls, long tasks, hydration, or page runtime performance. For build artifact analysis or build-time analysis, install and use `rsdoctor-analysis` with `npx skills add rstackjs/agent-skills --skill rsdoctor-analysis`.
+Use when you need to diagnose Core Web Vitals, network waterfalls, long tasks, hydration, or browser-observed page runtime performance. For build artifact, bundle, chunk, dependency, tree-shaking, or build-time analysis, install and use `rsdoctor-analysis` with `npx skills add rstackjs/agent-skills --skill rsdoctor-analysis`.
 
 ## Rstest Skills
 

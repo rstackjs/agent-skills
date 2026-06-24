@@ -16,6 +16,7 @@ test-temp-*
 # skills-package-manager
 .agents/skills
 .gemini/skills
+.claude/skills
 
 # skills-test
 skills-test/**/*

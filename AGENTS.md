@@ -11,6 +11,7 @@ A collection of Agent Skills for the Rspack ecosystem (Rspack, Rsbuild, Rslib, R
 ```
 agent-skills/
 ├── skills/              # Skills directory, contains all Skills
+├── dev-skills/          # Developer-facing Skills for Rstack repository maintenance
 ├── packages/            # Source code projects for complex scripts
 ├── scripts/             # Project-level configurations and tools
 │   └── config/          # Common configurations (rslib, tsconfig, etc.)
@@ -25,6 +26,8 @@ agent-skills/
 
 - **skills/**: Contains all Skills, each Skill is an independent folder
   - Each Skill includes `SKILL.md` (required), `scripts/` (optional), `references/` (optional), `assets/` (optional)
+- **dev-skills/**: Contains Skills used for Rstack repository maintenance
+  - These Skills are primarily for repository developers and maintainers, not end users
 - **packages/**: Contains source code for complex scripts that need compilation
   - Corresponds to Skills with the same name in the skills directory
   - Compiled by Rslib and output to the corresponding `skills/{skill-name}/scripts/` directory

@@ -1,9 +1,9 @@
 # Rstack Repository Baselines
 
-Snapshot date: 2026-06-18.
+Snapshot date: 2026-06-24.
 Primary `rslog` baseline last verified from `origin/main` on 2026-06-24 at commit `25dc20d3402efc3c3104f776a97a81cf9829be67`.
 
-This reference is based on public GitHub PR and repository inspection under `rstackjs/*`. Re-check current main branches before applying these patterns. Secondary reference sections remain at the 2026-06-18 snapshot unless explicitly noted.
+This reference is based on public GitHub PR and repository inspection under `rstackjs/*`. Re-check current main branches before applying these patterns. Secondary reference sections remain at the 2026-06-24 snapshot unless explicitly noted.
 
 ## Primary Baseline: rstackjs/rslog
 

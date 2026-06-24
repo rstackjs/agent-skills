@@ -1,17 +1,17 @@
-# rspress-docs-generator - evaluation report
+# rspress-generate-docs - evaluation report
 
 **Date:** 2026-06-15
 **Model:** Not recorded in the raw run artifacts; timing artifacts only captured tokens and duration.
-**Skill version:** `skills/rspress-docs-generator/SKILL.md` at `feat/rspress-generate-docs-eval` HEAD (`4efd2b6`)
-**Iteration:** `skills/rspress-docs-generator-workspace/iteration-1`
+**Skill version:** `skills/rspress-generate-docs/SKILL.md` at `feat/rspress-generate-docs-eval` HEAD (`4efd2b6`)
+**Iteration:** `skills/rspress-generate-docs-workspace/iteration-1`
 
 ## Setup
 
-- **Eval definitions:** `skills-test/rspress-docs-generator/evals/evals.json`
-- **Fixtures:** `skills/rspress-docs-generator-workspace/fixtures`
+- **Eval definitions:** `skills-test/rspress-generate-docs/evals/evals.json`
+- **Fixtures:** `skills/rspress-generate-docs-workspace/fixtures`
 - **Run shape:** 3 evals, one `with_skill` run and one `without_skill` baseline per eval.
 - **Grader:** assertion-based post-hoc checks in each run directory's `grading.json`.
-- **Aggregate artifacts:** `skills/rspress-docs-generator-workspace/iteration-1/benchmark.json` and `benchmark.md`.
+- **Aggregate artifacts:** `skills/rspress-generate-docs-workspace/iteration-1/benchmark.json` and `benchmark.md`.
 
 ## Aggregate Results
 
@@ -41,9 +41,9 @@ The skill improved assertion pass rate by 8.3 percentage points on this run and 
 
 ## Raw Artifacts
 
-- `skills/rspress-docs-generator-workspace/iteration-1/create-new-docs/with_skill`
-- `skills/rspress-docs-generator-workspace/iteration-1/create-new-docs/without_skill`
-- `skills/rspress-docs-generator-workspace/iteration-1/maintain-docs-for-pr/with_skill`
-- `skills/rspress-docs-generator-workspace/iteration-1/maintain-docs-for-pr/without_skill`
-- `skills/rspress-docs-generator-workspace/iteration-1/migrate-rspress-v1/with_skill`
-- `skills/rspress-docs-generator-workspace/iteration-1/migrate-rspress-v1/without_skill`
+- `skills/rspress-generate-docs-workspace/iteration-1/create-new-docs/with_skill`
+- `skills/rspress-generate-docs-workspace/iteration-1/create-new-docs/without_skill`
+- `skills/rspress-generate-docs-workspace/iteration-1/maintain-docs-for-pr/with_skill`
+- `skills/rspress-generate-docs-workspace/iteration-1/maintain-docs-for-pr/without_skill`
+- `skills/rspress-generate-docs-workspace/iteration-1/migrate-rspress-v1/with_skill`
+- `skills/rspress-generate-docs-workspace/iteration-1/migrate-rspress-v1/without_skill`

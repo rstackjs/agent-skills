@@ -1,9 +1,9 @@
 ---
-name: rspress-docs-generator
+name: rspress-generate-docs
 description: Generate or maintain Rspress documentation for a project. Use whenever the user wants to create a new docs site from a project that has no documentation, automatically add docs for user-facing feature work or PRs, or migrate an existing Rspress v1 docs site to v2. Also use when the project uses Rslib and needs documentation integration.
 ---
 
-# Rspress Docs Generator
+# Rspress Generate Docs
 
 Create and maintain Rspress documentation as part of normal project work. Prefer source-backed docs over generic prose: read the code, tests, examples, package metadata, and existing README before writing.
 

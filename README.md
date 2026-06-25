@@ -250,7 +250,7 @@ Skills in this section are mainly intended for contribution workflows in reposit
 npx skills add rstackjs/agent-skills --skill create-draft-release-notes
 ```
 
-Create or update draft GitHub releases, then organize GitHub-generated release notes into user-friendly sections without rewriting release note items.
+Create or update draft GitHub release notes, or output organized Markdown when draft creation is unavailable. Use for release notes, draft releases, release PR checks, npm staged publishing checks, and optional highlights.
 
 ### release-blog-writer
 

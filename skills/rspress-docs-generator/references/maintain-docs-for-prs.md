@@ -11,10 +11,10 @@ Use this path when a Rspress v2 docs site already exists.
 
 2. **Update the right pages**
    - Modify existing pages before adding new pages when the change belongs in an established guide or API reference.
-   - Add new pages only for new workflows or concepts that need their own navigation entry.
+   - Add new pages only for new workflows or concepts that need their own sidebar or top navigation entry.
    - Keep examples minimal, runnable, and version-accurate.
    - Add or update `description` frontmatter for every touched or created doc page.
-   - Update `_meta.json` whenever a new page should appear in sidebar or navigation. See [doc-structure-conventions.md](doc-structure-conventions.md) for examples.
+   - Update `_meta.json` whenever a new page should appear in the sidebar. Update the docs root `_nav.json` only when the page or section should appear in the top navigation. See [doc-structure-conventions.md](doc-structure-conventions.md) for examples.
    - Use official Rspress docs to confirm syntax and conventions before adding new patterns:
      - Frontmatter: <https://rspress.rs/guide/use-mdx/frontmatter>
      - MDX and React components: <https://rspress.rs/guide/use-mdx/components>

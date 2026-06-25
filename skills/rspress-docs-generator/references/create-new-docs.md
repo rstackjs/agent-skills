@@ -20,13 +20,7 @@ Use this path when the current project has no existing Rspress documentation sit
 3. **Scaffold Rspress v2**
    - See the official getting-started guide for the latest creation steps:
      - <https://rspress.rs/guide/start/getting-started>
-   - Check the create package major before running the scaffold:
-
-     ```bash
-     npm view create-rspress@latest version
-     ```
-
-   - If the version is `2.x`, scaffold with the package manager used by the repo. Run one command that matches the detected package manager:
+   - Scaffold with the package manager used by the repo. Run one command that matches the detected package manager:
 
      ```bash
      # interactive (recommended for first-time setup)
@@ -42,7 +36,7 @@ Use this path when the current project has no existing Rspress documentation sit
      bun x create-rspress@latest my-docs --template basic-theme --tools rslint,prettier
      ```
 
-   - If `latest` is not `2.x`, do not use a v1 scaffold. Use a current 2.x create package with the detected package manager, such as `<package-manager> create rspress@2`, or pin a known 2.x version.
+   - After scaffolding, verify the generated docs `package.json` depends on Rspress v2 through `@rspress/core` with a 2.x range. Do not accept a generated `rspress` dependency as v2. If the generated dependency is missing, still v1, or uses the legacy `rspress` package, rerun the scaffold with the detected package manager and pin the scaffold package to a known v2-compatible version, such as `<package-manager> create rspress@2` or `npx -y create-rspress@2`.
    - Prefer the detected package manager for installs and scripts. Do not introduce a second package manager or extra lockfile into an existing workspace.
    - Pick a template that matches the project:
      - `basic` — minimal site with the default theme.
@@ -61,7 +55,7 @@ Use this path when the current project has no existing Rspress documentation sit
      <package-manager> run dev
      ```
 
-   - Check the current Node.js requirement from the official Rspress docs or the installed `rspress` / `@rspress/core` package's `engines.node` field. Compare it with the repo's configured Node version and surface any mismatch before proceeding.
+   - Check the current Node.js requirement from the official Rspress docs or the installed `@rspress/core` package's `engines.node` field. Compare it with the repo's configured Node version and surface any mismatch before proceeding.
    - Default build output goes to `doc_build/`. Keep it out of source control unless the repository already commits it.
 
 5. **Replace starter content**

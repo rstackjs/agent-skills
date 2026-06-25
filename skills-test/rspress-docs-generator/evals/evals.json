@@ -12,7 +12,7 @@
       "expected_output": "A Rspress v2 docs site is scaffolded under a sensible directory (e.g. website/ or docs/), with real pages derived from the source, correct navigation, and a passing docs build. No placeholder starter content remains.",
       "files": [],
       "assertions": [
-        "The docs site uses Rspress v2 (package.json contains @rspress/core ^2.x or rspress ^2.x, not v1)",
+        "The docs site uses Rspress v2 (package.json contains @rspress/core ^2.x and no rspress package dependency)",
         "A docs directory exists (e.g. website/docs/ or docs/) with an index/home page",
         "Navigation files (_nav.json or _meta.json) are present and valid JSON",
         "The generated docs mention the project's utilities (camelCase, kebabCase, snakeCase, truncate, ellipsis)",
@@ -41,7 +41,7 @@
       "expected_output": "The docs site depends on Rspress v2 packages, the config and imports follow v2 conventions, and `rspress build` succeeds.",
       "files": [],
       "assertions": [
-        "The docs site depends on Rspress v2 (package.json contains @rspress/core ^2.x or rspress ^2.x, not v1)",
+        "The docs site depends on Rspress v2 (package.json contains @rspress/core ^2.x and no rspress package dependency)",
         "The rspress.config.ts imports and API usage follow v2 conventions",
         "The docs build command exits with code 0"
       ]

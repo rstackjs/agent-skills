@@ -1,6 +1,6 @@
 # Migrate Rspress v1
 
-Use this path when a docs site exists but depends on Rspress v1 packages or imports.
+Use this path when a docs site exists but depends on Rspress v1 packages or imports. Rspress v2 projects should depend on `@rspress/core`; legacy `rspress` package dependencies or `rspress/*` imports are migration signals, not valid v2 package targets.
 
 1. Follow the official migration guide:
    - Migration guide: <https://rspress.rs/guide/migration/rspress-1-x>

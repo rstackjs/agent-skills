@@ -38,6 +38,7 @@ Each feature section should usually follow this pattern:
 
 - Be professional, direct, and understated.
 - Avoid vague claims such as "greatly improved" unless the improvement is explained or quantified.
+- Avoid slogan-like positioning in feature updates unless intentionally discussing product vision.
 - Qualify benchmark numbers with enough context to make them credible.
 - Use product and ecosystem terms consistently.
 - Write naturally in the target language; do not let the prose read like a literal translation from another language.

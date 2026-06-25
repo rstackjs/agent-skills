@@ -1,7 +1,7 @@
 {
-  "skill_name": "rspress-generate-docs",
-  "fixture_root": "/tmp/agent-skills-evals/rspress-generate-docs/fixtures",
-  "runs_root": "/tmp/agent-skills-evals/rspress-generate-docs/runs",
+  "skill_name": "rspress-docs-generator",
+  "fixture_root": "/tmp/agent-skills-evals/rspress-docs-generator/fixtures",
+  "runs_root": "/tmp/agent-skills-evals/rspress-docs-generator/runs",
   "runner_instructions": "Fixtures are scratch-grade and intentionally not committed. Before running an eval, check whether fixture_root exists and contains a subdirectory matching evals[].fixture. If a fixture is missing, generate it from the eval prompt and verify its pre-task project state before grading. Each grading run writes a fresh subdirectory under runs_root; do not reuse a previous run working tree unless the user explicitly asks.",
   "evals": [
     {

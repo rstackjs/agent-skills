@@ -1,6 +1,6 @@
 ---
 name: rspress-docs-generator
-description: Generate or maintain Rspress documentation for a project. Use whenever the user wants to create a new docs site from a project that has no documentation, automatically add docs for user-facing feature work or PRs, or migrate an existing Rspress v1 docs site to v2. Also use when the project uses Rslib and needs documentation integration.
+description: Generate or maintain Rspress documentation for a project. Use whenever the user wants to create a new Rspress v2 docs site, add docs for user-facing feature work or PRs, maintain a dedicated Rspress docs project in a monorepo, or prevent stale Rspress v1 scaffolds/version drift before documentation work. For full v1-to-v2 migration, hand off to the rspress-v2-upgrade skill.
 ---
 
 # Rspress Docs Generator
@@ -11,7 +11,7 @@ Create and maintain Rspress documentation as part of normal project work. Prefer
 
 - Create a new Rspress v2 documentation site for a project that has no docs site yet.
 - Update an existing Rspress v2 docs site for a user-facing feature, API change, CLI change, or PR.
-- Migrate an existing Rspress v1 docs site to Rspress v2 before continuing documentation work.
+- Detect Rspress v1 version markers before documentation work and hand migration to the dedicated `rspress-v2-upgrade` skill.
 - Integrate Rspress documentation into an Rslib package or workspace while preserving the repository's package manager and scripts.
 
 ## Workflow
@@ -25,7 +25,7 @@ Create and maintain Rspress documentation as part of normal project work. Prefer
 
 2. **Choose the correct path**
    - If no Rspress docs site exists, follow [Create New Docs](references/create-new-docs.md).
-   - If a Rspress docs site exists and is v1, follow [Migrate Rspress v1](references/migrate-rspress-v1.md).
+   - If a Rspress docs site exists but appears to be v1, follow [Rspress Version Guard](references/rspress-version-guard.md) before editing docs.
    - If a Rspress v2 docs site exists, follow [Maintain Docs For PRs](references/maintain-docs-for-prs.md).
 
 3. **Validate before finishing**
@@ -57,4 +57,4 @@ src/formatBytes.ts -> website/docs/api/formatBytes.mdx -> website/docs/api/_meta
 - [Documentation structure conventions](references/doc-structure-conventions.md) — how `_nav.json` and `_meta.json` work, with concrete examples for Guide/API sites, grouped sections, and i18n layouts.
 - [Create New Docs](references/create-new-docs.md) — scaffold a Rspress v2 docs site from an undocumented project.
 - [Maintain Docs For PRs](references/maintain-docs-for-prs.md) — update an existing Rspress v2 docs site for feature work.
-- [Migrate Rspress v1](references/migrate-rspress-v1.md) — migrate an existing Rspress v1 docs site to v2.
+- [Rspress Version Guard](references/rspress-version-guard.md) — detect v1 sites, avoid stale v1 scaffolds, and hand full migration to `rspress-v2-upgrade`.

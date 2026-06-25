@@ -7,13 +7,15 @@
 
 ## Setup
 
-- **Eval definitions:** `skills-test/rspress-docs-generator/evals/evals.json`
+- **Eval definitions at the time of this run:** `skills-test/rspress-docs-generator/evals/evals.json`
 - **Fixtures:** `skills/rspress-docs-generator-workspace/fixtures`
 - **Run shape:** 3 evals, one `with_skill` run and one `without_skill` baseline per eval.
 - **Grader:** assertion-based post-hoc checks in each run directory's `grading.json`.
 - **Aggregate artifacts:** `skills/rspress-docs-generator-workspace/iteration-1/benchmark.json` and `benchmark.md`.
 
 ## Aggregate Results
+
+> Scope note: this historical run included a `migrate-rspress-v1` eval. The current `rspress-docs-generator` scope and eval set no longer include full Rspress v1-to-v2 migration; the skill only guards against stale v1 projects and points full migration work to `rspress-v2-upgrade`, with the official migration guide kept as a fallback reference.
 
 | Config        | Assertion pass rate | Mean per-eval pass rate | Mean tokens | Mean time |
 | ------------- | ------------------: | ----------------------: | ----------: | --------: |
@@ -37,7 +39,7 @@ The skill improved assertion pass rate by 8.3 percentage points on this run and 
 
 - **create-new-docs:** The skill-guided run passed all checks. The baseline produced working docs but used `rspress@^1.0.0`, so it failed the Rspress v2 dependency assertion. This is the only failed assertion in the benchmark.
 - **maintain-docs-for-pr:** Both runs passed. The eval confirms the task is achievable without the skill, so future iterations may need stricter assertions around matching existing Rspress conventions if this case should differentiate skill value.
-- **migrate-rspress-v1:** Both runs passed. The baseline was faster and used fewer tokens on this small fixture, but the skill-guided run also completed the v2 migration correctly.
+- **migrate-rspress-v1:** This historical eval showed that v1 migration was possible, but the skill scope has since been narrowed and the active eval set no longer includes this case.
 
 ## Raw Artifacts
 

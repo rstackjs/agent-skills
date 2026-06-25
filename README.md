@@ -252,6 +252,14 @@ npx skills add rstackjs/agent-skills --skill create-draft-release-notes
 
 Create or update draft GitHub releases, then organize GitHub-generated release notes into user-friendly sections without rewriting release note items.
 
+### release-blog-writer
+
+```bash
+npx skills add rstackjs/agent-skills --skill release-blog-writer
+```
+
+Write or revise release blog posts for product releases, with guidance for structure, tone, headings, examples, and links.
+
 ### pr-creator
 
 ```bash

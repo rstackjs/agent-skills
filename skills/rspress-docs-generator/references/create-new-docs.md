@@ -47,14 +47,14 @@ Use this path when the current project has no existing Rspress documentation sit
      - <https://rslib.rs/guide/advanced/rspress.md>
 
 4. **After scaffolding**
-   - Install dependencies and verify the dev server starts:
+   - Install dependencies:
 
      ```bash
      cd <docs-project>
      <package-manager> install
-     <package-manager> run dev
      ```
 
+   - In automated or non-interactive runs, do not run an unbounded dev server. If a dev-server smoke test is useful in an interactive run, start `<package-manager> run dev` with an explicit timeout or background process, confirm it starts, then terminate it before continuing.
    - Check the current Node.js requirement from the official Rspress docs or the installed `@rspress/core` package's `engines.node` field. Compare it with the repo's configured Node version and surface any mismatch before proceeding.
    - Default build output goes to `doc_build/`. Keep it out of source control unless the repository already commits it.
 

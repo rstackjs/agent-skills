@@ -21,7 +21,7 @@ Create and maintain Rspress documentation as part of normal project work. Prefer
    - Search for Rspress config files: `rspress.config.ts`, `.js`, `.mjs`, or `.cjs`.
    - Inspect dependencies for Rspress version markers: `@rspress/core` version, legacy `rspress` package or `rspress/*` imports, and `@rspress/plugin-*`.
    - Detect the package manager and workspace setup from lock files (`pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`, `bun.lock`, `bun.lockb`) and `pnpm-workspace.yaml`.
-   - If a config exists, resolve the docs root from its `root` option. When `root` is absent, use Rspress's default `docs/` directory relative to the config file's project cwd. If no config exists, check common roots such as `docs/`, `doc/`, `website/`, and `site/`.
+   - If a config exists, resolve the docs root from its `root` option. When `root` is absent, inspect package scripts, CI commands, and documented commands for Rspress CLI positional roots such as `rspress dev site`, `rspress build site`, or `rspress preview site`; use that argument before falling back to Rspress's default `docs/` directory relative to the config file's project cwd. If no config exists, check common roots such as `docs/`, `doc/`, `website/`, and `site/`.
 
 2. **Choose the correct path**
    - If no Rspress docs site exists, follow [Create New Docs](references/create-new-docs.md).

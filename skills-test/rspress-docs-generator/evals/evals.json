@@ -1,0 +1,37 @@
+{
+  "skill_name": "rspress-docs-generator",
+  "fixture_root": "/tmp/agent-skills-evals/rspress-docs-generator/fixtures",
+  "runs_root": "/tmp/agent-skills-evals/rspress-docs-generator/runs",
+  "runner_instructions": "Fixtures are scratch-grade and intentionally not committed. Before running an eval, check whether fixture_root exists and contains a subdirectory matching evals[].fixture. If a fixture is missing, generate it from the eval prompt and verify its pre-task project state before grading. Each grading run writes a fresh subdirectory under runs_root; do not reuse a previous run working tree unless the user explicitly asks.",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "create-new-docs",
+      "fixture": "create-new-docs",
+      "prompt": "Use the `create-new-docs` fixture under fixture_root. This repository is a small TypeScript utility package called `string-kit` with no documentation site. The package exports `camelCase`, `kebabCase`, and `snakeCase` from `src/case.ts`, plus `truncate` and `ellipsis` from `src/truncate.ts`. The README explains basic usage and the package.json has a `test` script using vitest. Create a new Rspress v2 documentation site for this project. Choose an appropriate docs directory, scaffold with the correct package manager, write source-backed pages, configure navigation, and ensure the docs build passes.",
+      "expected_output": "A Rspress v2 docs site is scaffolded under a sensible directory (e.g. website/ or docs/), with real pages derived from the source, correct navigation, and a passing docs build. No placeholder starter content remains.",
+      "files": [],
+      "assertions": [
+        "The docs site uses Rspress v2 (package.json contains @rspress/core ^2.x and no rspress package dependency)",
+        "A docs directory exists (e.g. website/docs/ or docs/) with an index/home page",
+        "Navigation files (_nav.json or _meta.json) are present and valid JSON",
+        "The generated docs mention the project's utilities (camelCase, kebabCase, snakeCase, truncate, ellipsis)",
+        "The docs build command exits with code 0"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "maintain-docs-for-pr",
+      "fixture": "maintain-docs-pr",
+      "prompt": "Use the `maintain-docs-pr` fixture under fixture_root. This repository already has a Rspress v2 docs site under `website/`. A feature branch has been checked out that adds a new exported function `formatBytes(bytes: number, opts?: { decimals?: number }): string` in `src/formatBytes.ts`, along with tests. The PR title is 'feat: add formatBytes utility'. Update the Rspress documentation to cover this new feature, following the existing docs conventions. The docs build must still pass.",
+      "expected_output": "The docs site is updated with a new or existing page that documents formatBytes, including a usage example and type signature. Navigation is updated if needed and the docs build passes.",
+      "files": [],
+      "assertions": [
+        "formatBytes is documented in at least one docs page",
+        "The formatBytes documentation includes a usage example",
+        "If a new page was added, navigation (_meta.json or _nav.json) is updated to include it",
+        "The docs build command exits with code 0"
+      ]
+    }
+  ]
+}

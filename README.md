@@ -142,6 +142,14 @@ Migrate tsc or tsup library projects to Rslib.
 
 ## Rspress Skills
 
+### rspress-docs-generator
+
+```bash
+npx skills add rstackjs/agent-skills --skill rspress-docs-generator
+```
+
+Recommended install for Rspress documentation work. Use it to create or maintain a Rspress v2 docs site, add docs for user-facing feature PRs, avoid stale Rspress v1 scaffolds, or maintain a dedicated Rspress documentation project inside a monorepo.
+
 ### rspress-best-practices
 
 ```bash

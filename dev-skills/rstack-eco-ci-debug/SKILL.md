@@ -1,6 +1,6 @@
 ---
 name: rstack-eco-ci-debug
-description: Debug Rstack ecosystem CI failures and attribute the real source PR or downstream change. Always use this skill when the user mentions Rspack eco-ci, rstack-ecosystem-ci, a suite turning red, a downstream regression, a green-to-red pivot, canary bisect, @rspack-canary/core, or daily eco-ci triage — even if they only ask "why is this suite failing", "which PR broke it", or "is this Rspack's fault". Use it to avoid over-blaming the first Rspack commit that appears red in status data.
+description: Debug Rstack ecosystem CI failures and attribute the real source PR or downstream change. Always use this skill when the user mentions any Rstack project eco-ci, Rspack eco-ci, rstack-ecosystem-ci, a suite turning red, a downstream regression, a green-to-red pivot, canary bisect, @rspack-canary/core, or daily eco-ci triage — even if they only ask "why is this suite failing", "which PR broke it", or "is this Rspack's fault". Use it to avoid over-blaming the first visible project commit that appears red in status data.
 metadata:
   internal: true
 ---
@@ -15,6 +15,7 @@ This version covers the Rspack stack.
 
 Before starting, ask the user which local checkout paths they have available. Do not assume machine-specific paths.
 
+- **Eco-ci direction** — first identify the project/stack under test and the downstream suite separately. In shared `rstack-ecosystem-ci` runs, use the build action, env, or `--stack <stack>` value for the project under test, and use the job name or suite argument for the downstream suite; do not infer direction from the job name alone.
 - **Local Rspack checkout** — required for inspecting commits, resolving canary SHAs, and reviewing PR diffs. Ask for it before running any `git -C <rspack-path>` command.
 - **Local downstream project checkout** — required when using `pnpm.overrides` to test specific Rspack versions (for example, during canary bisect). Ask for it before making approved temporary reproduction edits to `package.json`, `pnpm-lock.yaml`, or equivalent package-manager files.
 - **Local `rstack-ecosystem-ci` checkout** — optional. If available, use its `data/rspack.json` as the first local status source. Pass the checkout path to local helpers that read git refs, for example `scripts/rspack-status.sh --repo <ecosystem-ci-path>`.

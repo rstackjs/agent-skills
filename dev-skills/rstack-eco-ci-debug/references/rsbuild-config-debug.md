@@ -1,27 +1,27 @@
 # Rsbuild Config Debug Tool
 
-Use this tool only when the failure hypothesis depends on the actual Rsbuild/Rspack configuration used by the downstream case.
+Use this tool only when the failure hypothesis depends on the actual Rsbuild/Rspack configuration used by the suite project case.
 
 ## Trigger
 
 Run this tool when any of these are true:
 
 - The user mentions `DEBUG=rsbuild`.
-- The suspected Rspack PR changes behavior that is controlled by a Rsbuild/Rspack config option, plugin, loader, target, devtool, cache mode, SSR mode, or environment.
+- The suspected target project PR changes behavior that is controlled by a Rsbuild/Rspack config option, plugin, loader, target, devtool, cache mode, SSR mode, or environment.
 - The failing case is built through an Rsbuild-based tool such as Rsbuild, Rslib, Rstest, Modern.js, or Rspress, and you need to decide whether the failed case is actually related to the current PR.
 
 Do not run this tool just because the suite is Rsbuild-based. Use it when config evidence can change the attribution.
 
 ## Process
 
-1. Identify the narrowest downstream fixture or package that contains the failing test.
+1. Identify the narrowest suite project fixture or package that contains the failing test.
 2. Run its build command with Rsbuild debug enabled:
 
    ```bash
    DEBUG=rsbuild npm run build
    ```
 
-   Use the package manager and script that the downstream repo actually uses, such as `DEBUG=rsbuild pnpm build`, `DEBUG=rsbuild pnpm test <case>`, or the fixture-specific build command.
+   Use the package manager and script that the suite project repo actually uses, such as `DEBUG=rsbuild pnpm build`, `DEBUG=rsbuild pnpm test <case>`, or the fixture-specific build command.
 
 3. Inspect generated config files under `dist/.rsbuild/`, commonly:
 

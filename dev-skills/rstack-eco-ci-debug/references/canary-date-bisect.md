@@ -2,15 +2,15 @@
 
 Use this tool when eco-ci history or release versions are too coarse to locate the Rspack PR or date that introduced or fixed a suite failure.
 
-The goal is to test downstream code against specific `@rspack-canary/core` versions using `pnpm.overrides`, then binary-search by publish time or commit order.
+The goal is to test suite project code against specific `@rspack-canary/core` versions using `pnpm.overrides`, then binary-search by publish time or commit order.
 
 ## Preconditions
 
 - Ask the user for:
   - The local Rspack checkout path.
-  - The downstream project checkout path.
+  - The suite project checkout path.
   - The narrowest failing command.
-- Work in a clean downstream tree or record existing local changes first.
+- Work in a clean suite project tree or record existing local changes first.
 - Do not leave dependency overrides or lockfile changes behind unless the user asks.
 
 ## Find Candidate Canaries
@@ -33,7 +33,7 @@ git -C <rspack-path> log -1 --pretty=format:'%h %s' <sha>
 
 ## Apply a Canary With pnpm.overrides
 
-Prefer editing the downstream workspace root `package.json` and adding a temporary `pnpm.overrides` entry:
+Prefer editing the suite project workspace root `package.json` and adding a temporary `pnpm.overrides` entry:
 
 ```json
 {
@@ -50,8 +50,8 @@ If the project already centralizes overrides in another tracked package-manager 
 Install and verify:
 
 ```bash
-pnpm -C <downstream-path> install
-pnpm -C <downstream-path> why @rspack/core --depth 0
+pnpm -C <suite-path> install
+pnpm -C <suite-path> why @rspack/core --depth 0
 ```
 
 The test is invalid if `pnpm why` does not show the intended canary.
@@ -88,15 +88,15 @@ git -C <rspack-path> ls-remote origin | rg '<short-sha>|<full-sha>'
 
 Then inspect the PR diff and compare it to the failure signature before calling it the source.
 
-## Restore Downstream State
+## Restore Suite Project State
 
 After testing, remove the temporary override and reinstall if needed:
 
 ```bash
-git -C <downstream-path> diff --name-only
-git -C <downstream-path> restore -- <changed-files-from-the-diff-above>
-pnpm -C <downstream-path> install
-pnpm -C <downstream-path> why @rspack/core --depth 0
+git -C <suite-path> diff --name-only
+git -C <suite-path> restore -- <changed-files-from-the-diff-above>
+pnpm -C <suite-path> install
+pnpm -C <suite-path> why @rspack/core --depth 0
 ```
 
 Only restore files that were actually changed by this workflow and are tracked by git. If files had pre-existing local changes, do not restore them blindly. Ask the user how to proceed.

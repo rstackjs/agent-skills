@@ -1,30 +1,30 @@
 ---
 name: rstack-eco-ci-debug
-description: Debug Rstack ecosystem CI failures and attribute the real source PR or downstream change. Always use this skill when the user mentions any Rstack project eco-ci, Rspack eco-ci, rstack-ecosystem-ci, a suite turning red, a downstream regression, a green-to-red pivot, canary bisect, @rspack-canary/core, or daily eco-ci triage — even if they only ask "why is this suite failing", "which PR broke it", or "is this Rspack's fault". Use it to avoid over-blaming the first visible project commit that appears red in status data.
+description: Debug Rstack ecosystem CI failures and attribute the real source PR or suite project change. Always use this skill when the user mentions any Rstack project eco-ci, Rspack eco-ci, rstack-ecosystem-ci, a suite turning red, a downstream regression, a green-to-red pivot, canary bisect, @rspack-canary/core, or daily eco-ci triage — even if they only ask "why is this suite failing", "which PR broke it", or "is this Rspack's fault". Use it to avoid over-blaming the first visible project commit that appears red in status data.
 metadata:
   internal: true
 ---
 
 # Rstack Eco CI Debug
 
-Use this skill to debug Rstack ecosystem CI failures without over-blaming the first Rspack commit that appears red in status data.
+Use this skill to debug Rstack ecosystem CI failures without over-blaming the first visible project commit that appears red in status data.
 
-This version covers the Rspack stack.
+This version covers shared Rstack eco-ci runs.
 
 ## Preconditions
 
 Before starting, ask the user which local checkout paths they have available. Do not assume machine-specific paths.
 
-- **Eco-ci direction** — first identify the project/stack under test and the downstream suite separately. In shared `rstack-ecosystem-ci` runs, use the build action, env, or `--stack <stack>` value for the project under test, and use the job name or suite argument for the downstream suite; do not infer direction from the job name alone.
-- **Local Rspack checkout** — required for inspecting commits, resolving canary SHAs, and reviewing PR diffs. Ask for it before running any `git -C <rspack-path>` command.
-- **Local downstream project checkout** — required when using `pnpm.overrides` to test specific Rspack versions (for example, during canary bisect). Ask for it before making approved temporary reproduction edits to `package.json`, `pnpm-lock.yaml`, or equivalent package-manager files.
-- **Local `rstack-ecosystem-ci` checkout** — optional. If available, use its `data/rspack.json` as the first local status source. Pass the checkout path to local helpers that read git refs, for example `scripts/rspack-status.sh --repo <ecosystem-ci-path>`.
-- **GitHub access** — prefer authenticated `gh` for `web-infra-dev/rspack` and `rstackjs/rstack-ecosystem-ci`. If `gh` is unavailable, use `origin/data:rspack.json` from a local `rstack-ecosystem-ci` checkout, workflow/job URLs, and the GitHub connector or public pages where available; state any evidence gap in the report.
+- **Eco-ci direction** — first identify the direction, then use these names consistently: `target project` is the Rstack project being built or tested, from the build action, env, workflow input, or `--stack` value; `tested commit` is the SHA/version/artifact for that target project; `suite project` is the suite or project selected by the job name or suite argument. Do not infer direction from the job name alone.
+- **Local target project checkout** — required for inspecting commits, resolving canary SHAs, and reviewing PR diffs for the target project. Ask for it before running any `git -C <target-path>` command.
+- **Local suite project checkout** — required when testing specific target project versions against a suite reproduction. Ask for it before making approved temporary reproduction edits to `package.json`, `pnpm-lock.yaml`, or equivalent package-manager files.
+- **Local `rstack-ecosystem-ci` checkout** — optional. If available, use the matching status JSON as the first local status source, for example `origin/data:rspack.json` for Rspack or a local `<project>.json` snapshot. `scripts/rspack-status.sh` is only for Rspack status rows; for other projects, inspect the matching JSON directly.
+- **GitHub access** — prefer authenticated `gh` for the target project repo and `rstackjs/rstack-ecosystem-ci`. If `gh` is unavailable, use the matching status JSON from a local `rstack-ecosystem-ci` checkout, workflow/job URLs, and the GitHub connector or public pages where available; state any evidence gap in the report.
 
-Fetch the local Rspack repo before resolving commits:
+Fetch the local target project repo before resolving commits:
 
 ```bash
-git -C <rspack-path> fetch origin main --tags
+git -C <target-path> fetch origin main --tags
 ```
 
 - Treat GitHub Actions job logs as the source of truth for failure signatures.
@@ -32,20 +32,20 @@ git -C <rspack-path> fetch origin main --tags
 
 ## Investigation Model
 
-Rspack eco-ci runs a downstream project matrix against a freshly built Rspack artifact. A suite turning red means that a specific combination failed:
+Rstack eco-ci runs a suite project matrix against a freshly built target project artifact. A suite turning red means that a specific combination failed:
 
 ```text
-current downstream project state + tested Rspack artifact
+current suite project state + tested target project artifact + suite harness
 ```
 
-It does not automatically mean the visible Rspack pivot PR is the true root cause. Downstream dependency updates, snapshot changes, test logic changes, and Rspack release/canary windows can all create misleading pivots.
+It does not automatically mean the visible target project pivot PR is the true root cause. Suite project dependency updates, snapshot changes, test logic changes, and release/canary windows can all create misleading pivots.
 
 Some eco-ci failures are flaky even when they appear as a clean green-to-red transition. Repeated selector timeouts, browser navigation waits, dev-server readiness failures, and network-idle waits must be checked against old commit comments, old failed runs, and automation memory before attributing them to the current pivot.
 
 Always distinguish:
 
-- `Surface attribution`: the Rspack commit/PR where status data first shows the suite red.
-- `Actual source`: the PR, version window, or downstream change that actually introduced the failing condition.
+- `Surface attribution`: the target project commit/PR where status data first shows the suite red.
+- `Actual source`: the target project PR, version window, or suite project change that actually introduced the failing condition.
 - `Failure signature`: the stable error text, command, assertion diff, stack, or log block used to compare runs.
 
 ## Optional Tools
@@ -54,27 +54,27 @@ Read the linked reference before using any of these tools. Do not ask the user g
 
 - **Rspack status helper** — use `scripts/rspack-status.sh --repo <ecosystem-ci-path>` when you need the latest and previous rows from `data/rspack.json`, including failed suite names, job URLs, and suite-set delta. Pass a JSON file path instead when you already have a local snapshot. This helper only summarizes status data; it does not inspect logs or attribute root causes.
 
-- **Canary date bisect** — use in Phase 1 only when the Rspack commit window is too coarse to attribute a PR and downstream causes have already been ruled out. Trigger this when **all** of the following are true:
+- **Canary date bisect** — use in Phase 1 only for Rspack when the commit window is too coarse to attribute a PR and suite project causes have already been ruled out. Trigger this when **all** of the following are true:
   - The green-to-red pivot spans **more than 3 Rspack commits** or crosses a release/canary boundary.
   - The failure signature is stable across the red rows in that window.
-  - The same Rspack commit does **not** appear in both green and red runs (which would indicate a downstream cause).
+  - The same Rspack commit does **not** appear in both green and red runs (which would indicate a suite project cause).
     Do **not** trigger when the pivot is a single commit or when the surface PR diff already explains the signature.
-    Read [references/canary-date-bisect.md](references/canary-date-bisect.md) and ask the user for the local downstream checkout path and the narrowest failing command.
+    Read [references/canary-date-bisect.md](references/canary-date-bisect.md) and ask the user for the local suite project checkout path and the narrowest failing command.
 
 - **Rsbuild config debug** — use in Phase 1 or Phase 2 only when deciding whether the failing case is related to the current PR requires generated Rsbuild/Rspack config evidence. Trigger it when the user mentions `DEBUG=rsbuild`, asks whether a config is active, or the candidate PR changes behavior controlled by an option, plugin, loader, target, devtool, SSR setting, cache mode, or other config-gated path. Do **not** run it just because the suite is Rsbuild-based. Read [references/rsbuild-config-debug.md](references/rsbuild-config-debug.md) before using it.
 
-- **Automation daily triage** — use instead of the local quick path when the request is a recurring/daily automation, asks for today's/latest Rspack eco-ci status, provides an automation id/memory, or requires delivery to a user/chat. Read [references/automation-daily-triage.md](references/automation-daily-triage.md) before inspecting runs.
+- **Automation daily triage** — use instead of the local quick path when the request is a recurring/daily automation, asks for today's/latest eco-ci status, provides an automation id/memory, or requires delivery to a user/chat. Read [references/automation-daily-triage.md](references/automation-daily-triage.md) before inspecting runs.
 
-- **Deep PR debug** — use in Phase 2 only after a specific Rspack source PR or version window has been identified and the user wants the technical reason behind the failure. Trigger this when **all** of the following are true:
+- **Deep PR debug** — use in Phase 2 only after a specific target project source PR or version window has been identified and the user wants the technical reason behind the failure. Trigger this when **all** of the following are true:
   - The user asks "why did this PR break it", "what is the mechanism", or "how should we fix it".
-  - The actual source is a Rspack PR or Rspack version window (not a downstream test change, snapshot update, or dependency bump).
+  - The actual source is a target project PR or version window (not a suite project test change, snapshot update, or dependency bump).
   - Phase 1 has already produced evidence linking the PR to the failure signature.
-    Do **not** run deep PR debug on downstream PRs; in those cases, Phase 1 output plus a short note about the downstream change is enough.
+    Do **not** run deep PR debug on suite project PRs; in those cases, Phase 1 output plus a short note about the suite project change is enough.
     Read [references/deep-pr-debug.md](references/deep-pr-debug.md) automatically once a candidate PR is accepted for deep inspection.
 
-- **PR report comment** — use only after strict attribution identifies a merged Rspack PR as the cause and the user wants to notify the PR author. Trigger this only when:
+- **PR report comment** — use only after strict attribution identifies a merged target project PR as the cause and the user wants to notify the PR author. Trigger this only when:
   - The failure is confidently attributed to a merged PR (not just a surface pivot).
-  - Downstream changes, dependency bumps, release windows, and flaky signals have been ruled out.
+  - Suite project changes, dependency bumps, release windows, and flaky signals have been ruled out.
   - The user gives explicit approval to post to GitHub.
     Read [references/pr-report-comment.md](references/pr-report-comment.md) and prepare a draft comment first; do not post without approval.
 
@@ -88,7 +88,7 @@ Use this path for local/manual runs, such as a provided workflow run/job, PR, co
 
 1. Determine the scope from the user request: workflow run/job, PR, commit window, suite, or explicit local reproduction.
 2. Read prior memory only when it is relevant to the named suite, signature, PR, or commit window; do not force daily automation history into a local run.
-3. Pull the current failure log and identify the tested Rspack commit.
+3. Pull the current failure log and identify the target project, tested commit/version, suite project, and failing command.
 4. Compare against the user-provided baseline, previous green, prev release, or visible history when needed.
 5. For every failing suite in scope, classify the conclusion as one of:
    - `reused`: same suite and same failure signature as prior memory.
@@ -97,21 +97,21 @@ Use this path for local/manual runs, such as a provided workflow run/job, PR, co
    - `flaky/pre-existing`: the same signature predates the candidate PR or appears intermittently.
    - `inconclusive`: evidence is insufficient or conflicting.
 6. Run Phase 1 for any suite the user asks to investigate or any `new-signature` / `new investigation` item.
-7. Run Phase 2 only when Phase 1 finds a non-flaky candidate Rspack PR or version window with enough evidence. Do not run Phase 2 for known flaky, pre-existing, or downstream-only failures.
+7. Run Phase 2 only when Phase 1 finds a non-flaky candidate target project PR or version window with enough evidence. Do not run Phase 2 for known flaky, pre-existing, or suite-project-only failures.
 8. Use PR report comments only when `pr-report-comment.md` guardrails are satisfied and the user explicitly asks to comment. Otherwise report `no PR comment: <reason>`.
 
 ### Phase 1: PR Location
 
-Goal: identify the actual source PR, date window, or downstream change that caused the suite to become red.
+Goal: identify the actual source PR, date window, or suite project change that caused the suite to become red.
 
 #### Fast-Exit Checks
 
 Run these checks first before doing deep pivot analysis. If any check fires with high confidence, produce the Phase 1 output immediately and skip unnecessary steps.
 
-1. **Same Rspack commit, different outcome**
-   - If the exact same tested Rspack commit appears in both a green run and a red run of the same suite, the cause is **not** that Rspack commit.
-   - Stop and attribute the failure to a downstream change, test expectation change, dependency update, or environment difference between the two runs.
-   - Output example: `Actual source: downstream/test change (same Rspack SHA <sha> succeeded in run <green-id> and failed in run <red-id>)`.
+1. **Same tested commit, different outcome**
+   - If the exact same tested commit appears in both a green run and a red run of the same suite, the cause is **not** that target project commit.
+   - Stop and attribute the failure to a suite project change, test expectation change, dependency update, or environment difference between the two runs.
+   - Output example: `Actual source: suite project/test change (same tested SHA <sha> succeeded in run <green-id> and failed in run <red-id>)`.
 
 2. **Known flaky or recurring failure signature**
    - Search prior run history, automation memory, and upstream commit/PR comments for the exact failure signature before blaming a new pivot.
@@ -121,11 +121,11 @@ Run these checks first before doing deep pivot analysis. If any check fires with
 
 3. **Surface PR diff is unrelated to the failure signature**
    - After fetching the surface PR, if its changed files and diff have no plausible connection to the observed error text, assertion, stack frame, or generated output, treat the surface PR as innocent.
-   - Shift focus to downstream changes or an earlier Rspack commit that actually touched the failing path.
+   - Shift focus to suite project changes or an earlier target project commit that actually touched the failing path.
    - Output example: `Actual source: not surface PR #<n> (diff only touches <unrelated-paths>; failure signature is <signature>)`.
 
 4. **Config-gated hypothesis not active**
-   - If the attribution depends on a downstream option, plugin, loader, target, mode, or feature being enabled, verify that generated/runtime config actually enables it before using the PR as the actual source.
+   - If the attribution depends on a suite project option, plugin, loader, target, mode, or feature being enabled, verify that generated/runtime config actually enables it before using the PR as the actual source.
    - For Rsbuild-based suites, load [references/rsbuild-config-debug.md](references/rsbuild-config-debug.md) only when this check is needed.
    - Output example: `Actual source: not surface PR #<n> (generated config does not enable <required option>, but the hypothesis requires it)`.
 
@@ -141,30 +141,30 @@ Use these evidence sources:
 
 - Eco-ci status data, including current failed runs and previous green runs.
 - GitHub Actions logs for current failure and candidate pivot failure.
-- Rspack commit history, release tags, and canary versions.
-- Downstream project history, dependency updates, snapshots, and test/config changes.
+- Target project commit history, release tags, and versions.
+- Suite project history, dependency updates, snapshots, and test/config changes.
 - Generated or runtime config only when the attribution hypothesis depends on config-gated behavior.
-- `@rspack-canary/core` overrides in the downstream repo when the date or PR window is still too coarse.
+- Rspack-only: `@rspack-canary/core` overrides in the suite project repo when the date or PR window is still too coarse.
 
 Process:
 
-1. Identify the run/job/PR/commit window in scope, the tested Rspack commit, and the nearest relevant comparison point when one is needed.
-2. List failed suites in scope, failed count, run URL or run id, and the tested Rspack commit.
-3. For each failed suite, find the green-to-red pivot in the visible history. If the same tested Rspack commit appears in both green and red runs, apply fast-exit check #1 and stop.
+1. Identify the run/job/PR/commit window in scope, the target project, tested commit/version, suite project, and nearest relevant comparison point when one is needed.
+2. List failed suites in scope, failed count, run URL or run id, and the tested commit.
+3. For each failed suite, find the green-to-red pivot in the visible history. If the same tested commit appears in both green and red runs, apply fast-exit check #1 and stop.
 4. Pull logs for the current failure and the candidate pivot failure.
 5. Check whether the same failure signature appeared in older runs, commit comments, PR comments, or automation memory before the candidate PR.
 6. Compare failure signatures before attributing a root cause. After inspecting the surface PR diff, apply fast-exit checks #2 through #5 when the relationship between the diff and the signature is clear.
 7. If the signature changed, search forward or binary-search red rows until the current signature appears.
-8. Check whether the downstream project changed in the same window.
+8. Check whether the suite project changed in the same window.
 9. If the hypothesis depends on generated config, read the relevant config-debug reference and verify the active config before attributing the failure.
-10. Reproduce enough combinations to decide whether the failure comes from Rspack, downstream, flaky infrastructure, or their interaction.
-11. If release versions or eco-ci rows are too coarse, ask whether to run the canary date bisect tool.
+10. Reproduce enough combinations to decide whether the failure comes from the target project, suite project, flaky infrastructure, or their interaction.
+11. If the target project is Rspack and release versions or eco-ci rows are too coarse, ask whether to run the canary date bisect tool.
 
 Phase 1 output:
 
 ```text
 Surface attribution: <PR shown by eco-ci pivot>
-Actual source: <real PR, downstream PR, or version window>
+Actual source: <target project PR, suite project PR, or version window>
 Failure signature: <short signature>
 Evidence: <run URLs, logs, canary results, or green/red pivots>
 Confidence: high | medium | low
@@ -182,10 +182,10 @@ Use this phase after Phase 1 has identified a candidate source. Read [references
 Process:
 
 1. Review the candidate PR metadata, commit, and diff.
-2. Re-read the concrete failure log block and failing downstream assertion or stack.
-3. Locate the downstream code path that produces the failure.
+2. Re-read the concrete failure log block and failing suite project assertion or stack.
+3. Locate the suite project code path that produces the failure.
 4. If the hypothesis depends on generated config, run the appropriate config-debug tool before claiming that the relevant option is active in the failing path.
-5. Trace from downstream behavior into Rspack APIs, plugin hooks, loaders, generated output, source maps, runtime modules, or diagnostics.
+5. Trace from suite project behavior into the target project APIs, plugin hooks, loaders, generated output, source maps, runtime modules, or diagnostics.
 6. Compare before/after behavior when needed, using canaries or local builds.
 7. State the mechanical behavior change, not only the PR number.
 8. Separate confirmed evidence from inference.
@@ -199,7 +199,7 @@ Verdict: caused | likely caused | not caused | inconclusive
 Mechanism: <3-5 sentence explanation>
 Evidence: <log URLs, code refs, reproduction results>
 Confidence: high | medium | low
-Next action: <fix in Rspack | fix downstream expectation | gather more evidence>
+Next action: <fix in target project | fix suite project expectation | gather more evidence>
 ```
 
 Use `gh` for specific job logs when available:
@@ -220,40 +220,40 @@ Fall back to full logs when the filtered output misses the real failure.
 
 ## Reproduce Combination Relationships
 
-Use combination testing in Phase 1 to separate Rspack changes from downstream changes.
+Use combination testing in Phase 1 to separate target project changes from suite project changes.
 
 Start with four conceptual combinations:
 
 ```text
-old downstream + old Rspack
-old downstream + new Rspack
-new downstream + old Rspack
-new downstream + new Rspack
+old suite project + old target project
+old suite project + new target project
+new suite project + old target project
+new suite project + new target project
 ```
 
-Keep the downstream command fixed and use the narrowest failing command possible.
+Keep the suite project command fixed and use the narrowest failing command possible.
 
-For finer Rspack windows, ask whether to use the canary date bisect tool, then follow [references/canary-date-bisect.md](references/canary-date-bisect.md).
+For finer Rspack windows, ask whether to use the canary date bisect tool, then follow [references/canary-date-bisect.md](references/canary-date-bisect.md). For non-Rspack target projects, use that project's release tags, commit history, and package versions instead.
 
 ### Downstream Interaction Check
 
-If the downstream project changed during the same window, test these pairs when practical:
+If the suite project changed during the same window, test these pairs when practical:
 
 ```text
-old downstream + bad-window Rspack
-old downstream + fixed Rspack
-new downstream + bad-window Rspack
-new downstream + fixed Rspack
+old suite project + bad-window target project
+old suite project + fixed target project
+new suite project + bad-window target project
+new suite project + fixed target project
 ```
 
-This prevents wrongly attributing a downstream dependency/snapshot update to a later unrelated Rspack PR.
+This prevents wrongly attributing a suite project dependency/snapshot update to a later unrelated target project PR.
 
 ## Reporting Requirements
 
 Keep reports compact and evidence-based:
 
 - Name every currently failing suite.
-- Include run URL or run id and tested Rspack commit when available.
+- Include run URL or run id and tested commit when available.
 - State whether each suite is newly investigated or reused from a matching known signature.
 - Include the first visible start commit when there is a clear green-to-red pivot.
 - Say when a failure predates the visible window.

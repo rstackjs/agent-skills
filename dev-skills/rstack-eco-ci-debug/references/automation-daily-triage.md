@@ -16,7 +16,7 @@ For a single job, PR, suite, or local reproduction request, use the local quick 
 ## Process
 
 1. Read the automation memory first. Use it to distinguish reused signatures from new suites or changed signatures.
-2. Identify the target project, then the latest completed `<project>-ecosystem-ci-from-commit` run and the previous completed run. Do not use in-progress runs. For Rspack, prefer `scripts/rspack-status.sh --repo <ecosystem-ci-path>` from the skill directory when a local `rstack-ecosystem-ci` checkout is available, or pass a local `rspack.json` snapshot path directly. For other projects, inspect the matching status JSON from the local checkout, a local `<project>.json` snapshot, or the matching workflow history directly.
+2. Identify the target project, then the latest completed `<project>-ecosystem-ci-from-commit` run and the previous completed run. Do not use in-progress runs. For Rspack, prefer `scripts/rspack-status.sh --repo <ecosystem-ci-path>` from the skill directory when a local `rstack-ecosystem-ci` checkout is available, or pass a local `rspack.json` snapshot path directly. For other projects, inspect the matching status JSON from the local checkout or the matching workflow history directly.
 3. List every currently failing suite, job URL, run URL, and tested commit.
 4. Compare latest vs previous completed run:
    - `reused`: same suite and same failure signature as memory/current sampled log.

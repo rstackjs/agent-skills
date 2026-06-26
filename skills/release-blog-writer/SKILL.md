@@ -54,6 +54,8 @@ Add links where they help readers continue:
 
 Do not over-link common terms. Link the first meaningful occurrence or the option name users are likely to search for.
 
+For Rstack documentation links on `rspack.rs`, `rsbuild.rs`, `rspress.rs`, `rslib.rs`, `rsdoctor.rs`, and `rstest.rs`, match the URL language to the blog language. In Chinese posts, prefer `/zh/` paths such as `https://rspack.rs/zh/`; in English posts, omit `/zh/` because the default docs are English. Apply the same rule to deeper documentation URLs.
+
 ## Revision behavior
 
 When revising an existing blog:

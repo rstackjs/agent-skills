@@ -1,11 +1,15 @@
 # PR Report Comment Tool
 
-Use this tool to comment on a merged Rspack PR only when the eco-ci failure is strictly attributed to that PR.
+Use this tool to comment on a merged source PR only when the eco-ci failure is strictly attributed to that PR. The source PR can be either:
+
+- a Rspack PR that changed the tested Rspack artifact, or
+- a downstream project PR that changed the project under test.
 
 ## Guardrails
 
 - Do not comment if attribution is ambiguous, only temporal, or based only on a surface green-to-red pivot.
-- Do not comment if a downstream PR, dependency bump, release window, flaky network issue, or changed failure signature is still a plausible cause.
+- Do not comment if a different downstream PR, dependency bump, release window, flaky network issue, or changed failure signature is still a plausible cause.
+- Do not comment on a Rspack surface pivot if the actual source is a downstream PR. Comment on the downstream PR instead, and explicitly say the Rspack pivot was ruled out.
 - Do not comment when the same failure signature appeared before the candidate PR, unless you have evidence that the PR made the flaky failure deterministic or changed its signature.
 - Do not comment on config-gated PRs until generated config evidence proves the failing case enables the relevant option or path. For Rsbuild-based suites, read [rsbuild-config-debug.md](rsbuild-config-debug.md) when the hypothesis depends on Rsbuild/Rspack config.
 - Verify the PR is merged before commenting.
@@ -24,10 +28,12 @@ Collect and state these facts first:
 - The eco-ci run URL or run id.
 - The tested Rspack commit.
 - The failure signature from GitHub Actions logs.
+- The target repository and PR number to comment on.
 - The first bad commit or PR, with a visible success-to-failure pivot or equivalent canary bisect proof.
 - A check that the same signature was not already known as flaky or pre-existing.
 - For config-gated hypotheses, evidence from generated downstream config that the relevant option or path is actually enabled.
-- Why other plausible causes were ruled out.
+- For Rspack PR comments, why downstream changes and other plausible causes were ruled out.
+- For downstream PR comments, why the visible Rspack pivot is only a surface attribution and why the downstream PR is the actual source.
 
 If any item is missing, do not post. Continue investigation or provide a draft-only note.
 
@@ -36,7 +42,7 @@ If any item is missing, do not post. Continue investigation or provide a draft-o
 1. Check PR metadata:
 
 ```bash
-gh pr view <pr-number> --repo web-infra-dev/rspack --json number,title,state,mergedAt,author,url,headRefOid,mergeCommit
+gh pr view <pr-number> --repo <owner/repo> --json number,title,state,mergedAt,author,url,headRefOid,mergeCommit
 ```
 
 2. Refuse to post if `mergedAt` is empty.
@@ -51,7 +57,7 @@ gh pr view <pr-number> --repo web-infra-dev/rspack --json number,title,state,mer
 5. Post only after approval:
 
 ```bash
-gh pr comment <pr-number> --repo web-infra-dev/rspack --body-file <comment-file>
+gh pr comment <pr-number> --repo <owner/repo> --body-file <comment-file>
 ```
 
 ## Comment Template
@@ -68,8 +74,9 @@ Evidence:
 - Failure signature: <short-log-or-assertion-summary>
 - Flaky/pre-existing check: <same signature not found before candidate | evidence>
 - Final config check: <feature enabled | not applicable>
+- Attribution check: <why this PR, not a surface pivot or another source>
 
-This attribution is based on <success-to-failure pivot | canary bisect | matching current and first-bad signatures> after ruling out <flaky/pre-existing/downstream/config-gated alternatives>. Please take a look when you have time.
+This attribution is based on <success-to-failure pivot | canary bisect | matching current and first-bad signatures> after ruling out <flaky/pre-existing/surface-pivot/config-gated alternatives>. Please take a look when you have time.
 ```
 
 If the result is a correction rather than a blame comment, say so explicitly:

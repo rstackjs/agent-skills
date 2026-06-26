@@ -71,9 +71,10 @@ Read the linked reference before using any of these tools. Do not ask the user g
     Do **not** run deep PR debug on downstream PRs; in those cases, Phase 1 output plus a short note about the downstream change is enough.
     Read [references/deep-pr-debug.md](references/deep-pr-debug.md) automatically once a candidate PR is accepted for deep inspection.
 
-- **PR report comment** — use only after strict attribution identifies a merged Rspack PR as the cause and the user wants to notify the PR author. Trigger this only when:
-  - The failure is confidently attributed to a merged PR (not just a surface pivot).
-  - Downstream changes, dependency bumps, release windows, and flaky signals have been ruled out.
+- **PR report comment** — use only after strict attribution identifies a merged source PR as the cause and the user wants to notify the PR author. The source PR can be in Rspack or in the downstream project under test. Trigger this only when:
+  - The failure is confidently attributed to a merged source PR (not just a surface pivot).
+  - For Rspack attributions, downstream changes, dependency bumps, release windows, and flaky signals have been ruled out.
+  - For downstream attributions, the exact downstream PR is the actual source and the visible Rspack pivot has been ruled out.
   - The user gives explicit approval to post to GitHub.
     Read [references/pr-report-comment.md](references/pr-report-comment.md) and prepare a draft comment first; do not post without approval.
 

@@ -268,6 +268,14 @@ npx skills add rstackjs/agent-skills --skill release-blog-writer
 
 Write or revise release blog posts for product releases, with guidance for structure, tone, headings, examples, and links.
 
+### mdx-to-markdown
+
+```bash
+npx skills add rstackjs/agent-skills --skill mdx-to-markdown
+```
+
+Convert MDX to portable Markdown with MDX syntax cleanup and link/code block normalization.
+
 ### pr-creator
 
 ```bash

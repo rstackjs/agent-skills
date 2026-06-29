@@ -1,6 +1,8 @@
 ---
 name: mdx-to-markdown
 description: Convert `.mdx` to portable `.md`, cleaning MDX components, anchors, code titles, table-of-contents links, and root-relative docs links.
+metadata:
+  internal: true
 ---
 
 # MDX to Markdown

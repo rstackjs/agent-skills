@@ -217,7 +217,7 @@ function inferLinkPrefix(inputPath) {
   const gitRoot = findGitRoot(inputPath);
   const product = detectProduct(inputPath, gitRoot);
   if (!product) return null;
-  return `http://${SITE_DOMAINS[product]}${detectLocalePrefix(inputPath)}`;
+  return `https://${SITE_DOMAINS[product]}${detectLocalePrefix(inputPath)}`;
 }
 
 function usage() {

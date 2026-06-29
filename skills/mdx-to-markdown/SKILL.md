@@ -53,7 +53,7 @@ Use this skill to produce plain Markdown from MDX without requiring the target r
   - `rslib` -> `rslib.rs`
   - `rsdoctor` -> `rsdoctor.rs`
   - `rstest` -> `rstest.rs`
-- Add `/zh` to the prefix when the MDX path contains a `zh` path segment. For example, a Chinese Rspack document converts `/guide/optimization/tree-shaking` to `http://rspack.rs/zh/guide/optimization/tree-shaking`.
+- Add `/zh` to the prefix when the MDX path contains a `zh` path segment. For example, a Chinese Rspack document converts `/guide/optimization/tree-shaking` to `https://rspack.rs/zh/guide/optimization/tree-shaking`.
 - Use `--link-prefix <prefix>` only when the inferred domain is wrong or the user explicitly requests a custom prefix.
 
 ## Validation Checklist

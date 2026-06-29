@@ -41,8 +41,12 @@ Use this skill to produce plain Markdown from MDX without requiring the target r
 - Convert code-fence titles or standalone bold filename captions into the first line of the code block as a comment, for example:
 
   ```js
-  // env.js
-  export const IS_DEV = false;
+  // hello.js
+  export function greet(name) {
+    return `Hello, ${name}!`;
+  }
+
+  console.log(greet('world'));
   ```
 
 - Convert code blocks that contain markers such as `// [!code highlight]` to `diff` code blocks, remove the marker, and prefix highlighted lines with `+`.

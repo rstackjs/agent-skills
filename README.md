@@ -250,12 +250,12 @@ Set up or migrate Storybook to use the Rsbuild builder. Handles fresh setup for 
 
 ## Contribution Workflow Skills
 
-Skills in this section are mainly intended for contribution workflows in repositories across the Rstack ecosystem.
+Skills in this section are mainly intended for contribution workflows in repositories across the Rstack ecosystem. For internal skills, set `INSTALL_INTERNAL_SKILLS=1` when installing them.
 
 ### create-draft-release-notes
 
 ```bash
-npx skills add rstackjs/agent-skills --skill create-draft-release-notes
+INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill create-draft-release-notes
 ```
 
 Create or update draft GitHub release notes, or output organized Markdown when draft creation is unavailable. Use for release notes, draft releases, release PR checks, npm staged publishing checks, and optional highlights.
@@ -271,7 +271,7 @@ Write or revise release blog posts for product releases, with guidance for struc
 ### mdx-to-markdown
 
 ```bash
-npx skills add rstackjs/agent-skills --skill mdx-to-markdown
+INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill mdx-to-markdown
 ```
 
 Convert MDX to portable Markdown with MDX syntax cleanup and link/code block normalization.
@@ -279,7 +279,7 @@ Convert MDX to portable Markdown with MDX syntax cleanup and link/code block nor
 ### pr-creator
 
 ```bash
-npx skills add rstackjs/agent-skills --skill pr-creator
+INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill pr-creator
 ```
 
 Use when asked to create a pull request for this repository. It helps the PR follow the repository's branch safety rules, title convention, pull request template, and concise English writing style.

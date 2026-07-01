@@ -70,9 +70,9 @@ description: Feature description and trigger scenarios, which is key for Agents 
 ---
 ```
 
-### Rstack Maintainer/Developer Skills / Contribution Workflow Skills
+### Contribution Workflow Skills
 
-Use this for internal Skills intended for Rstack repository maintainers and developers, not end users.
+Use this for internal contribution workflow Skills intended for Rstack repository maintainers and developers, not end users.
 
 - Place the Skill in `.agents/skills/{skill-name}/`.
 - Register the Skill in `skills.json` with `"local:*"` so it resolves to the repo-owned Skill source.

@@ -242,7 +242,7 @@ Set up or migrate Storybook to use the Rsbuild builder. Handles fresh setup for 
 
 ## Contribution Workflow Skills
 
-Skills in this section are mainly intended for contribution workflows in repositories across the Rstack ecosystem. For internal skills, set `INSTALL_INTERNAL_SKILLS=1` when installing them.
+Skills in this section are internal contribution workflow Skills intended for Rstack repository maintainers and developers, not end users. Set `INSTALL_INTERNAL_SKILLS=1` when installing them.
 
 ### create-draft-release-notes
 

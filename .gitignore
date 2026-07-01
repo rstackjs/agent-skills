@@ -13,11 +13,6 @@ tsconfig.tsbuildinfo
 # Test temp files
 test-temp-*
 
-# skills-package-manager
-.agents/**/*
-.gemini/**/*
-.claude/**/*
-
 # skills-test
 skills-test/**/*
 !skills-test/*/
@@ -28,6 +23,11 @@ skills-test/**/*
 .vscode/**/*
 !.vscode/settings.json
 !.vscode/extensions.json
+
+# skills-package-manager
+.agents/**/*
+.gemini/**/*
+.claude/**/*
 
 # Keep local skills tracked
 !.agents/
@@ -46,3 +46,5 @@ skills-test/**/*
 !.agents/skills/rstack-repo-maintain/**
 !.agents/skills/rstack-eco-ci-debug/
 !.agents/skills/rstack-eco-ci-debug/**
+!.agents/skills/release-blog-writer/
+!.agents/skills/release-blog-writer/**

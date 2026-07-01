@@ -70,7 +70,7 @@ description: Feature description and trigger scenarios, which is key for Agents 
 ---
 ```
 
-### Rstack Maintainer/Developer Skills
+### Rstack Maintainer/Developer Skills / Contribution Workflow Skills
 
 Use this for internal Skills intended for Rstack repository maintainers and developers, not end users.
 

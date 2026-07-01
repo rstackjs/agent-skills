@@ -9,7 +9,8 @@
     "mdx-to-markdown": "local:*",
     "create-draft-release-notes": "local:*",
     "rstack-repo-maintain": "local:*",
-    "rstack-eco-ci-debug": "local:*"
+    "rstack-eco-ci-debug": "local:*",
+    "release-blog-writer": "local:*"
   },
   "selfSkill": true
 }

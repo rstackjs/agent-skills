@@ -1,0 +1,28 @@
+{
+  "eval_id": 0,
+  "eval_name": "dev-proxy-config",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response includes a concrete rsbuild.config code snippet with proxy configuration",
+      "passed": true,
+      "evidence": "Multiple code snippets with defineConfig and server.proxy"
+    },
+    {
+      "text": "Response mentions the correct config path (server.proxy or dev.proxy)",
+      "passed": true,
+      "evidence": "Uses server.proxy consistently"
+    },
+    {
+      "text": "The proxy config example correctly maps /api to http://localhost:3000",
+      "passed": true,
+      "evidence": "Shows '/api': 'http://localhost:3000' in the first example"
+    },
+    {
+      "text": "Information is sourced from fetched docs, not hallucinated",
+      "passed": false,
+      "evidence": "No docs fetched - answer based on model knowledge only. Content appears accurate but unverified against current docs."
+    }
+  ],
+  "pass_rate": 0.75
+}

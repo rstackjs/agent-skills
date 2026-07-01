@@ -37,20 +37,31 @@ agent-skills/
 
 ## Creating a New Skill
 
-### 1. Initialize Skill Template
+Create the Skill directory manually with the standard structure:
 
-Execute in the `skills/` directory:
-
-```bash
-cd skills
-npx skills init my-skill
+```
+{skill-name}/
+├── SKILL.md          # Required: instructions + metadata
+├── scripts/          # Optional: executable scripts
+├── references/       # Optional: reference documentation
+└── assets/           # Optional: templates, resource files
 ```
 
-This will generate a `SKILL.md` file with YAML front-matter and Markdown content.
+Write the Skill content with the use cases, workflow, examples, and links to detailed references when needed.
 
-### 2. Configure Front-matter
+`SKILL.md` frontmatter field requirements:
 
-Configure in the YAML front-matter at the top of the `SKILL.md` file:
+- **name** (required): unique Skill identifier, maximum 64 characters, lowercase letters/numbers/hyphens only, and must not start or end with a hyphen.
+- **description** (required): feature description and trigger scenarios, maximum 1024 characters. Include concrete trigger keywords, such as "when user encounters segmentation fault in Rspack".
+- **metadata.internal** (optional): set to `true` only for Rstack maintainer/developer Skills that should be hidden from normal discovery and installation.
+
+### User-facing Skills
+
+Use this for installable Skills intended for Rspack ecosystem users.
+
+- Place the Skill in `skills/{skill-name}/`.
+
+Start `SKILL.md` with YAML frontmatter:
 
 ```yaml
 ---
@@ -59,49 +70,43 @@ description: Feature description and trigger scenarios, which is key for Agents 
 ---
 ```
 
-**Field Descriptions**:
+### Rstack Maintainer/Developer Skills
 
-- **name** (required)
-  - Unique identifier for the Skill
-  - Maximum 64 characters
-  - Only lowercase letters, numbers, and hyphens
-  - Must not start or end with a hyphen
-  - Example: `rspack-tracing`
+Use this for internal Skills intended for Rstack repository maintainers and developers, not end users.
 
-- **description** (required)
-  - Feature description and trigger scenarios
-  - Maximum 1024 characters
-  - Recommended to include trigger keywords, such as "when user encounters segmentation fault in Rspack"
+- Place the Skill in `.agents/skills/{skill-name}/`.
+- Register the Skill in `skills.json` with `"local:*"` so it resolves to the repo-owned Skill source.
+- Add `metadata.internal: true` so the Skill is hidden from normal discovery and installation.
 
-### 3. Write Skill Content
-
-Standard Skill structure:
-
-```
-my-skill/
-├── SKILL.md          # Required: instructions + metadata
-├── scripts/          # Optional: executable scripts
-├── references/       # Optional: reference documentation
-└── assets/           # Optional: templates, resource files
+```json
+{
+  "skills": {
+    "my-internal-skill": "local:*"
+  }
+}
 ```
 
-Write in `SKILL.md`:
+```yaml
+---
+name: my-internal-skill
+description: Internal workflow for repository maintainers
+metadata:
+  internal: true
+---
+```
 
-- **Use Cases**: Explain when to use this Skill
-- **Workflow**: Detailed operation steps
-- **Code Examples**: Provide code examples
-- **Reference Documentation**: Link to detailed documentation in the `references/` directory
+Skills marked with `metadata.internal: true` are only visible and installable when `INSTALL_INTERNAL_SKILLS=1` is set.
 
 ## Writing Skill Scripts
 
 ### Simple Scripts
 
-For simple scripts (such as single-file scripts), create them directly in the `skills/{skill-name}/scripts/` directory.
+For simple scripts (such as single-file scripts), create them directly in the Skill's own `scripts/` directory.
 
 Example:
 
 ```javascript
-// skills/my-skill/scripts/simple.js
+// skills/my-skill/scripts/simple.js or .agents/skills/my-skill/scripts/simple.js
 console.log('Hello from simple script');
 ```
 
@@ -220,7 +225,12 @@ npx skills add rstackjs/agent-skills --skill my-skill
 ## References
 
 - [Agent Skills Specification](https://agentskills.io/specification)
+- [vercel-labs/skills](https://github.com/vercel-labs/skills)
 - [Skill Authoring Best Practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
 - [Rspack Documentation](https://rspack.rs)
+- [Rspress Documentation](https://rspress.rs)
+- [Rsbuild Documentation](https://rsbuild.rs)
 - [Rslib Documentation](https://rslib.rs)
-- [Rstest Documentation](https://rslib.rs)
+- [Rstest Documentation](https://rstest.rs)
+- [Rsdoctor Documentation](https://rsdoctor.rs)
+- [Rslint Documentation](https://rslint.rs)

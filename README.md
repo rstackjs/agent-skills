@@ -62,14 +62,6 @@ Helps Rspack users and developers debug crashes or deadlocks/hangs in the Rspack
 
 Use this Skill when users encounter "Segmentation fault" errors during Rspack builds or when the build progress gets stuck.
 
-### rstack-eco-ci-debug
-
-```bash
-npx skills add rstackjs/agent-skills --skill rstack-eco-ci-debug
-```
-
-Debug Rstack ecosystem CI failures and attribute the real source PR behind Rspack eco-ci red suites.
-
 ### rspack-tracing
 
 ```bash
@@ -250,12 +242,12 @@ Set up or migrate Storybook to use the Rsbuild builder. Handles fresh setup for 
 
 ## Contribution Workflow Skills
 
-Skills in this section are mainly intended for contribution workflows in repositories across the Rstack ecosystem.
+Skills in this section are internal contribution workflow Skills intended for Rstack repository maintainers and developers, not end users. Set `INSTALL_INTERNAL_SKILLS=1` when installing them.
 
 ### create-draft-release-notes
 
 ```bash
-npx skills add rstackjs/agent-skills --skill create-draft-release-notes
+INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill create-draft-release-notes
 ```
 
 Create or update draft GitHub release notes, or output organized Markdown when draft creation is unavailable. Use for release notes, draft releases, release PR checks, npm staged publishing checks, and optional highlights.
@@ -263,7 +255,7 @@ Create or update draft GitHub release notes, or output organized Markdown when d
 ### release-blog-writer
 
 ```bash
-npx skills add rstackjs/agent-skills --skill release-blog-writer
+INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill release-blog-writer
 ```
 
 Write or revise release blog posts for product releases, with guidance for structure, tone, headings, examples, and links.
@@ -271,7 +263,7 @@ Write or revise release blog posts for product releases, with guidance for struc
 ### mdx-to-markdown
 
 ```bash
-npx skills add rstackjs/agent-skills --skill mdx-to-markdown
+INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill mdx-to-markdown
 ```
 
 Convert MDX to portable Markdown with MDX syntax cleanup and link/code block normalization.
@@ -279,10 +271,34 @@ Convert MDX to portable Markdown with MDX syntax cleanup and link/code block nor
 ### pr-creator
 
 ```bash
-npx skills add rstackjs/agent-skills --skill pr-creator
+INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill pr-creator
 ```
 
 Use when asked to create a pull request for this repository. It helps the PR follow the repository's branch safety rules, title convention, pull request template, and concise English writing style.
+
+### rstack-repo-maintain
+
+```bash
+INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill rstack-repo-maintain
+```
+
+Audit and modernize RstackJS/Rspack ecosystem repositories to the current shared infrastructure baseline, including build output, linting, test tooling, Node.js support, TypeScript settings, docs, release workflow cleanup, dependency cleanup, and infra PR conventions.
+
+### rstack-eco-ci-debug
+
+```bash
+INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill rstack-eco-ci-debug
+```
+
+Debug Rstack ecosystem CI failures and attribute the real source PR or downstream change. Use it for Rspack eco-ci, rstack-ecosystem-ci, suite regressions, downstream failures, canary bisects, and daily eco-ci triage.
+
+### rstack-skill-evaluator
+
+```bash
+INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill rstack-skill-evaluator
+```
+
+Benchmark agent skills by generating eval cases, comparing skill-guided and baseline runs, and recording artifacts under `skills-test/{skill-name}`.
 
 ## Contributing
 

@@ -1,6 +1,8 @@
 ---
 name: pr-creator
 description: Use when asked to create a pull request for this repository. It helps the PR follow the repository's branch safety rules, title convention, pull request template, and concise English writing style.
+metadata:
+  internal: true
 ---
 
 # Pull Request Creator

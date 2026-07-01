@@ -12,7 +12,7 @@ A thin repo-specific layer on top of `skill-creator`. For workflow (Test / Impro
 
 ## Targeting a skill
 
-If the user hasn't named a target, ask. Skills live under `skills/` (production) and `dev-skills/` (internal-only).
+If the user hasn't named a target, ask. Skills live under `skills/` (production) and `.agents/skills/` (internal-only).
 
 ## Artifact layout
 

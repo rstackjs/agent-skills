@@ -16,9 +16,30 @@ Response order (required): High-Priority Issues -> Proposed Solutions -> Optiona
 3. If data exists, skip all plugin version/config/build generation logic. Update cache when useful.
 4. If data is missing, stop analysis: do not run `rsdoctor-agent` analysis commands, do not run the Analysis Gate, and either ask for the data path or run the Generation Gate below only when setup/generation is required.
 5. After a real data file exists, run Analysis Gate at most once before the first `rsdoctor-agent` data-fetch command: verify global `@rsdoctor/agent-cli` with `npm view @rsdoctor/agent-cli version` and `rsdoctor-agent --version`; install latest only if missing/outdated, a version-related error occurs, or the user asks to refresh.
-6. Fetch only the Default Evidence Set first; run independent fetches in parallel when possible; synthesize findings in the required response order.
+6. Fetch only the Default Evidence Set first; run independent fetches in parallel when possible.
+7. Run the ROI Triage Gate below before selecting deep-dive commands or recommendations. Use it to rank issue categories by measured impact, then synthesize findings in the required response order.
 
 Performance rules: parallelize independent checks, cache only derived facts (`dataFile`, `dataFileMtime`, `pluginName`, `pluginVersion`, dependency/config/plugin modification times), and invalidate cache when paths disappear, modification times change, the user asks to refresh, or cached values fail. Speculative plugin checks must not trigger generation; use them only after confirming the data file is missing.
+
+## ROI Triage Gate
+
+Before recommending fixes, classify the current build into broad cost buckets and choose the highest-ROI lever from evidence, not intuition. This gate is generic for Rspack/Webpack projects; do not use framework-specific runtime layers unless the user's project exposes them in the data.
+
+| Cost bucket                | Evidence source                                                   | First lever                                                                                                                      |
+| -------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Assets/media               | `assetsTop`, `assets media`, `chunkGraph.assets`                  | Compress, convert, deduplicate, subset, or lazy-load large assets                                                                |
+| Large packages/modules     | `packagesTop`, module/package size fields                         | Replace heavy packages, use deep imports, split non-critical code, or review direct dependency choices                           |
+| Duplicate/cross-chunk cost | E1001/E1002, `packages duplicates`, cross-chunk package summaries | Deduplicate versions, tune package resolution, or adjust `splitChunks`/cache groups                                              |
+| Tree-shaking waste         | `retainedModulesTop`, retained CJS/barrel/side-effects modules    | Fix CJS/barrel imports, sideEffects declarations, or package entrypoints                                                         |
+| Build-time cost            | `buildCost`, loaders/plugins/directories cost data                | Optimize loaders/plugins, cache, watcher, or source-map/dev settings; prioritize only when the user asks about build performance |
+
+Decision rules:
+
+- Report the measured breakdown first when it changes recommendation priority.
+- Start with the largest bucket that maps to a practical fix; a smaller issue should not outrank a larger one unless the larger one is expected or intentionally unavoidable.
+- Treat issuer/reference-chain tracing as second-pass work. Run it only when a high-impact candidate needs ownership evidence, or when the user asks "why" / "who imported this".
+- Do not present aggregate rule output as sufficient evidence for a fix that requires a concrete file, package, chunk, size, or dependency path.
+- If the largest bucket is structural or intentionally required, say that it is a wall and name the external change that would be needed instead of inventing low-impact source edits.
 
 ## Generation Gate
 

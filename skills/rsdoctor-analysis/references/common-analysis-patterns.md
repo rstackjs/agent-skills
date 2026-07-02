@@ -2,6 +2,38 @@
 
 Use this reference for common Rspack/Webpack bundle analysis questions after locating `rsdoctor-data.json`.
 
+## ROI-Based Lever Selection
+
+Use this pattern before choosing detailed analysis commands. The goal is to find the biggest measured cost bucket first, then select the smallest follow-up that can prove or fix that bucket.
+
+Recommended triage order:
+
+1. Compare assets/media, top packages/modules, duplicate or cross-chunk cost, retained tree-shaking waste, and build-time cost.
+2. Pick the largest bucket with a plausible project-side fix.
+3. Fetch only the narrow supporting evidence required for that bucket.
+4. Defer issuer/reference-chain tracing until it will change ownership, confidence, or the recommended fix.
+5. If the largest bucket is expected or structurally required, call it out as a wall and move to the next meaningful bucket.
+
+Lever map:
+
+| Dominant bucket           | High-ROI first pass                                                                                               | Lower-ROI or second pass                                                    |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Assets/media              | Compress images, convert formats, deduplicate repeated assets, subset fonts, lazy-load non-critical media         | JS tree-shaking work that saves only tens of KB                             |
+| One or few large packages | Check direct dependency necessity, lighter alternatives, deep imports, async boundaries, or route-level splitting | Broad package-list browsing without a top offender                          |
+| Duplicate packages        | Use `packages duplicates` / E1001 evidence, then resolve compatible versions or alias deliberately                | Reference-chain tracing before the duplicate size is proven material        |
+| Cross-chunk duplication   | Inspect E1002/cross-chunk summaries, then consider `splitChunks`/cache group changes or shared vendor extraction  | Splitting small shared modules that add request overhead                    |
+| Retained modules          | Start with emitted CJS/barrel/side-effects rows sorted by gzip size                                               | Deleting source that is already eliminated by the bundler                   |
+| Build-time cost           | Use loader/plugin/directories timing and optimize the measured slow path                                          | Build-performance advice when the user asked only about shipped bundle size |
+
+Recommendation rules:
+
+- Prefer `gzipSize` for shipped-user cost and `parsedSize` for parse/execute or code-volume discussions.
+- For Webpack/Rspack chunk recommendations, distinguish initial/entry chunks from async chunks. A large async chunk is usually lower priority than a large initial chunk unless the user asks about that route or interaction.
+- For package replacement advice, require direct dependency evidence or clear ownership. Do not recommend replacing an indirect package just because it appears in `packageGraph`.
+- For duplicate-package advice, mention compatibility risk when versions cross major/minor boundaries or when packages may ship resources as side effects.
+- For retained-module advice, include the category (`cjs`, `barrel`, `side-effects`) and the largest concrete paths before suggesting config or source changes.
+- Stop when the likely savings are below the user's stated goal or clearly smaller than another measured bucket.
+
 ## Similar Packages
 
 Use direct dependency package data to inspect similar packages. Start with `packages direct-dependencies` or `query packages_direct_dependencies`, then check known package families and other potentially similar packages.

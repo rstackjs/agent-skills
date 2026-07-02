@@ -9,6 +9,8 @@ Use the globally installed `rsdoctor-agent` CLI from `@rsdoctor/agent-cli` only 
 
 Response order (required): High-Priority Issues -> Proposed Solutions -> Optional Reference-Chain Follow-up Choices -> Next Deep-Dive Issue Categories (Not commands).
 
+This skill may be called by `rsdoctor-performance-analyze` with a compact runtime handoff. In that mode, use the handoff only to prioritize bundle evidence around emitted assets/chunks that appeared in the browser trace. Do not reinterpret browser metrics here; return bundle evidence that the performance skill can merge back into the runtime diagnosis.
+
 ## Core Workflow
 
 1. Reuse current-session results and valid `.rsdoctor-analysis-cache.json` entries before doing new work.
@@ -16,9 +18,53 @@ Response order (required): High-Priority Issues -> Proposed Solutions -> Optiona
 3. If data exists, skip all plugin version/config/build generation logic. Update cache when useful.
 4. If data is missing, stop analysis: do not run `rsdoctor-agent` analysis commands, do not run the Analysis Gate, and either ask for the data path or run the Generation Gate below only when setup/generation is required.
 5. After a real data file exists, run Analysis Gate at most once before the first `rsdoctor-agent` data-fetch command: verify global `@rsdoctor/agent-cli` with `npm view @rsdoctor/agent-cli version` and `rsdoctor-agent --version`; install latest only if missing/outdated, a version-related error occurs, or the user asks to refresh.
-6. Fetch only the Default Evidence Set first; run independent fetches in parallel when possible; synthesize findings in the required response order.
+6. If a `rsdoctor-performance-analyze` handoff exists, read its `candidateAssets`, `runtimeSymptoms`, and `requestedEvidence`, then prioritize matching asset basenames, hashes, chunks, packages, and retained modules before broad Top-N output.
+7. Fetch only the Default Evidence Set first; run independent fetches in parallel when possible; synthesize findings in the required response order.
 
 Performance rules: parallelize independent checks, cache only derived facts (`dataFile`, `dataFileMtime`, `pluginName`, `pluginVersion`, dependency/config/plugin modification times), and invalidate cache when paths disappear, modification times change, the user asks to refresh, or cached values fail. Speculative plugin checks must not trigger generation; use them only after confirming the data file is missing.
+
+## Performance Handoff Input
+
+When invoked from `rsdoctor-performance-analyze`, expect a small JSON-like context with this shape:
+
+```json
+{
+  "source": "rsdoctor-performance-analyze",
+  "traceSummary": ".rsdoctor-performance/<capture>/trace-summary.json",
+  "runtimeSymptoms": [],
+  "candidateAssets": [
+    {
+      "url": "https://example.com/static/js/vendor.abc123.js",
+      "basename": "vendor.abc123.js",
+      "hash": "abc123",
+      "resourceType": "script",
+      "encodedKB": 0,
+      "scriptCostMs": 0,
+      "reason": "large initial script with high evaluation cost"
+    }
+  ],
+  "requestedEvidence": [
+    "assetsTop",
+    "packagesTop",
+    "duplicatePackages",
+    "crossChunkPackages",
+    "retainedModulesTop"
+  ],
+  "output": {
+    "bundleSummary": ".rsdoctor-performance/<capture>/bundle-summary.json",
+    "correlationReport": ".rsdoctor-performance/<capture>/correlation-report.json"
+  }
+}
+```
+
+Handoff rules:
+
+- Treat `candidateAssets` as filters and ranking hints. They are not proof that a module/package caused the runtime symptom.
+- Match assets by exact basename first, then hash fragment, then public path/chunk naming convention. If matching is ambiguous, report all plausible matches with confidence.
+- Keep the Default Evidence Set as a fallback, but lead with evidence for matching chunks/assets when available.
+- Write a compact `bundle-summary.json` when an output path is provided. Include matched assets/chunks, top owning packages/modules, duplicate package findings, retained module findings, and unresolved matches.
+- Write `correlation-report.json` only for bundle-side facts that can be connected to handoff candidates. Leave runtime interpretation and final prioritization to `rsdoctor-performance-analyze`.
+- If `rsdoctor-data.json` is missing, follow the normal missing-data recovery rules. Do not run `rsdoctor-agent` commands against the trace file.
 
 ## Generation Gate
 
@@ -52,14 +98,14 @@ output: {
 
 Default Evidence Set:
 
-| Summary key          | Evidence source                            | Bounds                                        |
-| -------------------- | ------------------------------------------ | --------------------------------------------- |
-| `buildCost`          | `build summary`                            | filtered fields only                          |
-| `assetsTop`          | top assets by raw/gzip size                | fixed Top-N                                   |
-| `packagesTop`        | top packages by gzip size                  | fixed Top-N; avoid full `packages list` pages |
-| `duplicatePackages`  | E1001 duplicate package summary            | first-pass summary only                       |
-| `crossChunkPackages` | E1002 cross-chunk duplication summary      | first-pass summary only                       |
-| `retainedModulesTop` | `tree-shaking retained-modules --limit 10` | filtered fields only; no `--compact`          |
+| Summary key | Evidence source | Bounds |
+| --- | --- | --- |
+| `buildCost` | `build summary` | filtered fields only |
+| `assetsTop` | top assets by raw/gzip size | fixed Top-N |
+| `packagesTop` | top packages by gzip size | fixed Top-N; avoid full `packages list` pages |
+| `duplicatePackages` | E1001 duplicate package summary | first-pass summary only |
+| `crossChunkPackages` | E1002 cross-chunk duplication summary | first-pass summary only |
+| `retainedModulesTop` | `tree-shaking retained-modules --limit 10` | filtered fields only; no `--compact` |
 
 Scope rules:
 
@@ -80,7 +126,11 @@ Output format:
    - Group each issue with its fix recommendation.
    - Include concrete evidence (size/time/count/path/rule code) and priority.
    - For duplicate packages and tree-shaking issues, include a short "continue tracing vs stop here" choice.
-2. Whether deeper analysis is still needed:
+2. When a performance handoff supplied output paths:
+   - Save `bundle-summary.json` with compact matched bundle facts.
+   - Save `correlation-report.json` with matched candidate assets, confidence, and unresolved gaps.
+   - Mention these artifact paths in the response, but do not turn them into runtime conclusions.
+3. Whether deeper analysis is still needed:
    - List remaining issue categories only, not commands.
 
 For Top-N insights, prefer a table: `Name | Volume/Time | Count | Recommendation`.

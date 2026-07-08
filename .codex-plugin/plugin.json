@@ -1,0 +1,37 @@
+{
+  "name": "rstack",
+  "version": "0.1.0",
+  "description": "Rstack ecosystem skills for Codex.",
+  "author": {
+    "name": "RstackJS",
+    "url": "https://github.com/rstackjs"
+  },
+  "homepage": "https://github.com/rstackjs/agent-skills",
+  "repository": "https://github.com/rstackjs/agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "rspack",
+    "rsbuild",
+    "rslib",
+    "rstest",
+    "rspress",
+    "rsdoctor",
+    "rslint",
+    "skills"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Rstack",
+    "shortDescription": "Use Rstack ecosystem skills in Codex.",
+    "longDescription": "Adds Codex skills for Rspack, Rsbuild, Rslib, Rstest, Rspress, Rsdoctor, Rslint, and related migration workflows.",
+    "developerName": "RstackJS",
+    "category": "Developer Tools",
+    "capabilities": ["Skills"],
+    "defaultPrompt": [
+      "Help me debug a Rspack build.",
+      "Guide an Rsbuild migration.",
+      "Review a Rspress docs setup."
+    ],
+    "websiteURL": "https://github.com/rstackjs/agent-skills"
+  }
+}

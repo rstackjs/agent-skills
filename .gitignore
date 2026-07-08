@@ -29,6 +29,10 @@ skills-test/**/*
 .gemini/**/*
 .claude/**/*
 
+# Keep repo-local Codex plugin marketplace tracked
+!.agents/plugins/
+!.agents/plugins/marketplace.json
+
 # Keep local skills tracked
 !.agents/
 !.agents/skills/

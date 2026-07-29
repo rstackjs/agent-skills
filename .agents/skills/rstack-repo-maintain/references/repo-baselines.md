@@ -87,18 +87,32 @@ Current traits:
 
 TypeScript 7 changed the old tsgo baseline:
 
+- Rslib's current [declaration guide](https://rslib.rs/guide/advanced/dts) and [`lib.dts` reference](https://rslib.rs/config/lib/dts) state that Rslib automatically uses tsgo when the installed TypeScript version is 7 or later. Direct `@typescript/native-preview` plus manual tsgo selection is deprecated compatibility wiring, not the current baseline.
 - [#97](https://github.com/rstackjs/rslog/pull/97) upgraded to `typescript@^7.0.2`.
-- [#98](https://github.com/rstackjs/rslog/pull/98) removed direct `@typescript/native-preview`, removed explicit `dts.tsgo`, upgraded Rslib, and retained `dts: true`.
+- [#98](https://github.com/rstackjs/rslog/pull/98) removed direct `@typescript/native-preview`, removed manual tsgo selection, upgraded Rslib, and retained `dts: true`.
 - Rsbuild's [#8162](https://github.com/web-infra-dev/rsbuild/pull/8162) separately recommends TypeScript 7 or later for faster plugin type checking, while the Rsbuild repository catalog itself still uses TypeScript 6 in this snapshot.
 
 Therefore:
 
 - Do not state that every repository should upgrade to one TypeScript major.
-- Do not add `@typescript/native-preview` or `dts: { tsgo: true }` as a current default.
+- Do not add `@typescript/native-preview` or manual tsgo selection as a current default.
 - For TypeScript 7, remove the old preview-specific wiring and validate declaration output.
 - For TypeScript 6, keep the existing declaration implementation unless there is repo-specific evidence to change it.
 
 The current `rslog/AGENTS.md` still says its build uses “tsgo declarations,” which no longer matches `rslib.config.ts`. Treat this as evidence that documentation must be checked against live config, not copied verbatim.
+
+### Rslib v1 Prerelease Upgrade
+
+When the target version is `@rslib/core@1.0.0-beta` or another v1 prerelease, use the official [Rslib v0-to-v1 upgrade guide](https://v1.rslib.rs/zh/guide/upgrade/v0-to-v1) as the migration checklist. Treat the change from 0.23 to v1 as a deliberate compatibility migration:
+
+- Upgrade or verify Rsbuild plugins against Rsbuild v2 peer requirements; if the project uses Rsbuild config or JavaScript APIs directly, also follow the Rsbuild v1-to-v2 guide linked there.
+- Re-evaluate inferred Node syntax targets and the changed `es2023` and `es2024` baselines.
+- Test ESM externals that originate from CommonJS `require()` because the default `externalsType` changes to `modern-module`.
+- Remove preview-specific TypeScript wiring unless it is intentionally retained through the new explicit TypeScript path option; TypeScript 7+ is detected from the project root and enables tsgo automatically.
+- Check the default declaration import-extension rewriting before accepting the new `redirect.dts.extension` behavior.
+- Migrate deprecated `lib.autoExternal` to `output.autoExternal` and remove `experiments.advancedEsm`.
+
+Do not recommend the beta solely because its version is newer than npm `latest`. Record why the target accepts prerelease risk, update the lockfile, and validate built declarations, ESM/CJS loading, external dependencies, and package contents.
 
 Useful history:
 

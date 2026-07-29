@@ -88,7 +88,7 @@ Apply these rules:
 
 ### Publint Shortcut
 
-Skip a separate `npm pack --dry-run` or equivalent package dry run when all of these are true:
+Skip a separate `pnpm pack --dry-run` or equivalent package dry run when all of these are true:
 
 - `rslib.config.ts` registers `pluginPublint` in the active plugins array.
 - Its `enable` condition is true in the validation environment.
@@ -97,7 +97,9 @@ Skip a separate `npm pack --dry-run` or equivalent package dry run when all of t
 
 Do not infer coverage from an import alone. Do not use the shortcut for a disabled plugin, an unresolved environment condition, a watch-only build, or a task that explicitly asks to inspect the produced tarball.
 
-Never run plain `pnpm pack` in the target working tree because it writes a `.tgz` archive there. When the task explicitly requires tarball inspection, direct the archive to a temporary directory and remove it after inspection.
+Prefer pnpm's native pack command for pnpm repositories. Use `pnpm pack --dry-run` when the repository's pnpm version supports it; the option was added in pnpm 10.26.0. For older versions or explicit tarball inspection, use `pnpm pack --pack-destination <temporary-directory>` and remove the temporary archive after inspection. Use `npm pack` only when npm is the target repository's package manager.
+
+Never run `pnpm pack` without `--dry-run`, `--pack-destination`, or another explicit output path in the target working tree because it writes a `.tgz` archive there.
 
 Report the shortcut explicitly, for example: “Skipped separate pack validation because the successful production build ran enforcing `pluginPublint`.”
 

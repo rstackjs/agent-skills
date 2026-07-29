@@ -170,7 +170,7 @@ Use this repository only when CommonJS consumers require dual output.
 2. Preserve public output and runtime support unless the user explicitly accepts a breaking change.
 3. Use one exemplar as the primary lane and specialized repositories only for the feature they demonstrate.
 4. Treat exact versions as a coherent snapshot. Refresh the chosen baseline's manifest, lockfile, workflow pins, and engine fields together.
-5. Prefer package-native validation: focused tests, build artifacts, import/require smoke tests, `npm pack --dry-run`, publint, and release command inspection.
+5. Prefer package-native validation: focused tests, build artifacts, import/require smoke tests, `pnpm pack --dry-run` for supported pnpm versions, publint, and release command inspection.
 
 ## Live Refresh Checklist
 

@@ -298,7 +298,7 @@ Debug Rstack ecosystem CI failures and attribute the real source PR or downstrea
 INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill rstack-skill-evaluator
 ```
 
-Benchmark agent skills by generating eval cases, comparing skill-guided and baseline runs, and recording artifacts under `skills-test/{skill-name}`.
+Benchmark and iteratively improve agent skills with Codex CLI or Claude Code by generating eval cases, comparing skill-guided and baseline runs, grading outcomes, and recording actionable reports under `skills-test/{skill-name}`.
 
 ## Contributing
 

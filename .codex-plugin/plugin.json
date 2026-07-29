@@ -1,7 +1,7 @@
 {
   "name": "rstack",
   "version": "0.1.0",
-  "description": "Rstack ecosystem skills for Codex.",
+  "description": "Agent Skills for debugging, tracing, upgrading, and analyzing Rstack projects.",
   "author": {
     "name": "RstackJS",
     "url": "https://github.com/rstackjs"
@@ -17,20 +17,23 @@
     "rspress",
     "rsdoctor",
     "rslint",
+    "storybook",
     "skills"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Rstack",
-    "shortDescription": "Use Rstack ecosystem skills in Codex.",
-    "longDescription": "Adds Codex skills for Rspack, Rsbuild, Rslib, Rstest, Rspress, Rsdoctor, Rslint, and related migration workflows.",
+    "shortDescription": "Debug, migrate, optimize, and document Rstack projects.",
+    "longDescription": "Use Rstack skills to configure, migrate, debug, trace, optimize, and document projects with Rspack, Rsbuild, Rslib, Rstest, Rspress, Rsdoctor, and Rslint, including Storybook integration with Rsbuild.",
     "developerName": "RstackJS",
     "category": "Developer Tools",
-    "capabilities": ["Skills"],
+    "capabilities": ["Interactive", "Read", "Write"],
+    "composerIcon": "./assets/rspack-logo.png",
+    "logo": "./assets/rspack-logo.png",
     "defaultPrompt": [
-      "Help me debug a Rspack build.",
-      "Guide an Rsbuild migration.",
-      "Review a Rspress docs setup."
+      "Debug and optimize this Rspack build.",
+      "Migrate this webpack or Vite project to Rsbuild.",
+      "Create or improve the Rspress documentation for this project."
     ],
     "websiteURL": "https://github.com/rstackjs/agent-skills"
   }

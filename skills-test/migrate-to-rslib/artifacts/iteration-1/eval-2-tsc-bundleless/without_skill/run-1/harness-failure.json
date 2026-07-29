@@ -1,0 +1,6 @@
+{
+  "classification": "paired_run_excluded",
+  "reason": "The matching with_skill run was invalidated by a transient registry failure, so this otherwise successful baseline run is excluded to preserve paired comparison.",
+  "excluded_from_benchmark": true,
+  "replacement_run": "../run-2"
+}

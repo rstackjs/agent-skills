@@ -1,0 +1,247 @@
+{
+  "metadata": {
+    "skill_name": "migrate-to-rslib",
+    "skill_path": "skills/migrate-to-rslib",
+    "executor_model": "gpt-5.6-terra",
+    "analyzer_model": "GPT-5 Codex inline analyst",
+    "timestamp": "2026-07-29T09:11:18Z",
+    "evals_run": [1, 2],
+    "runs_per_configuration": 1,
+    "cli_version": "codex-cli 0.145.0",
+    "sandbox": "workspace-write",
+    "smoke_only": true
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 264.512,
+        "tokens": 573833,
+        "tool_calls": 22,
+        "errors": 4
+      },
+      "expectations": [
+        {
+          "text": "package.json uses @rslib/core with Rslib build/watch scripts and no longer depends on tsup",
+          "passed": true,
+          "evidence": "devDependencies={\"@rslib/core\":\"^0.19.1\",\"typescript\":\"^5.8.3\"}; scripts={\"build\":\"rslib\",\"build:watch\":\"rslib --watch\",\"typecheck\":\"tsc --noEmit\"}"
+        },
+        {
+          "text": "rslib.config.ts preserves ESM and CommonJS outputs, declarations, source maps, the index entry, and clean output behavior",
+          "passed": true,
+          "evidence": "rslib.config.ts contains esm+cjs formats, dts, sourceMap, cleanDistPath, and src/index.ts entry checks."
+        },
+        {
+          "text": "npm run build succeeds and every package export target exists",
+          "passed": true,
+          "evidence": "npm run build exit=0; export targets=./dist/index.d.ts, ./dist/index.js, ./dist/index.cjs; missing=none"
+        },
+        {
+          "text": "Both ESM import and CommonJS require consumers execute successfully",
+          "passed": true,
+          "evidence": "node test/consumer.mjs exit=0; node test/consumer.cjs exit=0"
+        },
+        {
+          "text": "Source files remain byte-for-byte unchanged and obsolete tsup.config.ts is removed",
+          "passed": true,
+          "evidence": "compared src/index.ts byte-for-byte=true; tsup.config.ts exists=false"
+        }
+      ],
+      "notes": [
+        "Watch verification emitted sandbox EMFILE warnings after a successful rebuild."
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 117.337,
+        "tokens": 403842,
+        "tool_calls": 17,
+        "errors": 1
+      },
+      "expectations": [
+        {
+          "text": "package.json uses @rslib/core with Rslib build/watch scripts while retaining the tsc --noEmit typecheck script",
+          "passed": true,
+          "evidence": "devDependencies={\"@rslib/core\":\"^0.23.2\",\"typescript\":\"^5.8.3\"}; scripts={\"build\":\"rslib build\",\"build:watch\":\"rslib build --watch\",\"typecheck\":\"tsc --noEmit\"}"
+        },
+        {
+          "text": "rslib.config.ts configures bundleless ESM output, declarations, and source.tsconfigPath for tsconfig.build.json",
+          "passed": true,
+          "evidence": "bundle=false, esm, dts, tsconfigPath checks applied; tsconfig.build.json exists=true"
+        },
+        {
+          "text": "npm run build succeeds and all root and ./format export targets exist",
+          "passed": true,
+          "evidence": "npm run build exit=0; export targets=./dist/index.d.ts, ./dist/index.js, ./dist/format.d.ts, ./dist/format.js; missing=none"
+        },
+        {
+          "text": "npm run typecheck and an ESM consumer covering both exports succeed",
+          "passed": true,
+          "evidence": "npm run typecheck exit=0; node test/consumer.mjs exit=0"
+        },
+        {
+          "text": "Source files and package export paths remain byte-for-byte unchanged",
+          "passed": true,
+          "evidence": "source files src/format.ts, src/index.ts byte-for-byte=true; package exports unchanged=true"
+        }
+      ],
+      "notes": [
+        "Watch verification emitted sandbox EMFILE warnings after a successful rebuild."
+      ]
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 176.897,
+        "tokens": 421668,
+        "tool_calls": 21,
+        "errors": 4
+      },
+      "expectations": [
+        {
+          "text": "package.json uses @rslib/core with Rslib build/watch scripts and no longer depends on tsup",
+          "passed": true,
+          "evidence": "devDependencies={\"@rslib/core\":\"^0.23.2\",\"typescript\":\"^5.8.3\"}; scripts={\"build\":\"rslib build\",\"build:watch\":\"rslib build --watch\",\"typecheck\":\"tsc --noEmit\"}"
+        },
+        {
+          "text": "rslib.config.ts preserves ESM and CommonJS outputs, declarations, source maps, the index entry, and clean output behavior",
+          "passed": true,
+          "evidence": "rslib.config.ts contains esm+cjs formats, dts, sourceMap, cleanDistPath, and src/index.ts entry checks."
+        },
+        {
+          "text": "npm run build succeeds and every package export target exists",
+          "passed": true,
+          "evidence": "npm run build exit=0; export targets=./dist/index.d.ts, ./dist/index.js, ./dist/index.cjs; missing=none"
+        },
+        {
+          "text": "Both ESM import and CommonJS require consumers execute successfully",
+          "passed": true,
+          "evidence": "node test/consumer.mjs exit=0; node test/consumer.cjs exit=0"
+        },
+        {
+          "text": "Source files remain byte-for-byte unchanged and obsolete tsup.config.ts is removed",
+          "passed": true,
+          "evidence": "compared src/index.ts byte-for-byte=true; tsup.config.ts exists=false"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 168.892,
+        "tokens": 488457,
+        "tool_calls": 21,
+        "errors": 2
+      },
+      "expectations": [
+        {
+          "text": "package.json uses @rslib/core with Rslib build/watch scripts while retaining the tsc --noEmit typecheck script",
+          "passed": true,
+          "evidence": "devDependencies={\"@rslib/core\":\"^0.23.2\",\"typescript\":\"^5.8.3\"}; scripts={\"build\":\"rslib build\",\"build:watch\":\"rslib build --watch\",\"typecheck\":\"tsc --noEmit\"}"
+        },
+        {
+          "text": "rslib.config.ts configures bundleless ESM output, declarations, and source.tsconfigPath for tsconfig.build.json",
+          "passed": false,
+          "evidence": "bundle=false, esm, dts, tsconfigPath checks applied; tsconfig.build.json exists=false"
+        },
+        {
+          "text": "npm run build succeeds and all root and ./format export targets exist",
+          "passed": true,
+          "evidence": "npm run build exit=0; export targets=./dist/index.d.ts, ./dist/index.js, ./dist/format.d.ts, ./dist/format.js; missing=none"
+        },
+        {
+          "text": "npm run typecheck and an ESM consumer covering both exports succeed",
+          "passed": true,
+          "evidence": "npm run typecheck exit=0; node test/consumer.mjs exit=0"
+        },
+        {
+          "text": "Source files and package export paths remain byte-for-byte unchanged",
+          "passed": true,
+          "evidence": "source files src/format.ts, src/index.ts byte-for-byte=true; package exports unchanged=true"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1,
+        "stddev": 0,
+        "min": 1,
+        "max": 1
+      },
+      "time_seconds": {
+        "mean": 190.9245,
+        "stddev": 104.0684,
+        "min": 117.337,
+        "max": 264.512
+      },
+      "tokens": {
+        "mean": 488837.5,
+        "stddev": 120201.7888,
+        "min": 403842,
+        "max": 573833
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.9,
+        "stddev": 0.1414,
+        "min": 0.8,
+        "max": 1
+      },
+      "time_seconds": {
+        "mean": 172.8945,
+        "stddev": 5.6604,
+        "min": 168.892,
+        "max": 176.897
+      },
+      "tokens": {
+        "mean": 455062.5,
+        "stddev": 47226.9548,
+        "min": 421668,
+        "max": 488457
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.10",
+      "time_seconds": "+18.0",
+      "tokens": "+33775"
+    }
+  },
+  "notes": [
+    "The skill passed all 10 deterministic assertions; the baseline passed 9 of 10.",
+    "The only differentiating assertion was the tsc migration requirement to retain tsconfig.build.json through source.tsconfigPath. The baseline produced valid bundleless output but deleted that file and recreated the relevant compiler options elsewhere.",
+    "All five tsup assertions passed in both configurations, so this case did not discriminate skill value.",
+    "The valid with-skill runs averaged 18.0 seconds and 33,775 tokens more than baseline, but one run per configuration per eval is insufficient for reliability or variance claims.",
+    "The first tsc matched pair was excluded after a transient npm registry/DNS failure invalidated the with-skill run; replacement run-2 used fresh fixtures for both configurations.",
+    "Watch-mode checks in the with-skill runs completed but emitted sandbox EMFILE watcher-limit warnings."
+  ]
+}

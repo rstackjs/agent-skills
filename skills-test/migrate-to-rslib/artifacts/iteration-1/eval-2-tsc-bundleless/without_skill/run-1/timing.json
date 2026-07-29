@@ -1,0 +1,17 @@
+{
+  "executor_start": "2026-07-29T09:00:24.964Z",
+  "executor_end": "2026-07-29T09:03:25.868Z",
+  "duration_ms": 180902,
+  "executor_duration_seconds": 180.902,
+  "total_duration_seconds": 180.902,
+  "exit_code": 0,
+  "cli_version": "codex-cli 0.145.0",
+  "model": "gpt-5.6-terra",
+  "sandbox": "workspace-write",
+  "approval": "non-interactive; no bypass",
+  "network": "enabled",
+  "input_tokens": 484244,
+  "cached_input_tokens": 420864,
+  "output_tokens": 5171,
+  "total_tokens": 489415
+}

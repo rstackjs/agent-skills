@@ -11,3 +11,6 @@ skills-lock.yaml
 skills/**/scripts/*.js
 skills/**/scripts/*.cjs
 skills/**/scripts/*.mjs
+
+# Preserve evaluated fixture bytes
+skills-test/migrate-to-rslib/fixtures

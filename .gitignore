@@ -19,6 +19,10 @@ skills-test/**/*
 !skills-test/*/evals/
 !skills-test/*/evals/evals.json
 !skills-test/*/report.md
+!skills-test/migrate-to-rslib/fixtures/
+!skills-test/migrate-to-rslib/fixtures/**
+!skills-test/migrate-to-rslib/artifacts/
+!skills-test/migrate-to-rslib/artifacts/**
 
 .vscode/**/*
 !.vscode/settings.json

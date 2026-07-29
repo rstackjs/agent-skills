@@ -1,6 +1,6 @@
 {
   "skill_name": "migrate-to-rslib",
-  "fixture_root": "/tmp/agent-skills-evals/migrate-to-rslib/fixtures",
+  "fixture_root": "skills-test/migrate-to-rslib/fixtures",
   "runs_root": "/tmp/agent-skills-evals/migrate-to-rslib/runs",
   "runner_instructions": "Run each case as a fresh Codex CLI matched pair. Copy the named fixture into each run workspace, give only with_skill access to an immutable migrate-to-rslib snapshot, keep prompts and runtime controls identical, and grade durable files and command results rather than final-message claims.",
   "evals": [
@@ -10,7 +10,7 @@
       "fixture": "tsup-dual-format",
       "prompt": "Migrate this TypeScript library from tsup to Rslib with the smallest behavior-preserving change. Preserve its ESM and CommonJS entry points, declaration files, source maps, package exports, and existing runtime behavior. Update dependencies and scripts, remove obsolete tsup configuration only after the Rslib build is working, run relevant verification, and summarize any remaining follow-ups.",
       "expected_output": "The fixture uses @rslib/core and an Rslib config that preserves dual-format output, declarations, source maps, exports, and runtime behavior; obsolete tsup setup is removed after a successful build.",
-      "files": [],
+      "files": ["skills-test/migrate-to-rslib/fixtures/tsup-dual-format"],
       "assertions": [
         "package.json uses @rslib/core with Rslib build/watch scripts and no longer depends on tsup",
         "rslib.config.ts preserves ESM and CommonJS outputs, declarations, source maps, the index entry, and clean output behavior",
@@ -25,7 +25,7 @@
       "fixture": "tsc-bundleless",
       "prompt": "Migrate this TypeScript library's tsc build to Rslib with minimal behavior changes. Keep bundleless ESM output, declaration files, the existing root and ./format exports, and the separate tsc --noEmit typecheck workflow. The build currently uses tsconfig.build.json. Update the build/watch setup, run relevant verification, and do not change business logic.",
       "expected_output": "The fixture builds through Rslib in bundleless ESM mode using tsconfig.build.json, preserves declarations and both package exports, retains the separate no-emit typecheck command, and leaves source behavior unchanged.",
-      "files": [],
+      "files": ["skills-test/migrate-to-rslib/fixtures/tsc-bundleless"],
       "assertions": [
         "package.json uses @rslib/core with Rslib build/watch scripts while retaining the tsc --noEmit typecheck script",
         "rslib.config.ts configures bundleless ESM output, declarations, and source.tsconfigPath for tsconfig.build.json",

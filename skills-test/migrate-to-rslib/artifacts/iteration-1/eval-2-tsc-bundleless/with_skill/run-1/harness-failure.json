@@ -1,0 +1,6 @@
+{
+  "classification": "harness_failure",
+  "reason": "Transient npm registry/DNS resolution failure prevented @rslib/core installation, lockfile regeneration, and build verification.",
+  "excluded_from_benchmark": true,
+  "replacement_run": "../run-2"
+}

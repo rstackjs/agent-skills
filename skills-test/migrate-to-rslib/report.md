@@ -8,7 +8,9 @@ This is a single-run smoke evaluation, not a reliability benchmark. It supports 
 
 - **Date**: 2026-07-29
 - **Executor**: Codex CLI `0.145.0` with `gpt-5.6-terra`
+- **Skill snapshot**: `c426a8b3d2e9c12303490754faa2fcd2f6cacace`
 - **Design**: two matched cases, one valid run per configuration per case
+- **Controls**: `--ephemeral`, `--ignore-user-config`, `workspace-write`, non-interactive approval, network enabled
 
 | Case               |   With skill | Without skill | Differentiator                                                                         |
 | ------------------ | -----------: | ------------: | -------------------------------------------------------------------------------------- |
@@ -29,6 +31,8 @@ Both configurations produced a valid migration and passed every check.
 The fixture required bundleless ESM output, declarations, root and `./format` exports, a separate `tsc --noEmit` typecheck workflow, unchanged business logic, and continued use of `tsconfig.build.json`.
 
 The skill-guided run followed the official tsc migration mapping: `bundle: false`, `dts: true`, and `source.tsconfigPath: './tsconfig.build.json'`. The baseline also built and ran successfully, but deleted `tsconfig.build.json` and recreated the relevant entry/compiler behavior in other configuration files. That was a legitimate failure against the explicit preservation requirement, even though its produced package remained functional.
+
+Failed baseline assertion: `rslib.config.ts configures bundleless ESM output, declarations, and source.tsconfigPath for tsconfig.build.json`. Evidence: the bundleless ESM build and declarations succeeded, but `tsconfig.build.json` no longer existed and the config had no `source.tsconfigPath`.
 
 ## Deterministic verification
 
@@ -59,16 +63,24 @@ Codex CLI `0.145.0` ran every valid executor with `gpt-5.6-terra`, `--ephemeral`
 
 The token values come from `turn.completed` usage events. With only one valid run per configuration per eval, the time/token difference is descriptive only and must not be treated as stable overhead.
 
-## Harness notes
+## Findings
 
-- The first `tsc-bundleless` with-skill run hit a transient npm registry/DNS failure, so it could not install `@rslib/core` or verify the build. Its logs were preserved as a harness failure.
+### Skill gaps
+
+No correctness gap was demonstrated in the valid skill-guided runs. Both cases passed every deterministic assertion.
+
+### Eval gaps
+
+Eight of the ten assertions were non-discriminating because both configurations passed them. The entire observed pass-rate advantage comes from one `tsc` assertion. The `tsup` fixture proves basic correctness but does not demonstrate incremental value over normal Codex behavior. One valid run per cell is insufficient for reliability or variance claims.
+
+### Harness failures
+
+- The first `tsc-bundleless` with-skill run hit a transient npm registry/DNS failure, so it could not install `@rslib/core` or verify the build. Its exclusion record and failed-command evidence are preserved in the audit bundle.
 - To keep the comparison paired, both `tsc-bundleless` configurations were recreated from the pristine fixture and rerun as `run-2`. Only those replacements were graded.
 - The first static-viewer attempt exposed Python 3.9 incompatibility in the upstream viewer. It was rerun successfully with Python 3.12.
 - Watch-mode verification completed in both with-skill cases but emitted sandbox `EMFILE` watcher-limit warnings.
 
-## Analysis
-
-Eight of the ten assertions were non-discriminating because both configurations passed them. The entire observed pass-rate advantage comes from one `tsc` assertion. The `tsup` fixture proves basic correctness but does not demonstrate incremental value over normal Codex behavior.
+### Iteration decision
 
 No correctness edit to the target skill is justified from this smoke run. A reasonable future robustness improvement would be to add concise local mapping examples to the `tsc.md` and `tsup.md` references, especially `bundle: false`, `source.tsconfigPath`, declaration behavior, and preservation of `tsc --noEmit`. The current references require live official documentation as a blocking step, so more local detail would make the skill less dependent on network availability. That is a recommendation, not a proven failure in the valid runs.
 
@@ -76,5 +88,9 @@ For a stronger benchmark, add cases for custom entry topology, externals, JSX, a
 
 ## Artifacts
 
-- Definitions: `skills-test/migrate-to-rslib/evals/evals.json`
-- Raw paired runs, grading, timing, benchmark, and the static review viewer were generated in a local scratch workspace and are intentionally not committed.
+- [Evaluation definitions](evals/evals.json)
+- [Reconstructible fixtures](fixtures/)
+- [Iteration 1 audit bundle](artifacts/iteration-1/README.md)
+- [Aggregate benchmark](artifacts/iteration-1/benchmark.json)
+
+The audit bundle preserves grading, timing, extracted `turn.completed` usage, executor summaries, source diffs, and the excluded run's failure evidence. Full event streams, dependency trees, build outputs, and the generated HTML viewer are intentionally omitted.

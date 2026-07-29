@@ -1,0 +1,19 @@
+diff --git a/package.json b/package.json
+index a38254b..22f5af1 100644
+--- a/package.json
++++ b/package.json
+@@ -18,11 +18,12 @@
+     "dist"
+   ],
+   "scripts": {
+-    "build": "tsc -p tsconfig.build.json",
+-    "build:watch": "tsc -p tsconfig.build.json --watch",
++    "build": "rslib build",
++    "build:watch": "rslib build --watch",
+     "typecheck": "tsc --noEmit"
+   },
+   "devDependencies": {
++    "@rslib/core": "^0.23.2",
+     "typescript": "^5.8.3"
+   }
+ }

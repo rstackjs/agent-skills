@@ -1,0 +1,18 @@
+{
+  "source": "turn.completed events from events.jsonl",
+  "usage": [
+    {
+      "input_tokens": 482354,
+      "cached_input_tokens": 441344,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 6103,
+      "reasoning_output_tokens": 1755
+    }
+  ],
+  "aggregate": {
+    "input_tokens": 482354,
+    "cached_input_tokens": 441344,
+    "output_tokens": 6103,
+    "total_tokens": 488457
+  }
+}

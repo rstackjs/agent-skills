@@ -1,0 +1,14 @@
+Migrated the build to Rslib.
+
+- Added rslib.config.ts, using bundleless ESM, declarations, sourcemaps, and `tsconfig.build.json`.
+- Updated package.json build/watch scripts to Rslib; `typecheck` remains `tsc --noEmit`.
+- Added `@rslib/core` to the lockfile.
+
+Validated successfully:
+
+- `npm run build`
+- `npm run typecheck`
+- `node test/consumer.mjs`
+- Verified root exports (`sum`, `formatPercent`), `./format`, JS maps, declaration files, and declaration maps.
+
+Watch mode started and performed an incremental rebuild after a file timestamp change. The environment emitted `EMFILE` watcher-limit warnings, but the rebuild and declaration watch compilation completed successfully.

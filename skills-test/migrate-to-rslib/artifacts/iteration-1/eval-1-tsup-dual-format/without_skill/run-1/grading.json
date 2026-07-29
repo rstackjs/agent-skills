@@ -1,0 +1,80 @@
+{
+  "expectations": [
+    {
+      "text": "package.json uses @rslib/core with Rslib build/watch scripts and no longer depends on tsup",
+      "passed": true,
+      "evidence": "devDependencies={\"@rslib/core\":\"^0.23.2\",\"typescript\":\"^5.8.3\"}; scripts={\"build\":\"rslib build\",\"build:watch\":\"rslib build --watch\",\"typecheck\":\"tsc --noEmit\"}"
+    },
+    {
+      "text": "rslib.config.ts preserves ESM and CommonJS outputs, declarations, source maps, the index entry, and clean output behavior",
+      "passed": true,
+      "evidence": "rslib.config.ts contains esm+cjs formats, dts, sourceMap, cleanDistPath, and src/index.ts entry checks."
+    },
+    {
+      "text": "npm run build succeeds and every package export target exists",
+      "passed": true,
+      "evidence": "npm run build exit=0; export targets=./dist/index.d.ts, ./dist/index.js, ./dist/index.cjs; missing=none"
+    },
+    {
+      "text": "Both ESM import and CommonJS require consumers execute successfully",
+      "passed": true,
+      "evidence": "node test/consumer.mjs exit=0; node test/consumer.cjs exit=0"
+    },
+    {
+      "text": "Source files remain byte-for-byte unchanged and obsolete tsup.config.ts is removed",
+      "passed": true,
+      "evidence": "compared src/index.ts byte-for-byte=true; tsup.config.ts exists=false"
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1
+  },
+  "execution_metrics": {
+    "tool_calls": {
+      "agent_message": 5,
+      "command_execution": 14,
+      "file_change": 2
+    },
+    "total_tool_calls": 21,
+    "total_steps": 21,
+    "errors_encountered": 4,
+    "output_chars": 967,
+    "transcript_chars": 47975
+  },
+  "timing": {
+    "executor_duration_seconds": 176.897,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 176.897
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "deterministic_evidence": [
+    {
+      "command": "npm run build",
+      "exit_code": 0,
+      "output": "> @fixture/format-kit@0.1.0 build\n> rslib build\n\nRslib v0.23.2\n\ninfo    build started...\nstart   generating declaration files... (esm)\nready   built in 0.21s (esm)\nready   built in 0.22s (cjs)\nready   declaration files generated in 1.45 s (esm)\n\nFile (esm)      Size      \ndist/index.js   0.32 kB\n\nFile (cjs)       Size     \ndist/index.cjs   1.7 kB"
+    },
+    {
+      "command": "npm run typecheck",
+      "exit_code": 0,
+      "output": "> @fixture/format-kit@0.1.0 typecheck\n> tsc --noEmit"
+    },
+    {
+      "command": "node test/consumer.mjs",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "command": "node test/consumer.cjs",
+      "exit_code": 0,
+      "output": ""
+    }
+  ]
+}

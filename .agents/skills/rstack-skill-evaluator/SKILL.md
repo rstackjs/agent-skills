@@ -40,7 +40,7 @@ An eval is useful when it can reveal a decision: keep the candidate, revise a ge
 
 ## Artifact layout
 
-For skill `<name>`, two paths are tracked in git; everything else under `skills-test/` is gitignored:
+For skill `<name>`, two paths are always tracked in git:
 
 ```plaintext
 +--------------------------------------+----------------------------------+
@@ -52,6 +52,8 @@ For skill `<name>`, two paths are tracked in git; everything else under `skills-
 ```
 
 Workspaces, raw run outputs, and fixtures may live anywhere — under `skills-test/<name>/` or an OS scratch dir — as long as `report.md` references the path so a reader can find them.
+
+When no durable shared artifact store exists, also commit only the lightweight inputs and audit evidence needed to reproduce and inspect the reported result, for example `fixtures/`, `benchmark.json`, `grading.json`, `timing.json`, and sanitized diffs or summaries under `artifacts/`. Do not commit dependency trees, build outputs, credentials, full event streams, or large generated viewers. Add narrow `.gitignore` exceptions for the specific skill rather than unignoring every eval workspace.
 
 ## `report.md`
 

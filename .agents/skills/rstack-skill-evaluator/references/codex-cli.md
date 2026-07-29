@@ -12,7 +12,19 @@ codex --version
 codex exec --help
 ```
 
-Record the CLI version, model, sandbox, approval behavior, network availability, and relevant config in the run metadata. Use the same values for every matched run. Prefer `--ignore-user-config` to reduce user plugin and configuration leakage, and `--ephemeral` to prevent session reuse.
+Record the CLI version, executor model, grader model, sandbox, approval behavior, network availability, and relevant config in the run metadata. Pin the executor and grader models explicitly, and use the same respective values for every matched run.
+
+Prepare one controlled `CODEX_HOME` for the whole matched evaluation and authenticate it using a supported secure method before starting any run. It must not contain user skills, plugins, config, or rules. Use this same clean home for every configuration so the candidate skill is available only through the immutable snapshot named in the `with_skill` prompt. Keep `--ignore-user-config` as defense in depth when the installed CLI supports it, and use `--ephemeral` to prevent session reuse.
+
+```bash
+export EVAL_CODEX_HOME="$(mktemp -d)"
+export EVAL_EXECUTOR_MODEL="executor-model-id"
+export EVAL_GRADER_MODEL="grader-model-id"
+chmod 700 "$EVAL_CODEX_HOME"
+# Authenticate this isolated home without copying credentials into eval artifacts.
+CODEX_HOME="$EVAL_CODEX_HOME" codex login --device-auth
+test -z "$(find "$EVAL_CODEX_HOME" -type f -name SKILL.md -print -quit)"
+```
 
 Do not use `--dangerously-bypass-approvals-and-sandbox` merely to make an eval pass. Select the least-permissive sandbox that still represents the skill's real task. If a task genuinely requires network access or broader writes, record that as part of the controlled setup.
 
@@ -40,7 +52,24 @@ Use this raw workspace shape so the upstream aggregator and viewer can discover 
             └── ...
 ```
 
-Create every `workspace/` from the same verified fixture state. Never let paired runs share a mutable checkout. Copy the target skill into `skill-snapshot/` for `with_skill`; do not point the executor at a live skill that may change while runs are in progress.
+Create every `workspace/` from the same verified fixture state. Never let paired runs share a mutable checkout. Build executor workspaces from the fixture allowlist rather than copying the repository wholesale. Copy the target skill into `skill-snapshot/` for `with_skill`; do not point the executor at a live skill that may change while runs are in progress.
+
+The baseline run directory must not contain `skill-snapshot/`, and neither its workspace nor the controlled `CODEX_HOME` may contain the target skill. Verify both the fixture equality and skill absence before execution:
+
+```bash
+WITH_SKILL_RUN="/absolute/path/to/with-skill-run"
+WITHOUT_SKILL_RUN="/absolute/path/to/without-skill-run"
+TARGET_SKILL="target-skill-name"
+
+diff -qr --exclude=.git \
+  "$WITH_SKILL_RUN/workspace" \
+  "$WITHOUT_SKILL_RUN/workspace"
+test ! -e "$WITHOUT_SKILL_RUN/skill-snapshot"
+test ! -e "$WITHOUT_SKILL_RUN/workspace/skills/$TARGET_SKILL"
+test ! -e "$WITHOUT_SKILL_RUN/workspace/.agents/skills/$TARGET_SKILL"
+test -z "$(find "$EVAL_CODEX_HOME" "$WITHOUT_SKILL_RUN/workspace" \
+  -type f -name SKILL.md -path "*/$TARGET_SKILL/*" -print -quit)"
+```
 
 For an improvement iteration, preserve the previous skill as `old_skill` or another clearly named configuration. Compare candidate and previous snapshots using the same rules; keep `without_skill` when measuring the skill's absolute value is still useful.
 
@@ -74,19 +103,20 @@ Task:
 <eval prompt exactly as written in evals.json>
 ```
 
-The prohibition in the baseline prompt prevents an installed user or project copy of the target skill from contaminating the control run. Keep every other instruction equivalent.
+The baseline prohibition is defense in depth. The clean `CODEX_HOME`, fixture-only workspace, and pre-execution checks are the isolation boundary. Keep every other instruction equivalent.
 
 ## 4. Run Codex
 
 Write the selected prompt to a file outside the executor workspace, then run a fresh process:
 
 ```bash
-codex exec \
+CODEX_HOME="$EVAL_CODEX_HOME" codex exec \
   --ephemeral \
   --ignore-user-config \
   --skip-git-repo-check \
   --json \
   --color never \
+  --model "$EVAL_EXECUTOR_MODEL" \
   --sandbox workspace-write \
   --cd <absolute-run-dir>/workspace \
   --output-last-message <absolute-run-dir>/final.txt \
@@ -95,21 +125,38 @@ codex exec \
   2> <absolute-run-dir>/stderr.log
 ```
 
-Add `--model <model>` when pinning a model. Use the same explicit value for the matched pair. Do not use `codex exec resume`; each run must be independent.
+Use the same explicit executor model for every configuration. Do not use `codex exec resume`; each run must be independent.
 
 Record process start, end, duration, and exit code in `timing.json`. Current Codex JSONL emits authoritative usage on `turn.completed`; extract and sum it rather than estimating from text:
 
 ```bash
 jq -s '
   [.[] | select(.type == "turn.completed") | .usage] as $usage
-  | ($usage | map(.input_tokens // 0) | add // 0) as $input
-  | ($usage | map(.output_tokens // 0) | add // 0) as $output
-  | {
-      input_tokens: $input,
-      cached_input_tokens: ($usage | map(.cached_input_tokens // 0) | add // 0),
-      output_tokens: $output,
-      total_tokens: ($input + $output)
+  | if
+      ($usage | length) == 0
+      or any(
+        $usage[];
+        (type != "object")
+        or (.input_tokens | type != "number")
+        or (.cached_input_tokens | type != "number")
+        or (.output_tokens | type != "number")
+      )
+    then {
+      input_tokens: null,
+      cached_input_tokens: null,
+      output_tokens: null,
+      total_tokens: null
     }
+    else
+      ($usage | map(.input_tokens) | add) as $input
+      | ($usage | map(.output_tokens) | add) as $output
+      | {
+          input_tokens: $input,
+          cached_input_tokens: ($usage | map(.cached_input_tokens) | add),
+          output_tokens: $output,
+          total_tokens: ($input + $output)
+        }
+    end
 ' <absolute-run-dir>/events.jsonl
 ```
 
@@ -126,12 +173,13 @@ Use a separate Codex process only for assertions that require semantic judgment.
 Run the grader from a read-only directory and constrain its final response with `assets/grading.schema.json`:
 
 ```bash
-codex exec \
+CODEX_HOME="$EVAL_CODEX_HOME" codex exec \
   --ephemeral \
   --ignore-user-config \
   --skip-git-repo-check \
   --json \
   --color never \
+  --model "$EVAL_GRADER_MODEL" \
   --sandbox read-only \
   --cd <absolute-grading-input-dir> \
   --output-schema <evaluator-skill-path>/assets/grading.schema.json \
@@ -143,9 +191,26 @@ codex exec \
 
 The grader prompt should require it to inspect durable outputs rather than trust the executor's claims, use the same pass/fail burden for every configuration, and cite concrete evidence. Merge deterministic results into the same `grading.json` shape if both grading methods are used.
 
+JSON Schema validation cannot express that `summary` is derived from the expectation booleans. After schema validation and before aggregation, reject any mismatch:
+
+```bash
+jq -e '
+  (.expectations | length) as $total
+  | ([.expectations[] | select(.passed)] | length) as $passed
+  | ($total - $passed) as $failed
+  | ($passed / $total) as $pass_rate
+  | (
+      (.summary.total == $total)
+      and (.summary.passed == $passed)
+      and (.summary.failed == $failed)
+      and (((.summary.pass_rate - $pass_rate) | fabs) < 1e-9)
+    )
+' <absolute-run-dir>/grading.json
+```
+
 ## 6. Aggregate and diagnose
 
-After every run has valid `grading.json` and `timing.json`, use the provider-neutral aggregation and viewer utilities from `skill-creator`. Run the module from the dependency directory. Verify generated metadata before reporting it because placeholder model names or run counts are not evidence:
+After every run has valid, invariant-checked `grading.json` and `timing.json`, use the provider-neutral aggregation and viewer utilities from `skill-creator`. Run the module from the dependency directory. Verify generated metadata before reporting it because placeholder model names or run counts are not evidence:
 
 ```bash
 cd <skill-creator-path>

@@ -90,12 +90,13 @@ Apply these rules:
 
 Skip a separate `pnpm pack --dry-run` or equivalent package dry run when all of these are true:
 
+- Package inclusion rules in `files`, `.npmignore`, `.gitignore`, and nested manifests have been inspected, and every `bin`, `types`, and `exports` target is provably included.
 - `rslib.config.ts` registers `pluginPublint` in the active plugins array.
 - Its `enable` condition is true in the validation environment.
 - `throwOn` is enforcing (`error`, `warning`, or `suggestion`), not `never`.
 - A non-watch build completes successfully and therefore runs the plugin's `onAfterBuild` check.
 
-Do not infer coverage from an import alone. Do not use the shortcut for a disabled plugin, an unresolved environment condition, a watch-only build, or a task that explicitly asks to inspect the produced tarball.
+Publint validates the built files in the working tree; it does not apply pack inclusion rules. Do not infer tarball coverage from an import alone. If package inclusion cannot be proven by inspection, run the pack validation even when publint succeeds. Also do not use the shortcut for a disabled plugin, an unresolved environment condition, a watch-only build, or a task that explicitly asks to inspect the produced tarball.
 
 Prefer pnpm's native pack command for pnpm repositories. Use `pnpm pack --dry-run` when the repository's pnpm version supports it; the option was added in pnpm 10.26.0. For older versions or explicit tarball inspection, use `pnpm pack --pack-destination <temporary-directory>` and remove the temporary archive after inspection. Use `npm pack` only when npm is the target repository's package manager.
 

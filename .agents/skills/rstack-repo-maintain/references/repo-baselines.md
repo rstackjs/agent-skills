@@ -1,159 +1,169 @@
 # Rstack Repository Baselines
 
-Snapshot date: 2026-06-24.
-Primary `rslog` baseline last verified from `origin/main` on 2026-06-24 at commit `25dc20d3402efc3c3104f776a97a81cf9829be67`.
+<!-- cspell:words oxfmt -->
 
-This reference is based on public GitHub PR and repository inspection under `rstackjs/*`. Re-check current main branches before applying these patterns. Secondary reference sections remain at the 2026-06-24 snapshot unless explicitly noted.
+Snapshot date: 2026-07-29.
 
-## Primary Baseline: rstackjs/rslog
+Verified commits:
 
-Use `rslog` as the primary maintained baseline when modernizing a small Rstack package.
+- `web-infra-dev/rsbuild@71d127b76dde529c9934b6266a52da6333c4e824`
+- `rstackjs/rslog@eeba57ccc46f034ef46570256d25647a3a00171f`
+- `rstackjs/rsbuild-plugin-publint@005d3f57632f3b94861e963adc7d4d36af297fc1`
+- `rstackjs/rsbuild-plugin-arethetypeswrong@11e8ba47a1cd1489570d4133b01414767cd1c137`
+- `rstackjs/prebundle@e969770de48cb3a35de18eedde2e6adcf92787e6`
+- `rstackjs/rsbuild-plugin-virtual-module@b6249012dad0e02515c12ce4e0f17cd3201f60d9`
 
-Why it is the best first template:
+This reference records public main-branch state, not universal recommendations or latest-package claims. Re-check the target and chosen exemplar before editing. Do not mix versions from different columns without validating the resulting toolchain and lockfile.
 
-- It has the strongest maintenance signal among inspected candidates.
-- It shows the full migration history from Rslib to pure ESM, Node 20+, Rslint, TypeScript 6, and CI cleanup.
-- Its current package shape is simple enough to copy: `type: "module"`, explicit `exports["."].types` and default ESM entry, `files: ["dist"]`, `build: "rslib"`, `lint: "rslint && prettier --check ."`, `lint:write`, `test: "rstest"`, and `packageManager: "pnpm@11.6.0"`.
-- Current `rslib.config.ts` uses `syntax: "es2023"`, `dts: { tsgo: true }`, and `pluginPublint()`.
-- Current `rslint.config.ts` ignores generated `dist` output and keeps `ts.configs.recommended` with no rule overrides because the package is TypeScript-only.
-- Current `rstest.config.ts` enables `globals: true`.
-- Current `tsconfig.json` uses `rootDir: "./src"`, `outDir: "./dist"`, `target: "ES2023"`, `module: "nodenext"`, `moduleResolution: "nodenext"`, and `types: ["node", "@rstest/core/globals"]`.
-- Current dependency pins include `@rslib/core@^0.22.1`, `@rslint/core@^0.6.1`, `@rstest/core@^0.10.4`, `typescript@^6.0.3`, `rsbuild-plugin-publint@^1.0.0`, and exact `@typescript/native-preview@7.0.0-dev.20260615.1`.
-- Current `AGENTS.md` follows the concise rsbuild-style structure: Stack, Commands, Project structure, and Code style.
-- Current `.prettierignore` is intentionally minimal: `dist` and `pnpm-lock.yaml`.
-- CI intentionally keeps an Ubuntu-only Node `24.16.0` test workflow that runs lint and tests, with no separate build step in test CI.
-- Release CI builds before `pnpm stage publish --no-git-checks`, uses OIDC, and keeps `contents: read` plus `id-token: write`.
-- Current workflows pin `actions/checkout`, `actions/setup-node`, and `pnpm/action-setup` to commit hashes with version comments, set `package-manager-cache: false` in setup-node, and let `pnpm/action-setup` handle installation with `run_install: true`.
+## Version Snapshot
 
-Useful PRs:
+| Area               | Rsbuild monorepo         | Standalone `rslog` package      |
+| ------------------ | ------------------------ | ------------------------------- |
+| Node engine        | `>=22.18.0`              | Node `20.19.x` or `>=22.12.0`   |
+| CI Node            | `24.18.0`                | `24.18.0`                       |
+| pnpm               | `11.15.0`                | `11.11.0`                       |
+| TypeScript         | `^6.0.3`                 | `^7.0.2`                        |
+| Integrated tooling | `rstack@^0.2.0`          | Not used                        |
+| Build              | Rstack CLI over Rslib    | `@rslib/core@^0.23.2`           |
+| Lint               | `rs lint --type-check`   | `@rslint/core@^0.6.5`           |
+| Test               | Rstack CLI over Rstest   | `@rstest/core@^0.11.1`          |
+| Format             | `oxfmt@^0.60.0`          | `prettier@^3.9.5`               |
+| Package validation | Per-package build config | `rsbuild-plugin-publint@^1.0.0` |
 
-- [#23 chore(build): switch to Rslib](https://github.com/rstackjs/rslog/pull/23)
-- [#33 chore: migrate to Rstest](https://github.com/rstackjs/rslog/pull/33)
-- [#43 chore: remove unused @microsoft/api-extractor dependency](https://github.com/rstackjs/rslog/pull/43)
+Current workflow pins shared by Rsbuild and the sampled standalone packages:
+
+- `actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e` (`v6.4.0`).
+- `pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271` (`v6.0.9`).
+- Rsbuild uses `actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0` (`v7.0.0`); `rslog` still uses `df4cb1c069e1874edd31b4311f1884172cec0e10` (`v6`).
+
+Refresh action pins from the selected live baseline. Preserve the version comment next to each immutable commit hash.
+
+## Baseline Lanes
+
+### Rsbuild: Integrated Monorepo Lane
+
+Use `web-infra-dev/rsbuild` when the target is a substantial monorepo that benefits from shared configuration and the Rstack CLI.
+
+Current traits:
+
+- Root scripts use `rs setup`, `rs lint --type-check`, and Rstack-backed build/test commands.
+- Package `rstack.config.ts` files use `define.lib`; shared types/config come from `rstack/lib` and `rstack/test`.
+- The migration removed direct Rslib configs and redundant Rstest adapter dependencies while preserving generated artifacts.
+- Oxfmt is a separate format and format-check step; heading and spelling checks remain separate.
+- Root `packageManager` is `pnpm@11.15.0`, with Node `>=22.18.0` and pnpm `>=11.0.0`.
+- `pnpm-workspace.yaml` centralizes versions in a catalog and enables `catalogMode: prefer`, unused-catalog cleanup, explicit peer policy, an empty hoist pattern, a one-day minimum release age with trusted-project exclusions, build-script allowlisting, and strict dependency builds.
+- Test, lint, preview, and release workflows use Node `24.18.0`, disable setup-node package-manager caching, and delegate install to `pnpm/action-setup` with `run_install: true`.
+- Test CI builds before unit/e2e tests. Release CI builds before recursive `pnpm stage publish` and grants only the permissions it needs.
+- Root `AGENTS.md` stays concise: Stack, Commands, Testing, Project structure, Skills, and Code style.
+
+Useful migration evidence:
+
+- [#8164 chore: migrate Rslint to Rstack CLI](https://github.com/web-infra-dev/rsbuild/pull/8164)
+- [#8166 chore: migrate Rstest to Rstack CLI](https://github.com/web-infra-dev/rsbuild/pull/8166)
+- [#8170 chore: migrate Rslib to Rstack CLI](https://github.com/web-infra-dev/rsbuild/pull/8170)
+- [#8195 chore: migrate nano-staged to Rstack CLI](https://github.com/web-infra-dev/rsbuild/pull/8195)
+- [#8197 chore: migrate Git hooks to Rstack CLI](https://github.com/web-infra-dev/rsbuild/pull/8197)
+
+Do not copy this lane wholesale into a small package:
+
+- `rstack` is valuable when it consolidates real duplication; it is not required for every RstackJS repository.
+- Node `>=22.18.0`, a multi-OS test matrix, catalog policy, and strict build-script policy reflect Rsbuild's own constraints.
+- Supply-chain settings can break installs when native or postinstall dependencies are not modeled. Add them one at a time and verify clean/frozen installs.
+- Keep formatter replacement and toolchain consolidation as explicit migration scopes.
+
+### rslog: Standalone Small-Package Lane
+
+Use `rstackjs/rslog` as the primary baseline for focused packages that remain clearer with standalone Rslib, Rslint, and Rstest.
+
+Current traits:
+
+- Pure ESM with `type: "module"`, explicit `exports["."].types` and default entry, `types`, and `files: ["dist"]`.
+- Rslib uses `syntax: "es2023"`, `dts: true`, and `pluginPublint()`.
+- Rslint uses only `ts.configs.recommended` and ignores generated `dist`.
+- Rstest enables globals; TypeScript uses NodeNext module/resolution and `target: "ES2023"`.
+- Lint combines Rslint and Prettier. Test CI intentionally runs lint and tests without adding a redundant build step; release CI builds before `pnpm stage publish`.
+- Workflows use immutable action pins, setup-node with `package-manager-cache: false`, and pnpm action `run_install: true`.
+- Release uses npm trusted publishing with `contents: read` and `id-token: write`.
+
+TypeScript 7 changed the old tsgo baseline:
+
+- [#97](https://github.com/rstackjs/rslog/pull/97) upgraded to `typescript@^7.0.2`.
+- [#98](https://github.com/rstackjs/rslog/pull/98) removed direct `@typescript/native-preview`, removed explicit `dts.tsgo`, upgraded Rslib, and retained `dts: true`.
+- Rsbuild's [#8162](https://github.com/web-infra-dev/rsbuild/pull/8162) separately recommends TypeScript 7 or later for faster plugin type checking, while the Rsbuild repository catalog itself still uses TypeScript 6 in this snapshot.
+
+Therefore:
+
+- Do not state that every repository should upgrade to one TypeScript major.
+- Do not add `@typescript/native-preview` or `dts: { tsgo: true }` as a current default.
+- For TypeScript 7, remove the old preview-specific wiring and validate declaration output.
+- For TypeScript 6, keep the existing declaration implementation unless there is repo-specific evidence to change it.
+
+The current `rslog/AGENTS.md` still says its build uses “tsgo declarations,” which no longer matches `rslib.config.ts`. Treat this as evidence that documentation must be checked against live config, not copied verbatim.
+
+Useful history:
+
 - [#59 feat!: transform to pure ESM package and requires Node 20+](https://github.com/rstackjs/rslog/pull/59)
 - [#74 chore: add Rslint as linter](https://github.com/rstackjs/rslog/pull/74)
-- [#76 chore: update TypeScript to v6 and adjust tsconfig settings](https://github.com/rstackjs/rslog/pull/76)
-- [#77 chore: update tsconfig](https://github.com/rstackjs/rslog/pull/77)
 - [#89 chore: optimize CI pnpm setup](https://github.com/rstackjs/rslog/pull/89)
-- [#91 chore: upgrade rslint to 0.6.1](https://github.com/rstackjs/rslog/pull/91)
-- [#93 chore(infra): enable tsgo, publint, and prettier checks](https://github.com/rstackjs/rslog/pull/93)
+- [#93 chore(infra): enable tsgo, publint, and prettier checks](https://github.com/rstackjs/rslog/pull/93) — historical TypeScript 6 state, superseded for tsgo by #98.
 
-Review-tested decisions from #93:
+## Specialized References
 
-- Keep `AGENTS.md` short and close to `rsbuild/AGENTS.md`; avoid a long maintenance manual.
-- Do not mention formatter tools the target repo does not use; use "existing format conventions" or the repo's actual formatter.
-- Keep `js.configs.recommended` out of TypeScript-only packages.
-- `@typescript/native-preview` is a deliberate tsgo toolchain dependency; pin it exactly and validate the generated declarations.
-- `pnpm stage publish` is a pnpm 11 builtin, not a missing dependency.
-- Prefer the current `pnpm/action-setup` + `run_install: true` workflow shape for small pnpm packages; avoid reintroducing ad hoc corepack/install steps unless the target repo needs them.
-- In test CI, run lint and tests, but do not add a build job just to follow a generic checklist when release CI already performs the package build.
-- Knip can be used locally for dependency review, but should not be added as a devDependency unless scripted.
+### rsbuild-plugin-publint: Pure ESM Plugin
 
-## Secondary Baseline: rstackjs/rsbuild-plugin-publint
+Use this repository when a plugin needs a compact pure ESM and Node 20-compatible shape.
 
-Use `rsbuild-plugin-publint` when a plugin package needs a compact pure ESM + Node 20 example.
+- Node engine: `^20.19.0 || >=22.12.0`.
+- TypeScript `7.0.2`, Rslib `^0.23.2`, Rslint `^0.6.5`, Rstest `^0.11.1`, and pnpm `11.13.0`.
+- Rslib uses `syntax: "es2023"` and `dts: true`.
+- Rslint enables only the TypeScript recommended config.
+- Peer range supports Rsbuild 1 and 2 and marks the peer optional.
 
-Current traits:
+Use `rslog`, not this repository, for the publint-build-plugin example.
 
-- `type: "module"`.
-- `exports["."].types` plus ESM default entry.
-- `@rslib/core`, `@rslint/core`, TypeScript 6, and Rstest.
-- `rslib.config.ts` uses `syntax: "es2023"` and `dts: true`.
+### rsbuild-plugin-arethetypeswrong: Bundled Declaration Validation
 
-Useful PRs:
+Use this repository for bundled declarations and package-validation behavior, not as a universal formatter or syntax template.
 
-- [#32 chore: upgrade TypeScript to 6.0.2](https://github.com/rstackjs/rsbuild-plugin-publint/pull/32)
-- [#40 chore: migrate linting to Rslint and Prettier](https://github.com/rstackjs/rsbuild-plugin-publint/pull/40)
-- [#49 feat: pure ESM package](https://github.com/rstackjs/rsbuild-plugin-publint/pull/49)
-- [#50 feat!: replace picocolors with styleText and requires Node 20](https://github.com/rstackjs/rsbuild-plugin-publint/pull/50)
-- [#54 chore: optimize CI pnpm setup](https://github.com/rstackjs/rsbuild-plugin-publint/pull/54)
-- [#56 chore: upgrade rslint to 0.6.1](https://github.com/rstackjs/rsbuild-plugin-publint/pull/56)
+- Pure ESM with `dts: { bundle: true }`, `rsbuild-plugin-publint`, and `@microsoft/api-extractor`.
+- TypeScript `^7.0.2`, Rslib `^0.23.1`, Rslint `^0.6.4`, and pnpm `11.9.0`.
+- Intentionally uses ES2022, Node16/Node18 module settings, both JavaScript and TypeScript Rslint recommendations, dprint, Husky, and nano-staged.
+- Node engine is `>=20.20.2`.
 
-Known gaps:
+These differences are compatibility choices, not drift to normalize automatically.
 
-- No `AGENTS.md` in current main at snapshot time.
-- No Rslib `dts.tsgo` in current main at snapshot time.
+### prebundle: Generated-Artifact CLI
 
-## Package Validation Reference: rstackjs/rsbuild-plugin-arethetypeswrong
+Use this repository when the target has checked-in generated artifacts or a CLI bin.
 
-Use `rsbuild-plugin-arethetypeswrong` as an additional package validation and staged publishing reference. Use `rslog`, not this repo, as the current AGENTS.md shape.
+- TypeScript `^6.0.3`, Rslib `0.23.2`, Rslint `^0.6.5`, Rstest `^0.11.1`, and pnpm `11.13.0`.
+- Rslib intentionally emits ES2021 and excludes `compiled` dependencies from bundling.
+- Rslint ignores generated `compiled` content and enables JavaScript plus TypeScript recommended configs.
+- `compiled` and `bin.js` are publish inputs, so package validation must cover more than `dist`.
 
-Current traits:
+### rsbuild-plugin-virtual-module: Dual-Package Compatibility
 
-- `type: "module"`.
-- Rslib build, Rslint, TypeScript 6, and Rstest.
-- `rslint.config.ts` enables both `js.configs.recommended` and `ts.configs.recommended`.
-- Has `AGENTS.md` and README.
-- Rslib config includes `rsbuild-plugin-publint` and bundled declarations.
+Use this repository only when CommonJS consumers require dual output.
 
-Useful PRs:
+- Exports ESM and CJS entries from one package.
+- Rslib emits ES2021 ESM plus a CJS build with declarations on the primary build.
+- TypeScript `7.0.2`, Rslib `^0.23.2`, Rslint `^0.6.1`, Rstest `^0.11.1`, and pnpm `11.5.0`.
+- Current main no longer uses `dts.tsgo` or `@typescript/native-preview`; older PR #28 is historical implementation evidence, not the current baseline.
 
-- [#49 chore: switch to npm staged publishing](https://github.com/rstackjs/rsbuild-plugin-arethetypeswrong/pull/49)
-- [#51 chore: build before stage publish](https://github.com/rstackjs/rsbuild-plugin-arethetypeswrong/pull/51)
-- [#55 chore: optimize CI pnpm setup](https://github.com/rstackjs/rsbuild-plugin-arethetypeswrong/pull/55)
-- [#58 chore: upgrade rslint to 0.6.1](https://github.com/rstackjs/rsbuild-plugin-arethetypeswrong/pull/58)
+## Selection Rules
 
-Known gaps:
+1. Match repository shape before version freshness: monorepo, focused library, plugin, CLI, generated-artifact package, or compatibility package.
+2. Preserve public output and runtime support unless the user explicitly accepts a breaking change.
+3. Use one exemplar as the primary lane and specialized repositories only for the feature they demonstrate.
+4. Treat exact versions as a coherent snapshot. Refresh the chosen baseline's manifest, lockfile, workflow pins, and engine fields together.
+5. Prefer package-native validation: focused tests, build artifacts, import/require smoke tests, `npm pack --dry-run`, publint, and release command inspection.
 
-- Rslib output syntax is `es2022`, not `es2023`, at snapshot time.
-- No Rslib `dts.tsgo` in current main at snapshot time.
+## Live Refresh Checklist
 
-## High-Activity Reference: rstackjs/prebundle
+Before presenting or applying the baseline:
 
-Use `prebundle` as a high-activity reference when maintaining a CLI/build-tool style package with generated artifacts.
-
-Current traits:
-
-- High maintenance activity at snapshot time.
-- Rslib build, Rslint, TypeScript 6, Rstest, README, and `AGENTS.md`.
-- `rslint.config.ts` enables both `js.configs.recommended` and `ts.configs.recommended`.
-
-Useful PRs:
-
-- [#10 refactor: use Rslib to bundle](https://github.com/rstackjs/prebundle/pull/10)
-- [#37 chore: enable npm trusted publishing](https://github.com/rstackjs/prebundle/pull/37)
-- [#62 chore: upgrade TypeScript to ^6.0.2](https://github.com/rstackjs/prebundle/pull/62)
-- [#72 chore: add Rslint linting](https://github.com/rstackjs/prebundle/pull/72)
-- [#81 chore: optimize CI pnpm setup](https://github.com/rstackjs/prebundle/pull/81)
-- [#83 chore: upgrade rslint to 0.6.1](https://github.com/rstackjs/prebundle/pull/83)
-
-Known gaps:
-
-- Rslib syntax is `es2021`, so do not copy it for Node 20+/ES2023 packages without checking why.
-
-## tsgo Reference: rstackjs/rsbuild-plugin-virtual-module
-
-Use `rsbuild-plugin-virtual-module` only as a concrete Rslib `tsgo` configuration reference.
-
-Current traits:
-
-- `rslib.config.ts` uses `dts: { tsgo: true }`.
-- `@typescript/native-preview` is installed.
-- Dual package output is still present.
-
-Relevant PR:
-
-- [#28 chore: update infrastructure for tsgo](https://github.com/rstackjs/rsbuild-plugin-virtual-module/pull/28)
-
-Important caveat:
-
-- Treat this repo as implementation evidence for Rslib tsgo, not as the primary small-package baseline.
-
-## Search Notes
-
-Searches used:
-
-- `type:pr org:rstackjs rslib`
-- `type:pr org:rstackjs rslint`
-- `type:pr org:rstackjs "typescript 6"`
-- `type:pr org:rstackjs "Node 20"`
-- `type:pr org:rstackjs AGENTS`
-- `type:pr org:rstackjs README`
-- `type:pr org:rstackjs "optimize CI"`
-- `type:pr org:rstackjs knip`
-
-Findings:
-
-- No repo-owned scripted Knip baseline was found in the sampled search results.
-- `rslog` now provides the reviewed tsgo + publint baseline for small packages; `rsbuild-plugin-virtual-module` remains useful only as an additional implementation reference.
-- Some heavily maintained packages intentionally remain dual package or use lower output syntax; copy only after checking consumer compatibility.
+1. Resolve the exemplar's default branch and current commit.
+2. Read `package.json`, package-manager workspace config, lockfile header, Node version files, tool configs, hooks, and workflows from that commit.
+3. Compare recent merged infrastructure PRs with current files; current files win when documentation or old PR text disagrees.
+4. Check whether versions are direct, cataloged, aliased, peer-only, or inherited through `rstack`.
+5. Record deliberate deviations and validate them instead of silently combining incompatible patterns.

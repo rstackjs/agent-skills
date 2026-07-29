@@ -88,7 +88,7 @@ Apply these rules:
 
 ### Publint Shortcut
 
-Skip a separate `pnpm pack` or `npm pack --dry-run` when all of these are true:
+Skip a separate `npm pack --dry-run` or equivalent package dry run when all of these are true:
 
 - `rslib.config.ts` registers `pluginPublint` in the active plugins array.
 - Its `enable` condition is true in the validation environment.
@@ -96,6 +96,8 @@ Skip a separate `pnpm pack` or `npm pack --dry-run` when all of these are true:
 - A non-watch build completes successfully and therefore runs the plugin's `onAfterBuild` check.
 
 Do not infer coverage from an import alone. Do not use the shortcut for a disabled plugin, an unresolved environment condition, a watch-only build, or a task that explicitly asks to inspect the produced tarball.
+
+Never run plain `pnpm pack` in the target working tree because it writes a `.tgz` archive there. When the task explicitly requires tarball inspection, direct the archive to a temporary directory and remove it after inspection.
 
 Report the shortcut explicitly, for example: “Skipped separate pack validation because the successful production build ran enforcing `pluginPublint`.”
 

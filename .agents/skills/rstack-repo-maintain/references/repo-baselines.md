@@ -49,7 +49,7 @@ Current traits:
 - Root scripts use `rs setup`, `rs lint --type-check`, and Rstack-backed build/test commands.
 - Package `rstack.config.ts` files use `define.lib`; shared types/config come from `rstack/lib` and `rstack/test`.
 - The migration removed direct Rslib configs and redundant Rstest adapter dependencies while preserving generated artifacts.
-- Oxfmt is a separate format and format-check step; heading and spelling checks remain separate.
+- `oxfmt` is a separate format and format-check step; heading and spelling checks remain separate.
 - Root `packageManager` is `pnpm@11.15.0`, with Node `>=22.18.0` and pnpm `>=11.0.0`.
 - `pnpm-workspace.yaml` centralizes versions in a catalog and enables `catalogMode: prefer`, unused-catalog cleanup, explicit peer policy, an empty hoist pattern, a one-day minimum release age with trusted-project exclusions, build-script allowlisting, and strict dependency builds.
 - Test, lint, preview, and release workflows use Node `24.18.0`, disable setup-node package-manager caching, and delegate install to `pnpm/action-setup` with `run_install: true`.

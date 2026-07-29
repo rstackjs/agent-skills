@@ -1,6 +1,6 @@
 ---
 name: rstack-repo-maintain
-description: 'Audit and modernize RstackJS/Rspack ecosystem repositories against current infrastructure baselines. Choose between the Rsbuild-style Rstack CLI monorepo lane and the standalone Rslib/Rslint/Rstest package lane; align ESM or dual output, Node/pnpm/TypeScript versions, formatter, CI action pins, release and package validation, docs, dependencies, and infra PR conventions. Use when updating rstackjs repositories, refreshing infrastructure baselines, copying patterns from Rsbuild or maintained exemplars, or reviewing package and tooling consistency.'
+description: 'Audit and modernize RstackJS/Rspack ecosystem repositories against current infrastructure baselines. Choose between the Rsbuild-style Rstack CLI monorepo lane and the standalone Rslib/Rslint/Rstest package lane; maintain package.json metadata, exports, dependency placement and version freshness; align ESM or dual output, Node/pnpm/TypeScript versions, formatter, CI action pins, release validation, docs, dependencies, and infra PR conventions. Use when updating rstackjs repositories, refreshing infrastructure or package manifest baselines, copying patterns from Rsbuild or maintained exemplars, or reviewing package and tooling consistency.'
 metadata:
   internal: true
 ---
@@ -16,6 +16,8 @@ Modernize RstackJS repositories without blindly copying config. Use the target's
 ## Baseline Evidence
 
 Read `references/repo-baselines.md` when choosing a template repo, explaining where the baseline came from, or deciding between pure ESM and dual output, standalone tools and Rstack CLI, runtime floors, TypeScript majors, formatters, package validation, or CI patterns.
+
+Read `references/package-json-baseline.md` when auditing or changing `package.json`, checking whether dependencies are current, choosing an `@rsbuild/core` peer range, or validating published package contents.
 
 Default starting points:
 
@@ -35,6 +37,7 @@ Always re-check the target repo and exemplar repo before editing. The reference 
    - Read `package.json`, lockfile, `pnpm-workspace.yaml`, `.node-version`, `.rstack/**`, `rstack.config.*`, `rslib.config.*`, `rslint.config.*`, `rstest.config.*`, `vitest.config.*`, `jest.config.*`, `playwright.config.*`, `tsconfig*.json`, `.github/workflows/*`, `README.md`, `AGENTS.md`, release config, and source entry points.
    - Identify package kind: library, Rsbuild/Rspack plugin, CLI, app template, test fixture, or docs package.
    - List current build, lint, typecheck, test, release, and package manager commands before changing them.
+   - For published packages, map `files`, `bin`, `types`, and every `exports` target to the source or generated artifact that provides it.
 
 2. **Choose the migration target**
    - Use the standalone lane for focused packages that are already clear with direct Rslib, Rslint, and Rstest configs.
@@ -44,6 +47,7 @@ Always re-check the target repo and exemplar repo before editing. The reference 
    - Treat runtime support, package exports, CLI bins, side effects, and documented deep imports as compatibility constraints.
 
 3. **Update the infrastructure in small layers**
+   - **Package manifest**: follow `references/package-json-baseline.md`. Select the matching core/CLI, plugin, or library profile; check metadata and published entry points; separate npm release freshness from compatibility ranges; and update the manifest and lockfile together. Use `@rsbuild/core` as live evidence, not as a field-for-field template for every package.
    - **Build tooling**: in the standalone lane, use Rslib, keep config minimal, set appropriate `lib.syntax`, emit declarations, and align `package.json#exports` with real output. In the integrated lane, use `rstack.config.ts`, `define.lib`, and shared `rstack/lib` config only when that reduces duplicated configuration. Add `rsbuild-plugin-publint` when the package should validate publish metadata during build.
    - **Linting**: in the standalone lane, use `@rslint/core` and `ts.configs.recommended`; add `js.configs.recommended` only when JavaScript source or config files are intentionally linted. In the integrated lane, use the repository's supported `rs lint` command and preserve type-check coverage.
    - **Formatting**: preserve the repository's formatter unless the migration explicitly includes formatter replacement. Current Rsbuild uses Oxfmt, while maintained standalone packages may use Prettier or dprint. Keep generated artifacts and lock files ignored where appropriate.
@@ -69,7 +73,7 @@ Always re-check the target repo and exemplar repo before editing. The reference 
 6. **Validate before cleanup**
    - Run install with the repo package manager.
    - Run lint, format check, typecheck if present, build, and tests.
-   - Run `npm pack --dry-run` or the repo's publish dry-run path for packages.
+   - For packages, run `pnpm pack`, `npm pack --dry-run`, or the repository's publish dry-run path unless an enforcing `pluginPublint` is enabled in `rslib.config.ts` and has completed in a successful non-watch build. In that case, treat the build-time publint result as the default package validation and skip the separate pack command. Do not take this shortcut when the plugin is disabled, conditional activation was not satisfied, `throwOn: 'never'` is set, only a watch build ran, or the task explicitly requires tarball inspection.
    - Smoke test import/CLI paths that changed.
    - When migrating to Rstack CLI, compare generated package artifacts and test discovery with the pre-migration commands.
    - Remove obsolete configs and dependencies only after the new path is green.

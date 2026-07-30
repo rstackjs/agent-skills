@@ -51,9 +51,9 @@ For skill `<name>`, two paths are always tracked in git:
 +--------------------------------------+----------------------------------+
 ```
 
-Workspaces, raw run outputs, and fixtures may live anywhere — under `skills-test/<name>/` or an OS scratch dir — as long as `report.md` references the path so a reader can find them.
+Keep workspaces, raw run outputs, and fixtures outside version control by default, either under ignored `skills-test/<name>/` paths, an OS scratch directory, or a durable artifact store. Record a stable pointer in `report.md` when one exists; otherwise state that the supporting artifacts are local-only or unavailable.
 
-When no durable shared artifact store exists, also commit only the lightweight inputs and audit evidence needed to reproduce and inspect the reported result, for example `fixtures/`, `benchmark.json`, `grading.json`, `timing.json`, and sanitized diffs or summaries under `artifacts/`. Do not commit dependency trees, build outputs, credentials, full event streams, or large generated viewers. Add narrow `.gitignore` exceptions for the specific skill rather than unignoring every eval workspace.
+Do not commit fixtures or generated eval artifacts merely to accompany a report. Never commit dependency trees, build outputs, credentials, full event streams, or generated viewers.
 
 ## `report.md`
 
@@ -64,6 +64,6 @@ Write a committed Markdown summary of the latest run. At minimum include:
 - a per-eval breakdown with failed assertions and evidence;
 - findings separated into **skill gaps**, **eval gaps**, and **harness failures**;
 - an iteration decision: the general change to make, the evidence supporting it, and which evals must be rerun;
-- pointers to raw artifacts.
+- pointers to raw artifacts when available, or an explicit retention limitation.
 
 Never invent missing model, token, or timing data. Mark it as not recorded. After changing the target skill, rerun the affected cases plus at least one unaffected or held-out case, then replace `report.md` with the latest evidenced result and keep prior raw iterations available for comparison.

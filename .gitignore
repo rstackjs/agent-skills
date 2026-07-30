@@ -19,23 +19,6 @@ skills-test/**/*
 !skills-test/*/evals/
 !skills-test/*/evals/evals.json
 !skills-test/*/report.md
-!skills-test/migrate-to-rslib/fixtures/
-!skills-test/migrate-to-rslib/fixtures/**
-!skills-test/migrate-to-rslib/artifacts/
-!skills-test/migrate-to-rslib/artifacts/iteration-1/
-!skills-test/migrate-to-rslib/artifacts/iteration-1/**/
-!skills-test/migrate-to-rslib/artifacts/iteration-1/README.md
-!skills-test/migrate-to-rslib/artifacts/iteration-1/benchmark.json
-!skills-test/migrate-to-rslib/artifacts/iteration-1/benchmark.md
-!skills-test/migrate-to-rslib/artifacts/iteration-1/**/failed-commands.json
-!skills-test/migrate-to-rslib/artifacts/iteration-1/**/final.txt
-!skills-test/migrate-to-rslib/artifacts/iteration-1/**/grading.json
-!skills-test/migrate-to-rslib/artifacts/iteration-1/**/harness-failure.json
-!skills-test/migrate-to-rslib/artifacts/iteration-1/**/run-metadata.json
-!skills-test/migrate-to-rslib/artifacts/iteration-1/**/timing.json
-!skills-test/migrate-to-rslib/artifacts/iteration-1/**/usage.json
-!skills-test/migrate-to-rslib/artifacts/iteration-1/**/validation-evidence.json
-!skills-test/migrate-to-rslib/artifacts/iteration-1/**/workspace.patch
 
 .vscode/**/*
 !.vscode/settings.json

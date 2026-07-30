@@ -75,7 +75,7 @@ Nine of the ten assertions were non-discriminating because both configurations p
 
 ### Harness failures
 
-- The first `tsc-bundleless` with-skill run hit a transient npm registry/DNS failure, so it could not install `@rslib/core` or verify the build. Its exclusion record and failed-command evidence are preserved in the audit bundle.
+- The first `tsc-bundleless` with-skill run hit a transient npm registry/DNS failure, so it could not install `@rslib/core` or verify the build. It was classified as a harness failure and excluded before the replacement pair was graded.
 - To keep the comparison paired, both `tsc-bundleless` configurations were recreated from the pristine fixture and rerun as `run-2`. Only those replacements were graded.
 - The first static-viewer attempt exposed Python 3.9 incompatibility in the upstream viewer. It was rerun successfully with Python 3.12.
 - Watch-mode verification completed in both with-skill cases but emitted sandbox `EMFILE` watcher-limit warnings.
@@ -86,11 +86,8 @@ No correctness edit to the target skill is justified from this smoke run. A reas
 
 For a stronger benchmark, add cases for custom entry topology, externals, JSX, asset copying, declaration edge cases, and conditional exports, then run at least three repetitions per configuration.
 
-## Artifacts
+## Evidence retention
 
 - [Evaluation definitions](evals/evals.json)
-- [Reconstructible fixtures](fixtures/)
-- [Iteration 1 audit bundle](artifacts/iteration-1/README.md)
-- [Aggregate benchmark](artifacts/iteration-1/benchmark.json)
 
-The audit bundle preserves schema-valid grading, run metadata, validation evidence, timing, extracted `turn.completed` usage with source hashes, executor summaries, complete workspace patches, and the excluded run's failure evidence. Full event streams, dependency trees, generated build outputs, and the HTML viewer are intentionally omitted.
+The fixtures and generated run artifacts are local-only and intentionally excluded from version control. This report preserves the evaluated conclusions and aggregate values, but the repository does not contain a reconstructible audit bundle for this iteration.

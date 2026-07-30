@@ -1,9 +1,0 @@
-Migrated the library build to Rslib.
-
-- Added rslib.config.ts with bundleless ESM `index` and `format` entries, declarations, declaration maps, and JS sourcemaps.
-- Updated build scripts to `rslib build` and `rslib build --watch`.
-- Kept `typecheck` as `tsc --noEmit`.
-- Added `@rslib/core`; removed obsolete `tsconfig.build.json`.
-- Preserved root and `./format` exports; no business logic changed.
-
-Validated with `npm run build`, `npm run typecheck`, `node test/consumer.mjs`, package self-imports for both exports, and `npm pack --dry-run`.

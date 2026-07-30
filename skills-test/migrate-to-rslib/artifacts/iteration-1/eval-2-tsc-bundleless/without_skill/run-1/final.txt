@@ -1,8 +1,0 @@
-Migrated the build to Rslib.
-
-- Added `@rslib/core` and rslib.config.ts.
-- Updated build/watch scripts to Rslib; retained `tsc --noEmit` typecheck.
-- Kept unbundled ESM, root and `./format` entrypoints, declarations, and `dist/` paths.
-- Removed obsolete `tsconfig.build.json`.
-
-Validated with `npm run typecheck`, `npm run build`, consumer execution, package self-imports for both exports, `npm pack --dry-run`, and `git diff --check`.

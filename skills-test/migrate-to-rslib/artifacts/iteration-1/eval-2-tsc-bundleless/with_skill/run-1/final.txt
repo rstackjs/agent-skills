@@ -1,9 +1,0 @@
-Migrated the build setup to Rslib:
-
-- Added rslib.config.ts with bundleless ESM, declarations, ES2020 syntax, source maps, `dist` output, and `tsconfig.build.json`.
-- Updated `build` and `build:watch` to use Rslib; retained `tsc --noEmit` typechecking.
-- Kept existing exports unchanged.
-
-Validation: `npm run typecheck` and `git diff --check` pass.
-
-Blocker: the environment cannot resolve the npm registry, so `@rslib/core` could not be installed, `package-lock.json` could not be regenerated, and `npm run build` fails with `rslib: command not found`. Run `npm install` in a networked environment, then `npm run build` and the consumer test.

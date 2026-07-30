@@ -31,45 +31,5 @@
     "failed": 1,
     "total": 5,
     "pass_rate": 0.8
-  },
-  "execution_metrics": {
-    "tool_calls": {
-      "agent_message": 5,
-      "command_execution": 14,
-      "file_change": 2
-    },
-    "total_tool_calls": 21,
-    "total_steps": 21,
-    "errors_encountered": 2,
-    "output_chars": 736,
-    "transcript_chars": 61562
-  },
-  "timing": {
-    "executor_duration_seconds": 168.892,
-    "grader_duration_seconds": 0,
-    "total_duration_seconds": 168.892
-  },
-  "claims": [],
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
-  },
-  "deterministic_evidence": [
-    {
-      "command": "npm run build",
-      "exit_code": 0,
-      "output": "> @fixture/math-kit@0.1.0 build\n> rslib build\n\nRslib v0.23.2\n\ninfo    build started...\nstart   generating declaration files... (esm)\nready   built in 0.16s\nready   declaration files generated in 0.81 s (esm)\n\n2 files generated in dist, total: 0.3 kB (esm)"
-    },
-    {
-      "command": "npm run typecheck",
-      "exit_code": 0,
-      "output": "> @fixture/math-kit@0.1.0 typecheck\n> tsc --noEmit"
-    },
-    {
-      "command": "node test/consumer.mjs",
-      "exit_code": 0,
-      "output": ""
-    }
-  ]
+  }
 }

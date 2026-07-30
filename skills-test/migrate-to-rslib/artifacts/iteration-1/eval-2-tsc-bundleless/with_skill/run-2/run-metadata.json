@@ -1,0 +1,40 @@
+{
+  "execution_metrics": {
+    "tool_calls": {
+      "agent_message": 5,
+      "command_execution": 8,
+      "web_search": 3,
+      "file_change": 1
+    },
+    "total_tool_calls": 17,
+    "total_steps": 17,
+    "errors_encountered": 1,
+    "output_chars": 1056,
+    "transcript_chars": 18340
+  },
+  "timing": {
+    "executor_duration_seconds": 117.337,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 117.337
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": [
+      "Watch verification emitted sandbox EMFILE warnings after a successful rebuild."
+    ]
+  },
+  "error_assessment": {
+    "recorded_error_count": 1,
+    "status": "benign",
+    "items": [
+      {
+        "count": 1,
+        "classification": "watcher_limit",
+        "resolution": "Watch mode rebuilt successfully before the sandbox emitted an EMFILE watcher-limit exit; watch behavior was not a scored assertion."
+      }
+    ],
+    "benchmark_impact": "none; all five scored deterministic assertions passed"
+  }
+}

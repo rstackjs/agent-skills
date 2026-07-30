@@ -71,7 +71,7 @@ No correctness gap was demonstrated in the valid skill-guided runs. Both cases p
 
 ### Eval gaps
 
-Eight of the ten assertions were non-discriminating because both configurations passed them. The entire observed pass-rate advantage comes from one `tsc` assertion. The `tsup` fixture proves basic correctness but does not demonstrate incremental value over normal Codex behavior. One valid run per cell is insufficient for reliability or variance claims.
+Nine of the ten assertions were non-discriminating because both configurations passed them. The entire observed pass-rate advantage comes from one `tsc` assertion. The `tsup` fixture proves basic correctness but does not demonstrate incremental value over normal Codex behavior. One valid run per cell is insufficient for reliability or variance claims.
 
 ### Harness failures
 
@@ -93,4 +93,4 @@ For a stronger benchmark, add cases for custom entry topology, externals, JSX, a
 - [Iteration 1 audit bundle](artifacts/iteration-1/README.md)
 - [Aggregate benchmark](artifacts/iteration-1/benchmark.json)
 
-The audit bundle preserves grading, timing, extracted `turn.completed` usage, executor summaries, source diffs, and the excluded run's failure evidence. Full event streams, dependency trees, build outputs, and the generated HTML viewer are intentionally omitted.
+The audit bundle preserves schema-valid grading, run metadata, validation evidence, timing, extracted `turn.completed` usage with source hashes, executor summaries, complete workspace patches, and the excluded run's failure evidence. Full event streams, dependency trees, generated build outputs, and the HTML viewer are intentionally omitted.

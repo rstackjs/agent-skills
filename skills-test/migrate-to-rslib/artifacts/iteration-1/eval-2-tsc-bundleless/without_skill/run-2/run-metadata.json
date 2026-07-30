@@ -1,0 +1,42 @@
+{
+  "execution_metrics": {
+    "tool_calls": {
+      "agent_message": 5,
+      "command_execution": 14,
+      "file_change": 2
+    },
+    "total_tool_calls": 21,
+    "total_steps": 21,
+    "errors_encountered": 2,
+    "output_chars": 736,
+    "transcript_chars": 61562
+  },
+  "timing": {
+    "executor_duration_seconds": 168.892,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 168.892
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "error_assessment": {
+    "recorded_error_count": 2,
+    "status": "recovered_or_benign",
+    "items": [
+      {
+        "count": 1,
+        "classification": "diagnostic_probe",
+        "resolution": "A read-only declaration inspection used the obsolete dist/index.d.ts path; the subsequent dist-types inspection succeeded and did not affect the migration."
+      },
+      {
+        "count": 1,
+        "classification": "npm_cache_probe",
+        "resolution": "Package self-imports completed before the default-cache npm pack failure; the pack command was rerun with a temporary cache and succeeded."
+      }
+    ],
+    "benchmark_impact": "none; the scored source.tsconfigPath assertion remained a genuine failure and the other four deterministic assertions passed"
+  }
+}

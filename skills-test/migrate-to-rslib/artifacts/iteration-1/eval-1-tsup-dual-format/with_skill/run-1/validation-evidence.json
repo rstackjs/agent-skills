@@ -1,0 +1,68 @@
+{
+  "source": "Preserved original run workspace audited after execution",
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1
+  },
+  "expectations": [
+    {
+      "text": "package.json uses @rslib/core with Rslib build/watch scripts and no longer depends on tsup",
+      "passed": true,
+      "evidence": "devDependencies={\"@rslib/core\":\"^0.19.1\",\"typescript\":\"^5.8.3\"}; scripts={\"build\":\"rslib\",\"build:watch\":\"rslib --watch\",\"typecheck\":\"tsc --noEmit\"}"
+    },
+    {
+      "text": "rslib.config.ts preserves ESM and CommonJS outputs, declarations, source maps, the index entry, and clean output behavior",
+      "passed": true,
+      "evidence": "rslib.config.ts contains esm+cjs formats, dts, sourceMap, cleanDistPath, and src/index.ts entry checks."
+    },
+    {
+      "text": "npm run build succeeds and every package export target exists",
+      "passed": true,
+      "evidence": "npm run build exit=0; export targets=./dist/index.d.ts, ./dist/index.js, ./dist/index.cjs; missing=none"
+    },
+    {
+      "text": "Both ESM import and CommonJS require consumers execute successfully",
+      "passed": true,
+      "evidence": "node test/consumer.mjs exit=0; node test/consumer.cjs exit=0"
+    },
+    {
+      "text": "Source files remain byte-for-byte unchanged and obsolete tsup.config.ts is removed",
+      "passed": true,
+      "evidence": "compared src/index.ts byte-for-byte=true; tsup.config.ts exists=false"
+    }
+  ],
+  "deterministic_evidence": [
+    {
+      "command": "npm run build",
+      "exit_code": 0,
+      "output": "> @fixture/format-kit@0.1.0 build\n> rslib\n\nRslib v0.19.1\n\ninfo    build started...\nstart   generating declaration files... (esm)\nstart   generating declaration files... (cjs)\nready   built in 1.53 s (esm)\nready   built in 1.54 s (cjs)\nready   declaration files generated in 1.27 s (esm)\nready   declaration files generated in 1.28 s (cjs)\n\nFile (esm)      Size      \ndist/index.js   0.32 kB\n\n\nFile (cjs)       Size     \ndist/index.cjs   1.6 kB"
+    },
+    {
+      "command": "npm run typecheck",
+      "exit_code": 0,
+      "output": "> @fixture/format-kit@0.1.0 typecheck\n> tsc --noEmit"
+    },
+    {
+      "command": "node test/consumer.mjs",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "command": "node test/consumer.cjs",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "command": "node --input-type=module -e \"import fs from 'node:fs'; import crypto from 'node:crypto'; const pkg=JSON.parse(fs.readFileSync('package.json','utf8')); const config=fs.readFileSync('rslib.config.ts','utf8'); const targets=[]; const walk=v=>{if(typeof v==='string')targets.push(v);else if(v&&typeof v==='object')Object.values(v).forEach(walk)}; walk(pkg.exports); const result={rslib_config_sha256:crypto.createHash('sha256').update(config).digest('hex'),config:{bundle_false:/bundle:\\\\s*false/.test(config),esm:/format:\\\\s*['\\\"']esm['\\\"']/.test(config),cjs:/format:\\\\s*['\\\"']cjs['\\\"']/.test(config),dts:/dts:\\\\s*true/.test(config),source_tsconfig_path:/tsconfigPath:\\\\s*['\\\"']\\\\.\\\\/tsconfig\\\\.build\\\\.json['\\\"']/.test(config),clean_dist:/cleanDistPath:\\\\s*true/.test(config)},tsconfig_build_exists:fs.existsSync('tsconfig.build.json'),export_targets:targets,missing_export_targets:targets.filter(p=>!fs.existsSync(p))}; console.log(JSON.stringify(result))\"",
+      "exit_code": 0,
+      "output": "{\"rslib_config_sha256\":\"0245083392f12b484aef359ad8b9ef03cb2444492597936380f1f1fc001cf419\",\"config\":{\"bundle_false\":false,\"esm\":true,\"cjs\":true,\"dts\":true,\"source_tsconfig_path\":false,\"clean_dist\":true},\"tsconfig_build_exists\":false,\"export_targets\":[\"./dist/index.d.ts\",\"./dist/index.js\",\"./dist/index.cjs\"],\"missing_export_targets\":[]}"
+    },
+    {
+      "command": "node --input-type=module -e \"const m=await import('@fixture/format-kit'); if(m.clamp(12,0,10)!==10||!m.formatCurrency(12.5).includes('12.50'))process.exit(1); console.log('esm package export ok')\" && node -e \"const m=require('@fixture/format-kit'); if(m.clamp(-2,0,10)!==0||!m.formatCurrency(8,'EUR').includes('8.00'))process.exit(1); console.log('cjs package export ok')\"",
+      "exit_code": 0,
+      "output": "esm package export ok\ncjs package export ok"
+    }
+  ]
+}

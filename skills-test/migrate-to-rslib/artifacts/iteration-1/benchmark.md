@@ -6,7 +6,7 @@
 | Without skill |                 90% |    172.9s |     455,063 |
 | Delta         |               +0.10 |    +18.0s |      +33775 |
 
-Smoke scope: two evals, one valid run per configuration per eval. Do not interpret the standard deviations as reliability estimates.
+Smoke scope: two evals, one valid run per configuration per eval. The displayed means and deltas are descriptive only; they do not estimate reliability or variance.
 
 ## Analyst notes
 

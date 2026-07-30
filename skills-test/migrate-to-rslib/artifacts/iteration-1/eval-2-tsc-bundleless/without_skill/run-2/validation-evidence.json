@@ -1,0 +1,63 @@
+{
+  "source": "Preserved original run workspace audited after execution",
+  "summary": {
+    "passed": 4,
+    "failed": 1,
+    "total": 5,
+    "pass_rate": 0.8
+  },
+  "expectations": [
+    {
+      "text": "package.json uses @rslib/core with Rslib build/watch scripts while retaining the tsc --noEmit typecheck script",
+      "passed": true,
+      "evidence": "devDependencies={\"@rslib/core\":\"^0.23.2\",\"typescript\":\"^5.8.3\"}; scripts={\"build\":\"rslib build\",\"build:watch\":\"rslib build --watch\",\"typecheck\":\"tsc --noEmit\"}"
+    },
+    {
+      "text": "rslib.config.ts configures bundleless ESM output, declarations, and source.tsconfigPath for tsconfig.build.json",
+      "passed": false,
+      "evidence": "bundle=false, esm, dts, tsconfigPath checks applied; tsconfig.build.json exists=false"
+    },
+    {
+      "text": "npm run build succeeds and all root and ./format export targets exist",
+      "passed": true,
+      "evidence": "npm run build exit=0; export targets=./dist/index.d.ts, ./dist/index.js, ./dist/format.d.ts, ./dist/format.js; missing=none"
+    },
+    {
+      "text": "npm run typecheck and an ESM consumer covering both exports succeed",
+      "passed": true,
+      "evidence": "npm run typecheck exit=0; node test/consumer.mjs exit=0"
+    },
+    {
+      "text": "Source files and package export paths remain byte-for-byte unchanged",
+      "passed": true,
+      "evidence": "source files src/format.ts, src/index.ts byte-for-byte=true; package exports unchanged=true"
+    }
+  ],
+  "deterministic_evidence": [
+    {
+      "command": "npm run build",
+      "exit_code": 0,
+      "output": "> @fixture/math-kit@0.1.0 build\n> rslib build\n\nRslib v0.23.2\n\ninfo    build started...\nstart   generating declaration files... (esm)\nready   built in 0.16s\nready   declaration files generated in 0.81 s (esm)\n\n2 files generated in dist, total: 0.3 kB (esm)"
+    },
+    {
+      "command": "npm run typecheck",
+      "exit_code": 0,
+      "output": "> @fixture/math-kit@0.1.0 typecheck\n> tsc --noEmit"
+    },
+    {
+      "command": "node test/consumer.mjs",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "command": "node --input-type=module -e \"import fs from 'node:fs'; import crypto from 'node:crypto'; const pkg=JSON.parse(fs.readFileSync('package.json','utf8')); const config=fs.readFileSync('rslib.config.ts','utf8'); const targets=[]; const walk=v=>{if(typeof v==='string')targets.push(v);else if(v&&typeof v==='object')Object.values(v).forEach(walk)}; walk(pkg.exports); const result={rslib_config_sha256:crypto.createHash('sha256').update(config).digest('hex'),config:{bundle_false:/bundle:\\\\s*false/.test(config),esm:/format:\\\\s*['\\\"']esm['\\\"']/.test(config),cjs:/format:\\\\s*['\\\"']cjs['\\\"']/.test(config),dts:/dts:\\\\s*true/.test(config),source_tsconfig_path:/tsconfigPath:\\\\s*['\\\"']\\\\.\\\\/tsconfig\\\\.build\\\\.json['\\\"']/.test(config),clean_dist:/cleanDistPath:\\\\s*true/.test(config)},tsconfig_build_exists:fs.existsSync('tsconfig.build.json'),export_targets:targets,missing_export_targets:targets.filter(p=>!fs.existsSync(p))}; console.log(JSON.stringify(result))\"",
+      "exit_code": 0,
+      "output": "{\"rslib_config_sha256\":\"696a175b30fa95a61ef9f1d7ae5ce54d76426851e6e119c7d94a015de1ed1074\",\"config\":{\"bundle_false\":true,\"esm\":true,\"cjs\":false,\"dts\":true,\"source_tsconfig_path\":false,\"clean_dist\":false},\"tsconfig_build_exists\":false,\"export_targets\":[\"./dist/index.d.ts\",\"./dist/index.js\",\"./dist/format.d.ts\",\"./dist/format.js\"],\"missing_export_targets\":[]}"
+    },
+    {
+      "command": "node --input-type=module -e \"const root=await import('@fixture/math-kit'); const sub=await import('@fixture/math-kit/format'); if(root.sum([2,3])!==5||root.formatPercent(.25)!=='25%'||sub.formatPercent(.5)!=='50%')process.exit(1); console.log('root and subpath package exports ok')\"",
+      "exit_code": 0,
+      "output": "root and subpath package exports ok"
+    }
+  ]
+}

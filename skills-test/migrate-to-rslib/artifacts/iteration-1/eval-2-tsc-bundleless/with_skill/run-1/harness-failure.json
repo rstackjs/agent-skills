@@ -2,5 +2,15 @@
   "classification": "harness_failure",
   "reason": "Transient npm registry/DNS resolution failure prevented @rslib/core installation, lockfile regeneration, and build verification.",
   "excluded_from_benchmark": true,
-  "replacement_run": "../run-2"
+  "pair_id": "eval-2-run-1",
+  "paired_with": "../../without_skill/run-1",
+  "failing_command": "/bin/zsh -lc 'git status --short && npm install --save-dev @rslib/core'",
+  "failure": {
+    "exit_code": 1,
+    "error_code": "ENOTFOUND",
+    "message": "getaddrinfo ENOTFOUND registry.npmjs.org"
+  },
+  "replacement_pair_id": "eval-2-run-2",
+  "replacement_run": "../run-2",
+  "replacement_paired_with": "../../without_skill/run-2"
 }

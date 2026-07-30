@@ -31,48 +31,5 @@
     "failed": 0,
     "total": 5,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": {
-      "agent_message": 5,
-      "command_execution": 8,
-      "web_search": 3,
-      "file_change": 1
-    },
-    "total_tool_calls": 17,
-    "total_steps": 17,
-    "errors_encountered": 1,
-    "output_chars": 1056,
-    "transcript_chars": 18340
-  },
-  "timing": {
-    "executor_duration_seconds": 117.337,
-    "grader_duration_seconds": 0,
-    "total_duration_seconds": 117.337
-  },
-  "claims": [],
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": [
-      "Watch verification emitted sandbox EMFILE warnings after a successful rebuild."
-    ]
-  },
-  "deterministic_evidence": [
-    {
-      "command": "npm run build",
-      "exit_code": 0,
-      "output": "> @fixture/math-kit@0.1.0 build\n> rslib build\n\nRslib v0.23.2\n\ninfo    build started...\nstart   generating declaration files... (esm)\nready   built in 0.16s\nready   declaration files generated in 0.81 s (esm)\n\n2 files generated in dist, total: 0.3 kB (esm)"
-    },
-    {
-      "command": "npm run typecheck",
-      "exit_code": 0,
-      "output": "> @fixture/math-kit@0.1.0 typecheck\n> tsc --noEmit"
-    },
-    {
-      "command": "node test/consumer.mjs",
-      "exit_code": 0,
-      "output": ""
-    }
-  ]
+  }
 }

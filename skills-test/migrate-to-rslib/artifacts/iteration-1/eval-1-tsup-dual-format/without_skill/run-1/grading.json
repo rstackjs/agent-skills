@@ -31,50 +31,5 @@
     "failed": 0,
     "total": 5,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": {
-      "agent_message": 5,
-      "command_execution": 14,
-      "file_change": 2
-    },
-    "total_tool_calls": 21,
-    "total_steps": 21,
-    "errors_encountered": 4,
-    "output_chars": 967,
-    "transcript_chars": 47975
-  },
-  "timing": {
-    "executor_duration_seconds": 176.897,
-    "grader_duration_seconds": 0,
-    "total_duration_seconds": 176.897
-  },
-  "claims": [],
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
-  },
-  "deterministic_evidence": [
-    {
-      "command": "npm run build",
-      "exit_code": 0,
-      "output": "> @fixture/format-kit@0.1.0 build\n> rslib build\n\nRslib v0.23.2\n\ninfo    build started...\nstart   generating declaration files... (esm)\nready   built in 0.21s (esm)\nready   built in 0.22s (cjs)\nready   declaration files generated in 1.45 s (esm)\n\nFile (esm)      Size      \ndist/index.js   0.32 kB\n\nFile (cjs)       Size     \ndist/index.cjs   1.7 kB"
-    },
-    {
-      "command": "npm run typecheck",
-      "exit_code": 0,
-      "output": "> @fixture/format-kit@0.1.0 typecheck\n> tsc --noEmit"
-    },
-    {
-      "command": "node test/consumer.mjs",
-      "exit_code": 0,
-      "output": ""
-    },
-    {
-      "command": "node test/consumer.cjs",
-      "exit_code": 0,
-      "output": ""
-    }
-  ]
+  }
 }

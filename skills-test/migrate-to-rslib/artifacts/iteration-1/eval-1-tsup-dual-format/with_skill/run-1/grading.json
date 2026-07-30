@@ -31,53 +31,5 @@
     "failed": 0,
     "total": 5,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": {
-      "agent_message": 6,
-      "command_execution": 12,
-      "web_search": 2,
-      "file_change": 2
-    },
-    "total_tool_calls": 22,
-    "total_steps": 22,
-    "errors_encountered": 4,
-    "output_chars": 898,
-    "transcript_chars": 48651
-  },
-  "timing": {
-    "executor_duration_seconds": 264.512,
-    "grader_duration_seconds": 0,
-    "total_duration_seconds": 264.512
-  },
-  "claims": [],
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": [
-      "Watch verification emitted sandbox EMFILE warnings after a successful rebuild."
-    ]
-  },
-  "deterministic_evidence": [
-    {
-      "command": "npm run build",
-      "exit_code": 0,
-      "output": "> @fixture/format-kit@0.1.0 build\n> rslib\n\nRslib v0.19.1\n\ninfo    build started...\nstart   generating declaration files... (esm)\nstart   generating declaration files... (cjs)\nready   built in 1.53 s (esm)\nready   built in 1.54 s (cjs)\nready   declaration files generated in 1.27 s (esm)\nready   declaration files generated in 1.28 s (cjs)\n\nFile (esm)      Size      \ndist/index.js   0.32 kB\n\n\nFile (cjs)       Size     \ndist/index.cjs   1.6 kB"
-    },
-    {
-      "command": "npm run typecheck",
-      "exit_code": 0,
-      "output": "> @fixture/format-kit@0.1.0 typecheck\n> tsc --noEmit"
-    },
-    {
-      "command": "node test/consumer.mjs",
-      "exit_code": 0,
-      "output": ""
-    },
-    {
-      "command": "node test/consumer.cjs",
-      "exit_code": 0,
-      "output": ""
-    }
-  ]
+  }
 }

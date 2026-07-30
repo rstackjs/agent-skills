@@ -1,5 +1,13 @@
 {
-  "source": "turn.completed events from events.jsonl",
+  "source": {
+    "artifact": "events.jsonl",
+    "artifact_included": false,
+    "sha256": "d4ceb21931d6722f0cb99dcd4fccd700124980729bc08052010666c355811779",
+    "total_event_count": 37,
+    "usage_event_type": "turn.completed",
+    "usage_event_count": 1,
+    "usage_event_line_range": [37, 37]
+  },
   "usage": [
     {
       "input_tokens": 484244,

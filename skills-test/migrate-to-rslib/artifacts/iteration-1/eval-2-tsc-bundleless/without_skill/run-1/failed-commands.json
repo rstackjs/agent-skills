@@ -2,16 +2,22 @@
   {
     "command": "/bin/zsh -lc \"node -p \\\"require('./node_modules/@rslib/core/package.json').version\\\" && rg -n \\\"bundle:|dts:|distPath|source.*entry\\\" node_modules/@rslib/core -g '*.d.ts' -g '*.md' | head -100 && sed -n '1,160p' node_modules/@rslib/core/dist/index.d.ts\"",
     "exit_code": 1,
-    "aggregated_output": "node_modules/@rslib/core/dist-types/config.d.ts:4:    bundle: boolean;\nnode_modules/@rslib/core/dist-types/config.d.ts:13:export declare function composePrintFileSizeConfig(bundle: LibConfig['bundle'], target: RsbuildConfigOutputTarget): EnvironmentConfig;\nnode_modules/@rslib/core/dist-types/config.d.ts:16:    bundle: boolean;\nnode_modules/@rslib/core/dist-types/asset/assetConfig.d.ts:3:export declare const composeAssetConfig: (bundle: boolean, format: Format) => EnvironmentConfig;\nnode_modules/@rslib/core/dist-types/cli/commands.d.ts:18:    distPath?: string;\nnode_modules/@rslib/core/dist-types/exe/types.d.ts:25:    bundle: boolean;\nnode_modules/@rslib/core/dist-types/types/config.d.ts:12:export type RsbuildConfigEntry = NonNullable<NonNullable<EnvironmentConfig['source']>['entry']>;\nnode_modules/@rslib/core/dist-types/types/config.d.ts:34:       */ distPath?: string;\nnode_modules/@rslib/core/dist-types/types/config.d.ts:126:       * @defaultValue `output.distPath`\nnode_modules/@rslib/core/dist-types/types/rslib.d.ts:27:   * @default 'output.distPath.root'\nsed: node_modules/@rslib/core/dist/index.d.ts: No such file or directory\n"
+    "aggregated_output": "node_modules/@rslib/core/dist-types/config.d.ts:4:    bundle: boolean;\nnode_modules/@rslib/core/dist-types/config.d.ts:13:export declare function composePrintFileSizeConfig(bundle: LibConfig['bundle'], target: RsbuildConfigOutputTarget): EnvironmentConfig;\nnode_modules/@rslib/core/dist-types/config.d.ts:16:    bundle: boolean;\nnode_modules/@rslib/core/dist-types/asset/assetConfig.d.ts:3:export declare const composeAssetConfig: (bundle: boolean, format: Format) => EnvironmentConfig;\nnode_modules/@rslib/core/dist-types/cli/commands.d.ts:18:    distPath?: string;\nnode_modules/@rslib/core/dist-types/exe/types.d.ts:25:    bundle: boolean;\nnode_modules/@rslib/core/dist-types/types/config.d.ts:12:export type RsbuildConfigEntry = NonNullable<NonNullable<EnvironmentConfig['source']>['entry']>;\nnode_modules/@rslib/core/dist-types/types/config.d.ts:34:       */ distPath?: string;\nnode_modules/@rslib/core/dist-types/types/config.d.ts:126:       * @defaultValue `output.distPath`\nnode_modules/@rslib/core/dist-types/types/rslib.d.ts:27:   * @default 'output.distPath.root'\nsed: node_modules/@rslib/core/dist/index.d.ts: No such file or directory\n",
+    "classification": "benign_diagnostic_failure",
+    "benchmark_impact": "none; this read-only probe used an obsolete declaration path, and later dist-types inspection and build validation succeeded"
   },
   {
     "command": "/bin/zsh -lc \"ls -la && test -d node_modules && find node_modules -maxdepth 2 -type d -name '*rslib*' -o -name '@rslib' || true && node -v && npm -v && npm view @rslib/core version --silent\"",
     "exit_code": 1,
-    "aggregated_output": "10.9.8\n"
+    "aggregated_output": "10.9.8\n",
+    "classification": "benign_network_probe",
+    "benchmark_impact": "none; installed local tooling remained available"
   },
   {
     "command": "/bin/zsh -lc 'npm pack --dry-run && git status --short && git diff --check && git diff -- package.json rslib.config.ts tsconfig.build.json && git diff --stat'",
     "exit_code": 255,
-    "aggregated_output": "npm error code EPERM\nnpm error syscall open\nnpm error path <user-home>/.npm/_cacache/tmp/f2c775d4\nnpm error errno -1\nnpm error\nnpm error Your cache folder contains root-owned files, due to a bug in\nnpm error previous versions of npm which has since been addressed.\nnpm error\nnpm error To permanently fix this problem, please run:\nnpm error   sudo chown -R 501:20 \"<user-home>/.npm\"\nnpm error Log files were not written due to an error writing to the directory: <user-home>/.npm/_logs\nnpm error You can rerun the command with `--loglevel=verbose` to see the logs in your terminal\n"
+    "aggregated_output": "npm error code EPERM\nnpm error syscall open\nnpm error path <user-home>/.npm/_cacache/tmp/f2c775d4\nnpm error errno -1\nnpm error\nnpm error Your cache folder contains root-owned files, due to a bug in\nnpm error previous versions of npm which has since been addressed.\nnpm error\nnpm error To permanently fix this problem, please run:\nnpm error   sudo chown -R 501:20 \"<user-home>/.npm\"\nnpm error Log files were not written due to an error writing to the directory: <user-home>/.npm/_logs\nnpm error You can rerun the command with `--loglevel=verbose` to see the logs in your terminal\n",
+    "classification": "recovered_cache_failure",
+    "benchmark_impact": "none; the same pack and diff checks succeeded with an isolated temporary npm cache"
   }
 ]

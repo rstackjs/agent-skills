@@ -1,0 +1,52 @@
+{
+  "execution_metrics": {
+    "tool_calls": {
+      "agent_message": 5,
+      "command_execution": 14,
+      "file_change": 2
+    },
+    "total_tool_calls": 21,
+    "total_steps": 21,
+    "errors_encountered": 4,
+    "output_chars": 967,
+    "transcript_chars": 47975
+  },
+  "timing": {
+    "executor_duration_seconds": 176.897,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 176.897
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "error_assessment": {
+    "recorded_error_count": 4,
+    "status": "recovered_or_benign",
+    "items": [
+      {
+        "count": 1,
+        "classification": "network_probe",
+        "resolution": "The npm registry probe failed, but @rslib/core was already installed and local verification completed."
+      },
+      {
+        "count": 1,
+        "classification": "dependency_retry",
+        "resolution": "A combined install/build command failed before a later build, typecheck, and both consumers succeeded."
+      },
+      {
+        "count": 1,
+        "classification": "npm_cache_probe",
+        "resolution": "The default-cache pack attempt failed and a temporary-cache retry succeeded."
+      },
+      {
+        "count": 1,
+        "classification": "source_map_probe",
+        "resolution": "A CommonJS JSON parser was unsuitable for the ESM package; a filesystem JSON parse rerun succeeded."
+      }
+    ],
+    "benchmark_impact": "none after successful deterministic verification"
+  }
+}

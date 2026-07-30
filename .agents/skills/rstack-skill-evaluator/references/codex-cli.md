@@ -26,7 +26,7 @@ CODEX_HOME="$EVAL_CODEX_HOME" codex login --device-auth
 test -z "$(find "$EVAL_CODEX_HOME" -type f -name SKILL.md -print -quit)"
 ```
 
-Do not use `--dangerously-bypass-approvals-and-sandbox` merely to make an eval pass. Select the least-permissive sandbox that still represents the skill's real task. If a task genuinely requires network access or broader writes, record that as part of the controlled setup.
+Do not use `--dangerously-bypass-approvals-and-sandbox` merely to make an eval pass. Select the least-permissive sandbox that still represents the skill's real task. If a task genuinely requires network access or broader writes, record that as part of the controlled setup. For networked `workspace-write` evals, explicitly pass `-c sandbox_workspace_write.network_access=true`; omit it for offline evals. Keep this override identical across every matched run instead of relying on an ambient default.
 
 ## 2. Prepare evals and isolated runs
 
@@ -118,6 +118,7 @@ CODEX_HOME="$EVAL_CODEX_HOME" codex exec \
   --color never \
   --model "$EVAL_EXECUTOR_MODEL" \
   --sandbox workspace-write \
+  -c sandbox_workspace_write.network_access=true \
   --cd <absolute-run-dir>/workspace \
   --output-last-message <absolute-run-dir>/final.txt \
   - < <absolute-run-dir>/executor-prompt.txt \
@@ -125,7 +126,7 @@ CODEX_HOME="$EVAL_CODEX_HOME" codex exec \
   2> <absolute-run-dir>/stderr.log
 ```
 
-Use the same explicit executor model for every configuration. Do not use `codex exec resume`; each run must be independent.
+The command above is the network-enabled variant. Remove the `-c sandbox_workspace_write.network_access=true` line when the eval is intentionally offline. Use the same explicit executor model and network setting for every configuration. Do not use `codex exec resume`; each run must be independent.
 
 Record process start, end, duration, and exit code in `timing.json`. Current Codex JSONL emits authoritative usage on `turn.completed`; extract and sum it rather than estimating from text:
 
@@ -189,18 +190,23 @@ CODEX_HOME="$EVAL_CODEX_HOME" codex exec \
   2> <absolute-run-dir>/grader-stderr.log
 ```
 
-The grader prompt should require it to inspect durable outputs rather than trust the executor's claims, use the same pass/fail burden for every configuration, and cite concrete evidence. Merge deterministic results into the same `grading.json` shape if both grading methods are used.
+The grader prompt should require it to inspect durable outputs rather than trust the executor's claims, use the same pass/fail burden for every configuration, cite concrete evidence, and reproduce every supplied assertion text exactly once. Merge deterministic results into the same `grading.json` shape if both grading methods are used.
 
-JSON Schema validation cannot express that `summary` is derived from the expectation booleans. After schema validation and before aggregation, reject any mismatch:
+JSON Schema validation cannot express that the grader returned the complete assertion set or that `summary` is derived from the expectation booleans. After schema validation and before aggregation, reject missing, duplicate, reordered, or rewritten assertions and any aggregate mismatch:
 
 ```bash
-jq -e '
-  (.expectations | length) as $total
+jq -e \
+  --slurpfile definitions skills-test/<name>/evals/evals.json \
+  --argjson eval_id <eval-id> '
+  ($definitions[0].evals[] | select(.id == $eval_id) | .assertions) as $expected
+  | (.expectations | map(.text)) as $actual
+  | (.expectations | length) as $total
   | ([.expectations[] | select(.passed)] | length) as $passed
   | ($total - $passed) as $failed
   | ($passed / $total) as $pass_rate
   | (
-      (.summary.total == $total)
+      ($actual == $expected)
+      and (.summary.total == $total)
       and (.summary.passed == $passed)
       and (.summary.failed == $failed)
       and (((.summary.pass_rate - $pass_rate) | fabs) < 1e-9)

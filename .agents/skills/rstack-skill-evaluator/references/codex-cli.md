@@ -52,9 +52,22 @@ Use this raw workspace shape so the upstream aggregator and viewer can discover 
             └── ...
 ```
 
+This is a harness-side collection layout, not the filesystem view exposed to an
+executor. Never mount its parent directory into an executor. Start every run in
+a separate read-isolated container, VM, OS user, permission profile, or
+equivalent mount namespace that exposes only that run as `/eval-run`. The
+`with_skill` view includes `/eval-run/skill-snapshot`; the `without_skill` view
+does not. Sibling configurations, eval definitions, assertions, grading inputs,
+previous results, and reports must be absent or unreadable.
+
+`--cd`, the Codex write sandbox, and prompt instructions are not read
+boundaries. Before launch, test from inside the same isolated environment and
+with the same identity that representative sibling and harness-only paths
+cannot be read. Treat a readable sibling path as a harness failure.
+
 Create every `workspace/` from the same verified fixture state. Never let paired runs share a mutable checkout. Build executor workspaces from the fixture allowlist rather than copying the repository wholesale. Copy the target skill into `skill-snapshot/` for `with_skill`; do not point the executor at a live skill that may change while runs are in progress.
 
-The baseline run directory must not contain `skill-snapshot/`, and neither its workspace nor the controlled `CODEX_HOME` may contain the target skill. Verify both the fixture equality and skill absence before execution:
+The baseline run directory must not contain `skill-snapshot/`, and neither its workspace nor the controlled `CODEX_HOME` may contain the target skill. Verify both the fixture equality and skill absence from the harness before creating the isolated executor views:
 
 ```bash
 WITH_SKILL_RUN="/absolute/path/to/with-skill-run"
@@ -119,14 +132,20 @@ CODEX_HOME="$EVAL_CODEX_HOME" codex exec \
   --model "$EVAL_EXECUTOR_MODEL" \
   --sandbox workspace-write \
   -c sandbox_workspace_write.network_access=true \
-  --cd <absolute-run-dir>/workspace \
-  --output-last-message <absolute-run-dir>/final.txt \
-  - < <absolute-run-dir>/executor-prompt.txt \
-  > <absolute-run-dir>/events.jsonl \
-  2> <absolute-run-dir>/stderr.log
+  --cd /eval-run/workspace \
+  --output-last-message /eval-run/final.txt \
+  - < /eval-run/executor-prompt.txt \
+  > /eval-run/events.jsonl \
+  2> /eval-run/stderr.log
 ```
 
-The command above is the network-enabled variant. Remove the `-c sandbox_workspace_write.network_access=true` line when the eval is intentionally offline. Use the same explicit executor model and network setting for every configuration. Do not use `codex exec resume`; each run must be independent.
+Run this command inside the per-run read-isolated environment described above;
+`/eval-run` is its executor-visible mount, not the collection path on the host.
+The command above is the network-enabled variant. Remove the
+`-c sandbox_workspace_write.network_access=true` line when the eval is
+intentionally offline. Use the same explicit executor model and network setting
+for every configuration. Do not use `codex exec resume`; each run must be
+independent.
 
 Record process start, end, duration, and exit code in `timing.json`. Current Codex JSONL emits authoritative usage on `turn.completed`; extract and sum it rather than estimating from text:
 

@@ -21,7 +21,7 @@ Migrate Jest/Vitest tests and config to Rstest with minimal behavior changes. Us
 6. Validate discovery/types/run, fixing failures in this order: dependency skew, config/resolver, setup/env/coverage, mocks/timers/snapshots, test bodies.
 7. If a `jsdom`, `happy-dom`, or other browser-like environment has much higher peak RSS or build cost than Jest/Vitest, compare equivalent runs and tune dependency bundling with `references/dom-dependency-bundling.md` before changing worker counts or test code.
 8. If a test fully mocks a heavy module but Rspack still compiles that module's source graph, run the narrow `output.externals` experiment in `references/mocked-module-build-graph.md`.
-9. After the scope is green, remove only scope-local legacy files and devDeps no remaining scope uses.
+9. After the scope is green, remove only legacy files owned by that scope. Remove a devDep only after verifying that no other package or repository scope uses it.
 10. Summarize changes, kept legacy files, unsupported fields, performance tradeoffs, and TODOs.
 
 ## Guardrails

@@ -6,6 +6,7 @@ Use this reference when a migrated scope runs in `jsdom`, `happy-dom`, or anothe
 
 - Rstest output configuration: https://rstest.rs/config/build/output
 - Rstest profiling guide: https://rstest.rs/guide/advanced/profiling
+- Rspack lazy barrel optimization: https://rspack.rs/guide/optimization/lazy-barrel
 
 ## Understand the default
 
@@ -54,6 +55,18 @@ export default defineConfig({
 ```
 
 An array sets an externalized baseline and bundles only matching package requests. It does not re-bundle transitive dependencies that are reachable only through an already externalized parent.
+
+### Preserve measured lazy-barrel wins
+
+Treat full externalization as a diagnostic baseline, not an automatic final config. A bundled dependency can benefit from Rspack's default lazy barrel optimization, which skips building unused re-export branches in an eligible barrel file.
+
+Consider adding a package back to the `bundleDependencies` allowlist only when all of these signals are present:
+
+- The relevant entry or barrel file uses ESM, and the test imports a small subset through named exports. CommonJS is unsupported, and `export *` re-exports have limited optimization.
+- The relevant barrel path is explicitly side-effect-free through package metadata (`"sideEffects": false`, or a `sideEffects` pattern that does not match it) or `rules[].sideEffects: false`. Merely enabling `optimization.sideEffects` is not enough for lazy barrel's early build skipping.
+- The package is large or frequently imported enough that avoiding its unused re-export branches could offset the cost of bundling it.
+
+Do not scan every installed package or attempt to prove an internal Rspack optimization hit by reconstructing the whole module graph. Start from large packages observed in the build output, add one candidate at a time, and compare it with the fully externalized baseline. Keep the package bundled only when the same tests pass and the measured RSS or wall-time tradeoff improves; explicit side-effect metadata makes a package eligible, not automatically beneficial.
 
 ### Keep the DOM default and externalize heavy exceptions
 

@@ -32,7 +32,7 @@ Install all user-facing skills as a Codex plugin:
 
 ```bash
 codex plugin marketplace add rstackjs/agent-skills
-codex plugin add rstack@rstack-skills
+codex plugin add rstack@rstack
 ```
 
 Install any skill with:

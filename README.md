@@ -35,6 +35,13 @@ codex plugin marketplace add rstackjs/agent-skills
 codex plugin add rstack@rstack
 ```
 
+Install all user-facing skills as a Claude Code plugin:
+
+```bash
+claude plugin marketplace add rstackjs/agent-skills
+claude plugin install rstack@rstack
+```
+
 Install any skill with:
 
 ```bash

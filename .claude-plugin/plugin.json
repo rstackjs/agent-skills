@@ -1,0 +1,22 @@
+{
+  "name": "rstack",
+  "version": "0.1.0",
+  "description": "Agent Skills for debugging, tracing, upgrading, and analyzing Rstack projects.",
+  "author": {
+    "name": "RstackJS"
+  },
+  "homepage": "https://github.com/rstackjs/agent-skills",
+  "repository": "https://github.com/rstackjs/agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "rspack",
+    "rsbuild",
+    "rslib",
+    "rstest",
+    "rspress",
+    "rsdoctor",
+    "rslint",
+    "storybook",
+    "skills"
+  ]
+}

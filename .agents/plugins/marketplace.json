@@ -1,0 +1,20 @@
+{
+  "name": "rstack",
+  "interface": {
+    "displayName": "Rstack Skills"
+  },
+  "plugins": [
+    {
+      "name": "rstack",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

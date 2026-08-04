@@ -28,6 +28,13 @@ A collection of Agent Skills for [Rstack](https://rspack.rs/guide/start/ecosyste
 
 ## Usage
 
+Install all user-facing skills as a Codex plugin:
+
+```bash
+codex plugin marketplace add rstackjs/agent-skills
+codex plugin add rstack@rstack
+```
+
 Install any skill with:
 
 ```bash

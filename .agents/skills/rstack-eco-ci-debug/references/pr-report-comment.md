@@ -48,11 +48,13 @@ gh pr view <source-pr-number> --repo <source-owner/repo> --json number,title,sta
 2. Refuse to post if `mergedAt` is empty.
 3. Prepare a concise English comment with:
    - The required marker.
-   - A clear statement that the daily AI eco-ci triage found the failure.
-   - The exact suite that failed.
-   - The evidence link or run id.
-   - The checks that ruled out flake/pre-existing signatures and disabled feature config, when relevant.
-   - A short diagnosis, not a full postmortem.
+   - A descriptive heading naming the `<ecosystem>/<suite>` pair.
+   - A visible attribution status and one-sentence impact summary.
+   - A short mechanical explanation of why this PR is the source.
+   - The preferred owner, fix direction, and smallest useful verification.
+   - Detailed run, pivot, flaky, and config evidence inside a collapsed section so the conclusion remains easy to scan.
+   - A precise distinction between "introduced a product regression" and "exposed an environment or downstream incompatibility" when ownership differs from the source PR.
+   - Only conclusions supported by the collected evidence. In a draft, label missing values and checks as placeholders; for a real post, any missing required evidence still blocks sending.
 4. Ask the user to approve posting.
 5. Post only after approval:
 
@@ -62,22 +64,37 @@ gh pr comment <source-pr-number> --repo <source-owner/repo> --body-file <comment
 
 ## Comment Template
 
+Keep the conclusion and next action visible without expanding anything. Put supporting proof in `<details>` so maintainers can audit the attribution without making the default view noisy. Do not convert a required-but-missing check into a statement that the check passed.
+
 ```md
 <agent: daily-job rstack ecosystem-ci>
 
-Daily AI eco-ci triage found that this PR is the current best-attributed source of the `<suite>` suite failure in `rstack-ecosystem-ci`.
+### Ecosystem CI regression: `<ecosystem>/<suite>`
 
-Evidence:
+**Attribution:** Confirmed source
 
-- Eco-ci run: <run-url-or-id>
-- Selected ecosystem: <ecosystem>
-- Tested upstream commit: <sha>
+**Impact:** <one sentence describing the failing command, assertion, or blocked workflow>
+
+#### Why this PR
+
+<2-4 sentences connecting the PR change to the failure mechanism. State whether the PR caused a product regression or exposed a compatibility constraint, and name the actual fix owner when different.>
+
+#### Suggested next step
+
+<preferred fix and owner>. Verify with `<smallest useful command or focused test>`.
+
+<details>
+<summary>Evidence and attribution checks</summary>
+
+- Current run: <run-url-or-id>
+- Tested upstream: `<ecosystem>` at `<sha>`
+- First bad / previous good: <pivot links or artifact evidence>
 - Failure signature: <short-log-or-assertion-summary>
-- Flaky/pre-existing check: <same signature not found before candidate | evidence>
-- Final config check: <feature enabled | not applicable>
-- Attribution check: <why this PR, not a surface pivot or another source>
+- Flaky/pre-existing check: <result>
+- Config check: <feature enabled | not applicable>
+- Alternatives ruled out: <surface pivot, downstream change, dependency update, or other candidates>
 
-This attribution is based on <success-to-failure pivot | canary bisect | matching current and first-bad signatures> after ruling out <flaky/pre-existing/surface-pivot/config-gated alternatives>. Please take a look when you have time.
+</details>
 ```
 
 If the result is a correction rather than a blame comment, say so explicitly:
@@ -85,7 +102,22 @@ If the result is a correction rather than a blame comment, say so explicitly:
 ```md
 <agent: daily-job rstack ecosystem-ci>
 
-Correction from daily AI eco-ci triage: this PR was initially a surface pivot in the eco-ci data, but deeper investigation does not strictly attribute the failure to this PR.
+### Ecosystem CI attribution correction: `<ecosystem>/<suite>`
 
-Actual source appears to be <actual-source-summary>. This PR is likely not responsible for the `<suite>` failure.
+**Attribution:** This PR is not the source.
+
+**Why:** <one-sentence reason the original surface attribution was misleading>
+
+#### Actual source
+
+<actual source or current inconclusive boundary, with a short mechanical explanation>
+
+<details>
+<summary>Evidence</summary>
+
+- Surface pivot: <commit or PR>
+- Contradicting evidence: <same-SHA result, older signature, disabled config, or unrelated diff>
+- Actual-source evidence: <links or "insufficient evidence">
+
+</details>
 ```

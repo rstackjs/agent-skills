@@ -10,10 +10,11 @@ usage() {
   cat <<'EOF'
 Usage: ecosystem-status.sh --ecosystem <name> [--repo <rstack-ecosystem-ci-path>]
        ecosystem-status.sh --ecosystem <name> [--repo <path>] --source <json-path-or-git-ref>
+       ecosystem-status.sh --ecosystem <name> [--repo <path>] <json-path-or-git-ref>
 
 Print the latest and previous eco-ci status rows for one Rstack ecosystem.
 
-Supported ecosystems: rsbuild, rsdoctor, rslib, rspack, rspress, rstest.
+Supported ecosystems: rspack, rsbuild, rslib, rspress, rstest, rsdoctor.
 
 Options:
   --ecosystem <name>  Status source to inspect. Can also be set with RSTACK_ECOSYSTEM.
@@ -23,18 +24,20 @@ Options:
   -h, --help          Show this help message.
 
 Examples:
+  ecosystem-status.sh --ecosystem rspack --repo <rstack-ecosystem-ci-path>
   ecosystem-status.sh --ecosystem rsbuild --repo <rstack-ecosystem-ci-path>
   ecosystem-status.sh --ecosystem rslib --repo <path> --source origin/data:rslib.json
   ecosystem-status.sh --ecosystem rspress --source /tmp/rspress.json
+  ecosystem-status.sh --ecosystem rstest /tmp/rstest.json
 EOF
 }
 
 validate_ecosystem() {
   case "${1}" in
-    rsbuild | rsdoctor | rslib | rspack | rspress | rstest) ;;
+    rspack | rsbuild | rslib | rspress | rstest | rsdoctor) ;;
     *)
       echo "ecosystem-status.sh: unsupported ecosystem '${1}'." >&2
-      echo "Supported ecosystems: rsbuild, rsdoctor, rslib, rspack, rspress, rstest." >&2
+      echo "Supported ecosystems: rspack, rsbuild, rslib, rspress, rstest, rsdoctor." >&2
       exit 1
       ;;
   esac

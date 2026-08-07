@@ -54,7 +54,11 @@ Use short log snippets only:
 
 ## When Diff and Logs Are Not Enough
 
-This tool is for analysis: connect the PR diff to the failure signature through code and logs. If the mechanism still cannot be explained from code review and log inspection alone, do not run canary tests here. Instead, return to Phase 1 and use the canary date bisect tool to gather before/after evidence with a clear test plan.
+This tool is for analysis: connect the PR diff to the failure signature through code and logs. If the mechanism still cannot be explained from code review and log inspection alone, do not run artifact tests here. Return to Phase 1 and choose the fallback for the selected ecosystem:
+
+- For `rspack`, use the canary date bisect tool when its trigger conditions are satisfied.
+- For any other ecosystem, use an ecosystem-specific commit build or release artifact only when the repository already provides a documented way to produce it.
+- If no reliable ecosystem-specific artifact path exists, return `inconclusive` and state the missing before/after evidence. Never substitute Rspack canaries for a non-Rspack upstream.
 
 ## Diagnosis Rules
 

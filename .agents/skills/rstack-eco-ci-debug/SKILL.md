@@ -9,13 +9,21 @@ metadata:
 
 Use this skill to debug Rstack ecosystem CI failures without over-blaming the first upstream commit that appears red in status data.
 
-Supported ecosystems are `rsbuild`, `rsdoctor`, `rslib`, `rspack`, `rspress`, and `rstest`. Each maps to `origin/data:<ecosystem>.json` in `rstack-ecosystem-ci`.
+Supported ecosystems are `rspack`, `rsbuild`, `rslib`, `rspress`, `rstest`, and `rsdoctor`. Each maps to `origin/data:<ecosystem>.json` in `rstack-ecosystem-ci`.
 
 Choose the ecosystem before investigating. In this skill:
 
 - `selected ecosystem` or `upstream` is the project whose commit produced the status row, for example `rslib` in `rslib.json`.
 - `suite` is a downstream project tested against that upstream artifact, for example the `rspress` suite inside `rslib.json`.
 - Never infer the selected ecosystem from the failing suite name.
+
+### Ecosystem Priority
+
+Treat `rspack` as the primary ecosystem because it has the broadest downstream matrix and is normally the highest-volume source of eco-ci failures.
+
+- For an all-ecosystem request, inspect and live-verify `rspack` first, then continue through `rsbuild`, `rslib`, `rspress`, `rstest`, and `rsdoctor`.
+- Put the Rspack row first in summary matrices and put current `rspack/<suite>` failure sections before failures from other ecosystems.
+- Priority controls ordering and investigation attention, not coverage. Never stop after Rspack when the requested scope includes other ecosystems.
 
 ## Preconditions
 
@@ -66,7 +74,7 @@ Read the linked reference before using any of these tools. Do not ask the user g
     Do **not** trigger when the pivot is a single commit or when the surface PR diff already explains the signature.
     Read [references/canary-date-bisect.md](references/canary-date-bisect.md) and ask the user for the local downstream checkout path and the narrowest failing command.
 
-- **Rsbuild config debug** — use in Phase 1 or Phase 2 only when deciding whether the failing case is related to the current PR requires generated Rsbuild/Rspack config evidence. Trigger it when the user mentions `DEBUG=rsbuild`, asks whether a config is active, or the candidate PR changes behavior controlled by an option, plugin, loader, target, devtool, SSR setting, cache mode, or other config-gated path. Do **not** run it just because the suite is Rsbuild-based. Read [references/rsbuild-config-debug.md](references/rsbuild-config-debug.md) before using it.
+- **Rsbuild config debug** — use in Phase 1 or Phase 2 only when generated Rsbuild/Rspack config evidence is required to decide whether the failing case is related to the current PR. Trigger it when the user mentions `DEBUG=rsbuild`, asks whether a config is active, or the candidate PR changes behavior controlled by an option, plugin, loader, target, devtool, SSR setting, cache mode, or other config-gated path. Do **not** run it just because the suite is Rsbuild-based. Read [references/rsbuild-config-debug.md](references/rsbuild-config-debug.md) before using it.
 
 - **Automation daily triage** — use instead of the local quick path when the request is a recurring/daily automation, asks for today's/latest Rstack ecosystem CI status, provides an automation id/memory, or requires delivery to a user/chat. Read [references/automation-daily-triage.md](references/automation-daily-triage.md) before inspecting runs.
 

@@ -44,13 +44,28 @@
       "id": 4,
       "eval_name": "multi-ecosystem-daily-triage",
       "prompt": "Update my daily rstack-ecosystem-ci automation so it checks every ecosystem status source, not only rspack.json. The current rslib.json row has a failing rspress suite. Explain which upstream commit should be investigated and how the results should be grouped.",
-      "expected_output": "The skill selects all six supported ecosystem sources (rsbuild, rsdoctor, rslib, rspack, rspress, and rstest), treats the commit in rslib.json as the tested upstream Rslib commit for the rslib/rspress failure, and keeps results grouped by ecosystem rather than confusing the rspress suite with the upstream source.",
+      "expected_output": "The skill selects all six supported ecosystem sources, inspects and reports Rspack first, treats the commit in rslib.json as the tested upstream Rslib commit for the rslib/rspress failure, and keeps results grouped by ecosystem rather than confusing the rspress suite with the upstream source.",
       "files": [],
       "assertions": [
         "The output covers rsbuild, rsdoctor, rslib, rspack, rspress, and rstest status sources",
+        "The output prioritizes Rspack first without skipping the other five ecosystems",
         "The output reads rslib.json for the failing rslib/rspress pair rather than rspack.json",
         "The output identifies the status row commit as a Rslib upstream commit, not a Rspress or Rspack commit",
         "The output groups the report by selected ecosystem and distinguishes upstream from downstream suite"
+      ]
+    },
+    {
+      "id": 5,
+      "eval_name": "readable-pr-report-comment",
+      "prompt": "Draft the GitHub report comment for a confirmed rslib/rspress ecosystem-ci regression. The current run times out waiting for the dev server, Rslib PR #1781 is the first bad change, and the preferred fix is in Rslib with a focused preserveModules test. Keep all attribution evidence, but make the comment easy for a maintainer to scan.",
+      "expected_output": "The comment leads with the rslib/rspress pair, confirmed attribution, impact, mechanical cause, and next action, while moving detailed run, pivot, flaky, config, and alternatives evidence into a collapsed details section.",
+      "files": [],
+      "assertions": [
+        "The comment starts with the required agent marker and a descriptive ecosystem/suite heading",
+        "The confirmed attribution and impact are visible before supporting details",
+        "The comment has separate why-this-PR and suggested-next-step sections",
+        "Detailed evidence and attribution checks are preserved inside a collapsible details section",
+        "The comment names the fix owner and a focused verification without overstating unsupported evidence"
       ]
     }
   ]

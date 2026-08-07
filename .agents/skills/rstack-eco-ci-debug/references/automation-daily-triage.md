@@ -15,10 +15,11 @@ For a single job, PR, suite, or local reproduction request, use the local quick 
 
 ## Scope
 
-Resolve the ecosystem set explicitly. Supported values are `rsbuild`, `rsdoctor`, `rslib`, `rspack`, `rspress`, and `rstest`.
+Resolve the ecosystem set explicitly. Supported values are `rspack`, `rsbuild`, `rslib`, `rspress`, `rstest`, and `rsdoctor`.
 
 - If the automation names ecosystems, inspect exactly that set.
 - If it asks for all Rstack ecosystem CI, inspect all six status sources. Do not stop after `rspack.json`.
+- For all-ecosystem triage, inspect, live-verify, and report `rspack` first because it is the primary and highest-volume ecosystem; then cover the remaining selected ecosystems.
 - Keep results grouped by selected ecosystem. The upstream commit comes from that ecosystem's status row; the failing suite is a downstream target and must not replace the upstream identity.
 
 ## Process
@@ -52,6 +53,7 @@ Start with a compact matrix summary. Every selected ecosystem must appear, inclu
 
 ```text
 Ecosystem | Latest run | Tested commit | Result | Failing suites | Delta
+rspack    | <url>      | <sha>         | green  | none           | unchanged
 rsbuild   | <url>      | <sha>         | green  | none           | unchanged
 rslib     | <url>      | <sha>         | red    | rspress        | unchanged
 ```

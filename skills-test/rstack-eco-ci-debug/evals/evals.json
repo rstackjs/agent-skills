@@ -39,6 +39,19 @@
         "The output explains the swc semantic inconsistency mechanism",
         "The output mentions the concatenated module variable renaming issue with lightColor"
       ]
+    },
+    {
+      "id": 4,
+      "eval_name": "multi-ecosystem-daily-triage",
+      "prompt": "Update my daily rstack-ecosystem-ci automation so it checks every ecosystem status source, not only rspack.json. The current rslib.json row has a failing rspress suite. Explain which upstream commit should be investigated and how the results should be grouped.",
+      "expected_output": "The skill selects all six supported ecosystem sources (rsbuild, rsdoctor, rslib, rspack, rspress, and rstest), treats the commit in rslib.json as the tested upstream Rslib commit for the rslib/rspress failure, and keeps results grouped by ecosystem rather than confusing the rspress suite with the upstream source.",
+      "files": [],
+      "assertions": [
+        "The output covers rsbuild, rsdoctor, rslib, rspack, rspress, and rstest status sources",
+        "The output reads rslib.json for the failing rslib/rspress pair rather than rspack.json",
+        "The output identifies the status row commit as a Rslib upstream commit, not a Rspress or Rspack commit",
+        "The output groups the report by selected ecosystem and distinguishes upstream from downstream suite"
+      ]
     }
   ]
 }

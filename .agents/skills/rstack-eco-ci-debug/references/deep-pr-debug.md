@@ -13,23 +13,24 @@ The goal is to connect three things:
 Collect these before starting:
 
 - Candidate PR number and commit SHA.
+- Selected ecosystem and upstream repository.
 - Failing suite name.
 - Current failure log URL or saved log.
 - First-bad failure log, if different from current.
 - Flaky/pre-existing signature check result from Phase 1.
 - For config-gated hypotheses, generated downstream config evidence from Phase 1, usually from [rsbuild-config-debug.md](rsbuild-config-debug.md) for Rsbuild-based suites.
-- Local Rspack checkout path.
+- Local selected-upstream checkout path.
 - Downstream checkout path, if reproduction or source reading is needed.
 
 ## Review the PR
 
-Fetch and inspect the PR in the local Rspack checkout:
+Fetch and inspect the PR in the local selected-upstream checkout:
 
 ```bash
-git -C <rspack-path> fetch origin main --tags
-gh pr view <pr-number> --repo web-infra-dev/rspack --json number,title,author,mergedAt,url,headRefOid,mergeCommit
-git -C <rspack-path> show --stat <sha>
-git -C <rspack-path> show --find-renames --find-copies <sha>
+git -C <upstream-path> fetch origin main --tags
+gh pr view <pr-number> --repo <upstream-owner/repo> --json number,title,author,mergedAt,url,headRefOid,mergeCommit
+git -C <upstream-path> show --stat <sha>
+git -C <upstream-path> show --find-renames --find-copies <sha>
 ```
 
 Focus on changed code paths that can affect the failure signature. Ignore unrelated cleanup unless it changes behavior near the failing path.
@@ -41,7 +42,7 @@ Focus on changed code paths that can affect the failure signature. Ignore unrela
 3. Locate the downstream code that produced the assertion or runtime path.
 4. Confirm the same signature was not already known as flaky or pre-existing before the candidate PR. If it was, stop and return `not caused` or `inconclusive`.
 5. For config-gated hypotheses in Rsbuild-based suites, read [rsbuild-config-debug.md](rsbuild-config-debug.md) and use its output before claiming the PR is active in the failing path.
-6. Trace from downstream behavior into Rspack APIs, plugin hooks, generated output, source maps, loaders, or runtime modules.
+6. Trace from downstream behavior into selected-upstream APIs, plugin hooks, generated output, source maps, loaders, or runtime modules.
 7. Match the PR diff to the changed behavior.
 
 Use short log snippets only:
@@ -80,5 +81,5 @@ Evidence:
 - <commit or file references>
 - <reproduction result if available>
 Confidence: high | medium | low
-Next action: <fix in Rspack | fix downstream expectation | gather more evidence>
+Next action: <fix in selected upstream | fix downstream expectation | gather more evidence>
 ```

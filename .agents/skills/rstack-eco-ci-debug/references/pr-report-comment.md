@@ -2,14 +2,14 @@
 
 Use this tool to comment on a merged source PR only when the eco-ci failure is strictly attributed to that PR. The source PR can be either:
 
-- a Rspack PR that changed the tested Rspack artifact, or
+- a PR in the selected ecosystem that changed the tested upstream artifact, or
 - a downstream project PR that changed the project under test.
 
 ## Guardrails
 
 - Do not comment if attribution is ambiguous, only temporal, or based only on a surface green-to-red pivot.
 - Do not comment if a different downstream PR, different dependency bump, release window, flaky network issue, or changed failure signature is still a plausible cause.
-- Do not comment on a Rspack surface pivot if the actual source is a downstream PR. Comment on the downstream PR instead, and explicitly say the Rspack pivot was ruled out.
+- Do not comment on a selected-upstream surface pivot if the actual source is a downstream PR. Comment on the downstream PR instead, and explicitly say the upstream pivot was ruled out.
 - Do not comment when the same failure signature appeared before the candidate PR, unless you have evidence that the PR made the flaky failure deterministic or changed its signature.
 - Do not comment on config-gated PRs until generated config evidence proves the failing case enables the relevant option or path. For Rsbuild-based suites, read [rsbuild-config-debug.md](rsbuild-config-debug.md) when the hypothesis depends on Rsbuild/Rspack config.
 - Verify the PR is merged before commenting.
@@ -17,7 +17,7 @@ Use this tool to comment on a merged source PR only when the eco-ci failure is s
 - Include the marker at the beginning of the comment:
 
 ```text
-<agent: daily-job rspack eco-ci>
+<agent: daily-job rstack ecosystem-ci>
 ```
 
 ## Required Evidence Before Commenting
@@ -26,14 +26,14 @@ Collect and state these facts first:
 
 - The failing suite name.
 - The eco-ci run URL or run id.
-- The tested Rspack commit.
+- The selected ecosystem and tested upstream commit.
 - The failure signature from GitHub Actions logs.
 - The source repository and source PR number to comment on.
 - The first bad commit or PR, with a visible success-to-failure pivot or equivalent canary bisect proof.
 - A check that the same signature was not already known as flaky or pre-existing.
 - For config-gated hypotheses, evidence from generated downstream config that the relevant option or path is actually enabled.
-- For Rspack PR comments, why downstream changes and other plausible causes were ruled out.
-- For downstream PR comments, why the visible Rspack pivot is only a surface attribution and why the downstream PR is the actual source.
+- For selected-upstream PR comments, why downstream changes and other plausible causes were ruled out.
+- For downstream PR comments, why the visible upstream pivot is only a surface attribution and why the downstream PR is the actual source.
 
 If any item is missing, do not post. Continue investigation or provide a draft-only note.
 
@@ -63,14 +63,15 @@ gh pr comment <source-pr-number> --repo <source-owner/repo> --body-file <comment
 ## Comment Template
 
 ```md
-<agent: daily-job rspack eco-ci>
+<agent: daily-job rstack ecosystem-ci>
 
 Daily AI eco-ci triage found that this PR is the current best-attributed source of the `<suite>` suite failure in `rstack-ecosystem-ci`.
 
 Evidence:
 
 - Eco-ci run: <run-url-or-id>
-- Tested Rspack commit: <sha>
+- Selected ecosystem: <ecosystem>
+- Tested upstream commit: <sha>
 - Failure signature: <short-log-or-assertion-summary>
 - Flaky/pre-existing check: <same signature not found before candidate | evidence>
 - Final config check: <feature enabled | not applicable>
@@ -82,7 +83,7 @@ This attribution is based on <success-to-failure pivot | canary bisect | matchin
 If the result is a correction rather than a blame comment, say so explicitly:
 
 ```md
-<agent: daily-job rspack eco-ci>
+<agent: daily-job rstack ecosystem-ci>
 
 Correction from daily AI eco-ci triage: this PR was initially a surface pivot in the eco-ci data, but deeper investigation does not strictly attribute the failure to this PR.
 

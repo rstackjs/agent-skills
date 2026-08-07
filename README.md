@@ -304,7 +304,7 @@ Audit and modernize RstackJS/Rspack ecosystem repositories to the current shared
 INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill rstack-eco-ci-debug
 ```
 
-Debug Rstack ecosystem CI failures and attribute the real source PR or downstream change. Use it for Rspack eco-ci, rstack-ecosystem-ci, suite regressions, downstream failures, canary bisects, and daily eco-ci triage.
+Debug Rstack ecosystem CI failures and attribute the real source PR or downstream change. Use it for Rsbuild, Rsdoctor, Rslib, Rspack, Rspress, and Rstest eco-ci, suite regressions, downstream failures, Rspack canary bisects, and daily multi-ecosystem triage.
 
 ### rstack-skill-evaluator
 

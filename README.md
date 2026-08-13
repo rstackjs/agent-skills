@@ -29,19 +29,42 @@ A collection of Agent Skills for [Rstack](https://rspack.rs/guide/start/ecosyste
 
 ## Usage
 
-Install all user-facing skills as a Codex plugin:
+### Codex
 
 ```bash
 codex plugin marketplace add rstackjs/agent-skills
 codex plugin add rstack@rstack
 ```
 
-Install all user-facing skills as a Claude Code plugin:
+### VS Code
+
+Run **Chat: Install Plugin From Source**, then enter:
+
+```text
+https://github.com/rstackjs/agent-skills
+```
+
+### Cursor
+
+```bash
+git clone https://github.com/rstackjs/agent-skills.git ~/.cursor/plugins/local/rstack
+```
+
+### GitHub Copilot
+
+```bash
+copilot plugin marketplace add rstackjs/agent-skills
+copilot plugin install rstack@rstack
+```
+
+### Claude Code
 
 ```bash
 claude plugin marketplace add rstackjs/agent-skills
 claude plugin install rstack@rstack
 ```
+
+### Individual skills
 
 Install any skill with:
 

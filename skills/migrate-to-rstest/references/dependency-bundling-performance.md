@@ -1,5 +1,7 @@
 # Dependency Bundling Performance
 
+<!-- Keep in sync with skills/rstest-debugging/references/dependency-bundling.md. The debugging copy is canonical when available. -->
+
 Use this reference when a migrated Node, `jsdom`, or `happy-dom` scope has high build cost, test-runtime startup cost, or peak memory that may depend on `node_modules` bundling. Browser mode always bundles dependencies and does not support this tuning path.
 
 ## Source of truth
@@ -58,6 +60,8 @@ Interpret the split:
 - Higher build time and lower full-suite wall after bundling can be a valid tradeoff when shared chunks avoid repeated runtime loading.
 - A win only on one file may disappear or reverse on the full scope.
 - A full-suite win with a changed test manifest is not comparable.
+
+When a Node-environment trace shows `collect` dominating while test bodies are small, compare `bundleDependencies: true` early. It is a high-signal baseline for repeated runtime module loading; only add selective bundling or exact externals after measuring it against the environment default.
 
 ## Use a selective policy only after the baselines
 

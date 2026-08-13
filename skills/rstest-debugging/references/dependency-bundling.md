@@ -1,6 +1,14 @@
 # Dependency Bundling
 
+<!-- Keep in sync with skills/migrate-to-rstest/references/dependency-bundling-performance.md. This debugging copy is canonical when available. -->
+
 Use this reference when compiler cost or repeated runtime module loading may depend on whether Rstest bundles `node_modules`. Browser mode always bundles dependencies and does not support this tuning path.
+
+## Source of truth
+
+- Rstest output configuration: https://rstest.rs/config/build/output
+- Rstest profiling: https://rstest.rs/guide/debug/profiling
+- Rspack lazy barrel: https://rspack.rs/guide/optimization/lazy-barrel
 
 ## Understand the tradeoff
 
@@ -40,6 +48,8 @@ Interpret build and runtime separately:
 - A single-file win can reverse across many isolated files.
 - Output size alone does not identify the faster strategy.
 
+Do not infer the winning strategy from environment defaults or bundle size alone.
+
 When a Node-environment trace shows `collect` dominating while test bodies are small, compare `bundleDependencies: true` early. It is a high-signal baseline for repeated runtime module loading; only add selective bundling or exact externals after measuring it against the environment default.
 
 ## Add selectivity only after baselines
@@ -57,6 +67,12 @@ export default defineConfig({
 It does not re-bundle transitive dependencies reachable only through an already externalized parent. A long allowlist should be compared with `true`; keep each entry only for a measured compatibility or performance reason.
 
 Bundle when Rspack transformation is needed for ESM/TypeScript source, imports without extensions, aliases, CSS/assets, or measured shared-chunk/lazy-barrel value. Externalize when the package runs correctly in Node and its compiler graph dominates without offsetting runtime cost.
+
+Do not broadly externalize React, UI libraries, or workspace layers just because they are large. Verify package exports, ESM/CommonJS interop, styles, assets, aliases, snapshots, and coverage.
+
+## Preserve measured lazy-barrel wins
+
+A bundled ESM barrel can benefit from Rspack lazy-barrel optimization when it has explicit side-effect-free metadata and the test imports a small named subset. Eligibility is not proof of benefit. Start from packages observed in build output, change one candidate, and keep it bundled only when the same tests improve.
 
 `output.externals` overrides the baseline for matching requests. Use it for exact measured heavy boundaries, especially fully mocked modules, after reading `mocked-module-build-graph.md`.
 

@@ -1,5 +1,7 @@
 # Mocked Modules and the Build Graph
 
+<!-- Keep in sync with skills/rstest-debugging/references/mocked-module-build-graph.md. The debugging copy is canonical when available. -->
+
 Use this reference when Rstest has high build time, runtime initialization cost, or memory even though an expensive module is replaced with `rs.mock()`.
 
 ## Source of truth

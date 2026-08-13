@@ -1,5 +1,7 @@
 # Mocked Modules and the Build Graph
 
+<!-- Keep in sync with skills/migrate-to-rstest/references/mocked-module-build-graph.md. This debugging copy is canonical when available. -->
+
 Use this reference when an expensive module is fully replaced by `rs.mock()` but Rspack still compiles its source graph.
 
 ## Why it happens
@@ -38,6 +40,8 @@ export default defineConfig({
 ```
 
 Match the request string seen by Rspack. Choose the module format required by the built test runtime; do not copy `commonjs` into an ESM-only setup. If each rule declares its type, a global `externalsType` is normally redundant, but verify against the installed types and behavior.
+
+If the import uses a relative path, an alias, or multiple package paths, inspect the effective requests and use the narrowest supported string, regular expression, object, or function rule rather than a broad name fragment.
 
 A plain external can fail before the runtime mock is consulted: Node may attempt an ESM dynamic import of a workspace export whose built `.js` file does not exist while the repository only has TypeScript source. If the built test runtime expects CommonJS, test an explicit `commonjs <request>` external. Retain it only when the exact mock still intercepts the request and the full config/project remains green.
 

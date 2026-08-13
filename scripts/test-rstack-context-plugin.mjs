@@ -57,6 +57,7 @@ const testManifest = async () => {
 
 const testSkills = async () => {
   let analyzeBuild;
+  let assessChangeImpact;
   let reviewContextChange;
   for (const skillName of skillNames) {
     const source = await readFile(
@@ -68,6 +69,9 @@ const testSkills = async () => {
     if (skillName === 'analyze-build') {
       analyzeBuild = source;
     }
+    if (skillName === 'assess-change-impact') {
+      assessChangeImpact = source;
+    }
     if (skillName === 'review-context-change') {
       reviewContextChange = source;
     }
@@ -75,6 +79,8 @@ const testSkills = async () => {
 
   assert.match(analyzeBuild, /plugin version is at least `1\.5\.11`/);
   assert.match(analyzeBuild, /output\.mode='brief'/);
+  assert.match(assessChangeImpact, /plugin version is at least `1\.5\.11`/);
+  assert.match(assessChangeImpact, /output\.mode='brief'/);
   assert.match(reviewContextChange, /capture selection/);
 
   const rsdoctor = await readFile(

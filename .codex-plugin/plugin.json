@@ -1,7 +1,7 @@
 {
   "name": "rstack",
   "version": "0.1.0",
-  "description": "Agent Skills for debugging, tracing, upgrading, and analyzing Rstack projects.",
+  "description": "Agent Skills and project context tools for debugging, tracing, upgrading, and analyzing Rstack projects.",
   "author": {
     "name": "RstackJS",
     "url": "https://github.com/rstackjs"
@@ -21,19 +21,25 @@
     "skills"
   ],
   "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Rstack",
-    "shortDescription": "Debug, migrate, optimize, and document Rstack projects.",
-    "longDescription": "Use Rstack skills to configure, migrate, debug, trace, optimize, and document projects with Rspack, Rsbuild, Rslib, Rstest, Rspress, Rsdoctor, and Rslint, including Storybook integration with Rsbuild.",
+    "shortDescription": "Debug, analyze, migrate, and optimize Rstack projects.",
+    "longDescription": "Use Rstack skills and checkout-local project context to configure, migrate, debug, trace, optimize, and document projects with Rspack, Rsbuild, Rslib, Rstest, Rspress, Rsdoctor, and Rslint.",
     "developerName": "RstackJS",
     "category": "Developer Tools",
-    "capabilities": ["Interactive", "Read", "Write"],
+    "capabilities": [
+      "Project context",
+      "Build analysis",
+      "Lint and test capture",
+      "Write"
+    ],
     "composerIcon": "./assets/rspack-logo.png",
     "logo": "./assets/rspack-logo.png",
     "defaultPrompt": [
-      "Debug and optimize this Rspack build.",
-      "Migrate this webpack or Vite project to Rsbuild.",
-      "Create or improve the Rspress documentation for this project."
+      "Show the current Rstack build, lint, and test context.",
+      "Find artifact-scoped unused-code candidates.",
+      "Debug and optimize this Rspack build."
     ],
     "websiteURL": "https://github.com/rstackjs/agent-skills"
   }

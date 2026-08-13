@@ -1,14 +1,14 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "rstack",
-  "description": "Agent Skills for debugging, tracing, upgrading, and analyzing Rstack projects.",
+  "description": "Agent Skills and project context tools for debugging, tracing, upgrading, and analyzing Rstack projects.",
   "owner": {
     "name": "RstackJS"
   },
   "plugins": [
     {
       "name": "rstack",
-      "description": "Agent Skills for debugging, tracing, upgrading, and analyzing Rstack projects.",
+      "description": "Agent Skills and project context tools for debugging, tracing, upgrading, and analyzing Rstack projects.",
       "version": "0.1.0",
       "source": "./",
       "author": {

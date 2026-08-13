@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "rstack": {
+      "command": "node",
+      "args": [
+        "--input-type=module",
+        "--eval",
+        "import { spawn } from 'node:child_process'; import { createRequire } from 'node:module'; import { dirname, join, resolve } from 'node:path'; import { pathToFileURL } from 'node:url'; const require = createRequire(join(process.cwd(), 'package.json')); let packageJsonPath; try { packageJsonPath = require.resolve('rstack/package.json'); } catch (error) { if (error?.code !== 'MODULE_NOT_FOUND') throw error; } if (packageJsonPath) { const { bin } = require(packageJsonPath); const binPath = typeof bin === 'string' ? bin : (bin.rs ?? bin.rstack); if (!binPath) throw new Error('The workspace-local rstack package does not declare an rs binary.'); const cliPath = resolve(dirname(packageJsonPath), binPath); process.argv = [process.execPath, cliPath, 'mcp']; await import(pathToFileURL(cliPath).href); } else { try { const child = spawn('rs', ['mcp'], { stdio: 'inherit' }); const { code, signal } = await new Promise((resolve, reject) => { child.once('error', reject); child.once('exit', (code, signal) => resolve({ code, signal })); }); if (signal) process.kill(process.pid, signal); else process.exitCode = code ?? 1; } catch (error) { if (error?.code !== 'ENOENT') throw error; console.error('Unable to launch Rstack MCP server: install rstack in this workspace or put rs on PATH.'); process.exitCode = 1; } }"
+      ]
+    }
+  }
+}

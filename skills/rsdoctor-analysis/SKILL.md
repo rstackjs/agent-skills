@@ -5,6 +5,11 @@ description: Use when analyzing Rspack/Webpack bundles from local `rsdoctor-data
 
 # Rsdoctor Analysis Assistant Skill
 
+When the installed Rstack plugin exposes Rstack Context and the project has a matching context,
+prefer its `analyze-build` workflow. It binds the explicit artifact to project/build observations and
+uses the maintained in-process Rsdoctor tool catalog. Continue with this standalone workflow when
+Rstack Context is unavailable or the user only has an explicit `rsdoctor-data.json`.
+
 Use the globally installed `rsdoctor-agent` CLI from `@rsdoctor/agent-cli` only after a real `rsdoctor-data.json` path exists. Keep analysis read-only unless the user explicitly asks for install/config setup.
 
 Response order (required): High-Priority Issues -> Proposed Solutions -> Optional Reference-Chain Follow-up Choices -> Next Deep-Dive Issue Categories (Not commands).

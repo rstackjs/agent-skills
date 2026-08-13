@@ -1,0 +1,83 @@
+{
+  "skill_name": "rstack-context",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "stored-test-failure",
+      "prompt": "A test failed in packages/ui during my last Rstack run. Diagnose it from the Rstack Context tools without starting a new run unless I approve one.",
+      "expected_output": "The agent selects the package's Rstest context, queries stored results, reports freshness and completeness separately, and surfaces the first actionable failure without executing tests.",
+      "files": [],
+      "assertions": [
+        "Calls project_status before selecting evidence",
+        "Uses the matching packageRoot and contextId",
+        "Does not run test_snapshot without approval",
+        "Separates freshness from completeness"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "monorepo-context-selection",
+      "prompt": "This monorepo has five Rslib packages and one Rsbuild app. Explain which build context contains packages/runtime and what evidence is current.",
+      "expected_output": "The agent uses project_status and context identities instead of assuming the MCP process CWD identifies the package.",
+      "files": [],
+      "assertions": [
+        "Uses project_status",
+        "Selects by packageRoot/product/environment/target",
+        "Deduplicates repeated runs by contextId",
+        "Reports snapshot freshness"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "unused-project-module",
+      "prompt": "Use this build's explicit Rsdoctor JSON to find one likely unused project module, but do not treat dependencies or an unimported source file as proof.",
+      "expected_output": "The agent queries product roots and bounded unused candidates, prioritizes project ownership, explains one candidate, and preserves artifact bounds.",
+      "files": [],
+      "assertions": [
+        "Calls product_roots before unused_candidates",
+        "Uses the same explicit contextId and dataFile",
+        "Stops when ownership.project is zero",
+        "Calls the result an artifact-scoped candidate"
+      ]
+    },
+    {
+      "id": 4,
+      "eval_name": "dead-code-evidence-axes",
+      "prompt": "Why is src/legacy.ts still present in this build, and is it safe to remove?",
+      "expected_output": "The agent explains artifact reachability and retention, optionally composes compatible code evidence, and never collapses coverage into dead-code proof.",
+      "files": [],
+      "assertions": [
+        "Uses dead_code_explain",
+        "Reports root path or its absence",
+        "Keeps shipment, public contract, reachability, and execution independent",
+        "Does not claim deletion safety"
+      ]
+    },
+    {
+      "id": 5,
+      "eval_name": "snapshot-regression",
+      "prompt": "Compare the last two lint snapshots for packages/core and tell me what regressed.",
+      "expected_output": "The agent selects a compatible pair in the correct order and leads with newly introduced diagnostics.",
+      "files": [],
+      "assertions": [
+        "Calls project_status and snapshot_list",
+        "Uses older snapshot as left",
+        "Stops on incompatibility",
+        "Reports freshness before interpreting the diff"
+      ]
+    },
+    {
+      "id": 6,
+      "eval_name": "missing-artifact-recovery",
+      "prompt": "Analyze tree shaking for my Rslib package, but there is no Rsdoctor artifact yet.",
+      "expected_output": "The agent identifies the library context, offers the minimal rs lib artifact capture, and asks before running or installing anything.",
+      "files": [],
+      "assertions": [
+        "Selects a library product",
+        "Offers RSDOCTOR_OUTPUT=json with rs lib",
+        "Mentions the required Rsdoctor plugin",
+        "Asks before capture or installation"
+      ]
+    }
+  ]
+}

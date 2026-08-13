@@ -14,6 +14,7 @@ A collection of Agent Skills for [Rstack](https://rspack.rs/guide/start/ecosyste
 ## Table of Contents
 
 - [Usage](#usage)
+- [Rstack Context](#rstack-context)
 - [Rspack Skills](#rspack-skills)
 - [Rsbuild Skills](#rsbuild-skills)
 - [Rslib Skills](#rslib-skills)
@@ -47,6 +48,32 @@ Install any skill with:
 ```bash
 npx skills add rstackjs/agent-skills --skill <skill-name>
 ```
+
+## Rstack Context
+
+The Codex and Claude Code plugin includes one local MCP server named `rstack`. It starts the
+workspace-local `rstack` package's `rs mcp` command, falling back to an `rs` executable on `PATH`.
+Install Rstack CLI in the project when you want build, lint, test, coverage, or Rsdoctor evidence:
+
+```bash
+pnpm add -D rstack
+```
+
+The MCP process may start at a monorepo root. It discovers checkout-local contexts recorded by
+Rstack commands and identifies packages, products, environments, targets, configs, and variants by
+`contextId`; it does not treat the server's current working directory as the selected package.
+
+The plugin adds these context workflows:
+
+- `analyze-build`: summarize a matching Rsdoctor artifact with build context.
+- `assess-change-impact`: trace artifact-scoped module dependents and affected chunks.
+- `debug-dev-cycle`: inspect stored Rslint or Rstest failures, with consent-gated capture.
+- `explain-dead-code`: explain one artifact module's roots, shipment, and retention.
+- `find-unused-code`: prioritize artifact-scoped unreachable module candidates.
+- `review-context-change`: compare compatible lint or test snapshots.
+
+The plugin contains agent guidance and the MCP launcher. The evidence engine itself is provided by
+Rstack CLI, so installing this repository does not duplicate or independently version that runtime.
 
 ## Rspack Skills
 

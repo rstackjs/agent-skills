@@ -70,13 +70,14 @@
       "id": 6,
       "eval_name": "missing-artifact-recovery",
       "prompt": "Analyze tree shaking for my Rslib package, but there is no Rsdoctor artifact yet.",
-      "expected_output": "The agent identifies the library context, offers the minimal rs lib artifact capture, and asks before running or installing anything.",
+      "expected_output": "The agent identifies the library context, checks the Rsdoctor plugin version, offers the compatible rs lib artifact capture, and asks before running, installing, or configuring anything.",
       "files": [],
       "assertions": [
         "Selects a library product",
-        "Offers RSDOCTOR_OUTPUT=json with rs lib",
-        "Mentions the required Rsdoctor plugin",
-        "Asks before capture or installation"
+        "Uses RSDOCTOR_OUTPUT=json only for Rsdoctor plugin 1.5.11 or newer",
+        "Uses brief JSON plugin configuration when the plugin is missing, unknown, or older",
+        "Uses rs lib for the library product",
+        "Asks before capture, installation, or configuration"
       ]
     }
   ]

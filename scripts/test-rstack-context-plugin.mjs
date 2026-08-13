@@ -194,6 +194,59 @@ const testPackageLocalLauncher = async () => {
   }
 };
 
+const testNestedPackageLauncher = async () => {
+  const workspace = await mkdtemp(
+    path.join(os.tmpdir(), 'rstack-agent-skills-nested-'),
+  );
+  const recordPath = path.join(workspace, 'record.json');
+
+  try {
+    await writeFile(
+      path.join(workspace, 'package.json'),
+      JSON.stringify({ name: 'repository-root', private: true }),
+    );
+    const packageRoot = path.join(workspace, 'frontend');
+    const rstackRoot = path.join(packageRoot, 'node_modules/rstack');
+    await mkdir(path.join(rstackRoot, 'bin'), { recursive: true });
+    await writeFile(
+      path.join(packageRoot, 'package.json'),
+      JSON.stringify({ name: 'frontend', private: true }),
+    );
+    await writeFile(
+      path.join(rstackRoot, 'package.json'),
+      JSON.stringify({
+        name: 'rstack',
+        type: 'module',
+        exports: { './package.json': './package.json' },
+        bin: { rs: './bin/rs.js' },
+      }),
+    );
+    await writeFile(
+      path.join(rstackRoot, 'bin/rs.js'),
+      [
+        "import { writeFileSync } from 'node:fs';",
+        'writeFileSync(process.env.RSTACK_PLUGIN_TEST_RECORD, JSON.stringify({',
+        '  argv: process.argv.slice(2),',
+        '  cwd: process.cwd(),',
+        '}));',
+      ].join('\n'),
+    );
+
+    const configuration = (await readJson('.mcp.json')).mcpServers.rstack;
+    const result = runServer(configuration, workspace, {
+      PATH: path.dirname(process.execPath),
+      RSTACK_PLUGIN_TEST_RECORD: recordPath,
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.deepEqual(await readJsonFrom(recordPath), {
+      argv: ['mcp'],
+      cwd: workspace,
+    });
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+};
+
 const readJsonFrom = async (filePath) =>
   JSON.parse(await readFile(filePath, 'utf8'));
 
@@ -239,6 +292,7 @@ await testManifest();
 await testSkills();
 await testWorkspaceLocalLauncher();
 await testPackageLocalLauncher();
+await testNestedPackageLauncher();
 await testPathLauncher();
 
 console.log('Rstack Context plugin contract passed.');

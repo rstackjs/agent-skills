@@ -36,13 +36,16 @@ const runServer = (configuration, cwd, env = {}) =>
   });
 
 const testManifest = async () => {
+  const portable = await readJson('plugin.json');
   const codex = await readJson('.codex-plugin/plugin.json');
   const claude = await readJson('.claude-plugin/plugin.json');
   const claudeMarketplace = await readJson('.claude-plugin/marketplace.json');
   const mcp = await readJson('.mcp.json');
 
+  assert.equal(portable.name, 'rstack');
   assert.equal(codex.name, 'rstack');
   assert.equal(claude.name, 'rstack');
+  assert.equal(portable.version, codex.version);
   assert.equal(codex.version, '0.2.0');
   assert.equal(claude.version, codex.version);
   assert.equal(claudeMarketplace.plugins[0].version, codex.version);
@@ -51,6 +54,7 @@ const testManifest = async () => {
     mcp.mcpServers?.rstack,
     'the plugin must register one rstack MCP server',
   );
+  assert.match(portable.description, /context/i);
   assert.match(codex.description, /context/i);
   assert.match(claude.description, /context/i);
 };

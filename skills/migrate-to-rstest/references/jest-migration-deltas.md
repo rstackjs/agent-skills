@@ -23,6 +23,28 @@ When local docs are available, prefer the checked-out source, for example `websi
 - CJS mocking: use `rs.mockRequire()` for code paths using `require()`.
 - Coverage: install a Rstest provider supported by the target version. Jest `babel` maps to Istanbul; Jest `v8` maps to V8 only when the `dependency-install-gate.md` capability gate allows it.
 
+## Classify Jest virtual mocks
+
+Jest's third argument `{ virtual: true }` has no direct Rstest equivalent. Classify each occurrence before adding an alias:
+
+- If the request is genuinely absent at runtime, use the narrow version-supported Rstest virtual-module mechanism or an exact alias/stub, then test discovery and execution.
+- If the request resolves through workspace source, package exports, TypeScript paths, or inherited Rsbuild/Rslib aliases, remove `{ virtual: true }` and keep the normal `rs.mock()` / `rs.doMock()`; do not add a redundant alias.
+- If resolution is uncertain, ask the migrated config to resolve or run the narrow test first. Treat the resulting resolver error as evidence instead of assuming every Jest virtual mock refers to a nonexistent module.
+
+Recheck dynamic-import and `resetModules` cases because their mock-registration order can differ from statically imported tests.
+
+## Classify resolver and discovery config
+
+Do not mechanically translate every `moduleNameMapper` entry into an Rstest alias. Classify each mapping first:
+
+- Preserve semantic path aliases used by source/build tooling.
+- Replace CSS, asset, or module stubs with the narrowest equivalent only when tests rely on the stubbed behavior.
+- Treat mappings for workspace exports without build output, ESM transformation, or Jest-only resolver gaps as legacy workarounds. Start Rstest without them and add a mapping only after reproducing a real resolution failure.
+
+After the scope is green, remove temporary aliases one at a time and rerun the affected file plus the full scope. A working alias is not evidence that it is still necessary.
+
+Audit Jest `roots`, `testMatch`/`testRegex`, `testPathIgnorePatterns`, project filters, and CLI selection with `discovery-parity.md`. Rstest defaults can discover valid tests that Jest never ran; preserve or expand that scope only through an explicit, tested decision.
+
 ## Jest-specific enforcement
 
 1. Delete scope-local `jest.config.*`, `jest.setup.*`, and companion `jest.*.ts` only after the migrated scope is green. Drop shared Jest devDeps only after no scope still uses Jest.

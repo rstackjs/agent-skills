@@ -35,6 +35,19 @@ Use this reference to decide the migration path and scope.
 - React/Vue Testing Library setup files.
 - `@testing-library/jest-dom/vitest` should be replaced with direct matcher registration in Rstest setup.
 
+### Migration-risk profile
+
+Before copying a nearby example, record the target's shape:
+
+- Runner and config topology: standalone, root aggregator, or multi-project.
+- Default and file-level environments, including mixed Node/DOM scopes.
+- Test-file count and one representative dependency-heavy file.
+- React/Vue/JSX, CSS preprocessors, assets, and browser APIs.
+- Global setup mocks and whether they fully replace heavy workspace boundaries.
+- Workspace source imports, package exports without build output, ESM/CommonJS mix, and existing aliases.
+
+Use a pilot only when its runner, environment, build integration, and dependency shape are materially similar. A small Node or Rslib pilot is not a performance/config template for a large mixed UI package.
+
 ## Decision rules
 
 - If only one runner is detected, migrate that runner path.

@@ -1,6 +1,6 @@
 ---
 name: migrate-to-rstest
-description: Migrate Jest or Vitest projects to Rstest. Use when asked to move from Jest/Vitest to Rstest, replace `jest`/`vi` APIs with `@rstest/core`, translate config into `rstest.config.ts`, update scripts/coverage/setup/mocks/snapshots/projects, or diagnose config-loading warnings, migration failures, and memory/performance regressions caused by Rstest's Rsbuild/Rspack execution model, DOM dependency bundling, runtime-mocked module build graphs, or version skew.
+description: Migrate Jest or Vitest projects to Rstest. Use when replacing Jest/Vitest config, scripts, APIs, setup, mocks, snapshots, coverage, or projects with `@rstest/core`; auditing test discovery parity; resolving config-loading or dependency-version failures; or diagnosing migration-time build, runtime, memory, and performance regressions caused by Rstest's Rsbuild/Rspack execution model, dependency bundling, runtime-mocked module graphs, assets, logs, or worker pools.
 ---
 
 <!-- cspell:words TYPELESS -->
@@ -9,37 +9,35 @@ description: Migrate Jest or Vitest projects to Rstest. Use when asked to move f
 
 ## Goal
 
-Migrate Jest/Vitest tests and config to Rstest with minimal behavior changes. Use the current Rstest migration docs for exact mappings; this skill adds scope, dependency, and cleanup guardrails.
+Migrate the smallest runnable Jest/Vitest scope with minimal behavior change. Use documentation and types that match the installed Rstest version; use latest online docs only after the capability gate confirms they apply.
 
 ## Workflow
 
-1. Detect runner and scope (`references/detect-test-framework.md`).
-2. Run dependency/version gates (`references/dependency-install-gate.md`).
-3. Read only the needed deltas: Jest, Vitest, and/or global API replacement.
-4. Migrate scripts/config/setup before tests; prefer adapters or Rsbuild/Rspack config fixes before editing test bodies.
-5. If config loading emits `[MODULE_TYPELESS_PACKAGE_JSON]`, declare the config's module format with `references/config-module-type.md`; do not suppress the warning or change the whole package's module type without an audit.
-6. Validate discovery/types/run, fixing failures in this order: dependency skew, config/resolver, setup/env/coverage, mocks/timers/snapshots, test bodies.
-7. If a `jsdom`, `happy-dom`, or other browser-like environment has much higher peak RSS or build cost than Jest/Vitest, compare equivalent runs and tune dependency bundling with `references/dom-dependency-bundling.md` before changing worker counts or test code.
-8. If a test fully mocks a heavy module but Rspack still compiles that module's source graph, run the narrow `output.externals` experiment in `references/mocked-module-build-graph.md`.
-9. After the scope is green, remove only legacy files owned by that scope. Remove a devDep only after verifying that no other package or repository scope uses it.
-10. Summarize changes, kept legacy files, unsupported fields, performance tradeoffs, and TODOs.
+1. Detect the runner, environment, Rstack integration, and smallest runnable scope with `references/detect-test-framework.md`.
+2. Run `references/dependency-install-gate.md` before choosing Rstest, coverage, adapter, or plugin APIs.
+3. Before editing, record the exact command, Node and runner versions, environment, files/tests/skips/snapshots, and failures. Capture the pre-migration test manifest and follow `references/discovery-parity.md` throughout the migration.
+4. For Jest read `references/jest-migration-deltas.md`; for Vitest read `references/vitest-migration-deltas.md`; for global APIs also read `references/global-api-migration.md`. Migrate scripts, config, and setup before editing test bodies; prefer adapter or Rsbuild/Rspack fixes over broad test rewrites.
+5. If config loading emits `[MODULE_TYPELESS_PACKAGE_JSON]`, use `references/config-module-type.md`. Do not suppress the warning or change the whole package module type without an audit.
+6. Get the migrated scope semantically green. Fix failures in this order: dependency skew, config/resolver, discovery, setup/environment/coverage, mocks/timers/snapshots, then test bodies.
+7. Compare the post-migration manifest and execution counts with the baseline. Classify every added, removed, skipped, or excluded test explicitly; do not call a run equivalent merely because it is green.
+8. Remove temporary aliases, diagnostic hooks, and copied legacy workarounds that are no longer required. Keep only configuration proven necessary by behavior or measurement.
+9. If wall time, build, test runtime, logs, or memory materially regress, load and follow the `rstest-debugging` skill when available. Otherwise use the migration fallback in `references/performance-diagnosis.md`, then read `references/dependency-bundling-performance.md` and/or `references/mocked-module-build-graph.md` according to the measured bottleneck. Change one variable at a time.
+10. After correctness and performance validation, remove only legacy files and dependencies owned by the migrated scope. Summarize behavior parity, discovery differences, unsupported fields, retained compatibility config, performance tradeoffs, and TODOs.
 
 ## Guardrails
 
-- Keep the smallest viable scope; do not broaden a monorepo migration or bulk-rewrite tests when config/setup fixes are plausible.
-- Do not change production behavior, assertions, test names, scenarios, or coverage thresholds to make migration pass.
-- No `jest`/`vi` shims or aliases; rewrite call sites to Rstest APIs (`references/global-api-migration.md`).
-- Do not silently drop unknown config fields; verify or report them as unsupported.
+- Keep the smallest viable scope. Do not broaden a monorepo migration because scopes share a lockfile.
+- Do not change production behavior, assertions, test names, scenarios, coverage thresholds, or ignore directives to make migration pass.
+- Do not introduce `jest`/`vi` shims or aliases; rewrite call sites with `references/global-api-migration.md`.
+- Do not silently drop unknown config fields or historical excludes. Verify, replace, or report each one.
+- Do not compare performance across different test manifests, Node versions, coverage modes, cache states, or worker settings.
+- Keep the previous runner until Rstest is green. Use a local Rstest checkout only for labeled diagnostics, then validate the final result with the project's installed dependency.
+- Escalate before many test edits or any production-source change: report why smaller config/setup fixes failed, options, risks, and the recommended path.
 
 ## High-risk Rstest deltas
 
 - `rstest` / `rstest run` is single-run; watch mode is `rstest --watch` or `rstest watch`.
-- `globals` defaults to `false`; if globals remain, set `globals: true` and add `@rstest/core/globals` types.
-- An ESM-style `rstest.config.ts` in a package without an explicit module type can trigger Node's `[MODULE_TYPELESS_PACKAGE_JSON]` warning. Prefer `rstest.config.mts` for a CommonJS or mixed package; add `"type": "module"` only when the whole package is intentionally ESM-compatible.
-- Rstest runs on Rsbuild/Rspack. Use `references/dependency-install-gate.md` for latest-only APIs, coverage providers, adapters, plugins, and toolchain-version fallbacks.
-- Browser-like DOM environments bundle all third-party dependencies by default. Treat a peak-RSS regression as a possible build/bundling issue before assuming the migrated tests leak memory.
-- `rs.mock()` replaces a module at runtime; it does not by itself prune that module from Rspack's build graph. A fully mocked renderer, editor, or UI module can still pull a large source tree into compilation.
-
-## Escalate before large edits
-
-If the next fix requires many test edits or production source changes, stop and report: why smaller fixes failed, options, risks, and the recommended path.
+- `globals` defaults to `false`; preserving global APIs requires `globals: true` and `@rstest/core/globals` types.
+- Rstest builds before tests run. `rs.mock()` is runtime replacement and does not by itself prune the real module graph.
+- Dependency bundling trades compiler work for runtime Node loading. Neither “bundle all” nor “externalize all” is universally faster; measure a representative file and the full scope.
+- An externalized runtime mock must match the exact request and module format. A config-wide external is unsafe when any test needs the real module.

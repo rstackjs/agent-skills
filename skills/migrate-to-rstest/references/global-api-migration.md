@@ -14,6 +14,20 @@ The rules below are skill-side enforcement on top of that mapping.
 - Prefer imports from `@rstest/core`; use globals only when preserving global-style tests (`globals: true` plus `@rstest/core/globals` types).
 - Rstest globals include test APIs, hooks, `rs`, and `rstest`. Prefer `rs` for migration consistency.
 
+## Typed mock functions
+
+Do not mechanically preserve Jest's two-generic `jest.fn<Return, Args>()` form. Rstest types the complete function signature:
+
+```ts
+// Jest
+jest.fn<Result, [input: Input]>();
+
+// Rstest
+rs.fn<(input: Input) => Result>();
+```
+
+When inference is sufficient, remove the explicit generic. Otherwise express optional, rest, and overloaded parameters in the function type, then run the scope's TypeScript build. A passing runtime test does not prove the migrated mock type is valid.
+
 ## Red lines
 
 1. **No shims.** All forms below leave the migration incomplete and must be rejected in every test and setup file:

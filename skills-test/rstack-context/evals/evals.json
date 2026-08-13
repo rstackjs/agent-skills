@@ -61,6 +61,7 @@
       "files": [],
       "assertions": [
         "Calls project_status and snapshot_list",
+        "Requires the same capture selection on both snapshots",
         "Uses older snapshot as left",
         "Stops on incompatibility",
         "Reports freshness before interpreting the diff"

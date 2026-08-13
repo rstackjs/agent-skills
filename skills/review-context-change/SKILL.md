@@ -6,7 +6,7 @@ description: Use when comparing two compatible Rstack lint or test snapshots, in
 # Review a context change
 
 1. Call `project_status`, match the package by `context.packageRoot`, and use `snapshot_list` with that `contextId`.
-2. Select two completed snapshots for the same producer, context, package root, and config. The list is newest-first; pass the older ID as `leftSnapshotId`.
+2. Select two completed snapshots for the same producer, context, package root, config, and capture selection. The list is newest-first; pass the older ID as `leftSnapshotId`.
 3. If a pair is missing, explain which consent-gated `lint_snapshot` or `test_snapshot` supplies it, including `packageRoot` and nonstandard `configPath`.
 4. Call `snapshot_diff` with `diagnostics` for Rslint or `tests` for Rstest. Stop on incompatibility and report every reason.
 5. Report both freshness values before the delta. Lead with new failures, then resolved items, then lower-severity or timing changes.

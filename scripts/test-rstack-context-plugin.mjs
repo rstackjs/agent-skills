@@ -57,6 +57,7 @@ const testManifest = async () => {
 
 const testSkills = async () => {
   let analyzeBuild;
+  let reviewContextChange;
   for (const skillName of skillNames) {
     const source = await readFile(
       path.join(repositoryRoot, 'skills', skillName, 'SKILL.md'),
@@ -67,10 +68,14 @@ const testSkills = async () => {
     if (skillName === 'analyze-build') {
       analyzeBuild = source;
     }
+    if (skillName === 'review-context-change') {
+      reviewContextChange = source;
+    }
   }
 
   assert.match(analyzeBuild, /plugin version is at least `1\.5\.11`/);
   assert.match(analyzeBuild, /output\.mode='brief'/);
+  assert.match(reviewContextChange, /capture selection/);
 
   const rsdoctor = await readFile(
     path.join(repositoryRoot, 'skills/rsdoctor-analysis/SKILL.md'),

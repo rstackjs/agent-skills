@@ -38,10 +38,14 @@ const runServer = (configuration, cwd, env = {}) =>
 const testManifest = async () => {
   const codex = await readJson('.codex-plugin/plugin.json');
   const claude = await readJson('.claude-plugin/plugin.json');
+  const claudeMarketplace = await readJson('.claude-plugin/marketplace.json');
   const mcp = await readJson('.mcp.json');
 
   assert.equal(codex.name, 'rstack');
   assert.equal(claude.name, 'rstack');
+  assert.equal(codex.version, '0.2.0');
+  assert.equal(claude.version, codex.version);
+  assert.equal(claudeMarketplace.plugins[0].version, codex.version);
   assert.equal(codex.mcpServers, './.mcp.json');
   assert.ok(
     mcp.mcpServers?.rstack,

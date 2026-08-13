@@ -9,7 +9,7 @@
     {
       "name": "rstack",
       "description": "Agent Skills and project context tools for debugging, tracing, upgrading, and analyzing Rstack projects.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "./",
       "author": {
         "name": "RstackJS"

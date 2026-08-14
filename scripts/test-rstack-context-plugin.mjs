@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import {
   chmod,
   mkdtemp,
@@ -10,6 +10,7 @@ import {
 } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { createInterface } from 'node:readline';
 import { fileURLToPath } from 'node:url';
 
 const repositoryRoot = path.resolve(
@@ -318,6 +319,101 @@ const testPathLauncher = async () => {
   }
 };
 
+const listRealRuntimeTools = async (configuration, cwd) => {
+  const command =
+    configuration.command === 'node' ? process.execPath : configuration.command;
+  const child = spawn(command, configuration.args ?? [], {
+    cwd,
+    env: {
+      ...process.env,
+      PATH: process.env.RSTACK_PLUGIN_INTEGRATION_PATH ?? '',
+    },
+    stdio: ['pipe', 'pipe', 'pipe'],
+  });
+  const stderr = [];
+  child.stderr.setEncoding('utf8');
+  child.stderr.on('data', (chunk) => stderr.push(chunk));
+
+  const pending = new Map();
+  const output = createInterface({ input: child.stdout });
+  output.on('line', (line) => {
+    let message;
+    try {
+      message = JSON.parse(line);
+    } catch {
+      return;
+    }
+    if (message.id === undefined) return;
+    const request = pending.get(message.id);
+    if (!request) return;
+    pending.delete(message.id);
+    if (message.error) request.reject(new Error(message.error.message));
+    else request.resolve(message.result);
+  });
+
+  const request = (id, method, params) =>
+    new Promise((resolve, reject) => {
+      pending.set(id, { reject, resolve });
+      child.stdin.write(
+        `${JSON.stringify({ jsonrpc: '2.0', id, method, params })}\n`,
+      );
+    });
+  const rejectPending = (error) => {
+    for (const { reject } of pending.values()) reject(error);
+    pending.clear();
+  };
+  child.once('error', rejectPending);
+  child.once('exit', (code, signal) => {
+    if (pending.size === 0) return;
+    rejectPending(
+      new Error(
+        `Rstack MCP exited before responding (${signal ?? code ?? 'unknown'}). ${stderr.join('')}`,
+      ),
+    );
+  });
+  const timeout = setTimeout(() => {
+    rejectPending(
+      new Error(`Timed out waiting for Rstack MCP. ${stderr.join('')}`),
+    );
+    child.kill('SIGKILL');
+  }, 15_000);
+
+  try {
+    await request(1, 'initialize', {
+      protocolVersion: '2025-03-26',
+      capabilities: {},
+      clientInfo: { name: 'rstack-agent-skills-test', version: '1.0.0' },
+    });
+    child.stdin.write(
+      `${JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized' })}\n`,
+    );
+    const result = await request(2, 'tools/list', {});
+    return result.tools;
+  } finally {
+    clearTimeout(timeout);
+    output.close();
+    child.stdin.end();
+    child.kill();
+  }
+};
+
+const testRealRuntimeLauncher = async () => {
+  const integrationRoot = process.env.RSTACK_PLUGIN_INTEGRATION_ROOT;
+  if (!integrationRoot) return;
+
+  const configuration = (await readJson('.mcp.json')).mcpServers.rstack;
+  const tools = await listRealRuntimeTools(configuration, integrationRoot);
+  const names = tools.map(({ name }) => name);
+  for (const name of [
+    'project_status',
+    'product_roots',
+    'test_snapshot',
+    'code_evidence',
+  ]) {
+    assert.ok(names.includes(name), `real Rstack MCP must advertise ${name}`);
+  }
+};
+
 await testManifest();
 await testSkills();
 await testRuntimeOwnershipDocumentation();
@@ -325,5 +421,6 @@ await testWorkspaceLocalLauncher();
 await testPnpmWorkspaceLauncher();
 await testNestedPackageLauncher();
 await testPathLauncher();
+await testRealRuntimeLauncher();
 
 console.log('Rstack Context plugin contract passed.');

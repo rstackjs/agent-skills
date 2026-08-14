@@ -45,10 +45,10 @@ const testManifest = async () => {
   assert.equal(portable.name, 'rstack');
   assert.equal(codex.name, 'rstack');
   assert.equal(claude.name, 'rstack');
-  assert.equal(portable.version, codex.version);
-  assert.equal(codex.version, '0.2.1');
-  assert.equal(claude.version, codex.version);
-  assert.equal(claudeMarketplace.plugins[0].version, codex.version);
+  assert.equal(portable.version, '0.2.1');
+  assert.ok(codex.version.startsWith(`${portable.version}+codex.`));
+  assert.equal(claude.version, portable.version);
+  assert.equal(claudeMarketplace.plugins[0].version, portable.version);
   assert.equal(codex.mcpServers, './.mcp.json');
   assert.ok(
     mcp.mcpServers?.rstack,

@@ -45,7 +45,7 @@ const testManifest = async () => {
   assert.equal(portable.name, 'rstack');
   assert.equal(codex.name, 'rstack');
   assert.equal(claude.name, 'rstack');
-  assert.equal(portable.version, '0.2.2');
+  assert.equal(portable.version, '0.2.3');
   assert.ok(codex.version.startsWith(`${portable.version}+codex.`));
   assert.equal(claude.version, portable.version);
   assert.equal(claudeMarketplace.plugins[0].version, portable.version);
@@ -147,6 +147,7 @@ const testWorkspaceLocalLauncher = async () => {
         'writeFileSync(process.env.RSTACK_PLUGIN_TEST_RECORD, JSON.stringify({',
         '  argv: process.argv.slice(2),',
         '  cwd: process.cwd(),',
+        '  execArgv: process.execArgv,',
         '}));',
       ].join('\n'),
     );
@@ -159,6 +160,7 @@ const testWorkspaceLocalLauncher = async () => {
     assert.deepEqual(await readJsonFrom(recordPath), {
       argv: ['mcp'],
       cwd: workspace,
+      execArgv: [],
     });
   } finally {
     await rm(workspace, { recursive: true, force: true });

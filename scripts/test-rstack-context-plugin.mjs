@@ -115,6 +115,13 @@ const testSkills = async () => {
   assert.ok(evals.evals.length >= 6);
 };
 
+const testRuntimeOwnershipDocumentation = async () => {
+  const readme = await readFile(path.join(repositoryRoot, 'README.md'), 'utf8');
+
+  assert.match(readme, /github\.com\/rstackjs\/context/);
+  assert.match(readme, /Rstack CLI provides[\s\S]*`rs mcp`/);
+};
+
 const testWorkspaceLocalLauncher = async () => {
   const workspace = await mkdtemp(
     path.join(os.tmpdir(), 'rstack-agent-skills-local-'),
@@ -311,6 +318,7 @@ const testPathLauncher = async () => {
 
 await testManifest();
 await testSkills();
+await testRuntimeOwnershipDocumentation();
 await testWorkspaceLocalLauncher();
 await testPnpmWorkspaceLauncher();
 await testNestedPackageLauncher();

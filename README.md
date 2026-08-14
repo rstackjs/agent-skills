@@ -95,8 +95,10 @@ The plugin adds these context workflows:
 - `find-unused-code`: prioritize artifact-scoped unreachable module candidates.
 - `review-context-change`: compare compatible lint or test snapshots.
 
-The plugin contains agent guidance and the MCP launcher. The evidence engine itself is provided by
-Rstack CLI, so installing this repository does not duplicate or independently version that runtime.
+The plugin contains agent guidance and the MCP launcher. The evidence engine is implemented and
+published by [`rstackjs/context`](https://github.com/rstackjs/context), while Rstack CLI provides
+the `rs mcp` command and configuration adapters. Installing this repository does not duplicate or
+independently version the runtime.
 
 ## Rspack Skills
 

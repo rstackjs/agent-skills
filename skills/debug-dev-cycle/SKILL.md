@@ -8,7 +8,7 @@ description: Use when diagnosing one current Rstack Rslint or Rstest failure fro
 1. Call `project_status` first. Match the package and producer by `context.packageRoot`, then retain its `contextId`.
 2. Prefer stored evidence. Use `snapshot_list` for that context, then `diagnostics_list` or `test_results`; follow `nextCursor` only when more results are needed.
 3. Report freshness (`fresh`, `stale`, `partial`, or `unknown`) independently from completeness, including changed paths and coverage bounds.
-4. Ask before calling `lint_snapshot` or `test_snapshot`. For monorepos, pass checkout-relative `packageRoot`; pass `configPath` only for a nonstandard Rstack config. Never start watch mode through these tools.
+4. Ask before calling `lint_snapshot` or `test_snapshot`. Always copy checkout-relative `context.packageRoot` from `project_status`; do not substitute the agent's current directory with `.` in a nested package. Pass `configPath` only for a nonstandard Rstack config. Never start watch mode through these tools.
 5. Lead with the first actionable failure and briefly summarize the rest.
 6. For a specific source file, an approved `test_snapshot` with `related: [path]` asks Rstest to select and run only statically related tests. Use one source per capture so `code_evidence.testRelation` is attributable to that source.
 7. Call `code_evidence` with the relevant test or lint snapshot ID. Keep static test relation, exact-path test outcome, aggregate execution coverage, diagnostics, and build state independent.

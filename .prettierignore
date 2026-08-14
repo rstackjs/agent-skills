@@ -11,3 +11,6 @@ skills-lock.yaml
 skills/**/scripts/*.js
 skills/**/scripts/*.cjs
 skills/**/scripts/*.mjs
+plugins/rstack/skills/**/scripts/*.js
+plugins/rstack/skills/**/scripts/*.cjs
+plugins/rstack/skills/**/scripts/*.mjs

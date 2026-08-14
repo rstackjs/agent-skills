@@ -4,6 +4,7 @@ import {
   chmod,
   mkdtemp,
   mkdir,
+  readdir,
   readFile,
   rm,
   writeFile,
@@ -17,6 +18,7 @@ const repositoryRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   '..',
 );
+const codexPluginRoot = 'plugins/rstack';
 const skillNames = [
   'analyze-build',
   'assess-change-impact',
@@ -29,6 +31,20 @@ const skillNames = [
 const readJson = async (relativePath) =>
   JSON.parse(await readFile(path.join(repositoryRoot, relativePath), 'utf8'));
 
+const listFiles = async (root, relativeRoot = '') => {
+  const entries = await readdir(path.join(root, relativeRoot), {
+    withFileTypes: true,
+  });
+  const files = [];
+  for (const entry of entries) {
+    const relativePath = path.join(relativeRoot, entry.name);
+    if (entry.isDirectory())
+      files.push(...(await listFiles(root, relativePath)));
+    else if (entry.isFile()) files.push(relativePath);
+  }
+  return files.sort();
+};
+
 const runServer = (configuration, cwd, env = {}) =>
   spawnSync(configuration.command, configuration.args ?? [], {
     cwd,
@@ -38,10 +54,19 @@ const runServer = (configuration, cwd, env = {}) =>
 
 const testManifest = async () => {
   const portable = await readJson('plugin.json');
-  const codex = await readJson('.codex-plugin/plugin.json');
+  const marketplace = await readJson('.agents/plugins/marketplace.json');
+  const codex = await readJson(
+    path.join(codexPluginRoot, '.codex-plugin/plugin.json'),
+  );
   const claude = await readJson('.claude-plugin/plugin.json');
   const claudeMarketplace = await readJson('.claude-plugin/marketplace.json');
-  const mcp = await readJson('.mcp.json');
+  const mcp = await readJson(path.join(codexPluginRoot, '.mcp.json'));
+  const claudeMcp = await readJson('.mcp.json');
+
+  await assert.rejects(
+    readFile(path.join(repositoryRoot, codexPluginRoot, 'plugin.json')),
+    (error) => error?.code === 'ENOENT',
+  );
 
   assert.equal(portable.name, 'rstack');
   assert.equal(codex.name, 'rstack');
@@ -50,7 +75,9 @@ const testManifest = async () => {
   assert.ok(codex.version.startsWith(`${portable.version}+codex.`));
   assert.equal(claude.version, portable.version);
   assert.equal(claudeMarketplace.plugins[0].version, portable.version);
+  assert.equal(marketplace.plugins[0].source.path, './plugins/rstack');
   assert.equal(codex.mcpServers, './.mcp.json');
+  assert.deepEqual(mcp, claudeMcp);
   assert.ok(
     mcp.mcpServers?.rstack,
     'the plugin must register one rstack MCP server',
@@ -61,6 +88,22 @@ const testManifest = async () => {
 };
 
 const testSkills = async () => {
+  const sourceSkillsRoot = path.join(repositoryRoot, 'skills');
+  const bundledSkillsRoot = path.join(
+    repositoryRoot,
+    codexPluginRoot,
+    'skills',
+  );
+  const sourceFiles = await listFiles(sourceSkillsRoot);
+  const bundledFiles = await listFiles(bundledSkillsRoot);
+  assert.deepEqual(bundledFiles, sourceFiles);
+  for (const relativePath of sourceFiles) {
+    assert.deepEqual(
+      await readFile(path.join(bundledSkillsRoot, relativePath)),
+      await readFile(path.join(sourceSkillsRoot, relativePath)),
+    );
+  }
+
   let analyzeBuild;
   let assessChangeImpact;
   let debugDevCycle;
@@ -153,7 +196,9 @@ const testWorkspaceLocalLauncher = async () => {
       ].join('\n'),
     );
 
-    const configuration = (await readJson('.mcp.json')).mcpServers.rstack;
+    const configuration = (
+      await readJson(path.join(codexPluginRoot, '.mcp.json'))
+    ).mcpServers.rstack;
     const result = runServer(configuration, workspace, {
       RSTACK_PLUGIN_TEST_RECORD: recordPath,
     });
@@ -210,7 +255,9 @@ const testPnpmWorkspaceLauncher = async () => {
       ].join('\n'),
     );
 
-    const configuration = (await readJson('.mcp.json')).mcpServers.rstack;
+    const configuration = (
+      await readJson(path.join(codexPluginRoot, '.mcp.json'))
+    ).mcpServers.rstack;
     const result = runServer(configuration, workspace, {
       PATH: path.dirname(process.execPath),
       RSTACK_PLUGIN_TEST_RECORD: recordPath,
@@ -263,7 +310,9 @@ const testNestedPackageLauncher = async () => {
       ].join('\n'),
     );
 
-    const configuration = (await readJson('.mcp.json')).mcpServers.rstack;
+    const configuration = (
+      await readJson(path.join(codexPluginRoot, '.mcp.json'))
+    ).mcpServers.rstack;
     const result = runServer(configuration, workspace, {
       PATH: path.dirname(process.execPath),
       RSTACK_PLUGIN_TEST_RECORD: recordPath,
@@ -304,7 +353,9 @@ const testPathLauncher = async () => {
     );
     await chmod(executable, 0o755);
 
-    const configuration = (await readJson('.mcp.json')).mcpServers.rstack;
+    const configuration = (
+      await readJson(path.join(codexPluginRoot, '.mcp.json'))
+    ).mcpServers.rstack;
     const result = runServer(configuration, workspace, {
       PATH: `${binRoot}${path.delimiter}${process.env.PATH}`,
       RSTACK_PLUGIN_TEST_RECORD: recordPath,
@@ -401,7 +452,9 @@ const testRealRuntimeLauncher = async () => {
   const integrationRoot = process.env.RSTACK_PLUGIN_INTEGRATION_ROOT;
   if (!integrationRoot) return;
 
-  const configuration = (await readJson('.mcp.json')).mcpServers.rstack;
+  const configuration = (
+    await readJson(path.join(codexPluginRoot, '.mcp.json'))
+  ).mcpServers.rstack;
   const tools = await listRealRuntimeTools(configuration, integrationRoot);
   const names = tools.map(({ name }) => name);
   for (const name of [

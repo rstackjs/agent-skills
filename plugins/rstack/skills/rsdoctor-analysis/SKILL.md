@@ -1,0 +1,122 @@
+---
+name: rsdoctor-analysis
+description: Use when analyzing Rspack/Webpack bundles from local `rsdoctor-data.json` and producing evidence-based optimization recommendations.
+---
+
+# Rsdoctor Analysis Assistant Skill
+
+When the installed Rstack plugin exposes Rstack Context and the project has a matching context,
+prefer its `analyze-build` workflow. It binds the explicit artifact to project/build observations and
+uses the maintained in-process Rsdoctor tool catalog. Continue with this standalone workflow when
+Rstack Context is unavailable or the user only has an explicit `rsdoctor-data.json`.
+
+Use the globally installed `rsdoctor-agent` CLI from `@rsdoctor/agent-cli` only after a real `rsdoctor-data.json` path exists. Keep analysis read-only unless the user explicitly asks for install/config setup.
+
+Response order (required): High-Priority Issues -> Proposed Solutions -> Optional Reference-Chain Follow-up Choices -> Next Deep-Dive Issue Categories (Not commands).
+
+## Core Workflow
+
+1. Reuse current-session results and valid `.rsdoctor-analysis-cache.json` entries before doing new work.
+2. Locate `rsdoctor-data.json` fast: user-provided path, then `dist/rsdoctor-data.json`, `output/rsdoctor-data.json`, `static/rsdoctor-data.json`, `.rsdoctor/rsdoctor-data.json`, then one bounded `rg --files` search excluding `node_modules` and `.git`. Treat `manifest.json` only as an index.
+3. If data exists, skip all plugin version/config/build generation logic. Update cache when useful.
+4. If data is missing, stop analysis: do not run `rsdoctor-agent` analysis commands, do not run the Analysis Gate, and either ask for the data path or run the Generation Gate below only when setup/generation is required.
+5. After a real data file exists, run Analysis Gate at most once before the first `rsdoctor-agent` data-fetch command: verify global `@rsdoctor/agent-cli` with `npm view @rsdoctor/agent-cli version` and `rsdoctor-agent --version`; install latest only if missing/outdated, a version-related error occurs, or the user asks to refresh.
+6. Fetch only the Default Evidence Set first; run independent fetches in parallel when possible.
+7. Run the ROI Triage Gate below before selecting deep-dive commands or recommendations. Use it to rank issue categories by measured impact, then synthesize findings in the required response order.
+
+Performance rules: parallelize independent checks, cache only derived facts (`dataFile`, `dataFileMtime`, `pluginName`, `pluginVersion`, dependency/config/plugin modification times), and invalidate cache when paths disappear, modification times change, the user asks to refresh, or cached values fail. Speculative plugin checks must not trigger generation; use them only after confirming the data file is missing.
+
+## ROI Triage Gate
+
+Before recommending fixes, classify the current build into broad cost buckets and choose the highest-ROI lever from evidence, not intuition. This gate is generic for Rspack/Webpack projects; do not use framework-specific runtime layers unless the user's project exposes them in the data.
+
+| Cost bucket                | Evidence source                                                   | First lever                                                                                                                      |
+| -------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Assets/media               | `assetsTop`, `assets media`, `chunkGraph.assets`                  | Compress, convert, deduplicate, subset, or lazy-load large assets                                                                |
+| Large packages/modules     | `packagesTop`, module/package size fields                         | Replace heavy packages, use deep imports, split non-critical code, or review direct dependency choices                           |
+| Duplicate/cross-chunk cost | E1001/E1002, `packages duplicates`, cross-chunk package summaries | Deduplicate versions, tune package resolution, or adjust `splitChunks`/cache groups                                              |
+| Tree-shaking waste         | `retainedModulesTop`, retained CJS/barrel/side-effects modules    | Fix CJS/barrel imports, sideEffects declarations, or package entrypoints                                                         |
+| Build-time cost            | `buildCost`, loaders/plugins/directories cost data                | Optimize loaders/plugins, cache, watcher, or source-map/dev settings; prioritize only when the user asks about build performance |
+
+Decision rules:
+
+- Report the measured breakdown first when it changes recommendation priority.
+- Start with the largest bucket that maps to a practical fix; a smaller issue should not outrank a larger one unless the larger one is expected or intentionally unavoidable.
+- Treat issuer/reference-chain tracing as second-pass work. Run it only when a high-impact candidate needs ownership evidence, or when the user asks "why" / "who imported this".
+- Do not present aggregate rule output as sufficient evidence for a fix that requires a concrete file, package, chunk, size, or dependency path.
+- If the largest bucket is structural or intentionally required, say that it is a wall and name the external change that would be needed instead of inventing low-impact source edits.
+
+## Generation Gate
+
+Identify `pluginName` (`@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin`) and determine `pluginVersion` from local files first: `package.json`, lockfile, then `node_modules/<plugin>/package.json`; use `pnpm why` / `npm ls` only as fallback.
+
+Use this exact if/else decision tree; do not merge branches:
+
+```text
+if pluginName is missing:
+  install/register the matching Rsdoctor plugin, then configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
+else if pluginVersion is unknown:
+  resolve pluginVersion first; if still unknown, configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
+else if pluginVersion >= 1.5.11:
+  do not edit plugin config just for JSON; build with RSDOCTOR_OUTPUT=json and RSDOCTOR=true if needed
+else: # pluginVersion < 1.5.11
+  MUST configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
+```
+
+Preflight every build command: `RSDOCTOR_OUTPUT=json` is allowed only in the `pluginVersion >= 1.5.11` branch. For missing, unknown, or `< 1.5.11`, it is forbidden. For `< 1.5.11`, generating `rsdoctor-data.json` requires the plugin config below:
+
+```ts
+output: {
+  mode: 'brief',
+  options: {
+    type: ['json'],
+  },
+}
+```
+
+## Evidence and Command Bounds
+
+Default Evidence Set:
+
+| Summary key          | Evidence source                            | Bounds                                        |
+| -------------------- | ------------------------------------------ | --------------------------------------------- |
+| `buildCost`          | `build summary`                            | filtered fields only                          |
+| `assetsTop`          | top assets by raw/gzip size                | fixed Top-N                                   |
+| `packagesTop`        | top packages by gzip size                  | fixed Top-N; avoid full `packages list` pages |
+| `duplicatePackages`  | E1001 duplicate package summary            | first-pass summary only                       |
+| `crossChunkPackages` | E1002 cross-chunk duplication summary      | first-pass summary only                       |
+| `retainedModulesTop` | `tree-shaking retained-modules --limit 10` | filtered fields only; no `--compact`          |
+
+Scope rules:
+
+- Use `rsdoctor-agent` for bundle data access only after `rsdoctor-data.json` exists; prefer parallel independent fetches; bound output with `--filter`, pagination, and `--limit`.
+- Default analysis stays within the Default Evidence Set. For non-default analysis, choose minimal fields from [references/rsdoctor-data-types.md](references/rsdoctor-data-types.md) and patterns from [references/common-analysis-patterns.md](references/common-analysis-patterns.md).
+- Treat chain tracing, broad commands, optimization edits, splitChunks experiments, and build re-runs as opt-in follow-ups that require user confirmation.
+- For duplicate packages and tree-shaking issues, identify issues first; trace reference/import chains only after user confirmation.
+- Prefer `tree-shaking retained-modules --emitted-only --category side-effects --limit 10` with narrow `--filter` for side-effects investigations.
+- For retained emitted modules, use `tree-shaking retained-modules` with `--emitted-only`, bounded `--category`, `--sort gzipSize`, `--limit`, and narrow `--filter`; do not pass `--compact`.
+- Use `tree-shaking summary` only as fallback for missing fields or aggregate context. Treat `tree-shaking bailout-reasons` as high-volume; run it only when explicitly requested and pass target `--modules` (max 100).
+- If any command exceeds `5k` tokens, `500 KB` raw output, or a few hundred transcript lines, stop broad fetching and switch to targeted compact queries.
+
+## Output and Recovery
+
+Output format:
+
+1. Issues found in the current build and recommended fixes:
+   - Group each issue with its fix recommendation.
+   - Include concrete evidence (size/time/count/path/rule code) and priority.
+   - For duplicate packages and tree-shaking issues, include a short "continue tracing vs stop here" choice.
+2. Whether deeper analysis is still needed:
+   - List remaining issue categories only, not commands.
+
+For Top-N insights, prefer a table: `Name | Volume/Time | Count | Recommendation`.
+
+Recovery rules:
+
+- `rsdoctor-data.json` missing: do not run `rsdoctor-agent`; ask for the data path or run Generation Gate, then use the matching install reference if setup is needed.
+- Command not found: run Analysis Gate, then retry with `rsdoctor-agent`.
+- `query` reports unknown tool: run `list` and use a catalog tool name, or switch to direct `<group> <subcommand>` mode.
+- JSON read error: verify file path, JSON validity, and permissions.
+- In Codex, do not run `install`, `build`, global CLI installation, version checks, or `rsdoctor-agent...` inside sandbox. Run Rsdoctor CLI setup and data-fetch commands outside sandbox so they can access project files and dependencies normally.
+
+References: commands/options [references/command-map.md](references/command-map.md); install/config/data location [references/install-rsdoctor.md](references/install-rsdoctor.md), [references/install-rsdoctor-rspack.md](references/install-rsdoctor-rspack.md), [references/install-rsdoctor-webpack.md](references/install-rsdoctor-webpack.md), [references/install-rsdoctor-common.md](references/install-rsdoctor-common.md); raw data fields [references/rsdoctor-data-types.md](references/rsdoctor-data-types.md); common patterns [references/common-analysis-patterns.md](references/common-analysis-patterns.md).

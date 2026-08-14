@@ -7,7 +7,7 @@ description: Use when listing or prioritizing artifact-scoped Rstack modules tha
 
 1. Call `project_status` and select the matching build context. Deduplicate repeated runs by `contextId`.
 2. Obtain the explicit Rsdoctor `dataFile`; offer the matching consent-gated application or library capture if absent.
-3. Call `product_roots` with `contextId` and `dataFile`, then report production, published-contract, and conservative roots plus graph issues.
+3. Call `product_roots` with `contextId`, `dataFile`, and `rootLimit: 20`, then report complete counts from `rootSummary` plus representative production, published-contract, and conservative roots and graph issues. Request more roots only when the investigation needs them.
 4. Call `unused_candidates` with the same inputs and an optional `limit` from 1 to 100. Prefer project-owned source modules. If `ownership.project` is zero, stop without paging and say the artifact has no project-owned candidate.
 5. Follow `nextCursor` only for a requested exhaustive inventory. Reuse unchanged filters.
 6. Call `dead_code_explain` for the strongest candidate. Add `code_evidence` when compatible test or execution evidence helps prioritize it. If no relation was captured and the user approves running tests, call `test_snapshot` with `related: [path]` for that one source, then reuse its snapshot ID.
@@ -15,5 +15,7 @@ description: Use when listing or prioritizing artifact-scoped Rstack modules tha
 8. Report root exhaustion, state axes, truncation, bounds, provenance, and artifact binding.
 
 Call every result an **artifact-scoped unreachable module candidate**. Completely unimported files are outside the artifact graph, and no candidate is deletion proof.
+
+When freshness is `partial` with no changed paths, say that the recorded inputs are unchanged but the captured input set is incomplete; do not present it as fresh proof.
 
 Rstest, Rslint, coverage, and Rsdoctor observations are independent optional evidence. Do not install, configure, or run a missing producer just to fill an axis; report it as unavailable and continue with the evidence that exists.

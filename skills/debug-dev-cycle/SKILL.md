@@ -10,7 +10,10 @@ description: Use when diagnosing one current Rstack Rslint or Rstest failure fro
 3. Report freshness (`fresh`, `stale`, `partial`, or `unknown`) independently from completeness, including changed paths and coverage bounds.
 4. Ask before calling `lint_snapshot` or `test_snapshot`. For monorepos, pass checkout-relative `packageRoot`; pass `configPath` only for a nonstandard Rstack config. Never start watch mode through these tools.
 5. Lead with the first actionable failure and briefly summarize the rest.
-6. For a specific file, call `code_evidence` with the relevant test or lint snapshot ID. Keep diagnostics, test outcome, aggregate execution coverage, and build state independent.
-7. Use `lint_fix_preview` only when already captured. Do not apply it.
+6. For a specific source file, an approved `test_snapshot` with `related: [path]` asks Rstest to select and run only statically related tests. Use one source per capture so `code_evidence.testRelation` is attributable to that source.
+7. Call `code_evidence` with the relevant test or lint snapshot ID. Keep static test relation, exact-path test outcome, aggregate execution coverage, diagnostics, and build state independent.
+8. Use `lint_fix_preview` only when already captured. Do not apply it.
 
-For related-test selection, recommend `rs test list --related <files> --json`.
+Use `rs test list --related <files> --json` when the user wants listing without an MCP capture or test execution.
+
+Use only producers configured for the selected package. If Rstest or Rslint is absent, report that axis as unavailable; do not install or configure it as part of diagnosis.

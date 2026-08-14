@@ -46,7 +46,7 @@ const testManifest = async () => {
   assert.equal(codex.name, 'rstack');
   assert.equal(claude.name, 'rstack');
   assert.equal(portable.version, codex.version);
-  assert.equal(codex.version, '0.2.0');
+  assert.equal(codex.version, '0.2.1');
   assert.equal(claude.version, codex.version);
   assert.equal(claudeMarketplace.plugins[0].version, codex.version);
   assert.equal(codex.mcpServers, './.mcp.json');
@@ -62,6 +62,9 @@ const testManifest = async () => {
 const testSkills = async () => {
   let analyzeBuild;
   let assessChangeImpact;
+  let debugDevCycle;
+  let explainDeadCode;
+  let findUnusedCode;
   let reviewContextChange;
   for (const skillName of skillNames) {
     const source = await readFile(
@@ -76,6 +79,15 @@ const testSkills = async () => {
     if (skillName === 'assess-change-impact') {
       assessChangeImpact = source;
     }
+    if (skillName === 'debug-dev-cycle') {
+      debugDevCycle = source;
+    }
+    if (skillName === 'explain-dead-code') {
+      explainDeadCode = source;
+    }
+    if (skillName === 'find-unused-code') {
+      findUnusedCode = source;
+    }
     if (skillName === 'review-context-change') {
       reviewContextChange = source;
     }
@@ -85,6 +97,11 @@ const testSkills = async () => {
   assert.match(analyzeBuild, /output\.mode='brief'/);
   assert.match(assessChangeImpact, /plugin version is at least `1\.5\.11`/);
   assert.match(assessChangeImpact, /output\.mode='brief'/);
+  for (const source of [debugDevCycle, explainDeadCode, findUnusedCode]) {
+    assert.match(source, /test_snapshot/);
+    assert.match(source, /statically related/i);
+    assert.match(source, /execution.*coverage/i);
+  }
   assert.match(reviewContextChange, /capture selection/);
 
   const rsdoctor = await readFile(

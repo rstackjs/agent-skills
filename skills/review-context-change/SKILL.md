@@ -10,7 +10,7 @@ description: Use when comparing two compatible Rstack lint or test snapshots, in
 3. If a pair is missing, explain which consent-gated `lint_snapshot` or `test_snapshot` supplies it, including `packageRoot` and nonstandard `configPath`.
 4. Call `snapshot_diff` with `diagnostics` for Rslint or `tests` for Rstest. Stop on incompatibility and report every reason.
 5. Report both freshness values before the delta. Lead with new failures, then resolved items, then lower-severity or timing changes.
-6. Call `code_evidence` for one changed file when exact-path diagnostics or aggregate execution evidence helps. Keep it separate from the snapshot delta.
+6. Call `code_evidence` for one changed file when exact-path diagnostics, statically related tests, or aggregate execution evidence helps. Keep every axis separate from the snapshot delta.
 7. Use `lint_fix_preview` only as review material and never apply it.
 
 Do not run a capture without approval. Recommend an explicit `rs lint`, `rs test`, or `rs test list --related` verification command.

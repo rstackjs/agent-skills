@@ -45,7 +45,7 @@ const testManifest = async () => {
   assert.equal(portable.name, 'rstack');
   assert.equal(codex.name, 'rstack');
   assert.equal(claude.name, 'rstack');
-  assert.equal(portable.version, '0.2.1');
+  assert.equal(portable.version, '0.2.2');
   assert.ok(codex.version.startsWith(`${portable.version}+codex.`));
   assert.equal(claude.version, portable.version);
   assert.equal(claudeMarketplace.plugins[0].version, portable.version);

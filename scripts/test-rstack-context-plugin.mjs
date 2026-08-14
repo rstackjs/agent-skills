@@ -158,7 +158,7 @@ const testWorkspaceLocalLauncher = async () => {
   }
 };
 
-const testPackageLocalLauncher = async () => {
+const testPnpmWorkspaceLauncher = async () => {
   const workspace = await mkdtemp(
     path.join(os.tmpdir(), 'rstack-agent-skills-package-'),
   );
@@ -167,9 +167,13 @@ const testPackageLocalLauncher = async () => {
   try {
     await writeFile(
       path.join(workspace, 'package.json'),
-      JSON.stringify({ private: true, workspaces: ['packages/*'] }),
+      JSON.stringify({ private: true }),
     );
-    const packageRoot = path.join(workspace, 'packages/app');
+    await writeFile(
+      path.join(workspace, 'pnpm-workspace.yaml'),
+      "packages:\n  - 'packages/**' # applications\n",
+    );
+    const packageRoot = path.join(workspace, 'packages/apps/app');
     const rstackRoot = path.join(packageRoot, 'node_modules/rstack');
     await mkdir(path.join(rstackRoot, 'bin'), { recursive: true });
     await writeFile(
@@ -308,7 +312,7 @@ const testPathLauncher = async () => {
 await testManifest();
 await testSkills();
 await testWorkspaceLocalLauncher();
-await testPackageLocalLauncher();
+await testPnpmWorkspaceLauncher();
 await testNestedPackageLauncher();
 await testPathLauncher();
 

@@ -1,6 +1,6 @@
 {
   "name": "rstack",
-  "version": "0.2.4+codex.20260814102759",
+  "version": "0.2.4+codex.20260814103637",
   "description": "Agent Skills and project context tools for debugging, tracing, upgrading, and analyzing Rstack projects.",
   "author": {
     "name": "RstackJS",

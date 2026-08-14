@@ -12,7 +12,8 @@ description: Use when diagnosing one current Rstack Rslint or Rstest failure fro
 5. When `test_snapshot` fails, inspect its `errors` first. A file- or run-scoped error can explain why `test_results` contains no cases. Lead with the first actionable failure and briefly summarize the rest.
 6. For a specific source file, an approved `test_snapshot` with `related: [path]` asks Rstest to select and run only statically related tests. Use one source per capture so `code_evidence.testRelation` is attributable to that source.
 7. Call `code_evidence` with the relevant test or lint snapshot ID. Pass `contextId` only when also joining an explicit Rsdoctor `dataFile`; omit both for test/lint-only evidence. Keep static test relation, exact-path test outcome, aggregate execution coverage, diagnostics, and build state independent.
-8. Use `lint_fix_preview` only when already captured. Do not apply it.
+8. If aggregate execution reports `provider-unavailable`, call it optional missing evidence—not zero execution or dead-code evidence. Only when the user wants coverage, offer to add `@rstest/coverage-istanbul` at the exact installed `@rstest/core` version and rerun; do not install it automatically.
+9. Use `lint_fix_preview` only when already captured. Do not apply it.
 
 Use `rs test list --related <files> --json` when the user wants listing without an MCP capture or test execution.
 

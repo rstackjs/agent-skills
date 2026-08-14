@@ -1,0 +1,26 @@
+{
+  "skill_name": "rsbuild-docs",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "我在用 Rsbuild，想把 /api 开头的请求代理到 http://localhost:3000，怎么配置？",
+      "expected_output": "Should explain dev.proxy or server.proxy config with a concrete code example",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 1,
+      "prompt": "Rsbuild 里怎么修改 CSS Modules 生成的类名格式？比如我想用 [name]__[local] 这种格式",
+      "expected_output": "Should explain output.cssModules.localIdentName config with code example",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "prompt": "我有一个 Create React App 项目想迁移到 Rsbuild，大概要怎么做？有什么需要注意的？",
+      "expected_output": "Should provide step-by-step CRA migration guide based on the official migration doc",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "eval_id": 0,
+  "eval_name": "dev-proxy-config",
+  "prompt": "我在用 Rsbuild，想把 /api 开头的请求代理到 http://localhost:3000，怎么配置？",
+  "assertions": [
+    {
+      "text": "Response includes a concrete rsbuild.config code snippet with proxy configuration",
+      "type": "content"
+    },
+    {
+      "text": "Response mentions the correct config path (server.proxy or dev.proxy)",
+      "type": "content"
+    },
+    {
+      "text": "The proxy config example correctly maps /api to http://localhost:3000",
+      "type": "content"
+    },
+    {
+      "text": "Information is sourced from fetched docs, not hallucinated",
+      "type": "accuracy"
+    }
+  ]
+}

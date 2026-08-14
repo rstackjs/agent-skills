@@ -145,7 +145,13 @@ const testSkills = async () => {
     assert.match(source, /test_snapshot/);
     assert.match(source, /statically related/i);
     assert.match(source, /execution.*coverage/i);
+    assert.match(source, /rs test list --related/);
+    assert.match(source, /selected test file count/i);
+    assert.match(source, /directly imported leaf source/i);
+    assert.match(source, /broad selection/i);
   }
+  assert.match(debugDevCycle, /standalone `rstest\.config/);
+  assert.match(debugDevCycle, /define\.test\(rstestConfig\)/);
   assert.match(reviewContextChange, /capture selection/);
 
   const rsdoctor = await readFile(
@@ -156,7 +162,15 @@ const testSkills = async () => {
 
   const evals = await readJson('skills-test/rstack-context/evals/evals.json');
   assert.equal(evals.skill_name, 'rstack-context');
-  assert.ok(evals.evals.length >= 6);
+  assert.ok(evals.evals.length >= 9);
+  assert.deepEqual(
+    evals.evals.slice(-3).map(({ eval_name }) => eval_name),
+    [
+      'related-test-fanout-gate',
+      'external-checkout-root-binding',
+      'standalone-rstest-config-adoption',
+    ],
+  );
 };
 
 const testRuntimeOwnershipDocumentation = async () => {
@@ -164,6 +178,10 @@ const testRuntimeOwnershipDocumentation = async () => {
 
   assert.match(readme, /github\.com\/rstackjs\/context/);
   assert.match(readme, /Rstack CLI provides[\s\S]*`rs mcp`/);
+  assert.match(readme, /Codex project\/session root/);
+  assert.match(readme, /new Codex session\s+rooted at that checkout/);
+  assert.match(readme, /standalone `rstest\.config/);
+  assert.match(readme, /define\.test\(rstestConfig\)/);
 };
 
 const testWorkspaceLocalLauncher = async () => {

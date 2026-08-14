@@ -12,3 +12,5 @@ description: Use when estimating artifact-scoped dependents, affected product ro
 5. Report visited dependents, `totalVisited` versus `returned`, reached product roots by kind, distinct chunks, truncation, bounds, and provenance.
 
 Describe only the explicit artifact graph. Source-only, test-only, runtime-created, and external consumers may be unobserved.
+
+The MCP is intentionally limited to the checkout containing the Codex project/session root and has no workspace argument. For an external checkout, ask the user to start a new Codex session rooted at that checkout.

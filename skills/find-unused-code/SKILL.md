@@ -10,7 +10,7 @@ description: Use when listing or prioritizing artifact-scoped Rstack modules tha
 3. Call `product_roots` with `contextId`, `dataFile`, and `rootLimit: 20`, then report complete counts from `rootSummary` plus representative production, published-contract, and conservative roots and graph issues. Request more roots only when the investigation needs them.
 4. Call `unused_candidates` with the same inputs and an optional `limit` from 1 to 100. Prefer project-owned source modules. If `ownership.project` is zero, stop without paging and say the artifact has no project-owned candidate.
 5. Follow `nextCursor` only for a requested exhaustive inventory. Reuse unchanged filters.
-6. Call `dead_code_explain` for the strongest candidate. Add `code_evidence` when compatible test or execution evidence helps prioritize it. If no relation was captured and the user approves running tests, call `test_snapshot` with `related: [path]` for that one source, then reuse its snapshot ID.
+6. Call `dead_code_explain` for the strongest candidate. Add `code_evidence` when compatible test or execution evidence helps prioritize it. If no relation was captured, inspect imports and prefer a directly imported leaf source over a barrel or entry point. When supported, preflight statically related test files with `rs test list --related <source> --files-only --json` and report the selected test file count. Warn about a broad selection and ask whether to run or narrow it before calling the consent-gated `test_snapshot`; if listing is unsupported, say the preflight is unavailable. Capture one approved source, then reuse its snapshot ID.
 7. Keep statically related tests, exact-path test outcomes, and aggregate execution coverage independent. `unrelated` is meaningful only for an isolated one-source relation capture; it is still not deletion proof.
 8. Report root exhaustion, state axes, truncation, bounds, provenance, and artifact binding.
 
@@ -21,3 +21,5 @@ When freshness is `partial` with no changed paths, say that the recorded inputs 
 Rstest, Rslint, coverage, and Rsdoctor observations are independent optional evidence. Do not install, configure, or run a missing producer just to fill an axis; report it as unavailable and continue with the evidence that exists.
 
 If aggregate execution reports `provider-unavailable`, say it is optional missing evidence—not zero execution or dead-code evidence. Only when the user wants coverage, offer to add `@rstest/coverage-istanbul` at the exact installed `@rstest/core` version and rerun; do not install it automatically.
+
+The MCP is intentionally limited to the checkout containing the Codex project/session root and has no workspace argument. For an external checkout, ask the user to start a new Codex session rooted at that checkout.

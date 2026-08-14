@@ -14,3 +14,5 @@ description: Use when comparing two compatible Rstack lint or test snapshots, in
 7. Use `lint_fix_preview` only as review material and never apply it.
 
 Do not run a capture without approval. Recommend an explicit `rs lint`, `rs test`, or `rs test list --related` verification command.
+
+The MCP is intentionally limited to the checkout containing the Codex project/session root and has no workspace argument. For an external checkout, ask the user to start a new Codex session rooted at that checkout.

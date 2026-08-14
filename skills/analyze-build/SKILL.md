@@ -17,3 +17,5 @@ Never require a GUI or infer source execution or repository-wide dead code from 
 When freshness is `partial` with no changed paths, say that the recorded inputs are unchanged but the captured input set is incomplete; do not present it as fresh proof.
 
 If Rstack Context is unavailable, use the `rsdoctor-analysis` skill with the explicit artifact instead.
+
+The MCP is intentionally limited to the checkout containing the Codex project/session root and has no workspace argument. For an external checkout, ask the user to start a new Codex session rooted at that checkout.

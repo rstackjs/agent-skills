@@ -80,6 +80,44 @@
         "Uses rs lib for the library product",
         "Asks before capture, installation, or configuration"
       ]
+    },
+    {
+      "id": 7,
+      "eval_name": "related-test-fanout-gate",
+      "prompt": "Add fresh test evidence for packages/core/src/index.ts, which is a barrel that directly imports packages/core/src/session/load.ts. Before running anything, show me how many related test files would be selected. If the selection fans out broadly, do not run it until I confirm.",
+      "expected_output": "The agent prefers the directly imported leaf source, preflights related-test discovery when supported, reports the selected test-file count, and asks before a broad related capture.",
+      "files": [],
+      "assertions": [
+        "Prefers the directly imported leaf source over the barrel entry point",
+        "Uses supported rs test list --related discovery before test_snapshot",
+        "Reports the selected test-file count",
+        "Warns and asks before a broad fanout",
+        "Does not call test_snapshot before approval"
+      ]
+    },
+    {
+      "id": 8,
+      "eval_name": "external-checkout-root-binding",
+      "prompt": "This Codex session is open in /repo/current, but the failing Rstack checkout is /repo/external. Can you pass a workspace argument to the Rstack MCP tools and inspect /repo/external from here?",
+      "expected_output": "The agent explains that the plugin MCP is bound to the Codex project/session root, does not invent a workspace argument, and directs the user to start a new Codex session rooted at the external checkout.",
+      "files": [],
+      "assertions": [
+        "States that the MCP is bound to the Codex project/session root",
+        "Does not invent or recommend a workspace argument",
+        "Directs the user to start a new Codex session rooted at /repo/external"
+      ]
+    },
+    {
+      "id": 9,
+      "eval_name": "standalone-rstest-config-adoption",
+      "prompt": "Rstack says tests are not configured even though this package already has a standalone rstest.config.ts. Diagnose the mismatch and show the smallest integration change without duplicating the Rstest options.",
+      "expected_output": "The agent explains that rs test does not automatically adopt a standalone Rstest config and shows a minimal rstack.config.ts that imports it and passes it to define.test.",
+      "files": [],
+      "assertions": [
+        "Explains that standalone rstest.config.ts is not auto-adopted by rs test",
+        "Preserves the existing Rstest config as the source of truth",
+        "Shows rstack.config.ts importing the config and calling define.test(rstestConfig)"
+      ]
     }
   ]
 }

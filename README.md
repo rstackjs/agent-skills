@@ -82,9 +82,24 @@ Install Rstack CLI in the project when you want build, lint, test, coverage, or 
 pnpm add -D rstack
 ```
 
-The MCP process may start at a monorepo root. It discovers checkout-local contexts recorded by
-Rstack commands and identifies packages, products, environments, targets, configs, and variants by
-`contextId`; it does not treat the server's current working directory as the selected package.
+The MCP is intentionally bound to the checkout containing the Codex project/session root. It may
+start at that checkout's monorepo root, then discovers checkout-local contexts recorded by Rstack
+commands and identifies packages, products, environments, targets, configs, and variants by
+`contextId`; it does not treat the server's current working directory as the selected package. The
+tools do not accept a workspace argument. To inspect an external checkout, start a new Codex session
+rooted at that checkout.
+
+`rs test` reads the test configuration registered by Rstack; it does not automatically adopt a
+standalone `rstest.config.*`. Keep an existing Rstest config as the source of truth with a minimal
+bridge:
+
+```ts
+// rstack.config.ts
+import { define } from 'rstack';
+import rstestConfig from './rstest.config';
+
+define.test(rstestConfig);
+```
 
 The plugin adds these context workflows:
 

@@ -1,13 +1,14 @@
 {
   "name": "rstack",
-  "version": "0.1.0",
-  "description": "Agent Skills for debugging, tracing, upgrading, and analyzing Rstack projects.",
+  "version": "0.2.4",
+  "description": "Agent Skills and project context tools for debugging, tracing, upgrading, and analyzing Rstack projects.",
   "author": {
     "name": "RstackJS"
   },
   "homepage": "https://github.com/rstackjs/agent-skills",
   "repository": "https://github.com/rstackjs/agent-skills",
   "license": "MIT",
+  "mcpServers": "./.mcp.json",
   "keywords": [
     "rspack",
     "rsbuild",

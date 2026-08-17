@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "rstack",
-  "version": "0.1.0",
-  "description": "Agent Skills for debugging, tracing, upgrading, and analyzing Rstack projects.",
+  "version": "0.2.4",
+  "description": "Agent Skills and project context tools for debugging, tracing, upgrading, and analyzing Rstack projects.",
   "author": {
     "name": "RstackJS",
     "url": "https://github.com/rstackjs"

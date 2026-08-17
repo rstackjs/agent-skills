@@ -1,0 +1,123 @@
+{
+  "skill_name": "rstack-context",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "stored-test-failure",
+      "prompt": "A test failed in packages/ui during my last Rstack run. Diagnose it from the Rstack Context tools without starting a new run unless I approve one.",
+      "expected_output": "The agent selects the package's Rstest context, queries stored results, reports freshness and completeness separately, and surfaces the first actionable failure without executing tests.",
+      "files": [],
+      "assertions": [
+        "Calls project_status before selecting evidence",
+        "Uses the matching packageRoot and contextId",
+        "Does not run test_snapshot without approval",
+        "Separates freshness from completeness"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "monorepo-context-selection",
+      "prompt": "This monorepo has five Rslib packages and one Rsbuild app. Explain which build context contains packages/runtime and what evidence is current.",
+      "expected_output": "The agent uses project_status and context identities instead of assuming the MCP process CWD identifies the package.",
+      "files": [],
+      "assertions": [
+        "Uses project_status",
+        "Selects by packageRoot/product/environment/target",
+        "Deduplicates repeated runs by contextId",
+        "Reports snapshot freshness"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "unused-project-module",
+      "prompt": "Use this build's explicit Rsdoctor JSON to find one likely unused project module, but do not treat dependencies or an unimported source file as proof.",
+      "expected_output": "The agent queries product roots and bounded unused candidates, prioritizes project ownership, explains one candidate, and preserves artifact bounds.",
+      "files": [],
+      "assertions": [
+        "Calls product_roots before unused_candidates",
+        "Uses the same explicit contextId and dataFile",
+        "Stops when ownership.project is zero",
+        "Calls the result an artifact-scoped candidate"
+      ]
+    },
+    {
+      "id": 4,
+      "eval_name": "dead-code-evidence-axes",
+      "prompt": "Why is src/legacy.ts still present in this build, and is it safe to remove?",
+      "expected_output": "The agent explains artifact reachability and retention, optionally composes compatible code evidence, and never collapses coverage into dead-code proof.",
+      "files": [],
+      "assertions": [
+        "Uses dead_code_explain",
+        "Reports root path or its absence",
+        "Keeps shipment, public contract, reachability, and execution independent",
+        "Does not claim deletion safety"
+      ]
+    },
+    {
+      "id": 5,
+      "eval_name": "snapshot-regression",
+      "prompt": "Compare the last two lint snapshots for packages/core and tell me what regressed.",
+      "expected_output": "The agent selects a compatible pair in the correct order and leads with newly introduced diagnostics.",
+      "files": [],
+      "assertions": [
+        "Calls project_status and snapshot_list",
+        "Requires the same capture selection on both snapshots",
+        "Uses older snapshot as left",
+        "Stops on incompatibility",
+        "Reports freshness before interpreting the diff"
+      ]
+    },
+    {
+      "id": 6,
+      "eval_name": "missing-artifact-recovery",
+      "prompt": "Analyze tree shaking for my Rslib package, but there is no Rsdoctor artifact yet.",
+      "expected_output": "The agent identifies the library context, checks the Rsdoctor plugin version, offers the compatible rs lib artifact capture, and asks before running, installing, or configuring anything.",
+      "files": [],
+      "assertions": [
+        "Selects a library product",
+        "Uses RSDOCTOR_OUTPUT=json only for Rsdoctor plugin 1.5.11 or newer",
+        "Uses brief JSON plugin configuration when the plugin is missing, unknown, or older",
+        "Uses rs lib for the library product",
+        "Asks before capture, installation, or configuration"
+      ]
+    },
+    {
+      "id": 7,
+      "eval_name": "related-test-fanout-gate",
+      "prompt": "Add fresh test evidence for packages/core/src/index.ts, which is a barrel that directly imports packages/core/src/session/load.ts. Before running anything, show me how many related test files would be selected. If the selection fans out broadly, do not run it until I confirm.",
+      "expected_output": "The agent prefers the directly imported leaf source, preflights related-test discovery when supported, reports the selected test-file count, and asks before a broad related capture.",
+      "files": [],
+      "assertions": [
+        "Prefers the directly imported leaf source over the barrel entry point",
+        "Uses supported rs test list --related discovery before test_snapshot",
+        "Reports the selected test-file count",
+        "Warns and asks before a broad fanout",
+        "Does not call test_snapshot before approval"
+      ]
+    },
+    {
+      "id": 8,
+      "eval_name": "external-checkout-root-binding",
+      "prompt": "This Codex session is open in /repo/current, but the failing Rstack checkout is /repo/external. Can you pass a workspace argument to the Rstack MCP tools and inspect /repo/external from here?",
+      "expected_output": "The agent explains that the plugin MCP is bound to the Codex project/session root, does not invent a workspace argument, and directs the user to start a new Codex session rooted at the external checkout.",
+      "files": [],
+      "assertions": [
+        "States that the MCP is bound to the Codex project/session root",
+        "Does not invent or recommend a workspace argument",
+        "Directs the user to start a new Codex session rooted at /repo/external"
+      ]
+    },
+    {
+      "id": 9,
+      "eval_name": "standalone-rstest-config-adoption",
+      "prompt": "Rstack says tests are not configured even though this package already has a standalone rstest.config.ts. Diagnose the mismatch and show the smallest integration change without duplicating the Rstest options.",
+      "expected_output": "The agent explains that rs test does not automatically adopt a standalone Rstest config and shows a minimal rstack.config.ts that imports it and passes it to define.test.",
+      "files": [],
+      "assertions": [
+        "Explains that standalone rstest.config.ts is not auto-adopted by rs test",
+        "Preserves the existing Rstest config as the source of truth",
+        "Shows rstack.config.ts importing the config and calling define.test(rstestConfig)"
+      ]
+    }
+  ]
+}

@@ -7,7 +7,8 @@
     "format": "prettier -w .",
     "lint": "rslint && prettier -c . && pnpm run check-spell",
     "lint:write": "rslint --fix && prettier -w .",
-    "prepare": "skills-package-manager install && simple-git-hooks && pnpm build"
+    "prepare": "skills-package-manager install && simple-git-hooks && pnpm build",
+    "test:plugin": "node scripts/test-rstack-context-plugin.mjs"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm run lint:write"

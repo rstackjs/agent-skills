@@ -150,6 +150,10 @@ const testSkills = async () => {
     assert.match(source, /directly imported leaf source/i);
     assert.match(source, /broad selection/i);
   }
+  assert.doesNotMatch(explainDeadCode, /conservatively preserved/i);
+  assert.match(explainDeadCode, /optimizer retention.*independent/i);
+  assert.doesNotMatch(findUnusedCode, /conservative roots/i);
+  assert.match(findUnusedCode, /optimizer retention.*independent/i);
   assert.match(debugDevCycle, /standalone `rstest\.config/);
   assert.match(debugDevCycle, /define\.test\(rstestConfig\)/);
   assert.match(reviewContextChange, /capture selection/);

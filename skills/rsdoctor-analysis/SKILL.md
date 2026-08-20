@@ -112,6 +112,6 @@ Recovery rules:
 - Command not found: run Analysis Gate, then retry with `rsdoctor-agent`.
 - `query` reports unknown tool: run `list` and use a catalog tool name, or switch to direct `<group> <subcommand>` mode.
 - JSON read error: verify file path, JSON validity, and permissions.
-- In Codex, do not run `install`, `build`, global CLI installation, version checks, or `rsdoctor-agent...` inside sandbox. Run Rsdoctor CLI setup and data-fetch commands outside sandbox so they can access project files and dependencies normally.
+- Run installs, builds, version checks, and `rsdoctor-agent...` commands only in the host's authorized command environment when it has the required project, dependency, and network access. If the available environment lacks that access, stop and ask the user instead of attempting to bypass the sandbox or permission boundary.
 
 References: commands/options [references/command-map.md](references/command-map.md); install/config/data location [references/install-rsdoctor.md](references/install-rsdoctor.md), [references/install-rsdoctor-rspack.md](references/install-rsdoctor-rspack.md), [references/install-rsdoctor-webpack.md](references/install-rsdoctor-webpack.md), [references/install-rsdoctor-common.md](references/install-rsdoctor-common.md); raw data fields [references/rsdoctor-data-types.md](references/rsdoctor-data-types.md); common patterns [references/common-analysis-patterns.md](references/common-analysis-patterns.md).

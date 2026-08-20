@@ -32,7 +32,7 @@
     "logo": "./assets/rspack-logo.png",
     "defaultPrompt": [
       "Debug and optimize this Rspack build.",
-      "Migrate this webpack or Vite project to Rsbuild.",
+      "Migrate this webpack project to Rsbuild.",
       "Create or improve the Rspress documentation for this project."
     ],
     "websiteURL": "https://github.com/rstackjs/agent-skills"

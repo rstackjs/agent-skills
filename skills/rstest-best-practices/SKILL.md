@@ -1,6 +1,6 @@
 ---
 name: rstest-best-practices
-description: Set up, write, review, and troubleshoot Rstest projects using practical guidance for configuration, test APIs, mocking, environments, coverage, CI, performance, and debugging.
+description: Rstest best practices for setup, configuration, CLI workflow, test writing, mocking, snapshot testing, DOM testing, coverage, multi-project setup, CI integration, performance, and debugging. Use when setting up, writing, reviewing, or troubleshooting Rstest test projects.
 ---
 
 # Rstest Best Practices

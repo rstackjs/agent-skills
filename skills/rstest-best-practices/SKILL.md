@@ -1,11 +1,11 @@
 ---
 name: rstest-best-practices
-description: Rstest best practices for setup, configuration, CLI workflow, test writing, mocking, snapshot testing, DOM testing, coverage, multi-project setup, CI integration, performance, and debugging. Use when setting up, writing, reviewing, or troubleshooting Rstest test projects.
+description: Rstest best practices for project setup, configuration, CLI workflow, test writing, mocking, snapshot testing, DOM testing, coverage, multi-project setup, and CI integration. Use when setting up, writing, or reviewing Rstest tests and test projects. For systematic startup, build, runtime, logging, memory, or performance diagnosis, use rstest-debugging.
 ---
 
 # Rstest Best Practices
 
-Apply these rules when setting up, writing, reviewing, or troubleshooting Rstest projects.
+Apply these rules when setting up, writing, or reviewing Rstest projects.
 
 ## Workflow
 
@@ -53,14 +53,12 @@ Apply these rules when setting up, writing, reviewing, or troubleshooting Rstest
 - In CI, never use watch mode. Use sharding with blob reports and `rstest merge-reports` when distributing tests; use JUnit when the CI system requires machine-readable results.
 - If passing-test logs are too noisy, consider `silent: 'passed-only'`; disable it temporarily when diagnosing setup or runtime output.
 
-## Debugging and performance
+## First-line debugging
 
 - Start with a focused repro and `--reporter=verbose`; use `--printConsoleTrace` for noisy or unclear console output.
 - Use `DEBUG=rstest` and inspect `dist/.rstest-temp/.rsbuild/` to verify final Rstest/Rsbuild/Rspack configuration and generated build output.
 - Use breakpoints through the Rstest VS Code extension or a JavaScript Debug Terminal for runtime failures.
-- Use `rstest --trace` to separate build, load, setup, collection, and test time. Compare the same test list, environment, coverage, cache, and worker settings before claiming a performance change.
-- Change one performance variable at a time. Adjust isolation or worker limits only after confirming tests have no shared-state assumptions and resources are actually constrained.
-- Escalate to Rsdoctor, native profiling, or Node heap profiling only when trace and debug output do not explain the bottleneck.
+- Use `rstest-debugging` for systematic startup, build, runtime, logging, memory, or performance diagnosis.
 
 ## Documentation
 

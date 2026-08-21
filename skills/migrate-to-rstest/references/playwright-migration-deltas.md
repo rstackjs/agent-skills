@@ -96,7 +96,7 @@ Do not copy every native Playwright `test.extend()` declaration verbatim:
 - Test-scoped object fixtures keep the `async (context, use)` setup/teardown shape.
 - Rstest's object-form tuple supports `auto`, but native Playwright fixture options such as `option`, `timeout`, `box`, and `title` do not have the same meaning or support.
 - Convert custom file- and worker-scoped fixtures to Rstest's named form: `.extend(name, { scope: 'file' | 'worker' }, fixture)`. The named fixture returns its value and registers teardown with `onCleanup`; it does not call `use`.
-- A worker-scoped named fixture can depend only on earlier worker-scoped named fixtures. In particular, a native Playwright worker fixture that depends on Playwright's `browser` fixture cannot be mapped directly to an Rstest worker-scoped named fixture.
+- A worker-scoped named fixture can depend only on earlier worker-scoped named fixtures. Migrate a native Playwright worker fixture that depends on `browser` to Rstest's test-scoped object form and depend on the built-in `browser` fixture. Its setup then runs per test, but the browser remains cached until worker cleanup; audit that setup cost and state instead of launching another browser.
 - Keep the built-in `playwright` fixture test-scoped; browser reuse is handled internally rather than through named worker scope.
 - Rstest does not pass Playwright Test's `testInfo` or `workerInfo` as a third fixture argument. Map each use to an Rstest `TestContext` API or `RSTEST_WORKER_ID`, or report it as unsupported.
 
@@ -126,7 +126,7 @@ export default defineConfig({
 
 `@rstest/playwright` tests run in Rstest's Node workers, not Rstest browser mode. With the default `isolate: true`, each test file gets a fresh worker. Setting `isolate: false` reuses the Node worker, test environment, and module cache across files, and keeps the matching browser alive until worker cleanup.
 
-The built-in `context`, `page`, and `request` fixtures are still created and cleaned up per test. The main leakage risk is Node/module/test-environment state, plus browser contexts or servers created manually by user fixtures. Before enabling reuse, check shared-module mutations, top-level hook registration, DOM/timer cleanup, and custom resource teardown. Put setup that must run for every file in `setupFiles`, which Rstest reruns per file under `isolate: false`.
+The built-in `browser` fixture is shared for the worker lifetime. The built-in `context`, `page`, and `request` fixtures, plus servers started through `serve`, are created and cleaned up per test. The main leakage risk is Node/module/test-environment state, plus browser contexts or servers created manually by user fixtures. Before enabling reuse, check shared-module mutations, top-level hook registration, DOM/timer cleanup, and custom resource teardown. Put setup that must run for every file in `setupFiles`, which Rstest reruns per file under `isolate: false`.
 
 ## Chrome in CI
 

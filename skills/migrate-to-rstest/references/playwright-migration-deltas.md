@@ -95,8 +95,9 @@ Do not copy every native Playwright `test.extend()` declaration verbatim:
 
 - Test-scoped object fixtures keep the `async (context, use)` setup/teardown shape.
 - Rstest's object-form tuple supports `auto`, but native Playwright fixture options such as `option`, `timeout`, `box`, and `title` do not have the same meaning or support.
-- Convert file- and worker-scoped fixtures to Rstest's named form: `.extend(name, { scope: 'file' | 'worker' }, fixture)`. The named fixture returns its value and registers teardown with `onCleanup`; it does not call `use`.
+- Convert custom file- and worker-scoped fixtures to Rstest's named form: `.extend(name, { scope: 'file' | 'worker' }, fixture)`. The named fixture returns its value and registers teardown with `onCleanup`; it does not call `use`.
 - A worker-scoped named fixture can depend only on earlier worker-scoped named fixtures. In particular, a native Playwright worker fixture that depends on Playwright's `browser` fixture cannot be mapped directly to an Rstest worker-scoped named fixture.
+- Keep the built-in `playwright` fixture test-scoped; browser reuse is handled internally rather than through named worker scope.
 - Rstest does not pass Playwright Test's `testInfo` or `workerInfo` as a third fixture argument. Map each use to an Rstest `TestContext` API or `RSTEST_WORKER_ID`, or report it as unsupported.
 
 Migrate a worker resource that does not depend on test-scoped fixtures like this:

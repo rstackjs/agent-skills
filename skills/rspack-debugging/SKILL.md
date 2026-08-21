@@ -24,16 +24,12 @@ Before starting, please ensure your environment meets the requirements.
     **Automatic Replacement Script**:
 
     Resolve the bundled [`scripts/setup_debug_deps.cjs`](scripts/setup_debug_deps.cjs)
-    resource relative to this `SKILL.md`, not the user's project directory, then run:
+    relative to the Skill root while keeping the working directory in the user's
+    project, then run:
 
     ```bash
-    node "<skill-directory>/scripts/setup_debug_deps.cjs"
+    node "<skill-root>/scripts/setup_debug_deps.cjs"
     ```
-
-    If the client exposes Skill resources as content instead of filesystem paths,
-    materialize that exact bundled resource to a temporary file before running it.
-    In a Claude Code plugin installation, `<skill-directory>` is
-    `${CLAUDE_PLUGIN_ROOT}/skills/rspack-debugging`.
 
     Running the above script will automatically add `pnpm.overrides` configuration to `package.json`, pointing Rspack packages to their corresponding Debug versions. Afterwards, please be sure to run `pnpm install` to update dependencies.
 
@@ -89,9 +85,8 @@ When you successfully obtain a backtrace or a tracing log, you **MUST** save it 
 After debugging is complete, restore your `package.json` to use production packages:
 
 ```bash
-node "<skill-directory>/scripts/setup_debug_deps.cjs" --restore
+node "<skill-root>/scripts/setup_debug_deps.cjs" --restore
 pnpm install
 ```
 
-Resolve `<skill-directory>` using the same Skill-resource mechanism described in
-Preparation.
+Use the same resolved `<skill-root>` as in Preparation.

@@ -45,20 +45,15 @@ The last events will show the span names and targets where the build stopped, he
 
 ### 3. Full Performance Analysis
 
-For detailed performance profiling (not just crash diagnosis), ask the user to run the bundled [`scripts/analyze_trace.js`](scripts/analyze_trace.js) resource on the generated trace file. Resolve the resource relative to this `SKILL.md`, not the user's project directory.
+For detailed performance profiling (not just crash diagnosis), ask the user whether to run the bundled [`scripts/analyze_trace.js`](scripts/analyze_trace.js) on the generated trace file. If they agree, resolve it relative to the Skill root while keeping the working directory in the user's project, then run:
 
 ```bash
 # Navigate to the generated profile directory
 cd .rspack-profile-*/
 
 # Run the analysis script
-node "<skill-directory>/scripts/analyze_trace.js" trace.json
+node "<skill-root>/scripts/analyze_trace.js" trace.json
 ```
-
-If the client exposes Skill resources as content instead of filesystem paths,
-materialize that exact bundled resource to a temporary file before running it.
-In a Claude Code plugin installation, `<skill-directory>` is
-`${CLAUDE_PLUGIN_ROOT}/skills/rspack-tracing`.
 
 ### 4. Interpret Results
 

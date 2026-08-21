@@ -61,10 +61,8 @@ Use this for installable Skills intended for Rspack ecosystem users.
 
 - Place the Skill in `skills/{skill-name}/`.
 - Reference bundled scripts, references, and assets with paths relative to the
-  Skill root. Do not make a client-specific environment variable or install
-  layout the only way to resolve a public Skill resource. Client-specific paths
-  may be documented as optional examples when a portable resource path remains
-  the source of truth.
+  Skill root. Do not rely on client-specific environment variables or
+  installation layouts.
 
 Start `SKILL.md` with YAML frontmatter:
 

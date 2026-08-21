@@ -7,3 +7,6 @@ packages:
 engineStrict: true
 hoistPattern: []
 strictPeerDependencies: false
+minimumReleaseAge: 10080
+blockExoticSubdeps: true
+trustPolicy: no-downgrade

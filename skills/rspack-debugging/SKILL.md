@@ -23,8 +23,12 @@ Before starting, please ensure your environment meets the requirements.
 
     **Automatic Replacement Script**:
 
+    Resolve the bundled [`scripts/setup_debug_deps.cjs`](scripts/setup_debug_deps.cjs)
+    relative to the Skill root while keeping the working directory in the user's
+    project, then run:
+
     ```bash
-    node ${CLAUDE_PLUGIN_ROOT}/skills/debugging/scripts/setup_debug_deps.cjs
+    node "<skill-root>/scripts/setup_debug_deps.cjs"
     ```
 
     Running the above script will automatically add `pnpm.overrides` configuration to `package.json`, pointing Rspack packages to their corresponding Debug versions. Afterwards, please be sure to run `pnpm install` to update dependencies.
@@ -81,6 +85,8 @@ When you successfully obtain a backtrace or a tracing log, you **MUST** save it 
 After debugging is complete, restore your `package.json` to use production packages:
 
 ```bash
-node ${CLAUDE_PLUGIN_ROOT}/skills/debugging/scripts/setup_debug_deps.cjs --restore
+node "<skill-root>/scripts/setup_debug_deps.cjs" --restore
 pnpm install
 ```
+
+Use the same resolved `<skill-root>` as in Preparation.

@@ -60,6 +60,9 @@ Write the Skill content with the use cases, workflow, examples, and links to det
 Use this for installable Skills intended for Rspack ecosystem users.
 
 - Place the Skill in `skills/{skill-name}/`.
+- Reference bundled scripts, references, and assets with paths relative to the
+  Skill root. Do not rely on client-specific environment variables or
+  installation layouts.
 
 Start `SKILL.md` with YAML frontmatter:
 

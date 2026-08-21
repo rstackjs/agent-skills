@@ -23,6 +23,17 @@ Use this reference to decide the migration path and scope.
 - test code imports from `vitest` (`vi`, `vitest`, `describe`, `it`, `expect`)
 - Vitest-only packages such as `@vitest/coverage-v8`, `@vitest/coverage-istanbul`, `@vitest/ui`
 
+### Playwright signals
+
+Use this path only when the migration request explicitly contains the keyword `playwright`. Project signals can then confirm the scope:
+
+- `@playwright/test` or `@rstest/playwright` in `dependencies` or `devDependencies`
+- `playwright.config.*` exists
+- test scripts use `playwright test`
+- test code imports from `@playwright/test` or `@rstest/playwright`
+
+Do not infer a Playwright migration from generic browser, DOM, or E2E wording alone.
+
 ### Rstack integration signals
 
 - Existing `rslib.config.*`, `rsbuild.config.*`, or Rspack/Rsbuild aliases/plugins usually means adapters or config ports should be tried before test edits.

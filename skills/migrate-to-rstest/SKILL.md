@@ -1,6 +1,6 @@
 ---
 name: migrate-to-rstest
-description: Migrate Jest or Vitest projects to Rstest. Use when replacing Jest/Vitest config, scripts, APIs, setup, mocks, snapshots, coverage, or projects with `@rstest/core`; auditing test discovery parity; resolving config-loading or dependency-version failures; or diagnosing migration-time build, runtime, memory, and performance regressions caused by Rstest's Rsbuild/Rspack execution model, dependency bundling, runtime-mocked module graphs, assets, logs, or worker pools. For Playwright E2E migrations, use the Playwright path only when the request explicitly contains the keyword `playwright` (including `@playwright/test` or `@rstest/playwright`).
+description: Migrate Jest, Vitest, or Playwright Test projects to Rstest. Use when replacing Jest/Vitest config, scripts, APIs, setup, mocks, snapshots, coverage, or projects with `@rstest/core`; migrating Playwright E2E tests to `@rstest/playwright`; auditing test discovery parity; resolving config-loading or dependency-version failures; or diagnosing migration-time build, runtime, memory, and performance regressions caused by Rstest's Rsbuild/Rspack execution model, dependency bundling, runtime-mocked module graphs, assets, logs, or worker pools.
 ---
 
 <!-- cspell:words TYPELESS -->
@@ -9,14 +9,14 @@ description: Migrate Jest or Vitest projects to Rstest. Use when replacing Jest/
 
 ## Goal
 
-Migrate the smallest runnable Jest/Vitest scope with minimal behavior change. Use documentation and types that match the installed Rstest version; use latest online docs only after the capability gate confirms they apply.
+Migrate the smallest runnable Jest, Vitest, or Playwright Test scope with minimal behavior change. Use documentation and types that match the installed Rstest version; use latest online docs only after the capability gate confirms they apply.
 
 ## Workflow
 
 1. Detect the runner, environment, Rstack integration, and smallest runnable scope with `references/detect-test-framework.md`.
 2. Run `references/dependency-install-gate.md` before choosing Rstest, coverage, adapter, or plugin APIs.
 3. Before editing, record the exact command, Node and runner versions, environment, files/tests/skips/snapshots, and failures. Capture the pre-migration test manifest and follow `references/discovery-parity.md` throughout the migration.
-4. For Jest read `references/jest-migration-deltas.md`; for Vitest read `references/vitest-migration-deltas.md`; for global APIs also read `references/global-api-migration.md`. If the request explicitly contains the case-insensitive keyword `playwright`, read `references/playwright-migration-deltas.md`; do not load the Playwright path for a browser-only request that omits that keyword. Migrate scripts, config, and setup before editing test bodies; prefer adapter or Rsbuild/Rspack fixes over broad test rewrites.
+4. For Jest read `references/jest-migration-deltas.md`; for Vitest read `references/vitest-migration-deltas.md`; for global APIs also read `references/global-api-migration.md`; for a detected Playwright Test runner read `references/playwright-migration-deltas.md`. Do not load the Playwright path for a browser-only request whose runner is not Playwright Test. Migrate scripts, config, and setup before editing test bodies; prefer adapter or Rsbuild/Rspack fixes over broad test rewrites.
 5. If config loading emits `[MODULE_TYPELESS_PACKAGE_JSON]`, use `references/config-module-type.md`. Do not suppress the warning or change the whole package module type without an audit.
 6. Get the migrated scope semantically green. Fix failures in this order: dependency skew, config/resolver, discovery, setup/environment/coverage, mocks/timers/snapshots, then test bodies.
 7. Compare the post-migration manifest and execution counts with the baseline. Classify every added, removed, skipped, or excluded test explicitly; do not call a run equivalent merely because it is green.

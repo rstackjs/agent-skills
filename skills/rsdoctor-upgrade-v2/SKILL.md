@@ -1,9 +1,9 @@
 ---
-name: rsdoctor-migrate-v2
-description: Migrate Rspack projects from Rsdoctor 1.x to 2.0. Use when replacing legacy Rsdoctor packages, converting Rsdoctor setup to ESM, updating removed or deprecated options, moving MCP workflows to Agent CLI, or validating Node.js and Rspack compatibility for an Rsdoctor 2.0 upgrade.
+name: rsdoctor-upgrade-v2
+description: Upgrade Rspack projects from Rsdoctor 1.x to 2.0. Use when replacing legacy Rsdoctor packages, converting Rsdoctor setup to ESM, updating removed or deprecated options, moving MCP workflows to Agent CLI, or validating Node.js and Rspack compatibility for an Rsdoctor 2.0 upgrade.
 ---
 
-# Migrate Rsdoctor to v2
+# Upgrade Rsdoctor to v2
 
 Upgrade with the smallest behavior-preserving diff. Treat the official migration guides and the installed package exports as the source of truth:
 
@@ -19,9 +19,9 @@ Upgrade with the smallest behavior-preserving diff. Treat the official migration
    - Record the current build command and expected report formats before editing.
 
 2. **Pass the compatibility gate**
-   - Require Node.js 22.18 or later and Rspack 2.0 or later.
+   - Require Node.js 22.18 or later and verify that the installed Rspack version satisfies the selected `@rsdoctor/core` peer dependency.
    - For webpack projects, stop the Rsdoctor upgrade. Keep Rsdoctor 1.x or migrate the project to Rspack as a separate task first.
-   - If a framework supplies Rspack, upgrade that framework or its Rspack integration. Add `@rspack/core` directly only when the project uses Rspack directly.
+   - Update only Rsdoctor dependencies and preserve the existing Rspack and framework versions. If a framework supplies Rspack, do not add `@rspack/core` directly. Report a compatibility issue separately only when the installed version does not satisfy Rsdoctor's peer dependency.
 
 3. **Plan only applicable changes**
    - Read [references/migration-map.md](references/migration-map.md).
@@ -38,7 +38,7 @@ Upgrade with the smallest behavior-preserving diff. Treat the official migration
    - Replace each removed or deprecated field using the mapping reference.
    - Preserve whether the project needs HTML, JSON, or both, and preserve intentional code-source omission from lite reports.
    - Delete `experiments.enableNativePlugin`; the Rspack native plugin is always enabled in 2.0.
-   - If Rspack reports that `experiments.RsdoctorPlugin` is unavailable, upgrade the Rspack version supplied by the project or framework rather than restoring the removed fallback.
+   - If Rspack reports that `experiments.RsdoctorPlugin` is unavailable, report the compatibility issue instead of changing Rspack or framework dependencies as part of the Rsdoctor upgrade.
 
 6. **Migrate AI workflows when present**
    - Remove `@rsdoctor/mcp-server`, its editor MCP entries, and scripts that start it.
@@ -51,6 +51,11 @@ Upgrade with the smallest behavior-preserving diff. Treat the official migration
    - If JSON output or Agent CLI is used, validate a newly generated data file with one representative command.
    - Run the relevant tests and type checks, then search again for removed packages and legacy options.
    - Report what changed, commands run, and any validation that could not be completed. Do not claim success from dependency installation alone.
+
+## Output language
+
+- Write all user-facing explanations, plans, progress updates, and migration summaries in Chinese.
+- Keep package names, API names, configuration fields, commands, file paths, and error messages in their original form; explain their meaning in Chinese when needed.
 
 ## Guardrails
 

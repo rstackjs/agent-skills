@@ -1,0 +1,23 @@
+{
+  "eval_id": 1,
+  "eval_name": "css-modules-classname",
+  "prompt": "Rsbuild 里怎么修改 CSS Modules 生成的类名格式？比如我想用 [name]__[local] 这种格式",
+  "assertions": [
+    {
+      "text": "Response includes a concrete rsbuild.config code snippet with cssModules configuration",
+      "type": "content"
+    },
+    {
+      "text": "Response mentions the correct config path (output.cssModules.localIdentName or similar)",
+      "type": "content"
+    },
+    {
+      "text": "The example shows how to set the [name]__[local] pattern",
+      "type": "content"
+    },
+    {
+      "text": "Information is sourced from fetched docs, not hallucinated",
+      "type": "accuracy"
+    }
+  ]
+}

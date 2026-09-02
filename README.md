@@ -28,6 +28,8 @@ A collection of Agent Skills for [Rstack](https://rspack.rs/guide/start/ecosyste
 
 ## Usage
 
+We recommend installing this repository as an [Agent Plugin](https://agent-plugins.org/). The Rstack Agent Plugin follows the open, vendor-neutral Agent Plugins 1.0 standard and works with compatible agent clients, including VS Code, GitHub Copilot, Codex, Cursor, and more.
+
 ### Codex
 
 ```bash

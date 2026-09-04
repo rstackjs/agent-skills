@@ -5,7 +5,6 @@
   "type": "module",
   "devDependencies": {
     "@types/node": "^24.10.9",
-    "rstack": "^0.7.2",
     "typescript": "^5.9.3"
   }
 }

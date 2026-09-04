@@ -22,9 +22,9 @@ agent-skills/
 ├── .agents/skills/      # Developer-facing Skills for Rstack repository maintenance
 ├── packages/            # Source code projects for complex scripts
 ├── scripts/             # Project-level configurations and tools
-│   └── config/          # Shared library and TypeScript configurations
+│   └── config/          # Shared TypeScript configuration
 ├── .rstack/hooks/       # Repository Git hooks
-├── rstack.config.mts    # Lint, formatting, and staged-file configuration
+├── rstack.config.ts     # Lint, formatting, and staged-file configuration
 ├── pnpm-workspace.yaml  # pnpm workspace configuration
 ├── pnpm-lock.yaml       # Dependency lock file
 ├── package.json         # Project configuration file
@@ -40,8 +40,7 @@ agent-skills/
 - **packages/**: Contains source code for complex scripts that need compilation
   - Corresponds to Skills with the same name in the skills directory
   - Compiled by Rslib through Rstack CLI and output to the corresponding `skills/{skill-name}/scripts/` directory
-- **scripts/config/**: Contains project-level common configurations
-  - `lib.ts`: shared Rslib options, typed through `rstack/lib`
+- **scripts/config/**: Contains project-level TypeScript configuration
   - `tsconfig.json`: TypeScript base configuration
 
 ## Creating a New Skill
@@ -163,19 +162,15 @@ packages/my-skill/
 ```typescript
 import { basename, join } from 'node:path';
 import { define } from 'rstack';
-import { baseConfig } from '@rstackjs/config/lib.ts';
 
 const pkgName = basename(import.meta.dirname);
 
 define.lib({
-  lib: [
-    {
-      ...baseConfig,
-      output: {
-        distPath: join(import.meta.dirname, `../../skills/${pkgName}/scripts`),
-      },
-    },
-  ],
+  syntax: 'es2023',
+  dts: false,
+  output: {
+    distPath: join(import.meta.dirname, `../../skills/${pkgName}/scripts`),
+  },
 });
 ```
 

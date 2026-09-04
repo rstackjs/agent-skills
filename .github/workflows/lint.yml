@@ -33,5 +33,5 @@ jobs:
         with:
           run_install: true
 
-      - name: Lint
-        run: pnpm lint
+      - name: Check
+        run: pnpm check

@@ -1,7 +1,6 @@
-import type { LibConfig } from '@rslib/core';
+import type { LibConfig } from 'rstack/lib';
 
 export const baseConfig: LibConfig = {
-  format: 'esm',
   syntax: 'es2023',
   dts: false,
 };

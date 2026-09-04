@@ -6,6 +6,14 @@ This file provides guidance to AI coding agents working with code in this reposi
 
 A collection of Agent Skills for the Rspack ecosystem (Rspack, Rsbuild, Rslib, Rstest, Rsdoctor). Skills are packaged instructions and scripts that extend agent capabilities for debugging, profiling, and development workflows.
 
+## Stack
+
+This project uses Rstack CLI as its JS toolchain:
+
+- Read the docs linked from `node_modules/rstack/docs/llms.txt` when needed
+- Online docs: https://rstack.rs/llms.txt
+- Run `rs -h` for CLI help
+
 ## Project Structure
 
 ```
@@ -14,8 +22,9 @@ agent-skills/
 ├── .agents/skills/      # Developer-facing Skills for Rstack repository maintenance
 ├── packages/            # Source code projects for complex scripts
 ├── scripts/             # Project-level configurations and tools
-│   └── config/          # Common configurations (rslib, tsconfig, etc.)
-├── rslint.config.ts     # Rslint code linting configuration
+│   └── config/          # Shared library and TypeScript configurations
+├── .rstack/hooks/       # Repository Git hooks
+├── rstack.config.mts    # Lint, formatting, and staged-file configuration
 ├── pnpm-workspace.yaml  # pnpm workspace configuration
 ├── pnpm-lock.yaml       # Dependency lock file
 ├── package.json         # Project configuration file
@@ -30,9 +39,9 @@ agent-skills/
   - These Skills are primarily for repository developers and maintainers, not end users
 - **packages/**: Contains source code for complex scripts that need compilation
   - Corresponds to Skills with the same name in the skills directory
-  - Compiled by Rslib and output to the corresponding `skills/{skill-name}/scripts/` directory
+  - Compiled by Rslib through Rstack CLI and output to the corresponding `skills/{skill-name}/scripts/` directory
 - **scripts/config/**: Contains project-level common configurations
-  - `rslib.config.ts`: Rslib base configuration
+  - `lib.ts`: shared Rslib options, typed through `rstack/lib`
   - `tsconfig.json`: TypeScript base configuration
 
 ## Creating a New Skill
@@ -122,7 +131,7 @@ For complex scenarios requiring dependencies, TypeScript, etc.:
 ```
 packages/my-skill/
 ├── package.json
-├── rslib.config.ts
+├── rstack.config.ts
 ├── tsconfig.json
 └── src/
     └── index.ts
@@ -136,8 +145,12 @@ packages/my-skill/
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "rslib",
-    "test": "rstest"
+    "build": "rs lib",
+    "test": "rs test"
+  },
+  "devDependencies": {
+    "@rstackjs/config": "workspace:*",
+    "rstack": "^0.7.2"
   },
   "dependencies": {
     // Your dependencies
@@ -145,16 +158,16 @@ packages/my-skill/
 }
 ```
 
-#### 3. Configure rslib.config.ts
+#### 3. Configure rstack.config.ts
 
 ```typescript
 import { basename, join } from 'node:path';
-import { defineConfig } from '@rslib/core';
-import { baseConfig } from '@rstackjs/config/rslib.config.ts';
+import { define } from 'rstack';
+import { baseConfig } from '@rstackjs/config/lib.ts';
 
 const pkgName = basename(import.meta.dirname);
 
-export default defineConfig({
+define.lib({
   lib: [
     {
       ...baseConfig,
@@ -201,7 +214,7 @@ Write tests using Rstest:
 
 ```typescript
 // packages/my-skill/src/index.test.ts
-import { describe, it, expect } from '@rstest/core';
+import { describe, it, expect } from 'rstack/test';
 import { myFunction } from './index';
 
 describe('myFunction', () => {
@@ -211,7 +224,7 @@ describe('myFunction', () => {
 });
 ```
 
-Run tests:
+Run tests from the package directory:
 
 ```bash
 pnpm test
@@ -237,3 +250,4 @@ npx skills add rstackjs/agent-skills --skill my-skill
 - [Rstest Documentation](https://rstest.rs)
 - [Rsdoctor Documentation](https://rsdoctor.rs)
 - [Rslint Documentation](https://rslint.rs)
+- [Rstack CLI Documentation](https://rstack.rs)

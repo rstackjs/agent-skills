@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 // Parse duration string (e.g., "1.23ms", "456.78µs", "0.12s") to milliseconds
 function parseDuration(durationStr) {
@@ -28,11 +28,12 @@ function parseDuration(durationStr) {
 }
 
 // Get trace file path
-const tracePath = process.argv[2] || path.join(__dirname, 'trace.json');
+const tracePath =
+  process.argv[2] || fileURLToPath(new URL('./trace.json', import.meta.url));
 
 if (!fs.existsSync(tracePath)) {
   console.error(`Error: Trace file not found at ${tracePath}`);
-  console.error('Usage: node analyze_trace.js <path-to-trace.json>');
+  console.error('Usage: node analyze_trace.mjs <path-to-trace.json>');
   process.exit(1);
 }
 

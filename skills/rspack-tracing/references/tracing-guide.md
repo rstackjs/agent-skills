@@ -31,10 +31,10 @@ After running the command, Rspack will generate the file specified in `RSPACK_TR
 ## Using the Skill's Analysis Tool
 
 This skill includes a script to summarize the trace file.
-Resolve `scripts/analyze_trace.js` relative to the Skill root while keeping the
+Resolve `scripts/analyze_trace.mjs` relative to the Skill root while keeping the
 working directory in the user's project.
 
 ```bash
 # Run the included script
-node "<skill-root>/scripts/analyze_trace.js" <path-to-trace-file>
+node "<skill-root>/scripts/analyze_trace.mjs" <path-to-trace-file>
 ```

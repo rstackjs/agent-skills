@@ -70,8 +70,8 @@ function isVersionLessThan(v1, v2) {
 
 // Backup first
 if (!fs.existsSync(backupPath)) {
-    fs.copyFileSync(pkgPath, backupPath);
-    console.log(`📦 Created backup of package.json at ${backupPath}`);
+  fs.copyFileSync(pkgPath, backupPath);
+  console.log(`📦 Created backup of package.json at ${backupPath}`);
 }
 
 console.log('🔎 Searching for @rspack/core version in pnpm-lock.yaml...');
@@ -90,9 +90,15 @@ let version = versionMatch[1];
 console.log(`✅ Detected Rspack version: ${version}`);
 
 if (isVersionLessThan(version, USER_MIN_VERSION)) {
-  console.warn(`\n⚠️  WARNING: @rspack-debug/* packages are only officially supported for versions >= ${USER_MIN_VERSION}.`);
-  console.warn(`   Current version is ${version}. Falling back to debug version ${USER_MIN_VERSION}.`);
-  console.warn(`   This may lead to binary incompatibility if there are major API changes.\n`);
+  console.warn(
+    `\n⚠️  WARNING: @rspack-debug/* packages are only officially supported for versions >= ${USER_MIN_VERSION}.`,
+  );
+  console.warn(
+    `   Current version is ${version}. Falling back to debug version ${USER_MIN_VERSION}.`,
+  );
+  console.warn(
+    `   This may lead to binary incompatibility if there are major API changes.\n`,
+  );
   version = USER_MIN_VERSION;
 }
 
@@ -113,5 +119,7 @@ pkg.pnpm.overrides['@rspack/cli'] = debugCli;
 
 fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
 console.log(`✅ package.json at ${workspaceRoot} updated.`);
-console.log('\n👉 Next Step: Run `pnpm install` in the workspace root to apply the overrides.');
+console.log(
+  '\n👉 Next Step: Run `pnpm install` in the workspace root to apply the overrides.',
+);
 console.log('   To revert changes, run this script with --restore');

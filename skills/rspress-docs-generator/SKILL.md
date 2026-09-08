@@ -1,6 +1,6 @@
 ---
 name: rspress-docs-generator
-description: Generate or maintain Rspress documentation for a project. Use whenever the user wants to create a new Rspress v2 docs site, add docs for user-facing feature work or PRs, maintain a dedicated Rspress docs project in a monorepo, or prevent stale Rspress v1 scaffolds/version drift before documentation work. For full v1-to-v2 migration, hand off to the rspress-v2-upgrade skill.
+description: Create a Rspress v2 docs site or maintain existing Rspress v2 documentation for project changes.
 ---
 
 # Rspress Docs Generator

@@ -1,6 +1,6 @@
 ---
 name: rspress-best-practices
-description: Rspress best practices for config, CLI workflow, content organization, frontmatter, MDX, themes, i18n, search, static assets, deployment, and debugging. Use when writing, reviewing, or troubleshooting Rspress documentation sites.
+description: Configure, review, or troubleshoot Rspress v2 sites, including content conventions, navigation, MDX, assets, search, and deployment.
 ---
 
 # Rspress Best Practices

@@ -1,6 +1,6 @@
 ---
 name: storybook-rsbuild
-description: Set up or migrate Storybook to use the Rsbuild builder. Handles fresh setup for React, Vue 3, HTML, Web Components, and React Native Web, migration from webpack5 or Vite frameworks, and integrations with Rslib, Modern.js, and Rspack. Use when asked to add Storybook, migrate Storybook to Rsbuild, configure rsbuildFinal, or integrate Storybook with Rslib/Modern.js/Rspack.
+description: Set up or migrate Storybook to Rsbuild, configure rsbuildFinal, or integrate with Rslib, Modern.js, or Rspack.
 compatibility: Requires network access to read upstream docs at storybook.rsbuild.rs
 ---
 

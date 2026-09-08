@@ -1,6 +1,6 @@
 ---
 name: rstack-skill-evaluator
-description: Benchmark and iteratively improve agent skills with Codex CLI or Claude Code by generating eval cases, comparing skill-guided vs baseline runs, grading outcomes, and recording actionable reports under skills-test/{skill-name}.
+description: Benchmark and iteratively improve agent skills using matched skill-guided and baseline runs with Codex CLI or Claude Code.
 metadata:
   dependencies: ['skill-creator']
   internal: true

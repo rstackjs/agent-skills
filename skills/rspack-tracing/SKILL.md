@@ -1,6 +1,6 @@
 ---
 name: rspack-tracing
-description: Comprehensive guide and toolkit for diagnosing Rspack build issues. Quickly identify where crashes/errors occur, or perform detailed performance profiling to resolve bottlenecks. Use when the user encounters build failures, slow builds, or wants to optimize Rspack performance.
+description: Capture or analyze Rspack build traces to locate slow compiler phases, plugins, loaders, or the last events before a build failure.
 ---
 
 # Rspack Tracing & Performance Profiling

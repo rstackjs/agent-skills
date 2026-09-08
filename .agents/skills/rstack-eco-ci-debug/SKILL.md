@@ -1,6 +1,6 @@
 ---
 name: rstack-eco-ci-debug
-description: Debug Rstack ecosystem CI failures for Rspack, Rsbuild, Rslib, Rspress, Rstest, and Rsdoctor, then attribute the real source PR or downstream change. Always use this skill when the user mentions Rstack eco-ci, rstack-ecosystem-ci, a suite turning red, a downstream regression, a green-to-red pivot, canary bisect, or daily eco-ci triage — even if they only ask "why is this suite failing", "which PR broke it", or "is this upstream project's fault". Use it to avoid over-blaming the first upstream commit that appears red in status data.
+description: Triage Rstack ecosystem CI (eco-ci) status and investigate failures, distinguishing upstream regressions, downstream changes, and flaky runs.
 metadata:
   internal: true
 ---

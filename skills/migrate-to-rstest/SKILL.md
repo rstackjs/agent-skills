@@ -1,6 +1,6 @@
 ---
 name: migrate-to-rstest
-description: Migrate Jest, Vitest, or Playwright Test projects to Rstest. Use when replacing Jest/Vitest config, scripts, APIs, setup, mocks, snapshots, coverage, or projects with `@rstest/core`; migrating Playwright E2E tests to `@rstest/playwright`; auditing test discovery parity; resolving config-loading or dependency-version failures; or diagnosing migration-time build, runtime, memory, and performance regressions caused by Rstest's Rsbuild/Rspack execution model, dependency bundling, runtime-mocked module graphs, assets, logs, or worker pools.
+description: Migrate Jest, Vitest, or Playwright Test to Rstest while preserving test discovery, assertions, mocks, snapshots, and coverage.
 ---
 
 <!-- cspell:words TYPELESS -->

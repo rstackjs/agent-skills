@@ -81,7 +81,7 @@ npx skills add rstackjs/agent-skills --skill <skill-name>
 npx skills add rstackjs/agent-skills --skill rspack-best-practices
 ```
 
-Rspack best practices for config, CLI workflow, type checking, CSS, bundle optimization, assets and profiling. Use when writing, reviewing, or troubleshooting Rspack projects.
+Configure, review, or troubleshoot Rspack builds, including loaders, CSS, assets, type checking, bundle optimization, and profiling.
 
 ### rspack-v2-upgrade
 
@@ -97,9 +97,7 @@ Use when upgrading a Rspack 1.x project to v2, including dependency and configur
 npx skills add rstackjs/agent-skills --skill rspack-debugging
 ```
 
-Helps Rspack users and developers debug crashes or deadlocks/hangs in the Rspack build process using LLDB.
-
-Use this Skill when users encounter "Segmentation fault" errors during Rspack builds or when the build progress gets stuck.
+Debug native Rspack crashes, segmentation faults, deadlocks, or stuck builds with LLDB and matching debug symbols.
 
 ### rspack-tracing
 
@@ -107,9 +105,7 @@ Use this Skill when users encounter "Segmentation fault" errors during Rspack bu
 npx skills add rstackjs/agent-skills --skill rspack-tracing
 ```
 
-Comprehensive guide and toolkit for diagnosing Rspack build issues. Quickly identify where crashes/errors occur, or perform detailed performance profiling to resolve bottlenecks.
-
-Use when the user encounters build failures, slow builds, or wants to optimize Rspack performance.
+Capture or analyze Rspack build traces to locate slow compiler phases, plugins, loaders, or the last events before a build failure.
 
 ### rspack-split-chunks
 
@@ -117,7 +113,7 @@ Use when the user encounters build failures, slow builds, or wants to optimize R
 npx skills add rstackjs/agent-skills --skill rspack-split-chunks
 ```
 
-Diagnose and optimize Rspack `optimization.splitChunks` configuration. Use when tuning production chunking, reducing duplicated modules, improving cache behavior, or debugging over-fetch caused by `name` and `cacheGroups`.
+Diagnose or tune Rspack splitChunks for duplicate modules, route over-fetching, cache groups, caching, or oversized chunks.
 
 ## Rsbuild Skills
 
@@ -127,7 +123,7 @@ Diagnose and optimize Rspack `optimization.splitChunks` configuration. Use when 
 npx skills add rstackjs/agent-skills --skill rsbuild-best-practices
 ```
 
-Rsbuild best practices for config, CLI workflow, type checking, bundle optimization, assets, and debugging. Use when writing, reviewing, or troubleshooting Rsbuild projects.
+Configure, review, or troubleshoot Rsbuild applications, including build/dev commands, assets, type checking, and bundle optimization.
 
 ### rsbuild-v2-upgrade
 
@@ -153,7 +149,7 @@ Migrate webpack, Vite, create-react-app (CRA/CRACO), or Vue CLI projects to Rsbu
 npx skills add rstackjs/agent-skills --skill rslib-best-practices
 ```
 
-Rslib best practices for config, CLI workflow, output, declaration files, dependency handling, build optimization and toolchain integration. Use when writing, reviewing, or troubleshooting Rslib projects.
+Configure, review, or troubleshoot Rslib library builds, output formats, declarations, dependency handling, and integrations.
 
 ### rslib-modern-package
 
@@ -161,7 +157,7 @@ Rslib best practices for config, CLI workflow, output, declaration files, depend
 npx skills add rstackjs/agent-skills --skill rslib-modern-package
 ```
 
-Opinionated Rslib recommendations for modern JS/TS package design. Use when modernizing a package, checking package health, or reviewing package.json, exports, types, dependencies, docs, and release readiness.
+Design, modernize, or review JS/TS npm packages using an opinionated Rslib baseline for ESM, exports, types, dependencies, and release readiness.
 
 ### migrate-to-rslib
 
@@ -179,7 +175,7 @@ Migrate tsc or tsup library projects to Rslib.
 npx skills add rstackjs/agent-skills --skill rspress-docs-generator
 ```
 
-Recommended install for Rspress documentation work. Use it to create or maintain a Rspress v2 docs site, add docs for user-facing feature PRs, avoid stale Rspress v1 scaffolds, or maintain a dedicated Rspress documentation project inside a monorepo.
+Create a Rspress v2 docs site or maintain existing Rspress v2 documentation for project changes.
 
 ### rspress-best-practices
 
@@ -187,7 +183,7 @@ Recommended install for Rspress documentation work. Use it to create or maintain
 npx skills add rstackjs/agent-skills --skill rspress-best-practices
 ```
 
-Rspress best practices for config, CLI workflow, content organization, frontmatter, MDX, themes, i18n, search, static assets, deployment, and debugging. Use when writing, reviewing, or troubleshooting Rspress documentation sites.
+Configure, review, or troubleshoot Rspress v2 sites, including content conventions, navigation, MDX, assets, search, and deployment.
 
 ### rspress-v2-upgrade
 
@@ -203,7 +199,7 @@ Migrate Rspress projects from v1 to v2. Use when a user asks to upgrade Rspress,
 npx skills add rstackjs/agent-skills --skill rspress-custom-theme
 ```
 
-Customize Rspress themes using CSS variables, Layout slots, component wrapping, or component ejection. Use when a user wants to change the look and feel of an Rspress site, override theme components, add custom navigation/sidebar/footer content, inject global providers, or modify the default Rspress theme in any way.
+Customize Rspress v2 themes with CSS variables, class overrides, Layout slots, icons, or component ejection.
 
 ### rspress-description-generator
 
@@ -211,7 +207,7 @@ Customize Rspress themes using CSS variables, Layout slots, component wrapping, 
 npx skills add rstackjs/agent-skills --skill rspress-description-generator
 ```
 
-Generate and maintain description frontmatter for Rspress documentation files (.md/.mdx). Use when adding SEO descriptions, improving search engine snippets, generating llms.txt metadata, preparing docs for AI summarization, or batch-updating frontmatter across an Rspress doc site.
+Generate missing description frontmatter for Rspress Markdown/MDX pages, including new docs pages and site-wide SEO metadata updates.
 
 ```md
 ---
@@ -241,7 +237,7 @@ Use when you need to analyze bundle composition, identify duplicate packages, de
 npx skills add rstackjs/agent-skills --skill migrate-to-rstest
 ```
 
-Migrate Jest or Vitest tests to Rstest. Use when a user asks to migrate Jest/Vitest tests to Rstest, follow migration guides, update test files, or validate the migration.
+Migrate Jest, Vitest, or Playwright Test to Rstest while preserving test discovery, assertions, mocks, snapshots, and coverage.
 
 ### rstest-debugging
 
@@ -249,7 +245,7 @@ Migrate Jest or Vitest tests to Rstest. Use when a user asks to migrate Jest/Vit
 npx skills add rstackjs/agent-skills --skill rstest-debugging
 ```
 
-Debug Rstest issues systematically, including performance regressions. Use when Rstest is slower than expected, slower than Jest or Vitest, or when you need to determine whether the bottleneck is in build startup or test execution before trying config or code changes.
+Diagnose Rstest startup, build, runtime, logging, memory, or performance problems using traces and comparable measurements.
 
 ### rstest-best-practices
 
@@ -257,7 +253,7 @@ Debug Rstest issues systematically, including performance regressions. Use when 
 npx skills add rstackjs/agent-skills --skill rstest-best-practices
 ```
 
-Rstest best practices for config, CLI workflow, test writing, mocking, snapshot testing, DOM testing, coverage, multi-project setup, CI integration, performance and debugging. Use when writing, reviewing, or troubleshooting Rstest test projects.
+Set up, write, or review Rstest tests and configuration, including environments, mocks, snapshots, coverage, and CI.
 
 ## Rslint Skills
 
@@ -277,7 +273,7 @@ Migrate ESLint or other lint tools to Rslint. Use when replacing ESLint flat con
 npx skills add rstackjs/agent-skills --skill storybook-rsbuild
 ```
 
-Set up or migrate Storybook to use the Rsbuild builder. Handles fresh setup for React, Vue 3, HTML, Web Components, and React Native Web, migration from webpack5 or Vite frameworks, and integrations with Rslib, Modern.js, and Rspack.
+Set up or migrate Storybook to Rsbuild, configure rsbuildFinal, or integrate with Rslib, Modern.js, or Rspack.
 
 ## Contribution Workflow Skills
 
@@ -313,7 +309,7 @@ Convert MDX to portable Markdown with MDX syntax cleanup and link/code block nor
 INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill pr-creator
 ```
 
-Use when asked to create a pull request for this repository. It helps the PR follow the repository's branch safety rules, title convention, pull request template, and concise English writing style.
+Create a pull request using repository branch rules, title conventions, templates, and concise English descriptions.
 
 ### rstack-repo-maintain
 
@@ -321,7 +317,7 @@ Use when asked to create a pull request for this repository. It helps the PR fol
 INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill rstack-repo-maintain
 ```
 
-Audit and modernize RstackJS/Rspack ecosystem repositories to the current shared infrastructure baseline, including build output, linting, test tooling, Node.js support, TypeScript settings, docs, release workflow cleanup, dependency cleanup, and infra PR conventions.
+Audit or modernize Rstack repository infrastructure, package manifests, build/test tooling, CI, and release configuration against maintained baselines.
 
 ### rstack-eco-ci-debug
 
@@ -329,7 +325,7 @@ Audit and modernize RstackJS/Rspack ecosystem repositories to the current shared
 INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill rstack-eco-ci-debug
 ```
 
-Debug Rstack ecosystem CI failures and attribute the real source PR or downstream change. Use it for Rspack-first triage plus Rsbuild, Rslib, Rspress, Rstest, and Rsdoctor eco-ci, suite regressions, downstream failures, Rspack canary bisects, and daily multi-ecosystem triage.
+Triage Rstack ecosystem CI (eco-ci) status and investigate failures, distinguishing upstream regressions, downstream changes, and flaky runs.
 
 ### rstack-skill-evaluator
 
@@ -337,7 +333,7 @@ Debug Rstack ecosystem CI failures and attribute the real source PR or downstrea
 INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill rstack-skill-evaluator
 ```
 
-Benchmark and iteratively improve agent skills with Codex CLI or Claude Code by generating eval cases, comparing skill-guided and baseline runs, grading outcomes, and recording actionable reports under `skills-test/{skill-name}`.
+Benchmark and iteratively improve agent skills using matched skill-guided and baseline runs with Codex CLI or Claude Code.
 
 ## Contributing
 

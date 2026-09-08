@@ -1,11 +1,6 @@
 ---
 name: rspack-split-chunks
-description: >-
-  Diagnose and optimize Rspack `optimization.splitChunks` configuration. Use
-  this when a user wants better production chunking, safer `chunks: "all"`
-  defaults, fewer duplicated modules, better long-term caching, `cacheGroups`
-  design help, `maxSize` tuning, or debugging over-fetch caused by `name` and
-  forced chunk merging.
+description: Diagnose or tune Rspack splitChunks for duplicate modules, route over-fetching, cache groups, caching, or oversized chunks.
 ---
 
 # Rspack SplitChunks Optimization

@@ -1,6 +1,6 @@
 ---
 name: rslib-best-practices
-description: Rslib best practices for config, CLI workflow, output, declaration files, dependency handling, build optimization and toolchain integration. Use when writing, reviewing, or troubleshooting Rslib projects.
+description: Configure, review, or troubleshoot Rslib library builds, output formats, declarations, dependency handling, and integrations.
 ---
 
 # Rslib Best Practices

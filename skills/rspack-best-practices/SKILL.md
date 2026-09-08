@@ -1,6 +1,6 @@
 ---
 name: rspack-best-practices
-description: Rspack best practices for config, CLI workflow, type checking, CSS, bundle optimization, assets and profiling. Use when writing, reviewing, or troubleshooting Rspack projects.
+description: Configure, review, or troubleshoot Rspack builds, including loaders, CSS, assets, type checking, bundle optimization, and profiling.
 ---
 
 # Rspack Best Practices

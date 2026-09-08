@@ -1,6 +1,6 @@
 ---
 name: rspack-debugging
-description: Helps Rspack users and developers debug crashes or deadlocks/hangs in the Rspack build process using LLDB. Use this Skill when users encounter "Segmentation fault" errors during Rspack builds or when the build progress gets stuck.
+description: Debug native Rspack crashes, segmentation faults, deadlocks, or stuck builds with LLDB and matching debug symbols.
 ---
 
 # Rspack Debugging

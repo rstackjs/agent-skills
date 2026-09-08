@@ -1,6 +1,6 @@
 ---
 name: rstack-eco-ci-debug
-description: Triage Rstack ecosystem CI (eco-ci) status and investigate failures, distinguishing upstream regressions, downstream changes, and flaky runs.
+description: Triage Rstack ecosystem CI (eco-ci, rstack-ecosystem-ci), including daily multi-ecosystem status, green-to-red pivots, and Rspack canary bisects. Attribute failures to upstream or downstream changes while checking for flaky runs.
 metadata:
   internal: true
 ---

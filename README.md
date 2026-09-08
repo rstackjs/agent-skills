@@ -325,7 +325,7 @@ Audit or modernize Rstack repository infrastructure, package manifests, build/te
 INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill rstack-eco-ci-debug
 ```
 
-Triage Rstack ecosystem CI (eco-ci) status and investigate failures, distinguishing upstream regressions, downstream changes, and flaky runs.
+Triage Rstack ecosystem CI (eco-ci, rstack-ecosystem-ci), including daily multi-ecosystem status, green-to-red pivots, and Rspack canary bisects. Attribute failures to upstream or downstream changes while checking for flaky runs.
 
 ### rstack-skill-evaluator
 

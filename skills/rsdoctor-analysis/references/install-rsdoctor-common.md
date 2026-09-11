@@ -1,8 +1,8 @@
-# Common Steps for Rsdoctor Installation
+# Common steps for Rsdoctor installation
 
 This document contains common steps that apply to both Rspack and Webpack projects.
 
-## Step 3: Locate the rsdoctor-data.json
+## Step 3: locate the rsdoctor-data.json
 
 First, use the fast path to check whether `rsdoctor-data.json` already exists. If the user provided a path, check that path first. Otherwise check common build artifact/output locations before any package-manager, install, config, or build command:
 
@@ -58,7 +58,7 @@ new RsdoctorRspackPlugin({
 
 ---
 
-## Step 4: Use JSON file for analysis
+## Step 4: use JSON file for analysis
 
 Once you have the `rsdoctor-data.json` file, you can use it for analysis. This JSON file contains all the build analysis data and can be used without starting the Rsdoctor server.
 

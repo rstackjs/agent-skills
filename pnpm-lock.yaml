@@ -20,6 +20,9 @@ importers:
       cspell-ban-words:
         specifier: ^0.0.4
         version: 0.0.4
+      heading-case:
+        specifier: ^2.0.1
+        version: 2.0.1(prettier@3.9.6)
       rstack:
         specifier: ^0.7.2
         version: 0.7.2(core-js@3.47.0)(typescript@5.9.3)
@@ -824,6 +827,12 @@ packages:
     resolution: {integrity: sha512-wHTUcDUoZ1H5/0iVqEudYW4/kAlN5cZ3j/bXn0Dpbizl9iaUVeWSHqiOjsgk6OW2bkLclbBjzewBz6weQ1zA2Q==}
     engines: {node: '>=18'}
 
+  heading-case@2.0.1:
+    resolution: {integrity: sha512-vt+RLPiDTw0BHXX/7pfChw8sFh17PjfJP72mHJ8tCEi4Dy30ASuWNx9px9VtRWzvmGtnAjfQDp/bz3ODQ2YpwA==}
+    hasBin: true
+    peerDependencies:
+      prettier: ^3.0.0
+
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
     engines: {node: '>=6'}
@@ -1606,6 +1615,10 @@ snapshots:
   global-directory@4.0.1:
     dependencies:
       ini: 4.1.1
+
+  heading-case@2.0.1(prettier@3.9.6):
+    dependencies:
+      prettier: 3.9.6
 
   import-fresh@3.3.1:
     dependencies:

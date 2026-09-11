@@ -1,4 +1,4 @@
-# Migration Performance Diagnosis
+# Migration performance diagnosis
 
 Use this migration-specific fallback after the scope is semantically green when Rstest materially regresses in CLI wall time, runner time, build, test runtime, output volume, or memory. When the `rstest-debugging` skill is available, load it instead: it is the canonical and more complete performance workflow. Keep this reference so `migrate-to-rstest` remains useful when installed alone.
 

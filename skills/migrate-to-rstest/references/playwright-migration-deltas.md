@@ -1,4 +1,4 @@
-# Playwright Migration Deltas
+# Playwright migration deltas
 
 Read this reference only when the migration request explicitly contains the keyword `playwright`. It covers Playwright Test E2E suites moving to `@rstest/playwright`; it is not a generic browser or DOM-testing guide.
 

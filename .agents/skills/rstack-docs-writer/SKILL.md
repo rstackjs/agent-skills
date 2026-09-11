@@ -5,7 +5,7 @@ metadata:
   internal: true
 ---
 
-# Rstack Docs Writer
+# Rstack docs writer
 
 Follow the project's existing documentation conventions.
 

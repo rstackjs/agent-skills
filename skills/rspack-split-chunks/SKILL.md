@@ -3,7 +3,7 @@ name: rspack-split-chunks
 description: Diagnose or tune Rspack splitChunks for duplicate modules, route over-fetching, cache groups, caching, or oversized chunks.
 ---
 
-# Rspack SplitChunks Optimization
+# Rspack SplitChunks optimization
 
 Use this skill when the task is to recommend, review, or debug `optimization.splitChunks`. If you are using ESM library, it's not the same algorithm of this skill.
 
@@ -26,7 +26,7 @@ optimization: {
 
 Read [`references/repo-behavior.md`](references/repo-behavior.md) when you need the source-backed rationale.
 
-## What To Optimize For
+## What to optimize for
 
 First identify which problem the user actually has:
 
@@ -142,7 +142,7 @@ This is still not tree shaking. It only changes how splitChunks groups modules a
 
 If a config looks aggressive and hard to explain, check `enforce` before changing anything else.
 
-## Recommendations By Goal
+## Recommendations by goal
 
 ### Better default production chunking
 
@@ -229,7 +229,7 @@ Even then, call out the tradeoff explicitly:
 - more coupling between routes
 - a page may fetch modules it does not execute immediately
 
-## Review Checklist
+## Review checklist
 
 When reviewing a user's config, explicitly answer:
 

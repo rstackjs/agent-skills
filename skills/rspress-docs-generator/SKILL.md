@@ -3,11 +3,11 @@ name: rspress-docs-generator
 description: Create a Rspress v2 docs site or maintain existing Rspress v2 documentation for project changes.
 ---
 
-# Rspress Docs Generator
+# Rspress docs generator
 
 Create and maintain Rspress documentation as part of normal project work. Prefer source-backed docs over generic prose: read the code, tests, examples, package metadata, and existing README before writing.
 
-## Use Cases
+## Use cases
 
 - Create a new Rspress v2 documentation site for a project that has no docs site yet.
 - Update an existing Rspress v2 docs site for a user-facing feature, API change, CLI change, or PR.
@@ -33,7 +33,7 @@ Create and maintain Rspress documentation as part of normal project work. Prefer
    - The build must pass as the primary success criterion.
    - Fix broken links, missing navigation entries, invalid frontmatter, and failed MDX imports before reporting completion.
 
-## Code Examples
+## Code examples
 
 Use the repository's package manager when creating or validating docs:
 

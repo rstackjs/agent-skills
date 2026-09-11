@@ -1,4 +1,4 @@
-# Test Discovery Parity
+# Test discovery parity
 
 Use this reference for every migration. A green run is not equivalent when Jest, Vitest, and Rstest discover different files or preserve different skips/excludes.
 

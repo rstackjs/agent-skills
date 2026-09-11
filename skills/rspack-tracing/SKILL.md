@@ -3,9 +3,9 @@ name: rspack-tracing
 description: Capture or analyze Rspack build traces to locate slow compiler phases, plugins, loaders, or the last events before a build failure.
 ---
 
-# Rspack Tracing & Performance Profiling
+# Rspack tracing & performance profiling
 
-## When to Use This Skill
+## When to use this skill
 
 Use this skill when you need to:
 
@@ -16,7 +16,7 @@ Use this skill when you need to:
 
 ## Workflow
 
-### 1. Capture a Trace
+### 1. Capture a trace
 
 First, ask the user to run their build with tracing enabled.
 
@@ -29,7 +29,7 @@ This will generate a trace file in a timestamped directory like `.rspack-profile
 
 See [references/tracing-guide.md](references/tracing-guide.md) for more details on configuration.
 
-### 2. Quick Diagnosis for Crashes/Errors
+### 2. Quick diagnosis for Crashes/Errors
 
 If the user wants to identify **which stage a crash or error occurred in**, use `tail` to quickly view the last events without running the full analysis:
 
@@ -43,7 +43,7 @@ tail -n 20 trace.json
 
 The last events will show the span names and targets where the build stopped, helping to quickly pinpoint the problematic stage, plugin, or loader.
 
-### 3. Full Performance Analysis
+### 3. Full performance analysis
 
 For detailed performance profiling (not just crash diagnosis), ask the user whether to run the bundled [`scripts/analyze_trace.mjs`](scripts/analyze_trace.mjs) on the generated trace file. If they agree, resolve it relative to the Skill root while keeping the working directory in the user's project, then run:
 
@@ -55,12 +55,12 @@ cd .rspack-profile-*/
 node "<skill-root>/scripts/analyze_trace.mjs" trace.json
 ```
 
-### 4. Interpret Results
+### 4. Interpret results
 
 Use the output from the script to identify bottlenecks.
 Consult [references/bottlenecks.md](references/bottlenecks.md) to map span names to actionable fixes.
 
-### 5. Locate Slow Plugins
+### 5. Locate slow plugins
 
 Based on the "Top Slowest Hooks" from the analysis script:
 
@@ -69,7 +69,7 @@ Based on the "Top Slowest Hooks" from the analysis script:
 3.  **Map Hook to Plugin**: Look for plugins and their sources that tap into that specific hook.
 4.  **Output**: Output the paths, lines and columns of the suspected plugin source code.
 
-## Common Scenarios & Quick Fixes
+## Common scenarios & quick fixes
 
 - [Bottleneck Reference](references/bottlenecks.md): Mapping spans to concepts.
 - [Tracing Guide](references/tracing-guide.md): Detailed usage of `RSPACK_PROFILE`.

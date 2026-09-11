@@ -7,13 +7,13 @@ metadata:
 
 <!-- cspell:words oxfmt -->
 
-# Rstack Repo Maintain
+# Rstack repo maintain
 
 ## Overview
 
 Modernize RstackJS repositories without blindly copying config. Use the target's compatibility surface plus current exemplar repositories to make small, verifiable infrastructure upgrades.
 
-## Baseline Evidence
+## Baseline evidence
 
 Read `references/repo-baselines.md` when choosing a template repo, explaining where the baseline came from, or deciding between pure ESM and dual output, standalone tools and Rstack CLI, runtime floors, TypeScript majors, formatters, package validation, or CI patterns.
 

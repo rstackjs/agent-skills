@@ -3,13 +3,13 @@ name: rsdoctor-analysis
 description: Use when analyzing Rspack/Webpack bundles from local `rsdoctor-data.json` and producing evidence-based optimization recommendations.
 ---
 
-# Rsdoctor Analysis Assistant Skill
+# Rsdoctor analysis assistant skill
 
 Use the globally installed `rsdoctor-agent` CLI from `@rsdoctor/agent-cli` only after a real `rsdoctor-data.json` path exists. Keep analysis read-only unless the user explicitly asks for install/config setup.
 
 Response order (required): High-Priority Issues -> Proposed Solutions -> Optional Reference-Chain Follow-up Choices -> Next Deep-Dive Issue Categories (Not commands).
 
-## Core Workflow
+## Core workflow
 
 1. Reuse current-session results and valid `.rsdoctor-analysis-cache.json` entries before doing new work.
 2. Locate `rsdoctor-data.json` fast: user-provided path, then `dist/rsdoctor-data.json`, `output/rsdoctor-data.json`, `static/rsdoctor-data.json`, `.rsdoctor/rsdoctor-data.json`, then one bounded `rg --files` search excluding `node_modules` and `.git`. Treat `manifest.json` only as an index.
@@ -21,7 +21,7 @@ Response order (required): High-Priority Issues -> Proposed Solutions -> Optiona
 
 Performance rules: parallelize independent checks, cache only derived facts (`dataFile`, `dataFileMtime`, `pluginName`, `pluginVersion`, dependency/config/plugin modification times), and invalidate cache when paths disappear, modification times change, the user asks to refresh, or cached values fail. Speculative plugin checks must not trigger generation; use them only after confirming the data file is missing.
 
-## ROI Triage Gate
+## ROI triage gate
 
 Before recommending fixes, classify the current build into broad cost buckets and choose the highest-ROI lever from evidence, not intuition. This gate is generic for Rspack/Webpack projects; do not use framework-specific runtime layers unless the user's project exposes them in the data.
 
@@ -41,7 +41,7 @@ Decision rules:
 - Do not present aggregate rule output as sufficient evidence for a fix that requires a concrete file, package, chunk, size, or dependency path.
 - If the largest bucket is structural or intentionally required, say that it is a wall and name the external change that would be needed instead of inventing low-impact source edits.
 
-## Generation Gate
+## Generation gate
 
 Identify `pluginName` (`@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin`) and determine `pluginVersion` from local files first: `package.json`, lockfile, then `node_modules/<plugin>/package.json`; use `pnpm why` / `npm ls` only as fallback.
 
@@ -69,7 +69,7 @@ output: {
 }
 ```
 
-## Evidence and Command Bounds
+## Evidence and command bounds
 
 Default Evidence Set:
 
@@ -93,7 +93,7 @@ Scope rules:
 - Use `tree-shaking summary` only as fallback for missing fields or aggregate context. Treat `tree-shaking bailout-reasons` as high-volume; run it only when explicitly requested and pass target `--modules` (max 100).
 - If any command exceeds `5k` tokens, `500 KB` raw output, or a few hundred transcript lines, stop broad fetching and switch to targeted compact queries.
 
-## Output and Recovery
+## Output and recovery
 
 Output format:
 

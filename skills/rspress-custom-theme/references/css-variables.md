@@ -1,4 +1,4 @@
-# CSS Variables Reference
+# CSS variables reference
 
 Complete list of CSS variables exposed by Rspress for theme customization.
 
@@ -8,7 +8,7 @@ Complete list of CSS variables exposed by Rspress for theme customization.
 
 ---
 
-## Brand Colors (shared)
+## Brand colors (shared)
 
 ```css
 :root {
@@ -21,7 +21,7 @@ Complete list of CSS variables exposed by Rspress for theme customization.
 }
 ```
 
-## Base Variables
+## Base variables
 
 | Variable               | Light                 | Dark                     |
 | ---------------------- | --------------------- | ------------------------ |
@@ -32,7 +32,7 @@ Complete list of CSS variables exposed by Rspress for theme customization.
 | `--rp-c-divider`       | `rgba(0, 0, 0, 0.25)` | `rgba(84, 84, 84, 0.65)` |
 | `--rp-c-divider-light` | `rgba(0, 0, 0, 0.12)` | `rgba(84, 84, 84, 0.48)` |
 
-## Text Colors
+## Text colors
 
 | Variable        | Light                    | Dark                        |
 | --------------- | ------------------------ | --------------------------- |
@@ -43,7 +43,7 @@ Complete list of CSS variables exposed by Rspress for theme customization.
 | `--rp-c-text-4` | `rgba(60, 60, 60, 0.18)` | `rgba(235, 235, 235, 0.18)` |
 | `--rp-c-link`   | `var(--rp-c-brand-dark)` | `var(--rp-c-brand-light)`   |
 
-## Inline Code
+## Inline code
 
 | Variable                  | Light                       | Dark                        |
 | ------------------------- | --------------------------- | --------------------------- |
@@ -51,7 +51,7 @@ Complete list of CSS variables exposed by Rspress for theme customization.
 | `--rp-c-text-code-bg`     | `rgba(153, 161, 179, 0.06)` | `rgba(255, 255, 255, 0.06)` |
 | `--rp-c-text-code-border` | `rgba(0, 0, 0, 0.035)`      | `rgba(255, 255, 255, 0.04)` |
 
-## Code Blocks
+## Code blocks
 
 | Variable                 | Light                                 | Dark                                  |
 | ------------------------ | ------------------------------------- | ------------------------------------- |
@@ -62,7 +62,7 @@ Complete list of CSS variables exposed by Rspress for theme customization.
 | `--rp-code-block-border` | `1px solid var(--rp-c-divider-light)` | `1px solid var(--rp-c-divider-light)` |
 | `--rp-code-block-shadow` | `none`                                | `none`                                |
 
-## Shiki Syntax Highlighting
+## Shiki syntax highlighting
 
 Rspress uses `.dark` on `html` as the public dark-mode toggle for general theme overrides. The Shiki token blocks below target `html:not(.rp-dark)` and `html.rp-dark`, which Rspress uses internally for syntax highlighting variables.
 
@@ -142,7 +142,7 @@ html.rp-dark {
 }
 ```
 
-## Home Page
+## Home page
 
 Note: `...` in gradient values marks omitted gradient parameters, not literal CSS. See the official docs link above for complete values.
 
@@ -154,7 +154,7 @@ Note: `...` in gradient values marks omitted gradient parameters, not literal CS
 | `--rp-home-background-bg`        | `radial-gradient(...), radial-gradient(...), radial-gradient(...), #fff`                                                  | `radial-gradient(...), radial-gradient(...), radial-gradient(...), #121212` |
 | `--rp-home-feature-bg`           | `linear-gradient(135deg, #fff, #f9f9f980)`                                                                                | `linear-gradient(135deg, #ffffff00, #ffffff08)`                             |
 
-## Quick Start
+## Quick start
 
 ```css
 /* Example brand color overrides for the custom theme scaffold. */

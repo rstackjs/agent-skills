@@ -1,4 +1,4 @@
-# Guide D: Coredump Analysis (Dev)
+# Guide D: coredump analysis (Dev)
 
 **Scenario**: Unstable Crash during DevServer HMR (hard to catch interactively).
 

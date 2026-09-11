@@ -3,7 +3,7 @@ name: rslib-best-practices
 description: Configure, review, or troubleshoot Rslib library builds, output formats, declarations, dependency handling, and integrations.
 ---
 
-# Rslib Best Practices
+# Rslib best practices
 
 Apply these rules when writing or reviewing Rslib library projects.
 

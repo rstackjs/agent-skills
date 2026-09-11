@@ -1,4 +1,4 @@
-# Rstest Config Module Type
+# Rstest config module type
 
 <!-- cspell:words TYPELESS -->
 

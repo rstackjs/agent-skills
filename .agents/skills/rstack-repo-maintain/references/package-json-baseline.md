@@ -1,8 +1,8 @@
-# Package Manifest Baseline
+# Package manifest Baseline
 
 Use this reference to maintain `package.json` for published Rstack packages and to decide whether package metadata or dependency versions are stale.
 
-## Evidence Sources
+## Evidence sources
 
 Refresh these sources before editing:
 
@@ -15,9 +15,9 @@ Refresh these sources before editing:
 
 Do not call a version “latest” from a GitHub main-branch manifest alone. Distinguish the npm release from unreleased main-branch adoption.
 
-## Select a Manifest Profile
+## Select a manifest profile
 
-### Shared Published-Package Fields
+### Shared Published-Package fields
 
 Review:
 
@@ -28,7 +28,7 @@ Review:
 
 For monorepo packages, include `repository.directory`. Keep field ordering aligned with the repository's package formatter.
 
-### Core or CLI Package
+### Core or CLI package
 
 Use `@rsbuild/core` only for packages with comparable responsibilities:
 
@@ -39,7 +39,7 @@ Use `@rsbuild/core` only for packages with comparable responsibilities:
 
 Do not copy these core-specific fields into a focused library or plugin.
 
-### Rsbuild Plugin Package
+### Rsbuild plugin package
 
 Use the closest official `@rsbuild/plugin-*` manifest as the structural baseline:
 
@@ -51,7 +51,7 @@ Use the closest official `@rsbuild/plugin-*` manifest as the structural baseline
 
 For an external plugin, a current `@rsbuild/core` dev dependency and a broader compatible peer range can both be correct.
 
-### Standalone Library
+### Standalone library
 
 Use a maintained small-package exemplar such as `rslog`:
 
@@ -59,7 +59,7 @@ Use a maintained small-package exemplar such as `rslog`:
 - Prefer pure ESM only after checking consumers; retain dual output when CommonJS compatibility is intentional.
 - Do not add Rsbuild-specific peer or CLI fields merely to match `@rsbuild/core`.
 
-## Check Version Freshness
+## Check version freshness
 
 Classify each dependency before changing it:
 
@@ -78,7 +78,7 @@ Apply these rules:
 4. Update `package.json` and the package-manager lockfile together. Regenerate the lockfile with the repository package manager instead of hand-editing it.
 5. Preserve deliberate aliases, patches, overrides, and synchronized version groups.
 
-## Validate the Manifest
+## Validate the manifest
 
 1. Run a clean or frozen install after regenerating the lockfile.
 2. Run lint, typecheck, build, and tests required by the target.
@@ -86,7 +86,7 @@ Apply these rules:
 4. Smoke test changed import, require, and CLI paths.
 5. Run the repository's package or publish dry run, subject to the publint shortcut below.
 
-### Publint Shortcut
+### Publint shortcut
 
 Skip a separate `pnpm pack --dry-run` or equivalent package dry run when all of these are true:
 
@@ -104,7 +104,7 @@ Never run `pnpm pack` without `--dry-run`, `--pack-destination`, or another expl
 
 Report the shortcut explicitly, for example: “Skipped separate pack validation because the successful production build ran enforcing `pluginPublint`.”
 
-## Report Results
+## Report results
 
 Group findings into:
 

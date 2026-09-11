@@ -1,4 +1,4 @@
-# Vue CLI -> Rsbuild Migration Checklist
+# Vue CLI -> Rsbuild migration checklist
 
 Use this reference when the source project is Vue CLI (`@vue/cli-service`).
 

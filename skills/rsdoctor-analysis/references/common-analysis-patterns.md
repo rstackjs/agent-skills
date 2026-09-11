@@ -1,8 +1,8 @@
-# Common Analysis Patterns
+# Common analysis patterns
 
 Use this reference for common Rspack/Webpack bundle analysis questions after locating `rsdoctor-data.json`.
 
-## ROI-Based Lever Selection
+## ROI-Based Lever selection
 
 Use this pattern before choosing detailed analysis commands. The goal is to find the biggest measured cost bucket first, then select the smallest follow-up that can prove or fix that bucket.
 
@@ -34,7 +34,7 @@ Recommendation rules:
 - For retained-module advice, include the category (`cjs`, `barrel`, `side-effects`) and the largest concrete paths before suggesting config or source changes.
 - Stop when the likely savings are below the user's stated goal or clearly smaller than another measured bucket.
 
-## Similar Packages
+## Similar packages
 
 Use direct dependency package data to inspect similar packages. Start with `packages direct-dependencies` or `query packages_direct_dependencies`, then check known package families and other potentially similar packages.
 
@@ -62,7 +62,7 @@ If there are no similar packages, simply say there are no similar packages. Do n
 
 Keep the response simple: name only coexisting known-family packages or other direct-dependency candidates with clear overlap, explain why coexistence is worth reviewing, and give one replacement direction if the evidence supports it.
 
-## Media Asset Analysis
+## Media asset analysis
 
 Use `assets media` or `bundle optimize` when checking oversized image, font, or video assets. Return recommendations only for assets that are actually oversized or relevant to the user's question.
 
@@ -113,7 +113,7 @@ Video recommendations:
   - `metadata`: downloads metadata only, often around 3% of file size.
   - `auto`: downloads the full video; use only when playback is very likely.
 
-## Bundle Optimize
+## Bundle optimize
 
 Use `bundle optimize` / `build optimize` as an aggregate optimization pass. It can combine evidence from:
 
@@ -128,7 +128,7 @@ When using it, keep output compact with `--compact`, narrow `--filter` fields, a
 
 Do not treat aggregate output as enough by itself when the recommendation needs concrete evidence. Fetch the narrow supporting data before recommending a config or dependency change.
 
-## Build Performance
+## Build performance
 
 Use these as short recommendation candidates when Rsdoctor evidence points to build-time cost, loader cost, too many modules, or slow dev rebuilds. Source: [Rsbuild build performance guide](https://rsbuild.rs/zh/guide/optimization/build-performance).
 
@@ -141,7 +141,7 @@ Use these as short recommendation candidates when Rsdoctor evidence points to bu
 - Rsdoctor loader evidence: if `sass-loader` time is concentrated in third-party package directories and those packages ship CSS artifacts, recommend importing the CSS artifact or narrowing Sass rule `include` to app source plus specific allowlisted theme packages.
 - Call out tradeoffs: development Browserslist and source map changes can make dev output differ from production or reduce debugging detail.
 
-## Retained Module Tree-shaking Analysis
+## Retained module Tree-shaking analysis
 
 Use `tree-shaking retained-modules` for first-pass tree-shaking evidence when the goal is to find retained emitted modules by reason category. Prefer it over broad `tree-shaking summary` when the user asks for top retained modules, CommonJS retention, barrel imports, side effects, or gzip-size priority.
 
@@ -167,7 +167,7 @@ Guidance:
 6. Report rows as `Path | Package | Category | Gzip/Parsed Size | Chunks | Bailout | Recommendation`.
 7. Treat results as first-pass evidence. Use `modules issuer` only after the user asks to trace who imported a retained module.
 
-## Common Questions
+## Common questions
 
 ### Why is a module not tree-shaken?
 
@@ -214,7 +214,7 @@ Example: "Why is package X duplicated?"
 - Use `--limit 10` by default and the same `5k` token / `500 KB` raw-output stop rule for fallback commands.
 - Show `issuerPath` when needed to identify the import source.
 
-## Output Style
+## Output style
 
 - For dependency chains, use a tree or arrow notation.
 - For module details, use a table or key-value list.

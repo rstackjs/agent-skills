@@ -1,4 +1,4 @@
-# LLDB References
+# LLDB references
 
 # Install
 
@@ -19,14 +19,14 @@ On macOS, LLDB usually comes installed with Xcode or Command Line Tools.
 
 ## Linux
 
-### Ubuntu / Debian
+### Ubuntu / debian
 
 ```bash
 sudo apt-get update
 sudo apt-get install lldb
 ```
 
-### Arch Linux
+### Arch linux
 
 ```bash
 sudo pacman -S lldb
@@ -37,7 +37,7 @@ sudo pacman -S lldb
 Windows users are recommended to use WSL2 (Ubuntu) and follow the Linux steps for installation, or use the C++ extension in VS Code with LLDB.
 If you are in a native Windows environment, you can use the Windows installer provided by the LLVM official website, but debugging Rspack is generally recommended in a Unix-like environment for better support.
 
-## LLDB in Batch Mode
+## LLDB in batch mode
 
 For automation and non-interactive debugging, we use LLDB in batch mode:
 
@@ -50,7 +50,7 @@ lldb --batch -o "run" -k "thread backtrace all" -k "quit" -- node script.js
 - `-k`: Execute command upon crash (if the process crashes).
 - `--`: Separate LLDB arguments from the target program arguments.
 
-## Common Checks
+## Common checks
 
 ### `thread backtrace all` (or `bt all`)
 

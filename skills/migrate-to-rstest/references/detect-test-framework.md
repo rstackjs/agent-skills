@@ -1,4 +1,4 @@
-# Detect Test Framework
+# Detect test framework
 
 Use this reference to decide the migration path and scope.
 

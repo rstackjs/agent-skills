@@ -1,4 +1,4 @@
-# rstack-eco-ci-debug Eval Report
+# rstack-eco-ci-debug Eval report
 
 **Skill:** `rstack-eco-ci-debug`  
 **Skill commit:** `ad2cc4b` (`syt/codex-rstack-eco-ci-debug` branch)  
@@ -22,7 +22,7 @@ The skill produced materially better attribution on the hardest case (rsdoctor S
 
 ---
 
-## Eval Cases
+## Eval cases
 
 ### Eval 1 — plugin-suite-empty-lines
 
@@ -71,7 +71,7 @@ This is the discriminating case. Without the skill, the run latched onto a diffe
 
 ---
 
-## Where the Skill Helped
+## Where the skill helped
 
 1. **Surface vs. actual source distinction** — The skill explicitly separates "what the eco-ci dashboard says" from "which PR actually introduced the regression," which prevented the wrong-PR attribution on Eval 3.
 2. **Failure-signature anchoring** — It requires tying conclusions to concrete signatures (`lightColorCount is not defined`, extra blank lines in snapshots), not just commit positions.
@@ -94,7 +94,7 @@ This is the discriminating case. Without the skill, the run latched onto a diffe
 
 ---
 
-## Next Steps (Suggested)
+## Next steps (Suggested)
 
 1. Add a few more discriminating cases where the surface pivot is _not_ the real source, to confirm the skill's value isn't driven by a single eval.
 2. Consider a shorter "fast path" in the skill for cases where the surface pivot is clearly correct, to reduce token/time overhead on easy attributions.

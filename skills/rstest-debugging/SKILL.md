@@ -3,7 +3,7 @@ name: rstest-debugging
 description: Diagnose Rstest startup, build, runtime, logging, memory, or performance problems using traces and comparable measurements.
 ---
 
-# Rstest Debugging
+# Rstest debugging
 
 Diagnose the measured lifecycle stage before changing configuration. Keep behavior and the test manifest fixed, change one variable at a time, and remove experiments that do not produce a repeatable benefit.
 

@@ -1,4 +1,4 @@
-# Jest Migration Deltas
+# Jest migration deltas
 
 Use this reference when the current framework is Jest.
 

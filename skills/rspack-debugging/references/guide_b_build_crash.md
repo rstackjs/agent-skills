@@ -1,4 +1,4 @@
-# Guide B: Crash during Build
+# Guide B: crash during build
 
 **Scenario**: Stable Crash during Build.
 

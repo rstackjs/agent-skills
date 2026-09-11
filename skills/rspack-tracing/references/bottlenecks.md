@@ -1,8 +1,8 @@
-# Understanding Rspack Performance Bottlenecks
+# Understanding Rspack performance bottlenecks
 
 This reference maps internal Rspack tracing spans to high-level concepts to help you identify performance issues.
 
-## Core Compilation Phases
+## Core compilation phases
 
 | Span Name               | Description                                                    | Potential Bottlenecks                                                             |
 | :---------------------- | :------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
@@ -11,9 +11,9 @@ This reference maps internal Rspack tracing spans to high-level concepts to help
 | `compiler::seal`        | **Seal Phase**: Optimizing, splitting chunks, generating code. | Complex code splitting, heavy minification, many modules.                         |
 | `compiler::emit_assets` | **Emit Phase**: Writing files to disk.                         | Slow disk I/O, huge output files.                                                 |
 
-## Detailed Spans
+## Detailed spans
 
-### Make Phase (Module Processing)
+### Make phase (Module Processing)
 
 - `resolver::resolve`: Resolving import paths.
   - **High Time?**: Check for complex `resolve.alias` or `resolve.modules`, or too many standard fallbacks.
@@ -22,7 +22,7 @@ This reference maps internal Rspack tracing spans to high-level concepts to help
 - `parser::parse`: Parsing source code into AST.
   - **High Time?**: Large files?
 
-### Seal Phase (Optimization)
+### Seal phase (Optimization)
 
 - `compilation::code_generation`: Generating final code from AST.
 - `compilation::optimize_chunks`: Splitting chunks (SplitChunksPlugin).
@@ -35,7 +35,7 @@ This reference maps internal Rspack tracing spans to high-level concepts to help
 - `read_file`: Reading files from disk.
 - `write_file`: Writing artifacts to disk.
 
-## Common Fixes
+## Common fixes
 
 1.  **Slow `make` phase**:
     - Use `experiments.cache` (Persistent Cache).

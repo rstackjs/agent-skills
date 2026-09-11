@@ -1,4 +1,4 @@
-# Runtime, Output, and Memory Experiments
+# Runtime, Output, and memory experiments
 
 Use this reference after trace evidence implicates assets, console output, worker/process lifecycle, isolation, or memory.
 

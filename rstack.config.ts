@@ -2,6 +2,7 @@
 import { define } from 'rstack';
 
 define.fmt({
+  plugins: ['heading-case'],
   singleQuote: true,
   sortPackageJson: true,
   ignorePatterns: ['skills-lock.yaml'],

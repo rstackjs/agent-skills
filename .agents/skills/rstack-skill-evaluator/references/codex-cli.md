@@ -118,7 +118,7 @@ Task:
 
 The baseline prohibition is defense in depth. The clean `CODEX_HOME`, fixture-only workspace, and pre-execution checks are the isolation boundary. Keep every other instruction equivalent.
 
-## 4. Run codex
+## 4. Run Codex
 
 Write the selected prompt to a file outside the executor workspace, then run a fresh process:
 

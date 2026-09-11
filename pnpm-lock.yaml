@@ -21,8 +21,8 @@ importers:
         specifier: ^0.0.4
         version: 0.0.4
       heading-case:
-        specifier: ^2.0.1
-        version: 2.0.1(prettier@3.9.6)
+        specifier: ^2.0.2
+        version: 2.0.2(prettier@3.9.6)
       rstack:
         specifier: ^0.7.2
         version: 0.7.2(core-js@3.47.0)(typescript@5.9.3)
@@ -827,8 +827,8 @@ packages:
     resolution: {integrity: sha512-wHTUcDUoZ1H5/0iVqEudYW4/kAlN5cZ3j/bXn0Dpbizl9iaUVeWSHqiOjsgk6OW2bkLclbBjzewBz6weQ1zA2Q==}
     engines: {node: '>=18'}
 
-  heading-case@2.0.1:
-    resolution: {integrity: sha512-vt+RLPiDTw0BHXX/7pfChw8sFh17PjfJP72mHJ8tCEi4Dy30ASuWNx9px9VtRWzvmGtnAjfQDp/bz3ODQ2YpwA==}
+  heading-case@2.0.2:
+    resolution: {integrity: sha512-wP5GB7itAbhvu8Qb7o1JdiE56csfkycq2i2rSq+TkzF9I888d2bUiJDOjtnZmHPdsKvfl9qQhShnM15umslBHA==}
     hasBin: true
     peerDependencies:
       prettier: ^3.0.0
@@ -1616,7 +1616,7 @@ snapshots:
     dependencies:
       ini: 4.1.1
 
-  heading-case@2.0.1(prettier@3.9.6):
+  heading-case@2.0.2(prettier@3.9.6):
     dependencies:
       prettier: 3.9.6
 

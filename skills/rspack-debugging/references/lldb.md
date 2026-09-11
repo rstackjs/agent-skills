@@ -19,14 +19,14 @@ On macOS, LLDB usually comes installed with Xcode or Command Line Tools.
 
 ## Linux
 
-### Ubuntu / debian
+### Ubuntu / Debian
 
 ```bash
 sudo apt-get update
 sudo apt-get install lldb
 ```
 
-### Arch linux
+### Arch Linux
 
 ```bash
 sudo pacman -S lldb

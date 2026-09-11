@@ -51,14 +51,14 @@ https://github.com/rstackjs/agent-skills
 git clone https://github.com/rstackjs/agent-skills.git ~/.cursor/plugins/local/rstack
 ```
 
-### GitHub copilot
+### GitHub Copilot
 
 ```bash
 copilot plugin marketplace add rstackjs/agent-skills
 copilot plugin install rstack@rstack
 ```
 
-### Claude code
+### Claude Code
 
 ```bash
 claude plugin marketplace add rstackjs/agent-skills

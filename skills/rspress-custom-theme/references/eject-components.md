@@ -58,7 +58,7 @@ Ejected source is placed in `theme/components/<ComponentName>/`.
 
 3. **Modify the ejected source** in `theme/components/DocFooter/`.
 
-## Common Pattern: root for global providers
+## Common Pattern: `Root` for global providers
 
 The most common eject use case is wrapping the entire app in a context provider (state management, analytics, auth, etc.):
 

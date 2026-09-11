@@ -1,4 +1,4 @@
-# Guide F: Async Deadlock Identification
+# Guide F: async deadlock identification
 
 **Scenario**: Unstable Async Deadlock. Main thread stuck in `uv_run`.
 
@@ -26,7 +26,7 @@ frame #2: parking_lot::condvar::Condvar::wait_until_internal
 frame #3: tokio::runtime::scheduler::multi_thread::park::Parker::park
 ```
 
-## 2. Next Steps
+## 2. Next steps
 
 If the backtrace matches the above pattern, it is a classic **Async Deadlock**. LLDB cannot help further because the threads are simply waiting for a Future that never completes.
 

@@ -13,7 +13,7 @@
 - **Grader:** assertion-based post-hoc checks in each run directory's `grading.json`.
 - **Aggregate artifacts:** `skills/rspress-docs-generator-workspace/iteration-1/benchmark.json` and `benchmark.md`.
 
-## Aggregate Results
+## Aggregate results
 
 > Scope note: this historical run included a `migrate-rspress-v1` eval. The current `rspress-docs-generator` scope and eval set no longer include full Rspress v1-to-v2 migration; the skill only guards against stale v1 projects and points full migration work to `rspress-v2-upgrade`, with the official migration guide kept as a fallback reference.
 
@@ -41,7 +41,7 @@ The skill improved assertion pass rate by 8.3 percentage points on this run and 
 - **maintain-docs-for-pr:** Both runs passed. The eval confirms the task is achievable without the skill, so future iterations may need stricter assertions around matching existing Rspress conventions if this case should differentiate skill value.
 - **migrate-rspress-v1:** This historical eval showed that v1 migration was possible, but the skill scope has since been narrowed and the active eval set no longer includes this case.
 
-## Raw Artifacts
+## Raw artifacts
 
 - `skills/rspress-docs-generator-workspace/iteration-1/create-new-docs/with_skill`
 - `skills/rspress-docs-generator-workspace/iteration-1/create-new-docs/without_skill`

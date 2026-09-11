@@ -3,7 +3,7 @@ name: rsbuild-best-practices
 description: Configure, review, or troubleshoot Rsbuild applications, including build/dev commands, assets, type checking, and bundle optimization.
 ---
 
-# Rsbuild Best Practices
+# Rsbuild best practices
 
 Apply these rules when writing or reviewing Rsbuild projects.
 

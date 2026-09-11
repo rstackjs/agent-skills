@@ -1,4 +1,4 @@
-# CRA / CRACO -> Rsbuild Migration Checklist
+# CRA / CRACO -> Rsbuild migration checklist
 
 Use this reference when the source project is Create React App (`react-scripts`) or CRACO.
 

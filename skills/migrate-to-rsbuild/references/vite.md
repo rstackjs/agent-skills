@@ -1,4 +1,4 @@
-# Vite -> Rsbuild Migration Checklist
+# Vite -> Rsbuild migration checklist
 
 Use this reference when the source project is Vite.
 

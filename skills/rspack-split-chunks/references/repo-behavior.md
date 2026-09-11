@@ -1,4 +1,4 @@
-# SplitChunks Repo Behavior
+# SplitChunks repo behavior
 
 This file is the source-backed reference for [SKILL.md](https://github.com/rstackjs/agent-skills/blob/main/skills/rspack-split-chunks/SKILL.md).
 

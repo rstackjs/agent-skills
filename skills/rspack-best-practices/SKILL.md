@@ -3,7 +3,7 @@ name: rspack-best-practices
 description: Configure, review, or troubleshoot Rspack builds, including loaders, CSS, assets, type checking, bundle optimization, and profiling.
 ---
 
-# Rspack Best Practices
+# Rspack best practices
 
 Apply these rules when writing or reviewing Rspack projects.
 

@@ -1,4 +1,4 @@
-# Dependency Install Gate
+# Dependency install gate
 
 Use this reference when running the dependency install gate step of the migration workflow.
 

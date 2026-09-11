@@ -1,8 +1,8 @@
-# Install Rsdoctor Plugin for Webpack Projects
+# Install Rsdoctor plugin for webpack projects
 
 This guide covers installation for Webpack projects (webpack >= 5).
 
-## Step 1: Install Dependencies
+## Step 1: install dependencies
 
 Rsdoctor only supports webpack >= 5.
 
@@ -13,7 +13,7 @@ npm add @rsdoctor/webpack-plugin -D
 pnpm add @rsdoctor/webpack-plugin -D
 ```
 
-## Step 2: Register Plugin
+## Step 2: register plugin
 
 After the dependency installation, check the installed `@rsdoctor/webpack-plugin` version before changing config or running a build. Do not infer plugin capabilities from `@rsdoctor/agent-cli --version`.
 
@@ -66,6 +66,6 @@ module.exports = {
 };
 ```
 
-## Step 3 & 4: Locate and Use rsdoctor-data.json
+## Step 3 & 4: locate and use rsdoctor-data.json
 
 For steps on locating the `rsdoctor-data.json` file and using it for analysis, see the [common installation guide](./install-rsdoctor-common.md).

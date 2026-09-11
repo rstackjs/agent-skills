@@ -3,7 +3,7 @@ name: rspress-custom-theme
 description: Customize Rspress v2 themes with CSS variables, class overrides, Layout slots, icons, or component ejection.
 ---
 
-# Rspress Custom Theme
+# Rspress custom theme
 
 Guide for customizing Rspress (v2) themes. Rspress offers four levels of customization, from lightest to heaviest. Always prefer the lightest approach that meets the requirement — lighter approaches are more maintainable and survive Rspress upgrades.
 
@@ -15,7 +15,7 @@ Guide for customizing Rspress (v2) themes. Rspress offers four levels of customi
 4. **Implement** following the patterns in this skill and reference files
 5. **Verify** the user's Rspress version is v2 (imports use `@rspress/core/*` not `rspress/*`)
 
-## Decision Flow
+## Decision flow
 
 | User wants to...                                                 | Level | Approach                    |
 | ---------------------------------------------------------------- | ----- | --------------------------- |
@@ -31,7 +31,7 @@ Guide for customizing Rspress (v2) themes. Rspress offers four levels of customi
 
 ---
 
-## theme/index.tsx — The Entry Point
+## theme/index.tsx — The entry point
 
 Levels 1A, 3, and 4 all require a `theme/index.tsx` file in the project root (sibling to `docs/`). This is the single entry point for all theme customizations:
 
@@ -57,7 +57,7 @@ export * from '@rspress/core/theme-original';
 
 ---
 
-## Level 1: CSS Variables
+## Level 1: CSS variables
 
 Override CSS custom properties for brand colors, backgrounds, text, code blocks, and more.
 
@@ -88,7 +88,7 @@ export default defineConfig({
 
 ---
 
-## Level 2: BEM Class Overrides
+## Level 2: BEM class overrides
 
 All built-in components follow BEM naming: `.rp-[component]__[element]--[modifier]`.
 
@@ -98,7 +98,7 @@ Use these in your CSS file for targeted style changes when CSS variables aren't 
 
 ---
 
-## Level 3: Wrap (Layout Slots)
+## Level 3: wrap (Layout Slots)
 
 Inject content at specific positions in the layout without replacing built-in components. Override `Layout` in `theme/index.tsx`:
 
@@ -120,7 +120,7 @@ Use runtime hooks inside slot components — import from `@rspress/core/runtime`
 
 ---
 
-## Level 4: Eject
+## Level 4: eject
 
 Copy a built-in component's source for full replacement. Only use when wrap/slots cannot achieve the customization.
 
@@ -140,7 +140,7 @@ export { DocFooter } from './components/DocFooter';
 
 ---
 
-## Custom Icons
+## Custom icons
 
 Rspress has 27 built-in icons used across the UI. You can replace any of them by re-exporting your own icon component with the same name — no ejection needed. This uses the same `theme/index.tsx` mechanism: your named export takes precedence over the wildcard re-export.
 
@@ -189,7 +189,7 @@ import { SvgWrapper, IconGithub } from '@rspress/core/theme';
 
 ---
 
-## Global UI Components
+## Global UI components
 
 For components that should render on every page without theme overrides:
 
@@ -208,7 +208,7 @@ export default defineConfig({
 
 ---
 
-## Page Types
+## Page types
 
 Control layout per page via frontmatter `pageType`:
 
@@ -225,7 +225,7 @@ Fine-grained: set `navbar: false`, `sidebar: false`, `outline: false`, `footer: 
 
 ---
 
-## Common Pitfalls
+## Common pitfalls
 
 - **Circular import**: Using `@rspress/core/theme` instead of `@rspress/core/theme-original` in `theme/` files — causes infinite loop.
 - **Eject over-use**: Ejecting when a Layout slot or CSS variable would suffice — creates upgrade burden.

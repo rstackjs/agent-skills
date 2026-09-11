@@ -1,4 +1,4 @@
-# Install Rsdoctor Plugin for Rspack Projects
+# Install Rsdoctor plugin for Rspack projects
 
 This guide covers installation for Rspack-based projects, including:
 
@@ -8,7 +8,7 @@ This guide covers installation for Rspack-based projects, including:
 - Rslib
 - Rspress
 
-## Step 1: Install Dependencies
+## Step 1: install dependencies
 
 For projects based on Rspack, such as Rsbuild or Rslib:
 
@@ -19,7 +19,7 @@ npm add @rsdoctor/rspack-plugin -D
 pnpm add @rsdoctor/rspack-plugin -D
 ```
 
-## Step 2: Register Plugin
+## Step 2: register plugin
 
 After the dependency installation, check the installed `@rsdoctor/rspack-plugin` version before changing config or running a build. Do not infer plugin capabilities from `@rsdoctor/agent-cli --version`.
 
@@ -133,6 +133,6 @@ export default defineConfig({
 });
 ```
 
-## Step 3 & 4: Locate and Use rsdoctor-data.json
+## Step 3 & 4: locate and use rsdoctor-data.json
 
 For steps on locating the `rsdoctor-data.json` file and using it for analysis, see the [common installation guide](./install-rsdoctor-common.md).

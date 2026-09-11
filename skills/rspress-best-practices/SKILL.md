@@ -3,7 +3,7 @@ name: rspress-best-practices
 description: Configure, review, or troubleshoot Rspress v2 sites, including content conventions, navigation, MDX, assets, search, and deployment.
 ---
 
-# Rspress Best Practices
+# Rspress best practices
 
 Apply these rules when writing or reviewing Rspress (v2) sites.
 
@@ -22,14 +22,14 @@ Apply these rules when writing or reviewing Rspress (v2) sites.
 - Use `rspress preview` only for local preview of the built site
 - Use `rspress eject` only when CSS variables, class overrides, or layout wrapping cannot solve the customization
 
-## Docs Structure And Navigation
+## Docs structure and navigation
 
 - Keep docs content under one clear docs root and group pages by topic or workflow, not by team ownership
 - Use `_meta.json` or `_nav.json` to control sidebar and navigation labels/order instead of encoding order in filenames
 - Put reusable MDX snippets or shared components in shared files instead of duplicating them across pages
 - Keep landing pages concise and link to deeper task-oriented guides from them
 
-## Writing And Frontmatter
+## Writing and frontmatter
 
 - Add clear `title` and `description` frontmatter, and set `sidebar`, `outline`, `navbar`, or `footer` only when page defaults are not enough
 - Use `pageType: home`, `doc`, `doc-wide`, `custom`, or `blank` intentionally based on layout needs
@@ -37,13 +37,13 @@ Apply these rules when writing or reviewing Rspress (v2) sites.
 - Prefer one topic per page and split overly long pages by workflow or feature area
 - Keep code examples minimal, runnable, and version-accurate
 
-## MDX And Components
+## MDX and components
 
 - Use MDX for interactive docs and embedded components, but keep the main narrative understandable as plain markdown
 - Prefer documented Rspress theme/runtime APIs over importing from internal source paths
 - For app-wide UI or providers, use `globalUIComponents` or theme overrides instead of repeating imports in each page
 
-## Theme And Styling
+## Theme and styling
 
 - Prefer CSS variables for brand colors, spacing, and surface styling
 - Prefer BEM class overrides or `Layout` slots before ejecting built-in components
@@ -57,19 +57,19 @@ Apply these rules when writing or reviewing Rspress (v2) sites.
 - Configure search intentionally: use local search for small or medium sites, and hosted search when scale or cross-version indexing requires it
 - Enable `llms` or `ssgMd` only when the site benefits from machine-readable outputs, and keep descriptions accurate because those outputs surface page summaries
 
-## Assets And Public Files
+## Assets and public files
 
 - Import source-managed images and components from docs/theme source when they belong to the content
 - Use `public/` only for assets that must keep stable URL paths, such as favicons, social images, or download files
 - Reference public assets by absolute site path and make sure they still work when `base` is set
 
-## Plugins And Integration
+## Plugins and integration
 
 - Prefer official Rspress plugins for search, preview, and API-doc scenarios before building custom solutions
 - For component or library docs, use `@rspress/plugin-preview` and `@rspress/plugin-api-docgen` when interactive demos or API tables are needed
 - Keep plugin usage explicit in config and remove unused plugins to reduce maintenance cost
 
-## Build, Deploy, And Debugging
+## Build, Deploy, And debugging
 
 - Validate both `rspress dev` and `rspress build`; a page that works in dev can still fail during static generation
 - Verify broken links, missing assets, and wrong `base` handling before deployment

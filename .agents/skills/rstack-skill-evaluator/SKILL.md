@@ -6,7 +6,7 @@ metadata:
   internal: true
 ---
 
-# Rstack Skill Evaluator
+# Rstack skill evaluator
 
 A repo-specific compatibility layer on top of `skill-creator`. Reuse its Test / Improve / Benchmark concepts, JSON schemas, grading guidance, and eval viewer, but select the executor for the current environment.
 

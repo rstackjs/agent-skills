@@ -1,8 +1,8 @@
-# Guide C: Attach to Stuck Process
+# Guide C: attach to stuck process
 
 **Scenario**: Unstable Deadlock during Build (happens randomly).
 
-## 1. User Action: Reproduce and Get PID
+## 1. User Action: reproduce and get PID
 
 Run the following script to loop your build command until it hangs. This script prints the PID of each attempt.
 
@@ -29,7 +29,7 @@ done
     - **Do not kill the process**.
     - Copy that PID.
 
-## 2. Agent Action: Attach and debug
+## 2. Agent Action: attach and debug
 
 Ask the user for the **PID** of the stuck process. Once obtained, run:
 
@@ -38,6 +38,6 @@ Ask the user for the **PID** of the stuck process. Once obtained, run:
 lldb -p <PID> --batch -o "thread backtrace all" -o "quit"
 ```
 
-## 3. Save Output
+## 3. Save output
 
 **Agent Action**: Save the output to `debug_artifacts/backtrace_attached.txt`.

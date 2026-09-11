@@ -3,7 +3,7 @@ name: rstest-best-practices
 description: Set up, write, or review Rstest tests and configuration, including environments, mocks, snapshots, coverage, and CI.
 ---
 
-# Rstest Best Practices
+# Rstest best practices
 
 Apply these rules when setting up, writing, or reviewing Rstest projects.
 

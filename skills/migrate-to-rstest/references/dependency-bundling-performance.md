@@ -1,4 +1,4 @@
-# Dependency Bundling Performance
+# Dependency bundling performance
 
 <!-- Keep in sync with skills/rstest-debugging/references/dependency-bundling.md. The debugging copy is canonical when available. -->
 

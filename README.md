@@ -11,7 +11,7 @@ A collection of Agent Skills for [Rstack](https://rspack.rs/guide/start/ecosyste
 
 > AI-powered skills for debugging, tracing, upgrading, and analyzing Rstack projects.
 
-## Table of Contents
+## Table of contents
 
 - [Usage](#usage)
 - [Rspack Skills](#rspack-skills)
@@ -73,7 +73,7 @@ Install any skill with:
 npx skills add rstackjs/agent-skills --skill <skill-name>
 ```
 
-## Rspack Skills
+## Rspack skills
 
 ### rspack-best-practices
 
@@ -115,7 +115,7 @@ npx skills add rstackjs/agent-skills --skill rspack-split-chunks
 
 Diagnose or tune Rspack splitChunks for duplicate modules, route over-fetching, cache groups, caching, or oversized chunks.
 
-## Rsbuild Skills
+## Rsbuild skills
 
 ### rsbuild-best-practices
 
@@ -141,7 +141,7 @@ npx skills add rstackjs/agent-skills --skill migrate-to-rsbuild
 
 Migrate webpack, Vite, create-react-app (CRA/CRACO), or Vue CLI projects to Rsbuild.
 
-## Rslib Skills
+## Rslib skills
 
 ### rslib-best-practices
 
@@ -167,7 +167,7 @@ npx skills add rstackjs/agent-skills --skill migrate-to-rslib
 
 Migrate tsc or tsup library projects to Rslib.
 
-## Rspress Skills
+## Rspress skills
 
 ### rspress-docs-generator
 
@@ -217,7 +217,7 @@ description: A concise summary of the page content for SEO and AI consumption.
 # Page Title
 ```
 
-## Rsdoctor Skills
+## Rsdoctor skills
 
 ### rsdoctor-analysis
 
@@ -229,7 +229,7 @@ Analyze Rspack/Webpack bundles from local Rsdoctor build data. Provides intellig
 
 Use when you need to analyze bundle composition, identify duplicate packages, detect similar packages, find large chunks, analyze side effects modules, or get comprehensive bundle optimization recommendations.
 
-## Rstest Skills
+## Rstest skills
 
 ### migrate-to-rstest
 
@@ -255,7 +255,7 @@ npx skills add rstackjs/agent-skills --skill rstest-best-practices
 
 Set up, write, or review Rstest tests and configuration, including environments, mocks, snapshots, coverage, and CI.
 
-## Rslint Skills
+## Rslint skills
 
 ### migrate-to-rslint
 
@@ -265,7 +265,7 @@ npx skills add rstackjs/agent-skills --skill migrate-to-rslint
 
 Migrate ESLint or other lint tools to Rslint. Use when replacing ESLint flat config, lint scripts, VS Code ESLint settings, inline directives, rules, presets, plugins, or lint dependencies with Rslint equivalents.
 
-## Storybook Skills
+## Storybook skills
 
 ### storybook-rsbuild
 
@@ -275,7 +275,7 @@ npx skills add rstackjs/agent-skills --skill storybook-rsbuild
 
 Set up or migrate Storybook to Rsbuild, configure rsbuildFinal, or integrate with Rslib, Modern.js, or Rspack.
 
-## Contribution Workflow Skills
+## Contribution workflow skills
 
 Skills in this section are internal contribution workflow Skills intended for Rstack repository maintainers and developers, not end users. Set `INSTALL_INTERNAL_SKILLS=1` when installing them.
 

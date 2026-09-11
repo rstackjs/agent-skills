@@ -31,7 +31,7 @@ Use this skill to produce plain Markdown from MDX without requiring the target r
 4. Review the result with `rg` and a short diff. Confirm that no MDX-only syntax remains.
 5. Apply any user-requested follow-up edits, such as removing a generated table of contents or changing link policy.
 
-## Default Conversion Rules
+## Default conversion rules
 
 - Drop YAML frontmatter and top-level MDX imports.
 - Remove `<BlogAuthors />`.
@@ -62,7 +62,7 @@ Use this skill to produce plain Markdown from MDX without requiring the target r
 - Add `/zh` to the prefix when the MDX path contains a `zh` path segment. For example, a Chinese Rspack document converts `/guide/optimization/tree-shaking` to `https://rspack.rs/zh/guide/optimization/tree-shaking`.
 - Use `--link-prefix <prefix>` only when the inferred domain is wrong or the user explicitly requests a custom prefix.
 
-## Validation Checklist
+## Validation checklist
 
 Run targeted checks after conversion:
 

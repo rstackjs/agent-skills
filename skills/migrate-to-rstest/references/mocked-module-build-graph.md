@@ -1,4 +1,4 @@
-# Mocked Modules and the Build Graph
+# Mocked modules and the build graph
 
 <!-- Keep in sync with skills/rstest-debugging/references/mocked-module-build-graph.md. The debugging copy is canonical when available. -->
 

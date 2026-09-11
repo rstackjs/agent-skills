@@ -1,4 +1,4 @@
-# Performance Measurement
+# Performance measurement
 
 Use this reference before tuning an Rstest slowdown or explaining runner, build, tests, and CLI wall time.
 

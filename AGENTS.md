@@ -2,7 +2,7 @@
 
 This file provides guidance to AI coding agents working with code in this repository.
 
-## Repository Overview
+## Repository overview
 
 A collection of Agent Skills for the Rspack ecosystem (Rspack, Rsbuild, Rslib, Rstest, Rsdoctor). Skills are packaged instructions and scripts that extend agent capabilities for debugging, profiling, and development workflows.
 
@@ -14,7 +14,7 @@ This project uses Rstack CLI as its JS toolchain:
 - Online docs: https://rstack.rs/llms.txt
 - Run `rs -h` for CLI help
 
-## Project Structure
+## Project structure
 
 ```
 agent-skills/
@@ -31,7 +31,7 @@ agent-skills/
 └── README.md            # Project documentation
 ```
 
-### Directory Explanations
+### Directory explanations
 
 - **skills/**: Contains all Skills, each Skill is an independent folder
   - Each Skill includes `SKILL.md` (required), `scripts/` (optional), `references/` (optional), `assets/` (optional)
@@ -43,7 +43,7 @@ agent-skills/
 - **scripts/config/**: Contains project-level TypeScript configuration
   - `tsconfig.json`: TypeScript base configuration
 
-## Creating a New Skill
+## Creating a new skill
 
 Create the Skill directory manually with the standard structure:
 
@@ -81,7 +81,7 @@ description: Feature description and trigger scenarios, which is key for Agents 
 ---
 ```
 
-### Contribution Workflow Skills
+### Contribution workflow skills
 
 Use this for internal contribution workflow Skills intended for Rstack repository maintainers and developers, not end users.
 
@@ -108,9 +108,9 @@ metadata:
 
 Skills marked with `metadata.internal: true` are only visible and installable when `INSTALL_INTERNAL_SKILLS=1` is set.
 
-## Writing Skill Scripts
+## Writing skill scripts
 
-### Simple Scripts
+### Simple scripts
 
 For simple scripts (such as single-file scripts), create them directly in the Skill's own `scripts/` directory.
 
@@ -121,11 +121,11 @@ Example:
 console.log('Hello from simple script');
 ```
 
-### Complex Scripts (Requiring Bundling)
+### Complex scripts (Requiring Bundling)
 
 For complex scenarios requiring dependencies, TypeScript, etc.:
 
-#### 1. Create a Project with the Same Name in packages Directory
+#### 1. Create a project with the same name in packages directory
 
 ```
 packages/my-skill/
@@ -184,7 +184,7 @@ define.lib({
 }
 ```
 
-#### 5. Write Source Code
+#### 5. Write source code
 
 Write code in `src/index.ts`:
 
@@ -194,7 +194,7 @@ export function myFunction() {
 }
 ```
 
-#### 6. Build Script
+#### 6. Build script
 
 ```bash
 cd packages/my-skill
@@ -203,7 +203,7 @@ pnpm build
 
 After building, the bundled files will be automatically output to the `skills/my-skill/scripts/` directory.
 
-### Testing Scripts
+### Testing scripts
 
 Write tests using Rstest:
 
@@ -225,7 +225,7 @@ Run tests from the package directory:
 pnpm test
 ```
 
-## Using Skills
+## Using skills
 
 Install a specific Skill:
 

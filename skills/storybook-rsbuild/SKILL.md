@@ -24,7 +24,7 @@ Set up Storybook on Rsbuild, or migrate an existing Storybook to it. Factual map
 
 6. **Operate in scope.** In monorepos, modify only the package that hosts stories. Do not edit business source files unless the migration strictly requires it.
 
-## Step 1 — Detect scenario
+## Step 1 — detect scenario
 
 Read `package.json` and project structure to determine existing Storybook state:
 
@@ -36,7 +36,7 @@ Read `package.json` and project structure to determine existing Storybook state:
 
 ---
 
-## Fresh Setup Workflow
+## Fresh setup workflow
 
 ### 1. Detect ecosystem integration
 
@@ -72,7 +72,7 @@ Infer the UI framework from app dependencies (`react`, `vue`, `lit`, etc.):
 6. If no story file exists yet, scaffold at least one minimal example story (e.g. `src/stories/Example.stories.*`) so [Verification](#verification) step 2 has something to render
 7. Run [Verification](#verification) below
 
-## Migration Workflow
+## Migration workflow
 
 Read the upstream migration guide: https://storybook.rsbuild.rs/guide/migration
 
@@ -109,7 +109,7 @@ If a factual mapping is needed (version table, package names, conversion pattern
 - **Residual config**: if dev fails after migration, temporarily remove custom `rsbuildFinal` block to isolate the issue, then re-add incrementally
 - For debugging and other issues, consult the upstream migration guide's "Debugging" section and https://storybook.rsbuild.rs/guide/configuration
 
-## Edge Cases
+## Edge cases
 
 - **Monorepo**: locate the package that hosts stories; operate there, not at root
 - **Multiple `.storybook/` dirs**: pick the one referenced by `package.json` scripts

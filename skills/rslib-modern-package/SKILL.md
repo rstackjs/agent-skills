@@ -3,7 +3,7 @@ name: rslib-modern-package
 description: Design, modernize, or review JS/TS npm packages using an opinionated Rslib baseline for ESM, exports, types, dependencies, and release readiness.
 ---
 
-# Rslib Modern Package
+# Rslib modern package
 
 Use this skill when creating a new Rslib library, modernizing an existing JS/TS package, or reviewing a package against an opinionated modern library standard.
 
@@ -133,7 +133,7 @@ Default recommendation for new JS/TS libraries:
     - Avoid long-lived publish tokens where trusted publishing is available.
     - Remember that a published package name/version pair cannot be reused safely.
 
-## Review Red Flags
+## Review red flags
 
 - `exports` is missing, points to files not emitted by Rslib, or allows public imports such as `pkg/dist/foo.js`.
 - `module`/`main` fields disagree with `exports`.

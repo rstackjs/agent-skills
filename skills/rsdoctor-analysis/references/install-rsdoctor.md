@@ -1,13 +1,13 @@
-# Install Rsdoctor Plugin
+# Install Rsdoctor plugin
 
 This documentation has been split into project-specific guides:
 
-## Choose Your Project Type
+## Choose your project type
 
 - **For Rspack/Rsbuild/Modern.js projects:** See [install-rsdoctor-rspack.md](./install-rsdoctor-rspack.md)
 - **For Webpack projects:** See [install-rsdoctor-webpack.md](./install-rsdoctor-webpack.md)
 
-## Quick Decision Guide
+## Quick decision guide
 
 **Determine your project type:**
 

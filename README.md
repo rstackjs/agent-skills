@@ -295,6 +295,14 @@ INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill release-b
 
 Write or revise release blog posts for product releases, with guidance for structure, tone, headings, examples, and links.
 
+### rstack-docs-writer
+
+```bash
+INSTALL_INTERNAL_SKILLS=1 npx skills add rstackjs/agent-skills --skill rstack-docs-writer
+```
+
+Write or revise Markdown and MDX documentation, including READMEs, guides, and Rspress-based docs.
+
 ### mdx-to-markdown
 
 ```bash

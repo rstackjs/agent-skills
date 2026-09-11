@@ -10,7 +10,8 @@
     "create-draft-release-notes": "local:*",
     "rstack-repo-maintain": "local:*",
     "rstack-eco-ci-debug": "local:*",
-    "release-blog-writer": "local:*"
+    "release-blog-writer": "local:*",
+    "rstack-docs-writer": "local:*"
   },
   "selfSkill": true
 }

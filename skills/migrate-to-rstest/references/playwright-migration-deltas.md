@@ -15,7 +15,7 @@ Read this reference only when the migration request explicitly contains the keyw
 
 ## Version baseline
 
-This reference targets Rstest 0.12.0 or newer, including `definePlaywrightConfig` and configurable Playwright assertion timeouts. Follow the dependency install gate and verify the resolved `@rstest/core`, `@rstest/playwright`, and `playwright` versions against their peer ranges before using these APIs. See the [Playwright integration documentation](https://rstest.rs/integration/playwright).
+This reference targets Rstest 0.12.0 or newer, including `definePlaywrightConfig` and configurable Playwright assertion timeouts. Follow the dependency install gate and verify the resolved `@rstest/core`, `@rstest/playwright`, and `playwright` versions against their peer ranges before using these APIs. See the [E2E testing guide](https://rstest.rs/guide/basic/e2e-testing).
 
 For a target pinned to 0.11.9–0.11.x, keep shared options in `test.extend` and set runner/poll timeouts explicitly: the config helper is unavailable, and locator/page assertions default to 5 seconds independently of `expect.poll.timeout`. Use per-call matcher timeouts on that line. Do not apply the 0.12.0 examples without verifying an upgrade is compatible.
 

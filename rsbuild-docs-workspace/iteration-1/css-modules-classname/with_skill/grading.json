@@ -1,0 +1,28 @@
+{
+  "eval_id": 1,
+  "eval_name": "css-modules-classname",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response includes a concrete rsbuild.config code snippet with cssModules configuration",
+      "passed": true,
+      "evidence": "Shows output.cssModules config block with localIdentName"
+    },
+    {
+      "text": "Response mentions the correct config path (output.cssModules.localIdentName or similar)",
+      "passed": true,
+      "evidence": "Correctly identifies output.cssModules.localIdentName"
+    },
+    {
+      "text": "The example shows how to set the [name]__[local] pattern",
+      "passed": true,
+      "evidence": "localIdentName: '[name]__[local]' shown in the first code block"
+    },
+    {
+      "text": "Information is sourced from fetched docs, not hallucinated",
+      "passed": true,
+      "evidence": "References https://rsbuild.rs/config/output/css-modules and https://rsbuild.rs/guide/styling/css-modules"
+    }
+  ],
+  "pass_rate": 1.0
+}

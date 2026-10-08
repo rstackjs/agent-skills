@@ -25,7 +25,6 @@ Page frontmatter `description` is reused in search metadata and `llms.txt`.
 - Use one complete plain-text sentence. Avoid generic templates, unsupported claims, truncation, and padding to meet a character count.
 - Match the page's language and keep descriptions equivalent across locales.
 - During audits, improve misleading or vague descriptions, preserve useful ones, and flag outdated source content.
-- Edit frontmatter rather than generated indexes. For `llms.txt` updates, verify the descriptions in the generated output.
 
 ## Heading anchors
 

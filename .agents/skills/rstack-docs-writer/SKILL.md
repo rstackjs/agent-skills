@@ -21,7 +21,7 @@ Follow the project's existing documentation conventions.
 Page frontmatter `description` is reused in search metadata and `llms.txt`.
 
 - Summarize the page's actual scope using concrete APIs, tasks, and distinguishing topics, rather than one paragraph or example.
-- For overview pages, state the overall purpose first, then use representative examples without implying an exhaustive list of supported features.
+- State the overall purpose first. When using examples to clarify scope, make clear that they are representative, not exhaustive.
 - Distinguish related configuration and API pages. Include version, stability, or environment constraints when they affect applicability.
 - Use one complete plain-text sentence. Avoid generic templates, unsupported claims, truncation, and padding to meet a character count.
 - Match the page's language and keep descriptions equivalent across locales.

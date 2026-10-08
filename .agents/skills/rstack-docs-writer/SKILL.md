@@ -24,7 +24,6 @@ Page frontmatter `description` is reused in search metadata and `llms.txt`.
 - Distinguish related configuration and API pages. Include version, stability, or environment constraints when they affect applicability.
 - Use one complete plain-text sentence. Avoid generic templates, unsupported claims, truncation, and padding to meet a character count.
 - Match the page's language and keep descriptions equivalent across locales.
-- During audits, improve misleading or vague descriptions, preserve useful ones, and flag outdated source content.
 
 ## Heading anchors
 

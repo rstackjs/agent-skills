@@ -15,6 +15,7 @@ Top-level command mode:
 
 `query` catalog (current):
 
+- `compilers_list`
 - `chunks_list`
 - `packages_direct_dependencies`
 - `packages_duplicates`
@@ -29,9 +30,17 @@ Option scopes:
 - `--data-file <path>`:
   - required for `query`, direct `<group> <subcommand>`, and `ai <group> <subcommand>`
   - not required for `list`, `ai --describe`, `ai --schema`
+- `--compiler <name>`: exact compiler name returned by `compilers list`; pass it to every analysis command when the report contains named compiler metadata
 - `--input <json>`: optional for `query`
 - `--filter <...>`: supported by every data-fetch function; use it to return only required fields selected from `@rsdoctor/types` / [rsdoctor-data-types.md](rsdoctor-data-types.md)
 - `--compact`: add whenever possible to keep CLI JSON compact. Do not use it with `tree-shaking retained-modules`; use `--filter` and `--limit` instead.
+
+## Compilers
+
+- `compilers list --data-file <path>` -> Discover compiler names, resolved data files, and availability before fetching analysis evidence. Tool name: `compilers_list`.
+- A single named compiler is selected automatically by the CLI, but still use its exact name consistently after discovery. For multiple compilers, select one according to the user's target and pass `--compiler <name>` to every direct command or `query` call.
+- A legacy report appears as one entry with `name: null`; omit `--compiler` for that report.
+- Do not merge results from different compilers unless the user explicitly asks for cross-compiler analysis.
 
 ## Chunks
 

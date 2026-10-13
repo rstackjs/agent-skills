@@ -1,4 +1,4 @@
-# tsc -> Rslib Migration Checklist
+# tsc -> Rslib migration checklist
 
 Use this reference when the source project builds libraries with `tsc`.
 

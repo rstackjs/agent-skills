@@ -52,3 +52,5 @@ skills-test/**/*
 !.agents/skills/rstack-eco-ci-debug/**
 !.agents/skills/release-blog-writer/
 !.agents/skills/release-blog-writer/**
+!.agents/skills/rstack-docs-writer/
+!.agents/skills/rstack-docs-writer/**

@@ -1,8 +1,8 @@
-# Rspack Tracing Guide
+# Rspack tracing guide
 
 Tracing allows you to visualize exactly what Rspack is doing during a build.
 
-## Enabling Tracing
+## Enabling tracing
 
 Rspack uses several environment variables to control tracing.
 
@@ -28,13 +28,13 @@ RSPACK_PROFILE=TRACE RSPACK_TRACE_LAYER=logger RSPACK_TRACE_OUTPUT=./trace.json 
 
 After running the command, Rspack will generate the file specified in `RSPACK_TRACE_OUTPUT`.
 
-## Using the Skill's Analysis Tool
+## Using the Skill's analysis tool
 
 This skill includes a script to summarize the trace file.
-Resolve `scripts/analyze_trace.js` relative to the Skill root while keeping the
+Resolve `scripts/analyze_trace.mjs` relative to the Skill root while keeping the
 working directory in the user's project.
 
 ```bash
 # Run the included script
-node "<skill-root>/scripts/analyze_trace.js" <path-to-trace-file>
+node "<skill-root>/scripts/analyze_trace.mjs" <path-to-trace-file>
 ```

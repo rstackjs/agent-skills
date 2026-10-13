@@ -1,4 +1,4 @@
-# Create New Docs
+# Create new docs
 
 Use this path when the current project has no existing Rspress documentation site.
 

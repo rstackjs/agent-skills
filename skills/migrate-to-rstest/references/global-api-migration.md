@@ -1,4 +1,4 @@
-# Global API Migration
+# Global API migration
 
 Use this reference when tests rely on globally available test APIs (Jest's `jest.<api>`, or Vitest's `vi.<api>` / `vitest.<api>` under `globals: true`).
 

@@ -1,4 +1,4 @@
-# Maintain Docs For PRs
+# Maintain docs for PRs
 
 Use this path when a Rspress v2 docs site already exists.
 

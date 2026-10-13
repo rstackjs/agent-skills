@@ -1,4 +1,4 @@
-# Rspress Version Guard
+# Rspress version guard
 
 Use this path when a docs site exists but may depend on Rspress v1, or when a newly scaffolded docs site must be checked before content work. This skill should keep documentation work on Rspress v2 and avoid accidentally creating or maintaining a stale v1 project.
 

@@ -1,4 +1,4 @@
-# migrate-to-rsbuild Skill Evaluation Report
+# migrate-to-rsbuild Skill evaluation report
 
 ## Overview
 
@@ -7,7 +7,7 @@
 - **Test cases**: 3 evaluation cases with real project files (webpack, Vite, CRA)
 - **Iteration**: 2 (real-project file manipulations)
 
-## Test Cases
+## Test cases
 
 | Eval | Name                    | Source Framework | Key Requirements                                                   |
 | ---- | ----------------------- | ---------------- | ------------------------------------------------------------------ |
@@ -15,7 +15,7 @@
 | 2    | vite-react-migration    | Vite + React     | Preserve `@`/`@components` aliases, keep old config until verified |
 | 3    | cra-react-migration     | CRA + React      | Follow official CRA guide, keep `react-scripts` until verified     |
 
-## Benchmark Results
+## Benchmark results
 
 | Metric    | With Skill       | Without Skill    | Delta   |
 | --------- | ---------------- | ---------------- | ------- |
@@ -23,7 +23,7 @@
 | Time      | 198.3s ± 19.7s   | 217.9s ± 15.5s   | -19.6s  |
 | Tokens    | 136,056 ± 62,100 | 179,037 ± 27,673 | -42,981 |
 
-## Per-Eval Detailed Results
+## Per-Eval Detailed results
 
 ### Eval 1: webpack-react-migration
 
@@ -60,7 +60,7 @@
 
 **Observation**: This is the critical failure. The with-skill agent removed `react-scripts` from `package.json` despite the skill explicitly instructing to keep old dependencies until dev/build verification passes. The baseline correctly preserved it. Time was comparable (233.3s vs 209.3s), but with-skill used dramatically fewer tokens (47,896 vs 159,925).
 
-## Key Findings
+## Key findings
 
 1. **Core migration mechanics are solid**: All runs successfully created valid `rsbuild.config.js`, added correct Rsbuild dependencies, and preserved resolve aliases.
 

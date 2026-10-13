@@ -1,4 +1,4 @@
-# Guide E: Coredump Analysis (Build)
+# Guide E: coredump analysis (Build)
 
 **Scenario**: Unstable Crash during Build.
 

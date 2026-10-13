@@ -3,7 +3,7 @@ name: rspress-v2-upgrade
 description: Migrate Rspress projects from v1 to v2. Use when a user asks to upgrade Rspress, follow the v1-to-v2 guide, update configs/themes, or validate the upgrade.
 ---
 
-# Rspress v1 to v2 Upgrade
+# Rspress v1 to v2 upgrade
 
 ## Workflow
 

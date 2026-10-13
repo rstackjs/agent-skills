@@ -1,4 +1,4 @@
-# Guide A: Crash during HMR
+# Guide A: crash during HMR
 
 **Scenario**: Stable Crash/Deadlock during DevServer HMR.
 

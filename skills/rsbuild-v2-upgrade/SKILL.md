@@ -3,7 +3,7 @@ name: rsbuild-v2-upgrade
 description: Use when upgrading a Rsbuild 1.x project to v2, including dependency and configuration updates.
 ---
 
-# Rsbuild v1 to v2 Upgrade
+# Rsbuild v1 to v2 upgrade
 
 ## Workflow
 

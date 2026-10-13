@@ -1,4 +1,4 @@
-# Rsdoctor Skill Command Map
+# Rsdoctor skill command map
 
 Stable CLI entry:
 

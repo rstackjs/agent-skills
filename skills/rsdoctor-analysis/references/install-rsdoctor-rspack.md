@@ -1,4 +1,4 @@
-# Install Rsdoctor Plugin for Rspack Projects
+# Install Rsdoctor plugin for Rspack projects
 
 This guide covers installation for Rspack-based projects, including:
 
@@ -119,6 +119,6 @@ export default defineConfig({
 });
 ```
 
-## Step 3 & 4: Locate and Use rsdoctor-data.json
+## Step 3 & 4: locate and use rsdoctor-data.json
 
 For steps on locating the `rsdoctor-data.json` file and using it for analysis, see the [common installation guide](./install-rsdoctor-common.md).

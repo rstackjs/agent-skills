@@ -1,4 +1,4 @@
-# Layout Slots Reference
+# Layout slots reference
 
 The `Layout` component accepts slot props (`React.ReactNode`) for injecting content at specific positions without replacing built-in components. This is the recommended way to extend Rspress before considering eject.
 
@@ -6,9 +6,9 @@ Official reference: <https://rspress.rs/ui/layout-components/layout>
 
 ---
 
-## All Available Slots
+## All available slots
 
-### Navigation Bar
+### Navigation bar
 
 | Slot             | Position                             |
 | ---------------- | ------------------------------------ |
@@ -20,7 +20,7 @@ Official reference: <https://rspress.rs/ui/layout-components/layout>
 | `beforeNavMenu`  | Before the nav menu items            |
 | `afterNavMenu`   | After the nav menu items             |
 
-### Sidebar & Outline
+### Sidebar & outline
 
 | Slot            | Position                            |
 | --------------- | ----------------------------------- |
@@ -29,7 +29,7 @@ Official reference: <https://rspress.rs/ui/layout-components/layout>
 | `beforeOutline` | Above the right outline (TOC) panel |
 | `afterOutline`  | Below the right outline panel       |
 
-### Home Page
+### Home page
 
 | Slot             | Position                 |
 | ---------------- | ------------------------ |
@@ -38,7 +38,7 @@ Official reference: <https://rspress.rs/ui/layout-components/layout>
 | `beforeFeatures` | Before the Features grid |
 | `afterFeatures`  | After the Features grid  |
 
-### Doc Page
+### Doc page
 
 | Slot               | Position                              |
 | ------------------ | ------------------------------------- |
@@ -59,7 +59,7 @@ Official reference: <https://rspress.rs/ui/layout-components/layout>
 
 ---
 
-## Usage Pattern
+## Usage pattern
 
 All examples below follow the same structure in `theme/index.tsx`. The key parts:
 
@@ -67,7 +67,7 @@ All examples below follow the same structure in `theme/index.tsx`. The key parts
 - Re-export everything: `export * from '@rspress/core/theme-original'`
 - Export your custom `Layout` that wraps the original with slot props
 
-### Basic — Single Slot
+### Basic — single slot
 
 ```tsx
 // theme/index.tsx
@@ -79,7 +79,7 @@ export function Layout() {
 }
 ```
 
-### Multiple Slots
+### Multiple slots
 
 ```tsx
 // theme/index.tsx
@@ -97,7 +97,7 @@ export function Layout() {
 }
 ```
 
-### With i18n Hooks
+### With i18n hooks
 
 ```tsx
 // theme/index.tsx
@@ -115,7 +115,7 @@ export function Layout() {
 }
 ```
 
-### Override MDX Components
+### Override MDX components
 
 The `components` slot accepts a `Record<string, React.ComponentType>` to override how MDX elements render:
 
@@ -137,7 +137,7 @@ export function Layout() {
 
 ---
 
-## Available Hooks
+## Available hooks
 
 Use these hooks inside slot components. Import from `@rspress/core/runtime`.
 

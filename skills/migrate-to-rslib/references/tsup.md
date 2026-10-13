@@ -1,4 +1,4 @@
-# tsup -> Rslib Migration Checklist
+# tsup -> Rslib migration checklist
 
 Use this reference when the source project builds libraries with `tsup`.
 

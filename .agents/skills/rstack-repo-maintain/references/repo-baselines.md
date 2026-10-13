@@ -1,4 +1,4 @@
-# Rstack Repository Baselines
+# Rstack repository baselines
 
 <!-- cspell:words oxfmt -->
 
@@ -15,7 +15,7 @@ Verified commits:
 
 This reference records public main-branch state, not universal recommendations or latest-package claims. Re-check the target and chosen exemplar before editing. Do not mix versions from different columns without validating the resulting toolchain and lockfile.
 
-## Version Snapshot
+## Version snapshot
 
 | Area               | Rsbuild monorepo         | Standalone `rslog` package      |
 | ------------------ | ------------------------ | ------------------------------- |
@@ -38,9 +38,9 @@ Current workflow pins shared by Rsbuild and the sampled standalone packages:
 
 Refresh action pins from the selected live baseline. Preserve the version comment next to each immutable commit hash.
 
-## Baseline Lanes
+## Baseline lanes
 
-### Rsbuild: Integrated Monorepo Lane
+### Rsbuild: Integrated monorepo lane
 
 Use `web-infra-dev/rsbuild` when the target is a substantial monorepo that benefits from shared configuration and the Rstack CLI.
 
@@ -71,7 +71,7 @@ Do not copy this lane wholesale into a small package:
 - Supply-chain settings can break installs when native or postinstall dependencies are not modeled. Add them one at a time and verify clean/frozen installs.
 - Keep formatter replacement and toolchain consolidation as explicit migration scopes.
 
-### rslog: Standalone Small-Package Lane
+### rslog: Standalone Small-Package lane
 
 Use `rstackjs/rslog` as the primary baseline for focused packages that remain clearer with standalone Rslib, Rslint, and Rstest.
 
@@ -101,7 +101,7 @@ Therefore:
 
 The current `rslog/AGENTS.md` still says its build uses “tsgo declarations,” which no longer matches `rslib.config.ts`. Treat this as evidence that documentation must be checked against live config, not copied verbatim.
 
-### Rslib v1 Prerelease Upgrade
+### Rslib v1 prerelease upgrade
 
 When the target version is `@rslib/core@1.0.0-beta` or another v1 prerelease, use the official [Rslib v0-to-v1 upgrade guide](https://v1.rslib.rs/zh/guide/upgrade/v0-to-v1) as the migration checklist. Treat the change from 0.23 to v1 as a deliberate compatibility migration:
 
@@ -121,9 +121,9 @@ Useful history:
 - [#89 chore: optimize CI pnpm setup](https://github.com/rstackjs/rslog/pull/89)
 - [#93 chore(infra): enable tsgo, publint, and prettier checks](https://github.com/rstackjs/rslog/pull/93) — historical TypeScript 6 state, superseded for tsgo by #98.
 
-## Specialized References
+## Specialized references
 
-### rsbuild-plugin-publint: Pure ESM Plugin
+### rsbuild-plugin-publint: Pure ESM plugin
 
 Use this repository when a plugin needs a compact pure ESM and Node 20-compatible shape.
 
@@ -135,7 +135,7 @@ Use this repository when a plugin needs a compact pure ESM and Node 20-compatibl
 
 Use `rslog`, not this repository, for the publint-build-plugin example.
 
-### rsbuild-plugin-arethetypeswrong: Bundled Declaration Validation
+### rsbuild-plugin-arethetypeswrong: Bundled declaration validation
 
 Use this repository for bundled declarations and package-validation behavior, not as a universal formatter or syntax template.
 
@@ -164,7 +164,7 @@ Use this repository only when CommonJS consumers require dual output.
 - TypeScript `7.0.2`, Rslib `^0.23.2`, Rslint `^0.6.1`, Rstest `^0.11.1`, and pnpm `11.5.0`.
 - Current main no longer uses `dts.tsgo` or `@typescript/native-preview`; older PR #28 is historical implementation evidence, not the current baseline.
 
-## Selection Rules
+## Selection rules
 
 1. Match repository shape before version freshness: monorepo, focused library, plugin, CLI, generated-artifact package, or compatibility package.
 2. Preserve public output and runtime support unless the user explicitly accepts a breaking change.
@@ -172,7 +172,7 @@ Use this repository only when CommonJS consumers require dual output.
 4. Treat exact versions as a coherent snapshot. Refresh the chosen baseline's manifest, lockfile, workflow pins, and engine fields together.
 5. Prefer package-native validation: focused tests, build artifacts, import/require smoke tests, `pnpm pack --dry-run` for supported pnpm versions, publint, and release command inspection.
 
-## Live Refresh Checklist
+## Live refresh checklist
 
 Before presenting or applying the baseline:
 

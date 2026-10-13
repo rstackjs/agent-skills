@@ -1,4 +1,4 @@
-# ESLint Flat Config -> Rslint Migration Guide
+# ESLint flat config -> Rslint migration guide
 
 Use this reference when the source project uses `eslint.config.*`.
 
@@ -25,7 +25,7 @@ Copy this checklist and check off items as you complete them:
 - [ ] Step 6: Replace VS Code ESLint settings with Rslint settings
 - [ ] Step 7: Validate, then remove obsolete ESLint artifacts
 
-## Step 0: Inventory current ESLint behavior
+## Step 0: inventory current ESLint behavior
 
 Check:
 
@@ -37,7 +37,7 @@ Check:
 
 Do not delete the ESLint config or dependencies until the migrated Rslint command is green.
 
-## Step 1: Replace linter package dependencies
+## Step 1: replace linter package dependencies
 
 Install Rslint:
 
@@ -76,7 +76,7 @@ Remove ESLint-only dependencies only after validation passes. Built-in Rslint pr
 
 Before removing any package, verify it is not used by another tool, workspace package, or still-unmigrated scope.
 
-## Step 2: Replace package scripts and CLI flags
+## Step 2: replace package scripts and CLI flags
 
 Replace `eslint` commands with `rslint` commands. Preserve file and directory arguments.
 
@@ -97,7 +97,7 @@ Do not copy ESLint-only flags blindly. For example, remove or re-evaluate flags 
 
 If the old lint command relied on type-aware TypeScript linting, validate the migrated command with `--type-check` or preserve the project's existing Rslint type-checking setup.
 
-## Step 3: Rename and translate config file
+## Step 3: rename and translate config file
 
 Rename the config to `rslint.config.*`.
 
@@ -147,7 +147,7 @@ export default defineConfig([
 
 Keep the config format aligned with the source project where practical. If the old config was JavaScript, keep JavaScript. If the old config was TypeScript, use TypeScript and add `jiti` when Node.js 20 compatibility is required.
 
-## Step 4: Migrate presets, plugins, rules, and ignores
+## Step 4: migrate presets, plugins, rules, and ignores
 
 Rslint has built-in presets that cover common ESLint flat config imports:
 
@@ -179,7 +179,7 @@ For ignores:
 - Keep lint-specific ignores that are not in `.gitignore`, such as source fixtures, generated checked-in files, or deliberate lint exclusions.
 - Remember that a config entry containing only `ignores` is a global ignore and can block nested config discovery in ignored directories.
 
-## Step 5: Preserve inline directives unless requested
+## Step 5: preserve inline directives unless requested
 
 Do not replace source comments such as:
 
@@ -207,7 +207,7 @@ rg -n "eslint-(disable|enable)"
 
 Do not mutate string literals, docs, snapshots, or user-visible text unless the user asked for a full terminology change.
 
-## Step 6: Replace VS Code ESLint settings with Rslint settings
+## Step 6: replace VS Code ESLint settings with Rslint settings
 
 Check `.vscode/extensions.json`:
 

@@ -1,4 +1,4 @@
-# Vitest Migration Deltas
+# Vitest migration deltas
 
 Use this reference when the current framework is Vitest.
 

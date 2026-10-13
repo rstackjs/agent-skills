@@ -3,7 +3,7 @@ name: rspack-v2-upgrade
 description: Use when upgrading a Rspack 1.x project to v2, including dependency and configuration updates.
 ---
 
-# Rspack 1.x to v2 Upgrade
+# Rspack 1.x to v2 upgrade
 
 ## Workflow
 

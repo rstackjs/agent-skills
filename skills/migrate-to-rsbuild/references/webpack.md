@@ -1,4 +1,4 @@
-# webpack -> Rsbuild Migration Checklist
+# webpack -> Rsbuild migration checklist
 
 Use this reference when the source project is webpack.
 

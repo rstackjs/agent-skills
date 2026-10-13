@@ -1,19 +1,19 @@
 ---
 name: rstack-repo-maintain
-description: 'Audit and modernize RstackJS/Rspack ecosystem repositories against current infrastructure baselines. Choose between the Rsbuild-style Rstack CLI monorepo lane and the standalone Rslib/Rslint/Rstest package lane; maintain package.json metadata, exports, dependency placement and version freshness; align ESM or dual output, Node/pnpm/TypeScript versions, formatter, CI action pins, release validation, docs, dependencies, and infra PR conventions. Use when updating rstackjs repositories, refreshing infrastructure or package manifest baselines, copying patterns from Rsbuild or maintained exemplars, or reviewing package and tooling consistency.'
+description: Audit or modernize Rstack repository infrastructure, package manifests, build/test tooling, CI, and release configuration against maintained baselines.
 metadata:
   internal: true
 ---
 
 <!-- cspell:words oxfmt -->
 
-# Rstack Repo Maintain
+# Rstack repo maintain
 
 ## Overview
 
 Modernize RstackJS repositories without blindly copying config. Use the target's compatibility surface plus current exemplar repositories to make small, verifiable infrastructure upgrades.
 
-## Baseline Evidence
+## Baseline evidence
 
 Read `references/repo-baselines.md` when choosing a template repo, explaining where the baseline came from, or deciding between pure ESM and dual output, standalone tools and Rstack CLI, runtime floors, TypeScript majors, formatters, package validation, or CI patterns.
 

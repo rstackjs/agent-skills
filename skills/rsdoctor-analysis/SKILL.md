@@ -43,22 +43,28 @@ Decision rules:
 
 ## Generation Gate
 
-Identify `pluginName` (`@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin`) and determine `pluginVersion` from local files first: `package.json`, lockfile, then `node_modules/<plugin>/package.json`; use `pnpm why` / `npm ls` only as fallback.
+Identify the project's bundler first. For webpack, follow the separate [webpack 1.x generation guide](references/install-rsdoctor-webpack.md); do not apply the Rspack 2.x gate below. For Rspack, check `@rsdoctor/core` and `@rsdoctor/rspack-plugin` in `package.json`, the lockfile, then installed package metadata. Use `pnpm why` / `npm ls` only as fallback. Resolve actual versions rather than inferring the major version from a dependency range, and stop if the selected plugin's peer dependency excludes the installed bundler. Check direct dependencies and active plugin registration separately from framework-owned transitive packages. `@rsdoctor/core` 1.x may be present for custom rules without providing the build plugin.
 
-Use this exact if/else decision tree; do not merge branches:
+For Rspack, use this exact if/else decision tree; do not merge branches:
 
 ```text
-if pluginName is missing:
-  install/register the matching Rsdoctor plugin, then configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
-else if pluginVersion is unknown:
-  resolve pluginVersion first; if still unknown, configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
-else if pluginVersion >= 1.5.11:
+if Rspack actively registers both @rsdoctor/core 2.x and @rsdoctor/rspack-plugin 1.x:
+  stop and report mixed plugins; do not install or build
+else if Rspack has @rsdoctor/core 2.x:
+  use or register the v2 plugin; configure output.mode='brief' and include 'json' in output.options.type; build with RSDOCTOR=true only
+else if @rsdoctor/rspack-plugin is installed but its version is unknown:
+  resolve its version first; if still unknown, configure output.mode='brief' and include 'json' in output.options.type; build with RSDOCTOR=true only
+else if an installed @rsdoctor/rspack-plugin 1.x version is >= 1.5.11:
   do not edit plugin config just for JSON; build with RSDOCTOR_OUTPUT=json and RSDOCTOR=true if needed
-else: # pluginVersion < 1.5.11
-  MUST configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
+else if an installed @rsdoctor/rspack-plugin 1.x version is older:
+  configure output.mode='brief' and include 'json' in output.options.type; build with RSDOCTOR=true only
+else: # no build plugin installed
+  choose a compatible Rspack plugin, then configure brief JSON output and build with RSDOCTOR=true only
 ```
 
-Preflight every build command: `RSDOCTOR_OUTPUT=json` is allowed only in the `pluginVersion >= 1.5.11` branch. For missing, unknown, or `< 1.5.11`, it is forbidden. For `< 1.5.11`, generating `rsdoctor-data.json` requires the plugin config below:
+For an Rspack 2.x project without a plugin, install a compatible `@rsdoctor/core` 2.x version; do not install `@rsdoctor/rspack-plugin`. For Rspack 1.x, keep the compatible 1.x plugin. If installed versions or bundler compatibility cannot be determined, stop before installing. Check the plugin import path only when the package versions and active configuration appear inconsistent.
+
+For Rspack builds, `RSDOCTOR_OUTPUT=json` is allowed only for a known 1.x plugin version `>= 1.5.11`. It is forbidden for 2.x, missing, unknown, or older plugin versions. When explicit JSON configuration is required, add `'json'` to an existing brief output type rather than removing HTML; if changing a normal report temporarily, restore its previous output settings after generating data:
 
 ```ts
 output: {

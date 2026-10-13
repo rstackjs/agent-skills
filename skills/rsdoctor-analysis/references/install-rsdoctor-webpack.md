@@ -1,16 +1,16 @@
 # Install Rsdoctor Plugin for Webpack Projects
 
-This guide covers installation for Webpack projects (webpack >= 5).
+This guide covers Rsdoctor 1.x installation for webpack projects (webpack >= 5). Rsdoctor 2.x does not support webpack; keep the existing 1.x integration when the project remains on webpack.
 
 ## Step 1: Install Dependencies
 
 Rsdoctor only supports webpack >= 5.
 
-For projects based on webpack:
+Only if the plugin is missing, install the 1.x package with the project's package manager:
 
 ```bash
-npm add @rsdoctor/webpack-plugin -D
-pnpm add @rsdoctor/webpack-plugin -D
+npm add @rsdoctor/webpack-plugin@1 -D
+pnpm add @rsdoctor/webpack-plugin@1 -D
 ```
 
 ## Step 2: Register Plugin

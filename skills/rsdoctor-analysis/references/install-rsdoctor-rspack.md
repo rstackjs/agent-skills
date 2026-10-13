@@ -8,45 +8,31 @@ This guide covers installation for Rspack-based projects, including:
 - Rslib
 - Rspress
 
-## Step 1: Install Dependencies
+## Step 1: Check the Plugin Version
 
-For projects based on Rspack, such as Rsbuild or Rslib:
+Follow the [Generation Gate](../SKILL.md#generation-gate) before installation or build. Rspack 2.x uses `@rsdoctor/core` 2.x; existing Rspack 1.x integrations use `@rsdoctor/rspack-plugin` 1.x. Do not add the legacy plugin to a 2.x project. A standalone `@rsdoctor/core` 1.x dependency may exist for custom rules and does not identify the active plugin.
 
-**Note:** Prefer using the latest versions of the above dependencies when available.
+If no plugin is installed, select a version compatible with the project's Rspack version and install it with the project's package manager. If both 2.x and 1.x plugins are actively registered, report the mixed setup instead of installing another package. A framework-owned transitive 1.x package alone does not establish that its plugin is active.
 
-```bash
-npm add @rsdoctor/rspack-plugin -D
-pnpm add @rsdoctor/rspack-plugin -D
+## Step 2: Register Plugin and Generate JSON
+
+For `@rsdoctor/core` 2.x, preserve the project's existing plugin registration point and use this import and output configuration when generating analysis data:
+
+```ts
+import { RsdoctorRspackPlugin } from '@rsdoctor/core';
+
+new RsdoctorRspackPlugin({
+  disableClientServer: true,
+  output: {
+    mode: 'brief',
+    options: { type: ['json'] },
+  },
+});
 ```
 
-## Step 2: Register Plugin
+Add `'json'` alongside `'html'` when an existing brief report needs both. If normal report settings are changed temporarily, restore them after generating the data. Build with `RSDOCTOR=true`; do not use `RSDOCTOR_OUTPUT=json` for this 2.x branch.
 
-After the dependency installation, check the installed `@rsdoctor/rspack-plugin` version before changing config or running a build. Do not infer plugin capabilities from `@rsdoctor/agent-cli --version`.
-
-Required version gate (use exactly this if/else order):
-
-1. Set `pluginName = '@rsdoctor/rspack-plugin'`.
-2. Determine `pluginVersion` from local files first: dependency declarations in `package.json`, lockfile entries, then `node_modules/@rsdoctor/rspack-plugin/package.json` if installed. Use `pnpm why @rsdoctor/rspack-plugin` / `npm ls @rsdoctor/rspack-plugin` only as a fallback. When repeating analysis, reuse a valid `.rsdoctor-analysis-cache.json` plugin entry before re-reading files; invalidate it if `package.json`, lock files, or the plugin package file modification time changed.
-3. Choose one branch; do not merge branches:
-
-```text
-if @rsdoctor/rspack-plugin is missing:
-  install/register @rsdoctor/rspack-plugin, then configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
-else if pluginVersion is unknown:
-  resolve pluginVersion first; if still unknown, configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
-else if pluginVersion >= 1.5.11:
-  do not modify plugin config just for JSON; build with RSDOCTOR_OUTPUT=json and RSDOCTOR=true if needed
-else: # pluginVersion < 1.5.11
-  MUST configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
-```
-
-Preflight every build command: `RSDOCTOR_OUTPUT=json` is allowed only in the `pluginVersion >= 1.5.11` branch. For missing, unknown, or `< 1.5.11`, `RSDOCTOR_OUTPUT=json` is forbidden. For example, when `@rsdoctor/rspack-plugin` is `1.5.7`, this command is incorrect:
-
-```bash
-RSDOCTOR_OUTPUT=json RSDOCTOR=true pnpm run build:rspack
-```
-
-Below are configuration examples for old Rspack plugin versions, unknown versions, missing plugins, or projects that still need to register the plugin:
+The following examples apply to the legacy `@rsdoctor/rspack-plugin` 1.x branch when explicit JSON configuration is needed (version below `1.5.11` or unknown):
 
 ### Rspack CLI
 

@@ -223,10 +223,10 @@ description: A concise summary of the page content for SEO and AI consumption.
 
 ## Rsdoctor Skills
 
-### rsdoctor-upgrade-v2
+### rsdoctor-migrate-v2
 
 ```bash
-npx skills add rstackjs/agent-skills --skill rsdoctor-upgrade-v2
+npx skills add rstackjs/agent-skills --skill rsdoctor-migrate-v2
 ```
 
 Upgrade Rspack projects from Rsdoctor 1.x to 2.0, including runtime and bundler compatibility, package and ESM changes, configuration replacements, Agent CLI migration, and report validation.

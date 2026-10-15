@@ -17,28 +17,9 @@ For repeated analysis in the same repository, use a lightweight project-local ca
 
 When the runtime supports parallel execution, run independent local initialization checks concurrently: common path checks, bounded `rg --files` lookup, and local plugin-version file reads. Do not run `rsdoctor-agent` CLI checks until a real `rsdoctor-data.json` path exists. Treat plugin-version results as speculative until the data file is confirmed missing; never let parallel plugin checks trigger generation by themselves.
 
-If you cannot find the file, ask the user to provide the path to `rsdoctor-data.json`. If the file truly does not exist and generation/setup is required, check the installed `@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin` version before changing config or running a build. The `@rsdoctor/agent-cli` version does not prove plugin support for `RSDOCTOR_OUTPUT=json`.
+If you cannot find the file, ask the user to provide its path. If generation/setup is required, follow the [Rspack Generation Gate](../SKILL.md#generation-gate) for Rspack projects or the separate [webpack 1.x guide](install-rsdoctor-webpack.md) for webpack projects before changing config or running a build. The `@rsdoctor/agent-cli` version does not prove which plugin or JSON generation method the project supports.
 
-Required version gate (use exactly this if/else order):
-
-1. Identify `pluginName`: `@rsdoctor/rspack-plugin` or `@rsdoctor/webpack-plugin`.
-2. Determine `pluginVersion` from local files first: dependency declarations in `package.json`, lockfile entries, then installed `node_modules/<plugin>/package.json`. Use package-manager output such as `pnpm why @rsdoctor/rspack-plugin` / `npm ls @rsdoctor/rspack-plugin` only as a fallback.
-3. Choose one branch; do not merge branches:
-
-```text
-if pluginName is missing:
-  install/register the matching Rsdoctor plugin, then MUST configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
-else if pluginVersion is unknown:
-  resolve pluginVersion first; if still unknown, MUST configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
-else if pluginVersion >= 1.5.11:
-  do not modify plugin config just for JSON; build with RSDOCTOR_OUTPUT=json and RSDOCTOR=true if needed
-else: # pluginVersion < 1.5.11
-  MUST configure output.mode='brief' and output.options.type=['json']; build with RSDOCTOR=true only
-```
-
-Preflight every build command: `RSDOCTOR_OUTPUT=json` is allowed only in the `pluginVersion >= 1.5.11` branch. For missing, unknown, or `< 1.5.11` versions, a command such as `RSDOCTOR_OUTPUT=json RSDOCTOR=true pnpm run build:rspack` is incorrect.
-
-The file is typically generated in the same directory as your build output (e.g., `dist`, `output`, `static`). For plugin versions < `1.5.11`, configure a custom output directory using the `output.reportDir` option:
+The file is typically generated in the same directory as your build output (e.g., `dist`, `output`, `static`). When explicit brief JSON configuration is needed, configure a custom output directory using the `output.reportDir` option if necessary:
 
 ```js
 // Example for Rspack: use RsdoctorRspackPlugin

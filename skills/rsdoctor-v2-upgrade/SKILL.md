@@ -1,5 +1,5 @@
 ---
-name: rsdoctor-migrate-v2
+name: rsdoctor-v2-upgrade
 description: Upgrade Rspack projects from Rsdoctor 1.x to 2.0. Use when replacing legacy Rsdoctor packages, converting Rsdoctor setup to ESM, updating removed or deprecated options, moving MCP workflows to Agent CLI, or validating Node.js and Rspack compatibility for an Rsdoctor 2.0 upgrade.
 ---
 

@@ -8,13 +8,13 @@ This guide covers installation for Rspack-based projects, including:
 - Rslib
 - Rspress
 
-## Step 1: Check the Plugin Version
+## Step 1: check the plugin version
 
 Follow the [Generation Gate](../SKILL.md#generation-gate) before installation or build. Rspack 2.x uses `@rsdoctor/core` 2.x; existing Rspack 1.x integrations use `@rsdoctor/rspack-plugin` 1.x. Do not add the legacy plugin to a 2.x project. A standalone `@rsdoctor/core` 1.x dependency may exist for custom rules and does not identify the active plugin.
 
 If no plugin is installed, select a version compatible with the project's Rspack version and install it with the project's package manager. If both 2.x and 1.x plugins are actively registered, report the mixed setup instead of installing another package. A framework-owned transitive 1.x package alone does not establish that its plugin is active.
 
-## Step 2: Register Plugin and Generate JSON
+## Step 2: register plugin and generate JSON
 
 For `@rsdoctor/core` 2.x, preserve the project's existing plugin registration point and use this import and output configuration when generating analysis data:
 

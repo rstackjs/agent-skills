@@ -56,8 +56,8 @@ Upgrade with the smallest behavior-preserving diff. Treat the official migration
 
 ## Output language
 
-- Write all user-facing explanations, plans, progress updates, and migration summaries in Chinese.
-- Keep package names, API names, configuration fields, commands, file paths, and error messages in their original form; explain their meaning in Chinese when needed.
+- Write user-facing explanations, plans, progress updates, and migration summaries in the user's requested language. If none is specified, follow the language of the user's request.
+- Keep package names, API names, configuration fields, commands, file paths, and error messages in their original form; explain their meaning in the response language when needed.
 
 ## Guardrails
 

@@ -16,10 +16,21 @@ Response order (required): High-Priority Issues -> Proposed Solutions -> Optiona
 3. If data exists, skip all plugin version/config/build generation logic. Update cache when useful.
 4. If data is missing, stop analysis: do not run `rsdoctor-agent` analysis commands, do not run the Analysis Gate, and either ask for the data path or run the Generation Gate below only when setup/generation is required.
 5. After a real data file exists, run Analysis Gate at most once before the first `rsdoctor-agent` data-fetch command: verify global `@rsdoctor/agent-cli` with `npm view @rsdoctor/agent-cli version` and `rsdoctor-agent --version`; install latest only if missing/outdated, a version-related error occurs, or the user asks to refresh.
-6. Fetch only the Default Evidence Set first; run independent fetches in parallel when possible.
-7. Run the ROI Triage Gate below before selecting deep-dive commands or recommendations. Use it to rank issue categories by measured impact, then synthesize findings in the required response order.
+6. Discover compilers before analysis with `rsdoctor-agent compilers list --data-file <path>`, then follow the Compiler selection rules below.
+7. For each selected compiler, fetch only the Default Evidence Set first; run independent fetches in parallel when possible. Pass that compiler's `--compiler <name>` to every data-fetch command in its evidence pass.
+8. Run the ROI Triage Gate below before selecting deep-dive commands or recommendations. Use it to rank issue categories by measured impact, then synthesize findings in the required response order.
 
 Performance rules: parallelize independent checks, cache only derived facts (`dataFile`, `dataFileMtime`, `pluginName`, `pluginVersion`, dependency/config/plugin modification times), and invalidate cache when paths disappear, modification times change, the user asks to refresh, or cached values fail. Speculative plugin checks must not trigger generation; use them only after confirming the data file is missing.
+
+## Compiler selection
+
+Treat compiler discovery as the first data query, not part of the parallel evidence fetch:
+
+- If the report has one named compiler, use its exact `name` for the entire analysis.
+- If the report has multiple compilers, resolve each target named by the user to an exact compiler name. When the request identifies a target such as client, server, or worker but does not match an exact name, map it only when the discovery result makes the match unambiguous; if no target is given or a match is ambiguous, ask the user to choose from the returned names.
+- If a legacy report returns one compiler with `name: null`, omit `--compiler`.
+- For a single-compiler analysis, keep the same selected compiler across the Default Evidence Set and all follow-up queries. If the user explicitly requests cross-compiler analysis, select each requested compiler using the rules above (or all returned compilers when the user requests all), run a separate evidence pass with its own `--compiler <name>`, then compare clearly labeled results. Never mix results from different compilers within a pass.
+- Before fetching evidence, verify that every selected compiler's `available` field is `true`. If any is false, ask the user to restore or regenerate that compiler data file.
 
 ## ROI triage gate
 
@@ -90,7 +101,7 @@ Default Evidence Set:
 
 Scope rules:
 
-- Use `rsdoctor-agent` for bundle data access only after `rsdoctor-data.json` exists; prefer parallel independent fetches; bound output with `--filter`, pagination, and `--limit`.
+- Use `rsdoctor-agent` for bundle data access only after `rsdoctor-data.json` exists; prefer parallel independent fetches; bound output with `--filter`, pagination, and `--limit`. After discovery, pass the compiler selected for that evidence pass as `--compiler <name>` to every direct command and `query` call; omit it only for a legacy report whose discovered name is `null`.
 - Default analysis stays within the Default Evidence Set. For non-default analysis, choose minimal fields from [references/rsdoctor-data-types.md](references/rsdoctor-data-types.md) and patterns from [references/common-analysis-patterns.md](references/common-analysis-patterns.md).
 - Treat chain tracing, broad commands, optimization edits, splitChunks experiments, and build re-runs as opt-in follow-ups that require user confirmation.
 - For duplicate packages and tree-shaking issues, identify issues first; trace reference/import chains only after user confirmation.
@@ -117,6 +128,9 @@ Recovery rules:
 - `rsdoctor-data.json` missing: do not run `rsdoctor-agent`; ask for the data path or run Generation Gate, then use the matching install reference if setup is needed.
 - Command not found: run Analysis Gate, then retry with `rsdoctor-agent`.
 - `query` reports unknown tool: run `list` and use a catalog tool name, or switch to direct `<group> <subcommand>` mode.
+- `COMPILER_REQUIRED`: run `compilers list`, select the requested compiler or compilers using the rules above, and retry each evidence pass consistently with its own `--compiler`.
+- `COMPILER_NOT_FOUND`: refresh the compiler list and use an exact returned name; do not guess from `displayName`.
+- `COMPILER_DATA_NOT_FOUND`: ask the user to restore or regenerate the selected compiler data file.
 - JSON read error: verify file path, JSON validity, and permissions.
 - Run installs, builds, version checks, and `rsdoctor-agent...` commands only in the host's authorized command environment when it has the required project, dependency, and network access. If the available environment lacks that access, stop and ask the user instead of attempting to bypass the sandbox or permission boundary. Clearly identify the missing permission or access; if an Rsdoctor dependency must be installed, tell the user which dependency is required and provide the appropriate package-manager command for them to run.
 

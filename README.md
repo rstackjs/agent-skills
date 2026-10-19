@@ -271,7 +271,7 @@ Set up, write, or review Rstest tests and configuration, including environments,
 npx skills add rstackjs/agent-skills --skill migrate-to-rslint
 ```
 
-Migrate ESLint or other lint tools to Rslint. Use when replacing ESLint flat config, lint scripts, VS Code ESLint settings, inline directives, rules, presets, plugins, or lint dependencies with Rslint equivalents.
+Migrate ESLint flat config or Oxlint to Rslint, preserving rule options, file scopes, and plugins while updating lint scripts, editor settings, and inline directives.
 
 ## Storybook skills
 

@@ -21,6 +21,8 @@ llms
 modernjs
 mktemp
 napi
+oxlint
+oxlintrc
 pacman
 pluggable
 prebundle

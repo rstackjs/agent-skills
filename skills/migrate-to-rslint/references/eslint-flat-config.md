@@ -8,6 +8,8 @@ Use this reference when the source project uses `eslint.config.*`.
 - Rslint configuration: https://rslint.rs/config/
 - Rslint ignores and `.gitignore`: https://rslint.rs/config/ignoring-files
 - Rslint rules and presets: https://rslint.rs/config/rules-and-presets
+- Rslint TypeScript project settings: https://rslint.rs/config/language-options
+- Rslint ESLint plugin compatibility: https://rslint.rs/guide/eslint-plugins
 - Rslint inline directives: https://rslint.rs/guide/inline-directives
 - Rslint VS Code extension: https://rslint.rs/guide/vscode-extension
 - `jiti`: https://npmjs.com/package/jiti
@@ -39,7 +41,7 @@ Do not delete the ESLint config or dependencies until the migrated Rslint comman
 
 ## Step 1: replace linter package dependencies
 
-Install Rslint:
+If Rslint was not already installed in the main workflow, install it with the intended version constraints:
 
 ```bash
 pnpm add -D @rslint/core
@@ -95,7 +97,7 @@ Use only Rslint-supported CLI flags. Supported flags include `--init`, `--config
 
 Do not copy ESLint-only flags blindly. For example, remove or re-evaluate flags such as `--ext`, `--cache`, `--cache-location`, `--resolve-plugins-relative-to`, and `--report-unused-disable-directives` unless the Rslint CLI docs provide an equivalent.
 
-If the old lint command relied on type-aware TypeScript linting, validate the migrated command with `--type-check` or preserve the project's existing Rslint type-checking setup.
+If the old lint command relied on type-aware TypeScript rules, preserve its project selection through `languageOptions.parserOptions.project` or `projectService: true`, using the installed Rslint version's supported settings. These modes are alternatives. `--type-check` additionally reports TypeScript compiler diagnostics; do not add it merely to enable type-aware lint rules.
 
 ## Step 3: rename and translate config file
 
@@ -110,7 +112,7 @@ Recommended mapping:
 | `eslint.config.ts`  | `rslint.config.ts`  |
 | `eslint.config.mts` | `rslint.config.mts` |
 
-Rslint uses flat config arrays, so the shape is close to ESLint flat config. Import built-in helpers and presets from `@rslint/core`:
+Rslint uses flat config arrays, so the shape is close to ESLint flat config. Import built-in helpers and presets from `@rslint/core`. The following illustrates available imports; include only presets that match the source configuration's intent:
 
 ```ts
 import {
@@ -168,14 +170,14 @@ Rslint aligns its JavaScript recommended preset with ESLint's `js.configs.recomm
 For rules:
 
 - Keep rule severities and options when Rslint supports the rule.
-- If Rslint reports an unknown rule, remove it from the Rslint config and list it as an unsupported migration gap.
-- Do not keep installing ESLint plugins in an attempt to make Rslint load them.
+- Check unknown rules against the installed native rule catalog and any registered JS plugin. Record unresolved rules as migration gaps; do not silently disable them to make lint pass.
+- For community or local JS plugins, follow [ESLint-compatible JS plugins](eslint-plugins.md). Retain packages still needed by those plugins.
 - For built-in plugin presets, remove the old plugin dependency after validation if it is no longer used elsewhere.
 
 For ignores:
 
 - Rslint automatically reads `.gitignore` files and treats those patterns as global ignores.
-- Remove `ignores` entries that only duplicate `.gitignore` patterns.
+- Remove duplicate `ignores` entries only after confirming that the relevant `.gitignore` is read for that invocation and config boundary. Nested configs do not automatically inherit ancestor `.gitignore` files outside their Git scope.
 - Keep lint-specific ignores that are not in `.gitignore`, such as source fixtures, generated checked-in files, or deliberate lint exclusions.
 - Remember that a config entry containing only `ignores` is a global ignore and can block nested config discovery in ignored directories.
 
@@ -260,7 +262,7 @@ Resolve validation failures in this order:
 4. Type-aware linting behavior.
 5. Autofix differences.
 
-After validation passes:
+Complete the main workflow's [behavior validation](../SKILL.md#workflow), including the source inventory comparison, before cleanup. After validation passes:
 
 - Remove obsolete ESLint config files.
 - Remove obsolete ESLint dependencies that are not used elsewhere.

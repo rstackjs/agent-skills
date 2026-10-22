@@ -90,7 +90,7 @@ Option scopes:
 ## Errors
 
 - `errors list` -> All errors and warnings
-- `errors by-code --code <code>` -> Filter by code. For default E1001/E1002 summaries, prefer local JSON summarization.
+- `errors by-code --code <code>` -> Filter by code. For default E1001/E1002 summaries, prefer local JSON summarization from the selected compiler entry's resolved data file in `compilers list`, never from the aggregate or index file.
 - `errors by-level --level <level>` -> Filter by level
 
 ## Rules

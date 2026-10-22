@@ -30,6 +30,7 @@ Treat compiler discovery as the first data query, not part of the parallel evide
 - If the report has multiple compilers, resolve each target named by the user to an exact compiler name. When the request identifies a target such as client, server, or worker but does not match an exact name, map it only when the discovery result makes the match unambiguous; if no target is given or a match is ambiguous, ask the user to choose from the returned names.
 - If a legacy report returns one compiler with `name: null`, omit `--compiler`.
 - For a single-compiler analysis, keep the same selected compiler across the Default Evidence Set and all follow-up queries. If the user explicitly requests cross-compiler analysis, select each requested compiler using the rules above (or all returned compilers when the user requests all), run a separate evidence pass with its own `--compiler <name>`, then compare clearly labeled results. Never mix results from different compilers within a pass.
+- For local JSON evidence in each pass, including E1001/E1002 summaries, read only the selected compiler entry's resolved data file returned by `compilers list`. Do not read the originally supplied aggregate or index file as compiler-scoped evidence.
 - Before fetching evidence, verify that every selected compiler's `available` field is `true`. If any is false, ask the user to restore or regenerate that compiler data file.
 
 ## ROI triage gate

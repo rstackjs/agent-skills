@@ -1,0 +1,27 @@
+{
+  "eval_id": 2,
+  "eval_name": "cra-migration",
+  "prompt": "我有一个 Create React App 项目想迁移到 Rsbuild，大概要怎么做？有什么需要注意的？",
+  "assertions": [
+    {
+      "text": "Response provides step-by-step migration instructions",
+      "type": "content"
+    },
+    {
+      "text": "Response mentions installing @rsbuild/core and @rsbuild/plugin-react",
+      "type": "content"
+    },
+    {
+      "text": "Response mentions updating package.json scripts (dev/build commands)",
+      "type": "content"
+    },
+    {
+      "text": "Response mentions creating rsbuild.config file",
+      "type": "content"
+    },
+    {
+      "text": "Information is sourced from fetched docs, not hallucinated",
+      "type": "accuracy"
+    }
+  ]
+}

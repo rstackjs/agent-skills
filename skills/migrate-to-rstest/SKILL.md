@@ -21,7 +21,7 @@ Migrate the smallest runnable Jest, Vitest, or Playwright Test scope with minima
 6. Get the migrated scope semantically green. Fix failures in this order: dependency skew, config/resolver, discovery, setup/environment/coverage, mocks/timers/snapshots, then test bodies.
 7. Compare the post-migration manifest and execution counts with the baseline. Classify every added, removed, skipped, or excluded test explicitly; do not call a run equivalent merely because it is green. For Jest snapshot migrations, also complete the snapshot cleanup and `unchecked` validation in `references/jest-migration-deltas.md`.
 8. Remove temporary aliases, diagnostic hooks, and copied legacy workarounds that are no longer required. Keep only configuration proven necessary by behavior or measurement.
-9. If wall time, build, test runtime, logs, or memory materially regress, load and follow the `rstest-debugging` skill when available. Otherwise use the migration fallback in `references/performance-diagnosis.md`, then read `references/dependency-bundling-performance.md` and/or `references/mocked-module-build-graph.md` according to the measured bottleneck. Change one variable at a time.
+9. If the migration misses its performance target or regresses in wall time, build time, test runtime, output volume, or memory, follow `rstest-debugging` when available. Otherwise use `references/performance-diagnosis.md`. If repeated worker startup or per-file dependency compilation dominates, use the pool comparison in that workflow to evaluate `vmForks` or `vmThreads`.
 10. After correctness and performance validation, remove only legacy files and dependencies owned by the migrated scope. Summarize behavior parity, discovery differences, unsupported fields, retained compatibility config, performance tradeoffs, and TODOs.
 
 ## Guardrails
@@ -30,7 +30,7 @@ Migrate the smallest runnable Jest, Vitest, or Playwright Test scope with minima
 - Do not change production behavior, assertions, test names, scenarios, coverage thresholds, or ignore directives to make migration pass.
 - Do not introduce `jest`/`vi` shims or aliases; rewrite call sites with `references/global-api-migration.md`.
 - Do not silently drop unknown config fields or historical excludes. Verify, replace, or report each one.
-- Do not compare performance across different test manifests, Node versions, coverage modes, cache states, or worker settings.
+- Compare the same test manifest under the same Node version, coverage mode, and cache conditions. Change one tuning option at a time and keep worker settings fixed unless testing that option.
 - Keep the previous runner until Rstest is green. Use a local Rstest checkout only for labeled diagnostics, then validate the final result with the project's installed dependency.
 - Escalate before many test edits or any production-source change: report why smaller config/setup fixes failed, options, risks, and the recommended path.
 

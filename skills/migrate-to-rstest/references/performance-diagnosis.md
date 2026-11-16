@@ -1,6 +1,6 @@
 # Migration performance diagnosis
 
-Use this migration-specific fallback after the scope is semantically green when Rstest materially regresses in CLI wall time, runner time, build, test runtime, output volume, or memory. When the `rstest-debugging` skill is available, load it instead: it is the canonical and more complete performance workflow. Keep this reference so `migrate-to-rstest` remains useful when installed alone.
+Use this fallback after the migrated tests pass if performance regresses or falls short of the migration target. When available, follow the more detailed `rstest-debugging` workflow.
 
 ## Protect the comparison
 
@@ -64,7 +64,7 @@ Choose experiments from evidence, commonly in this order:
 1. Exact fully mocked boundaries in `output.externals`.
 2. `bundleDependencies` default versus `false` versus `true`.
 3. Asset emission when tests do not inspect emitted files.
-4. `forks` versus `threads`, preserving isolation and checking full-suite stability.
+4. Compare `forks` and `threads` for worker startup cost. On Rstest v0.12.0+, if many files repeatedly start workers or compile the same dependencies, try adding `--pool.type vmForks --bail 1` or `--pool.type vmThreads --bail 1` to the passing migration command. If it fails or becomes flaky, remove the trial flags and rerun the same scope with the original pool. If it passes, drop the trial's `--bail 1` and compare repeated full-scope runs. Keep the VM pool only for a repeatable speedup within the memory budget.
 5. Successful-test log capture such as `silent: 'passed-only'` when the target version supports it.
 
 Keep pool, workers, cache, and unrelated config fixed around each experiment. Do not treat logging changes as a stable speedup without repeated data; their primary benefit may be usability.

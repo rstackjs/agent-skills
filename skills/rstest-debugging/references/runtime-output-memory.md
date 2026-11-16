@@ -24,6 +24,10 @@ Compare `forks` and `threads` only after build/dependency strategy is stable. Ke
 
 Threads avoid per-process startup and can reduce console transport cost, but each worker still has a V8 isolate and environment. Native modules, process-global assumptions, and test isolation can behave differently. Keep an explicit pool only with measured benefit and full-suite stability.
 
+On Rstest v0.12.0+, if many files spend time starting workers or compiling the same dependencies, try adding `--pool.type vmForks --bail 1` or `--pool.type vmThreads --bail 1` to the passing test command. Both reuse workers and give each file a fresh VM context.
+
+If the trial fails or becomes flaky, remove the trial flags and rerun the same scope with the original pool. If it passes, drop the trial's `--bail 1` for timing runs. Keep the VM pool only if the full suite stays green and the speedup repeats within the project's memory budget.
+
 Change `maxWorkers` only when CPU/memory contention is reproducible. A lower worker count can reduce peaks while increasing wall time; report the tradeoff.
 
 ## Isolation

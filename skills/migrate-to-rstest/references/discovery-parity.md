@@ -11,20 +11,19 @@ Before editing config, record:
 - `roots`, `testMatch`, `testRegex`, include/exclude/ignore patterns, projects/workspaces, CLI filters, and file-level environments.
 - The reason and history for every explicit whole-file exclude when it is discoverable locally.
 
-Use the previous runner's supported list command when available. For Jest, `jest --listTests --json` is usually suitable. For Vitest versions with a list command, use that version's documented file-only/JSON mode; otherwise preserve the normal run output. Store temporary manifests outside the working tree or remove them after comparison.
+Use the previous runner's supported list command when available. For Jest, use `jest --listTests --json` and capture each project separately if the list omits project names. For Vitest versions with a list command, use that version's documented file-only/JSON mode; otherwise preserve the normal run output. Store temporary manifests outside the working tree or remove them after comparison.
 
 ## Capture the Rstest manifest
 
 After the config loads, prefer the installed version's machine-readable list support:
 
 ```bash
-rstest list --filesOnly
-rstest list --json=./rstest-tests.json
+rstest list --filesOnly --json=./rstest-files.json
 ```
 
-Check `rstest --help` first on older target lines. If list support is unavailable, capture the normal run's file list without upgrading solely for this step.
+Check `rstest list --help` for supported flags on older versions. If the list command is unavailable, capture the normal run's file list.
 
-Normalize both manifests to paths relative to the same scope root, sort them, and compare exact sets. Then run the tests and compare counts; file parity alone does not prove case or skip parity.
+Normalize paths relative to the same scope root. For multi-project suites, compare pairs of project name and relative path, mapping renamed projects to their predecessors. A shared file can match both a Node project and a DOM project. Deduplicating by path would hide the loss of either run. Then run the tests and compare case and skip counts per project.
 
 ## Classify every difference
 

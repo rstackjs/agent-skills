@@ -10,11 +10,11 @@ Diagnose the measured lifecycle stage before changing configuration. Keep behavi
 ## Workflow
 
 1. Establish comparable single-file and full-scope baselines with `references/performance-measurement.md`.
-2. Run `rstest --trace` when supported and classify the cost as host build/startup, runtime load/setup/collect, test bodies/hooks, or CLI/report/teardown overhead.
+2. Run `rstest --trace` when supported and classify the cost as host build/startup, runtime load/setup/collect, test bodies/hooks, or CLI/report/teardown overhead. If assertions finish but the process hangs, try `rstest run <file> --detectAsyncLeaks` (v0.10.0+) and use the reported creation stack to locate missing cleanup. Remove the diagnostic flag before timing.
 3. Use `DEBUG=rstest` for resolved config and build output. For Rstest 0.11.7+ experimental per-test bundle coverage, follow `references/performance-measurement.md`. Use Rsdoctor only after evidence points to the compiler. Use verbose reporting or a profiler only after narrowing to runtime files/cases.
 4. If dependency loading or compilation is implicated, read `references/dependency-bundling.md`. Compare the environment default, `bundleDependencies: false`, and `bundleDependencies: true`; neither bundling nor externalization is universally faster.
 5. If a fully mocked heavy module still reaches the build graph, read `references/mocked-module-build-graph.md` before testing an exact external.
-6. If assets, console output, pools, isolation, or memory dominate, read `references/runtime-output-memory.md`.
+6. If worker startup or repeated per-file dependency compilation dominates, use the pool comparison in `references/runtime-output-memory.md` to evaluate `vmForks` or `vmThreads`. Use the same reference for assets, console output, isolation, or memory.
 7. Rerun the representative file and full scope. Keep a change only when behavior, discovery, snapshots, and coverage remain valid and the benefit survives repeated measurement. Remove traces, profiles, and `.rstest` debug artifacts created by the diagnosis before handing off.
 
 ## Guardrails
@@ -28,4 +28,4 @@ Diagnose the measured lifecycle stage before changing configuration. Keep behavi
 
 ## Handoff from migration
 
-When invoked from `migrate-to-rstest`, first confirm that the Jest/Vitest and Rstest manifests match. If the migration intentionally adds tests, report same-scope performance separately from final expanded-scope performance.
+When invoked from `migrate-to-rstest`, first confirm that the previous runner and Rstest execute the same files in each corresponding project. If the migration intentionally adds tests, report same-scope performance separately from final expanded-scope performance.

@@ -261,7 +261,7 @@ Diagnose Rstest startup, build, runtime, logging, memory, or performance problem
 npx skills add rstackjs/agent-skills --skill rstest-best-practices
 ```
 
-Set up, write, or review Rstest tests and configuration, including environments, mocks, snapshots, coverage, and CI.
+Set up, write, or review Rstest tests and configuration, including environments, mocks, snapshots, coverage, CI, and worker pool performance tuning.
 
 ## Rslint skills
 

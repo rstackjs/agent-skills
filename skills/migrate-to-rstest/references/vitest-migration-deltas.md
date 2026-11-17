@@ -24,7 +24,7 @@ When local docs are available, prefer the checked-out source, for example `websi
 - Setup: replace `@testing-library/jest-dom/vitest` with matcher registration via `expect.extend(...)` from `@rstest/core`.
 - Globals/APIs: imports from `vitest` -> `@rstest/core`; `vi.<api>` / `vitest.<api>` -> `rs.<api>`. Avoid mixing `vi` and `rs` in a migrated file.
 - Mocks: translate `vi.hoisted`, `vi.mocked`, `vi.doMock`, timers, globals, and environment helpers through the installed Rstest API rather than assuming every Vitest helper exists. `rs.mock('./module')` auto-mocking behavior is version-gated; use explicit factories/manual mocks or `{ mock: true }` according to the target capability.
-- Async mock factories: Rstest does not support returning an async function when mocking a module value. Migrate Vitest patterns that await the actual module inside the factory to static `importActual` imports plus a synchronous factory.
+- Partial ESM mocks: replace a Vitest factory that awaits `importOriginal()` with a static `import * as actual from './api' with { rstest: 'importActual' }`. Return `{ ...actual, ...overrides }` from a synchronous `rs.mock()` factory. Mocked exports themselves can still be async functions.
 - CJS mocking: use `rs.mockRequire()` / `rs.doMockRequire()` for `require()` paths.
 - Snapshots: preserve existing snapshot bodies and custom serializers. Move `snapshotSerializers` registration into setup via `expect.addSnapshotSerializer`; verify any custom `resolveSnapshotPath` signature against Rstest before reuse.
 

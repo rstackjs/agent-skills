@@ -1,6 +1,6 @@
 ---
 name: rstest-best-practices
-description: Set up, write, or review Rstest tests and configuration, including environments, mocks, snapshots, coverage, and CI.
+description: Set up, write, or review Rstest tests and configuration, including environments, mocks, snapshots, coverage, CI, and worker pool performance tuning.
 ---
 
 # Rstest best practices
@@ -21,7 +21,7 @@ Apply these rules when setting up, writing, or reviewing Rstest projects.
 - Prefer explicit imports from `@rstest/core` over `globals: true`.
 - Use `setupFiles` for shared matchers and cleanup; use `plugins`, `resolve`, or `source` for ordinary build integration and low-level `tools` only when necessary.
 - Set `include` explicitly when the package's test layout is non-standard; do not assume the default discovery pattern.
-- Use `node` for server/SSR tests, `happy-dom` or `jsdom` for simulated DOM tests, and Browser Mode for real-browser behavior; install the selected environment package explicitly.
+- Use `node` for server/SSR tests or install `happy-dom` or `jsdom` for a simulated DOM. Use Browser Mode for component tests that execute in a real browser. For end-to-end tests that drive a running app from a Node worker, use [Rstest's Playwright integration](https://rstest.rs/guide/basic/e2e-testing).
 - For React or Vue component tests, register the matching build plugin, use the corresponding Testing Library, and centralize matcher extension and cleanup in a setup file.
 - Use multiple test projects only when environments or configurations genuinely differ; keep global options such as reporters, coverage, pool, isolation, and bail at the root.
 
@@ -36,7 +36,7 @@ Apply these rules when setting up, writing, or reviewing Rstest projects.
 
 - Use `rs.fn()` for functions, `rs.spyOn()` for object methods, and `rs.mock()` factories for modules; mock external boundaries rather than the subject under test.
 - Choose `clearMocks`, `resetMocks`, or `restoreMocks` according to whether calls, implementations, or original methods must be restored between tests.
-- Choose the module-mocking API that matches the module system; verify the exact request string and register hoisted/static mocks before the module under test is evaluated.
+- Match the mock to how the code loads the dependency. Use `rs.mock()` for an ESM import and `rs.mockRequire()` for a CommonJS `require()`. For a partial ESM mock, import the real exports with `import * as actual from './api' with { rstest: 'importActual' }` and spread `actual` in the synchronous factory.
 - Module mocks replace runtime behavior but do not necessarily remove the real dependency from the Rspack build graph. Use aliases or narrowly scoped externals only when the build still traverses an unwanted or unavailable dependency, and verify the runtime externalization format.
 
 ## Snapshots and coverage
@@ -44,14 +44,21 @@ Apply these rules when setting up, writing, or reviewing Rstest projects.
 - Keep snapshots small and deterministic: use inline snapshots for short output, file snapshots for large structured output, and serializers for paths or unstable data. Review every update.
 - Enable coverage with `--coverage` or `coverage.enabled`.
 - Choose a coverage provider supported by the installed Rstest version and add its package explicitly; do not copy a V8 or Istanbul provider choice without checking project needs.
-- Set `coverage.include` deliberately before adding thresholds; choose reporters for humans and CI artifacts separately.
+- If thresholds apply to the whole source tree, set `coverage.include` to its source globs and check that an untested source file appears in the report. By default, coverage includes only tested files.
 
 ## Running and CI
 
 - Use `rstest` for a single run; `rstest run` is an optional explicit equivalent. Use `rstest --watch` or `rstest watch` only for local development.
-- Use `rstest list` to verify discovery, positional filters or `-t` for focused runs, `-u` for intentional snapshot updates, and `-c` for a non-default config.
-- In CI, never use watch mode. Use sharding with blob reports and `rstest merge-reports` when distributing tests; use JUnit when the CI system requires machine-readable results.
+- Use `rstest list --filesOnly` for file discovery and `rstest list` for test names. Use positional filters or `-t` for focused runs, `-u` for intentional snapshot updates, and `-c` for a non-default config.
+- For sharded CI, run each shard with the blob reporter, collect the blobs in `.rstest-reports/`, and run `rstest merge-reports` from the project root with the desired reporters (such as JUnit).
 - If passing-test logs are too noisy, consider `silent: 'passed-only'`; disable it temporarily when diagnosing setup or runtime output.
+
+## Worker pool performance
+
+- In Rstest v0.12.0 and later, try a VM pool when many test files spend much of their time starting workers or compiling the same dependencies. Each file gets a fresh VM context in a reused worker. Setup files still run for each test file.
+- Start with a CLI trial on a passing suite: `rstest run --pool.type vmForks --bail 1` for child processes or `rstest run --pool.type vmThreads --bail 1` for worker threads.
+- If the trial fails or tests become flaky, remove the trial flags and rerun the same tests with the original pool. Consult [VM pool behavior](https://rstest.rs/config/test/pool#vm-pool-behavior) when investigating a VM-only failure.
+- If the trial passes, drop the trial's `--bail 1` and compare repeated full-suite runs with the same worker count and cache conditions. Set `pool.type` in the root config only if the suite stays green and the speedup is repeatable within the project's memory budget.
 
 ## First-line debugging
 

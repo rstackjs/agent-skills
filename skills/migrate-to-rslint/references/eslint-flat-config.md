@@ -213,14 +213,14 @@ Do not mutate string literals, docs, snapshots, or user-visible text unless the 
 
 Check `.vscode/extensions.json`:
 
-- Replace `dbaeumer.vscode-eslint` with `rstack.rslint` when the project recommended ESLint only for linting.
+- Replace `dbaeumer.vscode-eslint` with `rstack.rstack` when the project recommended ESLint only for linting.
 - Keep other extension recommendations unrelated to linting.
 
 Check `.vscode/settings.json`:
 
 - Replace `source.fixAll.eslint` with `source.fixAll.rslint`.
 - Remove ESLint-only settings such as `eslint.enable`, `eslint.validate`, `eslint.useFlatConfig`, `eslint.workingDirectories`, `eslint.options`, `eslint.nodePath`, and `eslint.format.enable`.
-- Add Rslint settings only when needed. Useful settings include `rslint.enable`, `rslint.binPath`, `rslint.customBinPath`, and `rslint.trace.server`.
+- Add Rslint settings only when needed. Useful settings include `rstack.rslint.enable`, `rstack.rslint.corePath`, and `rstack.rslint.trace.server`.
 
 Example fix-on-save setting:
 
@@ -232,7 +232,7 @@ Example fix-on-save setting:
 }
 ```
 
-The official VS Code extension id is `rstack.rslint`. It can use the built-in binary by default; use `rslint.binPath: "local"` only when the project needs the workspace-installed binary.
+The official VS Code extension id is `rstack.rstack`. It resolves `@rslint/core` from the workspace automatically; set `rstack.rslint.corePath` only when overriding the resolved `@rslint/core` package path.
 
 ## Step 7: Validate, then remove obsolete ESLint artifacts
 

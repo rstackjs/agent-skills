@@ -68,7 +68,7 @@ To correlate bundled assets with executed code, run the same narrowed test with 
 DEBUG=rstest:bundle-coverage rstest run --coverage
 ```
 
-Use the configured V8 provider and verify that `rawV8` is non-null. In the current version-1 output, `rawV8.entries[].filePath` can be compared with `assets` to find assets that were carried by a test runtime but have no observed V8 entry. Treat that result as investigation evidence: confirm the dependency or issuer chain before externalizing or changing mocks.
+Use the configured V8 provider and verify that `rawV8` is non-null. In the current version-1 output, `rawV8.entries[].filePath` can be compared with `assets` to find assets that were carried by a test runtime but have no observed V8 entry. Treat that result as investigation evidence: follow [Trace a large test asset to its imports](trace-large-test-assets.md) to confirm the dependency path and measure its contribution.
 
 Asset presence is not sufficient when Rspack emits one large test bundle: the asset is necessarily loaded even if most module wrappers never execute. In that case, inspect raw V8 function ranges/counts within the matching asset and compare candidate configurations using stable signals such as total asset bytes and observed named-function counts. Treat those counts as diagnostic evidence, not exact executed-byte coverage; generated wrappers, source maps, anonymous functions, and V8 range semantics limit that interpretation.
 

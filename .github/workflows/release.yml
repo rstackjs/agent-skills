@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      npm_tag:
+        description: npm dist-tag
+        required: true
+        type: choice
+        default: alpha
+        options: [alpha, beta, rc, canary, latest]
+      npm_tag_confirm:
+        description: Confirm npm dist-tag
+        required: true
+        type: choice
+        options: [alpha, beta, rc, canary, latest]
+      branch:
+        description: Confirm the selected release branch
+        required: true
+        default: main
+        type: string
+
+permissions: {}
+
+jobs:
+  validate_inputs:
+    name: Validate inputs
+    if: github.repository == 'rstackjs/agent-skills'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate release branch and npm tag
+        env:
+          RELEASE_BRANCH: ${{ inputs.branch }}
+          NPM_TAG: ${{ inputs.npm_tag }}
+          NPM_TAG_CONFIRM: ${{ inputs.npm_tag_confirm }}
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/$RELEASE_BRANCH" ]; then
+            echo "::error::Release branch must match the branch selected for this run."
+            exit 1
+          fi
+          if [ "$NPM_TAG" != "$NPM_TAG_CONFIRM" ]; then
+            echo "::error::npm_tag and npm_tag_confirm must match."
+            exit 1
+          fi
+
+  release:
+    name: Stage npm packages
+    needs: validate_inputs
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+
+      - name: Stage packages for publishing
+        env:
+          NPM_TAG: ${{ inputs.npm_tag }}
+        run: pnpm --filter './npm/*' -r stage publish --tag "$NPM_TAG" --no-git-checks

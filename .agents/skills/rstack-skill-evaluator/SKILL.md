@@ -2,20 +2,31 @@
 name: rstack-skill-evaluator
 description: Benchmark and iteratively improve agent skills using matched skill-guided and baseline runs with Codex CLI or Claude Code.
 metadata:
-  dependencies: ['skill-creator']
   internal: true
 ---
 
 # Rstack skill evaluator
 
-A repo-specific compatibility layer on top of `skill-creator`. Reuse its Test / Improve / Benchmark concepts, JSON schemas, grading guidance, and eval viewer, but select the executor for the current environment.
+A repo-specific evaluation workflow that references Anthropic's upstream `skill-creator` resources directly. Reuse its Test / Improve / Benchmark concepts, JSON schemas, grading guidance, and eval viewer, but select the executor for the current environment.
+
+## Upstream references
+
+Use the following GitHub links pinned to commit `57546260929473d4e0d1c1bb75297be2fdfa1949`. Read the relevant files directly; no local `skill-creator` installation or skill invocation is required.
+
+- [Evaluation and improvement workflow](https://github.com/anthropics/skills/blob/57546260929473d4e0d1c1bb75297be2fdfa1949/skills/skill-creator/SKILL.md)
+- [Eval, grading, timing, and benchmark schemas](https://github.com/anthropics/skills/blob/57546260929473d4e0d1c1bb75297be2fdfa1949/skills/skill-creator/references/schemas.md)
+- [Grading guidance](https://github.com/anthropics/skills/blob/57546260929473d4e0d1c1bb75297be2fdfa1949/skills/skill-creator/agents/grader.md)
+- [Benchmark and comparison analysis](https://github.com/anthropics/skills/blob/57546260929473d4e0d1c1bb75297be2fdfa1949/skills/skill-creator/agents/analyzer.md)
+- [Blind comparison guidance](https://github.com/anthropics/skills/blob/57546260929473d4e0d1c1bb75297be2fdfa1949/skills/skill-creator/agents/comparator.md)
+
+If an upstream script is needed, download the pinned source into a temporary directory outside the repository. Do not register it as a skill dependency or copy it into the installed skill directories. See [the Codex aggregation step](references/codex-cli.md#6-aggregate-and-diagnose) for the checkout and commands.
 
 ## Select the executor
 
-- When the user requests Codex or `codex` is the available CLI, read [references/codex-cli.md](references/codex-cli.md) and follow it. Its instructions override Claude-specific commands and subagent mechanics in `skill-creator`.
-- Otherwise, follow `skill-creator` directly.
+- When the user requests Codex or `codex` is the available CLI, read [references/codex-cli.md](references/codex-cli.md) and follow it. Its instructions override Claude-specific commands and subagent mechanics in the upstream workflow.
+- Otherwise, read the linked upstream workflow and follow its Claude Code instructions together with the repository-specific rules below.
 
-Do not invoke `skill-creator/scripts/run_eval.py`, `run_loop.py`, or `improve_description.py` in Codex mode. Those scripts shell out to `claude -p` and test Claude-specific skill discovery. Provider-neutral utilities such as `quick_validate.py`, `aggregate_benchmark.py`, and `eval-viewer/generate_review.py` can be reused after validating the installed dependency version.
+Do not run the upstream `scripts/run_eval.py`, `scripts/run_loop.py`, or `scripts/improve_description.py` in Codex mode. Those scripts shell out to `claude -p` and test Claude-specific skill discovery. Provider-neutral utilities such as `quick_validate.py`, `aggregate_benchmark.py`, and `eval-viewer/generate_review.py` can be reused from the pinned temporary checkout.
 
 ## Targeting a skill
 

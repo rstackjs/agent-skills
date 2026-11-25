@@ -203,9 +203,6 @@ importers:
       rstack:
         specifier: ^0.7.2
         version: 0.7.2(core-js@3.47.0)(typescript@5.9.3)
-      skills-package-manager:
-        specifier: ^0.11.0
-        version: 0.11.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -1086,10 +1083,6 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  skills-package-manager@0.11.0:
-    resolution: {integrity: sha512-WD7JgUNefusVOBzOAacuT4XqL2aIPSvtP2brDHqM9gyby8rMU/vLZphoL9jwxQz6RWtHOAvobqDqvCcS5bf9iw==}
-    hasBin: true
-
   smol-toml@1.6.0:
     resolution: {integrity: sha512-4zemZi0HvTnYwLfrpk/CF9LOd9Lt87kAt50GnqhMpyF9U3poDAP2+iukq2bZsO/ufegbYehBkqINbsWxj4l4cw==}
     engines: {node: '>= 18'}
@@ -1870,8 +1863,6 @@ snapshots:
       - typescript
 
   semver@7.7.3: {}
-
-  skills-package-manager@0.11.0: {}
 
   smol-toml@1.6.0: {}
 

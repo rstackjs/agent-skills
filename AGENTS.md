@@ -86,16 +86,9 @@ description: Feature description and trigger scenarios, which is key for Agents 
 Use this for internal contribution workflow Skills intended for Rstack repository maintainers and developers, not end users.
 
 - Place the Skill in `.agents/skills/{skill-name}/`.
-- Register the Skill in `skills.json` with `"local:*"` so it resolves to the repo-owned Skill source.
+- Keep the Skill directory tracked in Git by adding an exception to `.gitignore`.
+- Claude Code shares these repo-owned Skills through the `.claude/skills` symlink.
 - Add `metadata.internal: true` so the Skill is hidden from normal discovery and installation.
-
-```json
-{
-  "skills": {
-    "my-internal-skill": "local:*"
-  }
-}
-```
 
 ```yaml
 ---
@@ -107,6 +100,12 @@ metadata:
 ```
 
 Skills marked with `metadata.internal: true` are only visible and installable when `INSTALL_INTERNAL_SKILLS=1` is set.
+
+For Skills shipped by dependencies, use [pnpm Agent Skills](https://pnpm.io/agent-skills).
+Run `pnpm approve` to select which dependency Skills to link. pnpm records approvals
+under `permissions` in `pnpm-workspace.yaml` and links approved Skills into
+`.agents/skills`, which is also shared with Claude Code. pnpm requires v12.11.0 or
+later; this repository pins its supported version in `package.json`.
 
 ## Writing skill scripts
 

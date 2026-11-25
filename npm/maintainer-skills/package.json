@@ -1,6 +1,6 @@
 {
   "name": "@rstackjs/maintainer-skills",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Contribution workflows for Rstack maintainers, including pull requests, documentation, and release notes.",
   "repository": {
     "type": "git",

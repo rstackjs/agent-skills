@@ -8,7 +8,7 @@
     "check-spell": "cspell",
     "format": "rs fmt",
     "lint": "rs lint",
-    "prepare": "skills-package-manager install && rs hooks && pnpm build"
+    "prepare": "rs hooks && pnpm build"
   },
   "devDependencies": {
     "@rstackjs/config": "workspace:*",
@@ -17,7 +17,6 @@
     "cspell-ban-words": "^0.0.4",
     "heading-case": "^2.0.2",
     "rstack": "^0.7.2",
-    "skills-package-manager": "^0.11.0",
     "typescript": "^5.9.3"
   },
   "packageManager": "pnpm@12.23.0",

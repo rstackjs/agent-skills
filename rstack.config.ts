@@ -5,7 +5,6 @@ define.fmt({
   plugins: ['heading-case'],
   singleQuote: true,
   sortPackageJson: true,
-  ignorePatterns: ['skills-lock.yaml'],
 });
 
 define.staged({

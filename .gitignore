@@ -28,10 +28,11 @@ skills-test/**/*
 !.vscode/settings.json
 !.vscode/extensions.json
 
-# skills-package-manager
+# Agent skill directories
 .agents/**/*
 .gemini/**/*
 .claude/**/*
+!.claude/skills
 
 # Keep repo-local Codex plugin marketplace tracked
 !.agents/plugins/

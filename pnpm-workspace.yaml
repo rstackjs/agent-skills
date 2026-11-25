@@ -8,6 +8,10 @@ packages:
 allowBuilds:
   core-js: false
 
+skills:
+  dirs:
+    - .agents/skills
+
 engineStrict: true
 hoistPattern: []
 strictPeerDependencies: false

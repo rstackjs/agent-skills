@@ -3,7 +3,6 @@
   "installDir": ".agents/skills",
   "linkTargets": [".claude/skills"],
   "skills": {
-    "skill-creator": "github:anthropics/skills#57546260929473d4e0d1c1bb75297be2fdfa1949&path:/skills/skill-creator",
     "rstack-skill-evaluator": "local:*",
     "pr-creator": "local:*",
     "mdx-to-markdown": "local:*",

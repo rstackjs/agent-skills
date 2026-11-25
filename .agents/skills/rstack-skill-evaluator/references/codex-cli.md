@@ -1,6 +1,6 @@
 # Codex CLI eval workflow
 
-Use this workflow when Codex CLI executes the evals. It adapts `skill-creator`'s evaluation loop without depending on Claude Code commands, hooks, or automatic skill discovery.
+Use this workflow when Codex CLI executes the evals. It adapts the [upstream evaluation loop](https://github.com/anthropics/skills/blob/57546260929473d4e0d1c1bb75297be2fdfa1949/skills/skill-creator/SKILL.md) without depending on a locally installed `skill-creator`, Claude Code commands, hooks, or automatic skill discovery.
 
 ## 1. Preflight and record controls
 
@@ -30,7 +30,7 @@ Do not use `--dangerously-bypass-approvals-and-sandbox` merely to make an eval p
 
 ## 2. Prepare evals and isolated runs
 
-Keep tracked definitions at `skills-test/<name>/evals/evals.json`. Follow the upstream schema and include a stable `eval_name`, realistic prompt, expected outcome, fixture reference, and assertions.
+Keep tracked definitions at `skills-test/<name>/evals/evals.json`. Follow the [upstream schema](https://github.com/anthropics/skills/blob/57546260929473d4e0d1c1bb75297be2fdfa1949/skills/skill-creator/references/schemas.md) and include a stable `eval_name`, realistic prompt, expected outcome, fixture reference, and assertions.
 
 Use this raw workspace shape so the upstream aggregator and viewer can discover results:
 
@@ -235,10 +235,15 @@ jq -e \
 
 ## 6. Aggregate and diagnose
 
-After every run has valid, invariant-checked `grading.json` and `timing.json`, use the provider-neutral aggregation and viewer utilities from `skill-creator`. Run the module from the dependency directory. Verify generated metadata before reporting it because placeholder model names or run counts are not evidence:
+After every run has valid, invariant-checked `grading.json` and `timing.json`, use the upstream [aggregation script](https://github.com/anthropics/skills/blob/57546260929473d4e0d1c1bb75297be2fdfa1949/skills/skill-creator/scripts/aggregate_benchmark.py) and [review viewer](https://github.com/anthropics/skills/blob/57546260929473d4e0d1c1bb75297be2fdfa1949/skills/skill-creator/eval-viewer/generate_review.py). Use Python 3.10 or newer for these scripts. Fetch the pinned source into a temporary directory, preserving its supporting files; no skill installation is needed:
 
 ```bash
-cd <skill-creator-path>
+EVAL_UPSTREAM_DIR="$(mktemp -d)"
+git -C "$EVAL_UPSTREAM_DIR" init
+git -C "$EVAL_UPSTREAM_DIR" remote add origin https://github.com/anthropics/skills.git
+git -C "$EVAL_UPSTREAM_DIR" fetch --depth=1 origin 57546260929473d4e0d1c1bb75297be2fdfa1949
+git -C "$EVAL_UPSTREAM_DIR" checkout --detach FETCH_HEAD
+cd "$EVAL_UPSTREAM_DIR/skills/skill-creator"
 
 python -m scripts.aggregate_benchmark <workspace>/iteration-N \
   --skill-name <name> \
@@ -251,7 +256,9 @@ python eval-viewer/generate_review.py \
   --static <workspace>/iteration-N/review.html
 ```
 
-If the installed upstream utility rejects the current layout or emits invalid metadata, preserve the error as a harness failure and build `benchmark.json` from `references/schemas.md` or summarize the validated `grading.json` files directly. A report with explicit unavailable metrics is better than a fabricated aggregate.
+Use absolute paths for the workspace and target skill because these commands run from the temporary checkout. Verify generated metadata before reporting it because placeholder model names or run counts are not evidence. Remove the temporary checkout after collecting the generated artifacts.
+
+If an upstream utility rejects the current layout or emits invalid metadata, preserve the error as a harness failure and build `benchmark.json` from the [upstream schemas](https://github.com/anthropics/skills/blob/57546260929473d4e0d1c1bb75297be2fdfa1949/skills/skill-creator/references/schemas.md) or summarize the validated `grading.json` files directly. A report with explicit unavailable metrics is better than a fabricated aggregate.
 
 Analyze failures before editing:
 

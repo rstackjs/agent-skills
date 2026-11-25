@@ -10,6 +10,10 @@ coverage/
 doc_build/
 tsconfig.tsbuildinfo
 
+# Generated npm package contents
+/npm/*/skills/
+/npm/*/LICENSE
+
 # Test temp files
 test-temp-*
 

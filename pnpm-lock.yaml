@@ -33,6 +33,10 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  npm/maintainer-skills: {}
+
+  npm/skills: {}
+
   scripts/config:
     devDependencies:
       '@types/node':

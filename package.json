@@ -1,5 +1,5 @@
 {
-  "name": "@rstackjs/agent-skills",
+  "name": "agent-skills-workspace",
   "private": true,
   "type": "module",
   "scripts": {

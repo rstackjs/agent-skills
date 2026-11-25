@@ -5,6 +5,9 @@ packages:
   - '!**/dist/**'
   - '!**/dist-*/**'
 
+allowBuilds:
+  core-js: false
+
 engineStrict: true
 hoistPattern: []
 strictPeerDependencies: false

@@ -61,8 +61,10 @@ jobs:
           node-version-file: .nvmrc
           package-manager-cache: false
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+
       - name: Stage packages for publishing
         env:
           NPM_TAG: ${{ inputs.npm_tag }}
-        # The workspace uses pnpm 10, which does not support staged publishing.
-        run: npx --yes pnpm@12.23.0 --pm-on-fail=ignore --filter './npm/*' -r stage publish --tag "$NPM_TAG" --no-git-checks
+        run: pnpm --filter './npm/*' -r stage publish --tag "$NPM_TAG" --no-git-checks

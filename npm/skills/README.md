@@ -1,6 +1,6 @@
 # @rstackjs/skills
 
-Agent skills for developing, debugging, and upgrading Rstack projects.
+Agent skills for Rstack projects.
 
 Install with pnpm 12.11.0 or later:
 

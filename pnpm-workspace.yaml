@@ -1,4 +1,5 @@
 packages:
+  - npm/*
   - packages/**
   - scripts/**
   - '!**/dist/**'

@@ -1,0 +1,20 @@
+{
+  "name": "@rstackjs/skills",
+  "version": "0.1.0",
+  "description": "Agent skills for Rstack projects.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rstackjs/agent-skills.git",
+    "directory": "npm/skills"
+  },
+  "license": "MIT",
+  "files": [
+    "skills"
+  ],
+  "scripts": {
+    "prepack": "node ../../scripts/pack-skills.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

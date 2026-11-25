@@ -16,6 +16,7 @@ module.exports = {
     'coverage',
     'node_modules',
     'pnpm-lock.yaml',
+    'npm/*/skills/**',
     'skills/**/scripts',
     'skills-test/**',
   ],

@@ -65,6 +65,17 @@ claude plugin marketplace add rstackjs/agent-skills
 claude plugin install rstack@rstack
 ```
 
+### pnpm
+
+With pnpm 12.11.0 or later, install the skills as a project dependency and choose which ones to link:
+
+```bash
+pnpm add -D @rstackjs/skills
+pnpm approve
+```
+
+Commit the approval settings in `pnpm-workspace.yaml` so future installs link the same skills. See [pnpm agent skills](https://pnpm.io/agent-skills) for details.
+
 ### Individual skills
 
 Install any skill with:
@@ -285,7 +296,14 @@ Set up or migrate Storybook to Rsbuild, configure rsbuildFinal, or integrate wit
 
 ## Contribution workflow skills
 
-Skills in this section are internal contribution workflow Skills intended for Rstack repository maintainers and developers, not end users. Set `INSTALL_INTERNAL_SKILLS=1` when installing them.
+Rstack maintainers can install these contribution workflows with pnpm 12.11.0 or later:
+
+```bash
+pnpm add -D @rstackjs/maintainer-skills
+pnpm approve
+```
+
+To install an individual workflow with `npx skills add`, set `INSTALL_INTERNAL_SKILLS=1` as shown below.
 
 ### create-draft-release-notes
 

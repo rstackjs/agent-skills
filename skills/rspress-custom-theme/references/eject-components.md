@@ -64,7 +64,7 @@ The most common eject use case is wrapping the entire app in a context provider 
 
 ```tsx
 // theme/components/Root/index.tsx
-import type { RootProps } from '@rspress/core/theme';
+import type { RootProps } from '@rspress/core/theme-original';
 
 export function Root({ children }: RootProps) {
   return (

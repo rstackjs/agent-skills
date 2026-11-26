@@ -53,7 +53,9 @@ import './index.css'; // optional
 export * from '@rspress/core/theme-original';
 ```
 
-**Critical import rule**: Inside `theme/` files, always import from `@rspress/core/theme-original`. The path `@rspress/core/theme` resolves to your own `theme/index.tsx`, which causes circular imports. (In `docs/` MDX files, `@rspress/core/theme` is fine — it correctly points to your custom theme.)
+**Critical import rule**: Inside `theme/` files, import built-in theme components and runtime values from `@rspress/core/theme-original`. Rspress resolves `@rspress/core/theme` to your own `theme/index.tsx`, so importing those values there can create circular imports. In `docs/` MDX files, `@rspress/core/theme` correctly points to your custom theme.
+
+For types, use the public entry point that exports the type in your installed Rspress version. `import type` is erased during compilation and does not create a runtime circular import. Built-in component props such as `RootProps` are exported by `@rspress/core/theme-original`; configuration types such as `UserConfig` are exported by `@rspress/core`. If a component's props type is not exported, infer it with `ComponentProps<typeof OriginalComponent>` from React.
 
 ---
 
@@ -227,7 +229,7 @@ Fine-grained: set `navbar: false`, `sidebar: false`, `outline: false`, `footer: 
 
 ## Common pitfalls
 
-- **Circular import**: Using `@rspress/core/theme` instead of `@rspress/core/theme-original` in `theme/` files — causes infinite loop.
+- **Circular import**: Importing built-in theme runtime values from `@rspress/core/theme` inside `theme/` can create circular imports through your custom theme entry. Use `@rspress/core/theme-original` for those values; type-only imports are erased.
 - **Eject over-use**: Ejecting when a Layout slot or CSS variable would suffice — creates upgrade burden.
 - **Missing re-export**: Forgetting `export * from '@rspress/core/theme-original'` in `theme/index.tsx` — breaks all un-overridden components.
 - **v1 imports**: Using `rspress/theme` or `@rspress/theme-default` — these are v1 paths. v2 uses `@rspress/core/theme-original`.

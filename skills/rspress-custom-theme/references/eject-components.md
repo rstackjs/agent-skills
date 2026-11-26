@@ -149,6 +149,7 @@ export function DocFooter() {
 
 ## Important notes
 
-- Always import from `@rspress/core/theme-original` in `theme/` files, never from `@rspress/core/theme` (the latter resolves to your own `theme/index.tsx`, causing circular imports).
+- Import built-in theme components and runtime values from `@rspress/core/theme-original` in `theme/` files. Rspress resolves `@rspress/core/theme` to your own `theme/index.tsx`, so importing those values there can create circular imports.
+- Import types from a public entry point that exports them in your installed version. `RootProps` is exported by `@rspress/core/theme-original`; type-only imports do not create runtime circular imports.
 - After ejecting, you own that component. Track Rspress changelogs for upstream changes you might want to incorporate manually.
 - Run `rspress eject` (no args) to see the up-to-date list of available components — the list above may change between Rspress versions.

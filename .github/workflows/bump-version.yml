@@ -1,0 +1,102 @@
+name: Bump Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to release (for example, 1.0.2)
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: bump-version
+  cancel-in-progress: false
+
+jobs:
+  create-pr:
+    name: Create bump version PR
+    if: github.repository == 'rstackjs/agent-skills'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      VERSION: ${{ inputs.version }}
+      BRANCH_NAME: chore-bump-${{ inputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Install Pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          run_install: true
+
+      - name: Create release branch
+        run: |
+          set -euo pipefail
+          node scripts/bump-version.mjs "$VERSION" --dry-run
+          if git ls-remote --exit-code --heads origin "$BRANCH_NAME" >/dev/null 2>&1; then
+            echo "::error::Branch $BRANCH_NAME already exists."
+            exit 1
+          fi
+          git switch -c "$BRANCH_NAME"
+
+      - name: Bump version
+        run: node scripts/bump-version.mjs "$VERSION"
+
+      - name: Run build
+        run: pnpm build
+
+      - name: Run checks
+        run: pnpm check
+
+      - name: Commit version bump
+        run: |
+          set -euo pipefail
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- .claude-plugin/marketplace.json .claude-plugin/plugin.json .codex-plugin/plugin.json npm/maintainer-skills/package.json npm/skills/package.json plugin.json
+          git commit -m "release: v$VERSION"
+
+      - name: Push release branch
+        run: git push -u origin "$BRANCH_NAME"
+
+      - name: Create pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          body=$(printf '%s\n' \
+            '## Summary' \
+            '' \
+            '- Bump `@rstackjs/skills` and `@rstackjs/maintainer-skills` to v'"$VERSION"'.' \
+            '- Align the Agent plugin and marketplace manifests with v'"$VERSION"'.' \
+            '' \
+            '## Validation' \
+            '' \
+            '- `pnpm build`' \
+            '- `pnpm check`')
+          pr_url=$(gh pr create \
+            --base main \
+            --head "$BRANCH_NAME" \
+            --title "release: v$VERSION" \
+            --body "$body")
+          echo "$pr_url"
+          {
+            echo "### Bump version PR"
+            echo
+            echo "$pr_url"
+          } >> "$GITHUB_STEP_SUMMARY"

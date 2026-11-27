@@ -52,11 +52,8 @@ jobs:
           set -euo pipefail
           VERSION=$(node scripts/bump-version.mjs "$BUMP" --print-version)
           BRANCH_NAME="chore-bump-$VERSION"
-          {
-            echo "VERSION=$VERSION"
-            echo "BRANCH_NAME=$BRANCH_NAME"
-          } >> "$GITHUB_ENV"
-          node scripts/bump-version.mjs "$BUMP" --dry-run
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> "$GITHUB_ENV"
           if git ls-remote --exit-code --heads origin "$BRANCH_NAME" >/dev/null 2>&1; then
             echo "::error::Branch $BRANCH_NAME already exists."
             exit 1
@@ -88,25 +85,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set -euo pipefail
-          body=$(printf '%s\n' \
-            '## Summary' \
-            '' \
-            '- Bump `@rstackjs/skills` and `@rstackjs/maintainer-skills` to v'"$VERSION"'.' \
-            '- Align the Agent plugin and marketplace manifests with v'"$VERSION"'.' \
-            '' \
-            '## Validation' \
-            '' \
-            '- `pnpm build`' \
-            '- `pnpm check`')
-          pr_url=$(gh pr create \
+          gh pr create \
             --base main \
             --head "$BRANCH_NAME" \
             --title "release: v$VERSION" \
-            --body "$body")
-          echo "$pr_url"
-          {
-            echo "### Bump version PR"
-            echo
-            echo "$pr_url"
-          } >> "$GITHUB_STEP_SUMMARY"
+            --body "Bump release versions to v$VERSION."

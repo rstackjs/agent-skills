@@ -1,61 +1,41 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const manifests = [
-  {
-    path: 'npm/skills/package.json',
-    getVersion: (data) => data.version,
-  },
-  {
-    path: 'npm/maintainer-skills/package.json',
-    getVersion: (data) => data.version,
-  },
-  {
-    path: 'plugin.json',
-    getVersion: (data) => data.version,
-  },
-  {
-    path: '.claude-plugin/plugin.json',
-    getVersion: (data) => data.version,
-  },
-  {
-    path: '.claude-plugin/marketplace.json',
-    getVersion: (data) => {
-      if (data.plugins?.length !== 1) {
-        throw new Error(
-          'Expected exactly one plugin in the marketplace manifest',
-        );
-      }
-      return data.plugins[0].version;
-    },
-  },
-  {
-    path: '.codex-plugin/plugin.json',
-    getVersion: (data) => data.version,
-  },
+const manifestPaths = [
+  'npm/skills/package.json',
+  'npm/maintainer-skills/package.json',
+  'plugin.json',
+  '.claude-plugin/plugin.json',
+  '.claude-plugin/marketplace.json',
+  '.codex-plugin/plugin.json',
 ];
-
-const releaseTypes = ['patch', 'minor', 'major'];
-const options = ['--dry-run', '--print-version'];
+const releases = ['major', 'minor', 'patch'];
 const versionPattern = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 const [release, option] = process.argv.slice(2);
+const bumpIndex = releases.indexOf(release);
 
-if (!releaseTypes.includes(release)) {
+if (bumpIndex === -1) {
   throw new Error(
-    'Expected a release type: node scripts/bump-version.mjs <patch|minor|major> [--dry-run|--print-version]',
+    'Expected a release type: node scripts/bump-version.mjs <patch|minor|major> [--print-version]',
   );
 }
 
-if (option && !options.includes(option)) {
+if (option && option !== '--print-version') {
   throw new Error(`Unknown option: ${option}`);
 }
 
 const root = join(import.meta.dirname, '..');
-const manifestSources = manifests.map(({ path, getVersion }) => {
+const manifestSources = manifestPaths.map((path) => {
   const filePath = join(root, path);
   const source = readFileSync(filePath, 'utf8');
-  const currentVersion = getVersion(JSON.parse(source));
+  const data = JSON.parse(source);
+  const isMarketplace = path === '.claude-plugin/marketplace.json';
 
+  if (isMarketplace && data.plugins?.length !== 1) {
+    throw new Error('Expected exactly one plugin in the marketplace manifest');
+  }
+
+  const currentVersion = isMarketplace ? data.plugins[0].version : data.version;
   if (
     typeof currentVersion !== 'string' ||
     !versionPattern.test(currentVersion)
@@ -82,23 +62,11 @@ if (currentVersions.size !== 1) {
 
 const currentVersion = currentVersions.values().next().value;
 const versionParts = currentVersion.split('.').map(Number);
-if (versionParts.some((part) => !Number.isSafeInteger(part))) {
-  throw new Error(`Version number is too large: ${currentVersion}`);
-}
-
-if (release === 'major') {
-  versionParts[0]++;
-  versionParts[1] = 0;
-  versionParts[2] = 0;
-} else if (release === 'minor') {
-  versionParts[1]++;
-  versionParts[2] = 0;
-} else {
-  versionParts[2]++;
-}
+versionParts[bumpIndex]++;
+versionParts.fill(0, bumpIndex + 1);
 
 if (versionParts.some((part) => !Number.isSafeInteger(part))) {
-  throw new Error(`Next version number is too large for ${release}`);
+  throw new Error(`Version number is too large for ${release}`);
 }
 
 const version = versionParts.join('.');
@@ -116,11 +84,7 @@ if (option === '--print-version') {
       field,
       field.replace(currentVersion, version),
     );
-    if (option !== '--dry-run') {
-      writeFileSync(filePath, updated);
-    }
-    console.log(
-      `${path}: ${currentVersion} -> ${version}${option === '--dry-run' ? ' (dry run)' : ''}`,
-    );
+    writeFileSync(filePath, updated);
+    console.log(`${path}: ${currentVersion} -> ${version}`);
   }
 }

@@ -35,23 +35,23 @@ const manifests = [
   },
 ];
 
-const versionPattern =
-  /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
-const [version, option] = process.argv.slice(2);
+const releaseTypes = ['patch', 'minor', 'major'];
+const options = ['--dry-run', '--print-version'];
+const versionPattern = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
+const [release, option] = process.argv.slice(2);
 
-if (!version || !versionPattern.test(version)) {
+if (!releaseTypes.includes(release)) {
   throw new Error(
-    'Expected a valid SemVer version, for example: node scripts/bump-version.mjs 1.0.2 [--dry-run]',
+    'Expected a release type: node scripts/bump-version.mjs <patch|minor|major> [--dry-run|--print-version]',
   );
 }
 
-if (option && option !== '--dry-run') {
+if (option && !options.includes(option)) {
   throw new Error(`Unknown option: ${option}`);
 }
 
-const dryRun = option === '--dry-run';
 const root = join(import.meta.dirname, '..');
-const updates = manifests.map(({ path, getVersion }) => {
+const manifestSources = manifests.map(({ path, getVersion }) => {
   const filePath = join(root, path);
   const source = readFileSync(filePath, 'utf8');
   const currentVersion = getVersion(JSON.parse(source));
@@ -68,27 +68,59 @@ const updates = manifests.map(({ path, getVersion }) => {
     throw new Error(`Expected one matching version field in ${path}`);
   }
 
-  const updated = source.replace(
-    fields[0][0],
-    fields[0][0].replace(currentVersion, version),
-  );
-
-  return { path, filePath, source, updated, currentVersion };
+  return { path, filePath, source, field: fields[0][0], currentVersion };
 });
 
-if (updates.every(({ source, updated }) => source === updated)) {
-  throw new Error(`All release manifests already use ${version}`);
+const currentVersions = new Set(
+  manifestSources.map(({ currentVersion }) => currentVersion),
+);
+if (currentVersions.size !== 1) {
+  throw new Error(
+    `Expected aligned manifest versions, found: ${[...currentVersions].join(', ')}`,
+  );
 }
 
-for (const { path, filePath, source, updated, currentVersion } of updates) {
-  if (source === updated) {
-    console.log(`${path}: already ${version}`);
-    continue;
+const currentVersion = currentVersions.values().next().value;
+const versionParts = currentVersion.split('.').map(Number);
+if (versionParts.some((part) => !Number.isSafeInteger(part))) {
+  throw new Error(`Version number is too large: ${currentVersion}`);
+}
+
+if (release === 'major') {
+  versionParts[0]++;
+  versionParts[1] = 0;
+  versionParts[2] = 0;
+} else if (release === 'minor') {
+  versionParts[1]++;
+  versionParts[2] = 0;
+} else {
+  versionParts[2]++;
+}
+
+if (versionParts.some((part) => !Number.isSafeInteger(part))) {
+  throw new Error(`Next version number is too large for ${release}`);
+}
+
+const version = versionParts.join('.');
+if (option === '--print-version') {
+  console.log(version);
+} else {
+  for (const {
+    path,
+    filePath,
+    source,
+    field,
+    currentVersion,
+  } of manifestSources) {
+    const updated = source.replace(
+      field,
+      field.replace(currentVersion, version),
+    );
+    if (option !== '--dry-run') {
+      writeFileSync(filePath, updated);
+    }
+    console.log(
+      `${path}: ${currentVersion} -> ${version}${option === '--dry-run' ? ' (dry run)' : ''}`,
+    );
   }
-  if (!dryRun) {
-    writeFileSync(filePath, updated);
-  }
-  console.log(
-    `${path}: ${currentVersion} -> ${version}${dryRun ? ' (dry run)' : ''}`,
-  );
 }

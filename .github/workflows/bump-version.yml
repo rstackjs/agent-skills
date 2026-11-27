@@ -3,10 +3,15 @@ name: Bump Version
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: Version to release (for example, 1.0.2)
+      bump:
+        description: Version bump type
         required: true
-        type: string
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: patch
 
 permissions: {}
 
@@ -24,8 +29,7 @@ jobs:
       contents: write
       pull-requests: write
     env:
-      VERSION: ${{ inputs.version }}
-      BRANCH_NAME: chore-bump-${{ inputs.version }}
+      BUMP: ${{ inputs.bump }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -46,7 +50,13 @@ jobs:
       - name: Create release branch
         run: |
           set -euo pipefail
-          node scripts/bump-version.mjs "$VERSION" --dry-run
+          VERSION=$(node scripts/bump-version.mjs "$BUMP" --print-version)
+          BRANCH_NAME="chore-bump-$VERSION"
+          {
+            echo "VERSION=$VERSION"
+            echo "BRANCH_NAME=$BRANCH_NAME"
+          } >> "$GITHUB_ENV"
+          node scripts/bump-version.mjs "$BUMP" --dry-run
           if git ls-remote --exit-code --heads origin "$BRANCH_NAME" >/dev/null 2>&1; then
             echo "::error::Branch $BRANCH_NAME already exists."
             exit 1
@@ -54,7 +64,7 @@ jobs:
           git switch -c "$BRANCH_NAME"
 
       - name: Bump version
-        run: node scripts/bump-version.mjs "$VERSION"
+        run: node scripts/bump-version.mjs "$BUMP"
 
       - name: Run build
         run: pnpm build

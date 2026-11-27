@@ -11,17 +11,13 @@ const manifestPaths = [
 ];
 const releases = ['major', 'minor', 'patch'];
 const versionPattern = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
-const [release, option] = process.argv.slice(2);
+const [release, ...extraArguments] = process.argv.slice(2);
 const bumpIndex = releases.indexOf(release);
 
-if (bumpIndex === -1) {
+if (bumpIndex === -1 || extraArguments.length > 0) {
   throw new Error(
-    'Expected a release type: node scripts/bump-version.mjs <patch|minor|major> [--print-version]',
+    'Expected: node scripts/bump-version.mjs <patch|minor|major>',
   );
-}
-
-if (option && option !== '--print-version') {
-  throw new Error(`Unknown option: ${option}`);
 }
 
 const root = join(import.meta.dirname, '..');
@@ -70,21 +66,8 @@ if (versionParts.some((part) => !Number.isSafeInteger(part))) {
 }
 
 const version = versionParts.join('.');
-if (option === '--print-version') {
-  console.log(version);
-} else {
-  for (const {
-    path,
-    filePath,
-    source,
-    field,
-    currentVersion,
-  } of manifestSources) {
-    const updated = source.replace(
-      field,
-      field.replace(currentVersion, version),
-    );
-    writeFileSync(filePath, updated);
-    console.log(`${path}: ${currentVersion} -> ${version}`);
-  }
+for (const { filePath, source, field, currentVersion } of manifestSources) {
+  const updated = source.replace(field, field.replace(currentVersion, version));
+  writeFileSync(filePath, updated);
 }
+console.log(version);

@@ -42,15 +42,10 @@ jobs:
           node-version-file: .nvmrc
           package-manager-cache: false
 
-      - name: Install Pnpm
-        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-        with:
-          run_install: true
-
       - name: Create release branch
         run: |
           set -euo pipefail
-          VERSION=$(node scripts/bump-version.mjs "$BUMP" --print-version)
+          VERSION=$(node scripts/bump-version.mjs "$BUMP")
           BRANCH_NAME="chore-bump-$VERSION"
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "BRANCH_NAME=$BRANCH_NAME" >> "$GITHUB_ENV"
@@ -59,15 +54,6 @@ jobs:
             exit 1
           fi
           git switch -c "$BRANCH_NAME"
-
-      - name: Bump version
-        run: node scripts/bump-version.mjs "$BUMP"
-
-      - name: Run build
-        run: pnpm build
-
-      - name: Run checks
-        run: pnpm check
 
       - name: Commit version bump
         run: |

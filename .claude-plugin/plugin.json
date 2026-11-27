@@ -1,6 +1,6 @@
 {
   "name": "rstack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Agent Skills for debugging, tracing, upgrading, and analyzing Rstack projects.",
   "author": {
     "name": "RstackJS"
